@@ -11,6 +11,7 @@ import identitySelectors from '../selectors/identity'
 import { actions as channelActions } from './channel'
 import contactsHandlers from '../handlers/contacts'
 import usersHandlers from './users'
+import publicChannelsHandlers from './publicChannels'
 import appHandlers from './app'
 import { messageType, actionTypes, unknownUserId } from '../../../shared/static'
 import { messages as zbayMessages } from '../../zbay'
@@ -100,6 +101,12 @@ export const fetchMessages = () => async (dispatch, getState) => {
       usersHandlers.epics.fetchUsers(
         channels.registeredUsers.mainnet.address,
         txns[channels.registeredUsers.mainnet.address]
+      )
+    )
+    await dispatch(
+      publicChannelsHandlers.epics.fetchPublicChannels(
+        channels.channelOfChannels.mainnet.address,
+        txns[channels.channelOfChannels.mainnet.address]
       )
     )
     dispatch(setUsersMessages(identityAddress, txns[identityAddress]))
