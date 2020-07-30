@@ -266,6 +266,7 @@ const setChannelMessages = (channel, messages) => async (
 const setUsersMessages = (address, messages) => async (dispatch, getState) => {
   const users = usersSelectors.users(getState())
   if (
+    messages &&
     messages[messages.length - 1].memo === null &&
     messages[messages.length - 1].memohex === ''
   ) {
