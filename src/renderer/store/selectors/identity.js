@@ -49,7 +49,11 @@ const shieldedAddresses = createSelector(data, d => d.shieldedAddresses)
 
 const loader = createSelector(identity, i => i.loader)
 
-const shippingData = createSelector(data, d => d.shippingData)
+const shippingData = createSelector(data, d => {
+  const test = d.get('shippingData')
+  console.log(test)
+  return test
+})
 
 export default {
   id,

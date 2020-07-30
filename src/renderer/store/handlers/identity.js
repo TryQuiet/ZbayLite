@@ -40,6 +40,7 @@ import {
   satoshiMultiplier
 } from '../../../shared/static'
 import electronStore from '../../../shared/electronStore'
+import { formSchema as shippingDataSchema } from '../../components/widgets/settings/ShippingSettingsForm'
 // import channels from '../../zcash/channels'
 
 export const ShippingData = Immutable.Record(
@@ -55,7 +56,7 @@ export const ShippingData = Immutable.Record(
   'ShippingData'
 )
 
-const _Identity = Immutable.Record(
+const Identity = Immutable.Record(
   {
     id: null,
     address: '',
@@ -76,10 +77,10 @@ const _Identity = Immutable.Record(
   'Identity'
 )
 
-export const Identity = values => {
-  const record = _Identity(values)
-  return record.set('shippingData', ShippingData(record.shippingData))
-}
+// export const Identity = values => {
+//   const record = _Identity(values)
+//   return record.set('shippingData', ShippingData(record.shippingData))
+// }
 
 export const IdentityState = Immutable.Record(
   {
@@ -331,6 +332,11 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     // const network = nodeSelectors.network(getState())
     await dispatch(whitelistHandlers.epics.initWhitelist())
     await dispatch(notificationCenterHandlers.epics.init())
+    const shippingAddress = electronStore.get('identity.shippingData')
+    console.log(shippingAddress)
+    if (shippingAddress) {
+      dispatch(setShippingData(ShippingData(shippingAddress)))
+    }
     dispatch(setLoadingMessage('Setting identity'))
     // Check if identity has signerKeys
     // if (!identity.signerPrivKey || !identity.signerPubKey) {
@@ -409,9 +415,10 @@ export const updateShippingData = (values, formActions) => async (
   dispatch,
   getState
 ) => {
-  const id = identitySelectors.id(getState())
-  const identity = await vault.identity.updateShippingData(id, values)
-  await dispatch(setShippingData(identity.shippingData))
+  console.log('working 123 123 123')
+  await shippingDataSchema.validate(values)
+  electronStore.set('identity.shippingData', values)
+  await dispatch(setShippingData(ShippingData(values)))
   dispatch(
     notificationsHandlers.actions.enqueueSnackbar(
       successNotification({ message: 'Shipping Address Updated' })
