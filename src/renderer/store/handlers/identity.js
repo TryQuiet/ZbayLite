@@ -28,7 +28,6 @@ import logsHandlers from '../../store/handlers/logs'
 import ratesHandlers from './rates'
 import nodeHandlers from './node'
 import notificationCenterHandlers from './notificationCenter'
-import vault, { getVault } from '../../vault'
 // import migrateTo_0_2_0 from '../../../shared/migrations/0_2_0' // eslint-disable-line camelcase
 // import migrateTo_0_7_0 from '../../../shared/migrations/0_7_0' // eslint-disable-line camelcase
 import { LoaderState, successNotification } from './utils'
@@ -135,7 +134,6 @@ export const fetchAffiliateMoney = () => async (dispatch, getState) => {
   try {
     const identityAddress = identitySelectors.address(getState())
     const transfers = await client().payment.received(identityAddress)
-    const identityId = identitySelectors.id(getState())
     const affiliatesTransfers = transfers.filter(msg =>
       msg.memo.startsWith('aa')
     )
@@ -146,10 +144,6 @@ export const fetchAffiliateMoney = () => async (dispatch, getState) => {
       if (!txnTimestamps.get(transfer.txid)) {
         amount += transfer.amount
         const result = await client().confirmations.getResult(transfer.txid)
-        await getVault().transactionsTimestamps.addTransaction(
-          transfer.txid,
-          result.timereceived
-        )
         await dispatch(
           txnTimestampsHandlers.actions.addTxnTimestamp({
             tnxs: { [transfer.txid]: result.timereceived.toString() }
@@ -166,7 +160,6 @@ export const fetchAffiliateMoney = () => async (dispatch, getState) => {
         )
       )
     }
-    vault.identity.updateLastLogin(identityId)
   } catch (err) {}
 }
 export const fetchBalance = () => async (dispatch, getState) => {
@@ -414,9 +407,12 @@ export const updateShippingData = (values, formActions) => async (
   dispatch,
   getState
 ) => {
+<<<<<<< HEAD
   await shippingDataSchema.validate(values)
   electronStore.set('identity.shippingData', values)
   await dispatch(setShippingData(ShippingData(values)))
+=======
+>>>>>>> ZbayLite
   dispatch(
     notificationsHandlers.actions.enqueueSnackbar(
       successNotification({ message: 'Shipping Address Updated' })
@@ -432,9 +428,6 @@ export const updateShippingData = (values, formActions) => async (
 }
 
 export const updateDonation = allow => async (dispatch, getState) => {
-  const id = identitySelectors.id(getState())
-  const identity = await vault.identity.updateDonation(id, allow)
-  await dispatch(setDonationAllow(identity.donationAllow))
   dispatch(
     notificationsHandlers.actions.enqueueSnackbar(
       successNotification({ message: 'Donation information updated' })
@@ -449,13 +442,8 @@ export const updateDonation = allow => async (dispatch, getState) => {
 }
 
 export const updateDonationAddress = address => async (dispatch, getState) => {
-  const id = identitySelectors.id(getState())
-  await vault.identity.updateDonationAddress(id, address)
 }
 export const updateShieldingTax = allow => async (dispatch, getState) => {
-  const id = identitySelectors.id(getState())
-  const identity = await vault.identity.updateShieldingTax(id, allow)
-  await dispatch(setShieldingTax(identity.shieldingTax))
 }
 export const generateNewAddress = () => async (dispatch, getState) => {
   if (!electronStore.get('addresses')) {

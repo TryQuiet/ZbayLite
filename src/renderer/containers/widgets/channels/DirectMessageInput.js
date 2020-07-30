@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import ChannelInputComponent from '../../../components/widgets/channels/ChannelInput'
 import channelHandlers from '../../../store/handlers/channel'
 import directMessagesQueueHandlers from '../../../store/handlers/directMessagesQueue'
-import contactsHandlers from '../../../store/handlers/contacts'
 import channelSelectors, { INPUT_STATE } from '../../../store/selectors/channel'
 import usersSelectors from '../../../store/selectors/users'
 import identitySelectors from '../../../store/selectors/identity'
@@ -35,7 +34,7 @@ export const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       onChange: channelHandlers.actions.setMessage,
-      sendDirectMessageOnEnter: contactsHandlers.epics.sendDirectMessageOnEnter,
+      sendDirectMessageOnEnter: channelHandlers.epics.sendOnEnter,
       checkMessageSizeLimit: messagesHandlers.epics.checkMessageSize,
       resetDebounce:
         directMessagesQueueHandlers.epics.resetDebounceDirectMessage
