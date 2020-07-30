@@ -65,7 +65,6 @@ export const ShippingSettingsForm = ({
   initialValues,
   handleSubmit
 }) => {
-  console.log('initial values', initialValues)
   return (
     <Formik
       onSubmit={handleSubmit}

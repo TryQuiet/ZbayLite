@@ -332,11 +332,6 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     // const network = nodeSelectors.network(getState())
     await dispatch(whitelistHandlers.epics.initWhitelist())
     await dispatch(notificationCenterHandlers.epics.init())
-    const shippingAddress = electronStore.get('identity.shippingData')
-    console.log(shippingAddress)
-    if (shippingAddress) {
-      dispatch(setShippingData(ShippingData(shippingAddress)))
-    }
     dispatch(setLoadingMessage('Setting identity'))
     // Check if identity has signerKeys
     // if (!identity.signerPrivKey || !identity.signerPubKey) {
@@ -351,6 +346,10 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     //   identity = updatedIdentity
     // }
     await dispatch(setIdentity(identity))
+    const shippingAddress = electronStore.get('identity.shippingData')
+    if (shippingAddress) {
+      dispatch(setShippingData(ShippingData(shippingAddress)))
+    }
     // await dispatch(txnTimestampsHandlers.epics.getTnxTimestamps())
     // dispatch(removedChannelsHandlers.epics.getRemovedChannelsTimestamp())
 
@@ -415,7 +414,7 @@ export const updateShippingData = (values, formActions) => async (
   dispatch,
   getState
 ) => {
-  console.log('working 123 123 123')
+  console.log('working 123 123 123', values)
   await shippingDataSchema.validate(values)
   electronStore.set('identity.shippingData', values)
   await dispatch(setShippingData(ShippingData(values)))
