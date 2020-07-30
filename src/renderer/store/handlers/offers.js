@@ -56,13 +56,15 @@ const createOfferAdvert = ({ payload, history }) => async (
 }
 const createOffer = ({ payload }) => async (dispatch, getState) => {
   const contacts = contactsSelectors.contacts(getState())
+  const msg = contactsSelectors.getAdvertById(payload.id)(getState())
+  console.log(msg)
   if (!contacts.get(payload.id + payload.offerOwner)) {
     await dispatch(
       contactsHandlers.actions.addContact({
         key: payload.id + payload.offerOwner,
         username: payload.tag + ' @' + payload.offerOwner,
         contactAddress: payload.address,
-        isOffer: true
+        offerId: payload.id
       })
     )
   }

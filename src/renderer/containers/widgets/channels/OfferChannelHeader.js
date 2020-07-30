@@ -7,9 +7,8 @@ import contactsSelectors from '../../../store/selectors/contacts'
 export const mapStateToProps = (state, props) => {
   const offerData = contactsSelectors.contact(props.offer)(state)
   const channel = {
-    name: offerData.name
+    name: offerData.username
   }
-  console.log(offerData)
   return {
     channel: Immutable.fromJS(channel),
     directMessage: true

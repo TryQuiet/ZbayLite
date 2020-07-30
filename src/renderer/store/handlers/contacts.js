@@ -624,14 +624,14 @@ export const reducer = handleActions(
       ),
     [addContact]: (
       state,
-      { payload: { key, username, contactAddress, isOffer = false } }
+      { payload: { key, username, contactAddress, offerId = null } }
     ) => {
       return state.merge({
         [key]: Contact({
           key: key,
           address: contactAddress,
           username: username,
-          isOffer
+          offerId
         })
       })
     },
