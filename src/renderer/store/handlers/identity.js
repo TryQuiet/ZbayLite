@@ -414,7 +414,6 @@ export const updateShippingData = (values, formActions) => async (
   dispatch,
   getState
 ) => {
-  console.log('working 123 123 123', values)
   await shippingDataSchema.validate(values)
   electronStore.set('identity.shippingData', values)
   await dispatch(setShippingData(ShippingData(values)))
