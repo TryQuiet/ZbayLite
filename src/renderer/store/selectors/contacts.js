@@ -37,7 +37,7 @@ const messages = address =>
   createSelector(contact(address), c => c.messages.toList())
 const getAdvertById = txid =>
   createSelector(contacts, c =>
-    c.reduce((acc, t) => acc.merge(t.messages), Immutable.Map())
+    c.reduce((acc, t) => acc.merge(t.messages), Immutable.Map()).get(txid)
   )
 const lastSeen = address => createSelector(contact(address), c => c.lastSeen)
 const username = address => createSelector(contact(address), c => c.username)
