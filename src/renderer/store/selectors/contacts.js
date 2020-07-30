@@ -15,17 +15,21 @@ export const Contact = Immutable.Record({
   address: '',
   messages: Immutable.Map(),
   newMessages: Immutable.List(),
-  vaultMessages: Immutable.List()
+  vaultMessages: Immutable.List(),
+  isOffer: false
 })
 
 const store = s => s
 
 const contacts = createSelector(store, state => state.get('contacts'))
 const contactsList = createSelector(contacts, contacts =>
-  contacts.filter(c => c.key.length < 78).toList()
+  contacts.filter(c => c.key.length === 66 && c.isOffer === false).toList()
+)
+const offerList = createSelector(contacts, contacts =>
+  contacts.filter(c => c.isOffer === true).toList()
 )
 const channelsList = createSelector(contacts, contacts =>
-  contacts.filter(c => c.key.length === 78).toList()
+  contacts.filter(c => c.key.length === 78 && c.isOffer === false).toList()
 )
 const contact = address =>
   createSelector(contacts, c => c.get(address, Contact()))
@@ -96,5 +100,6 @@ export default {
   username,
   newMessages,
   contactsList,
-  channelsList
+  channelsList,
+  offerList
 }

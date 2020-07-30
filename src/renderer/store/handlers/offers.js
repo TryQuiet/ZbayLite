@@ -7,12 +7,11 @@ import offersSelectors from '../selectors/offers'
 import directMessagesQueue from '../selectors/directMessagesQueue'
 import { messages as zbayMessages } from '../../zbay'
 import channelSelectors from '../selectors/channel'
+import contactsSelectors from '../selectors/contacts'
 import channelHandlers from './channel'
 import contactsHandlers from './contacts'
 import directMessagesQueueHandlers from './directMessagesQueue'
 import { messageType, actionTypes } from '../../../shared/static'
-
-import * as Here from './offers'
 
 export const Offer = Immutable.Record(
   {
@@ -51,29 +50,27 @@ const createOfferAdvert = ({ payload, history }) => async (
   getState
 ) => {
   await dispatch(createOffer({ payload }))
-  await dispatch(
-    contactsHandlers.epics.updateDeletedChannelTimestamp({
-      address: payload.id + payload.offerOwner,
-      timestamp: 0
-    })
-  )
   history.push(
     `/main/offers/${payload.id + payload.offerOwner}/${payload.address}`
   )
 }
 const createOffer = ({ payload }) => async (dispatch, getState) => {
-  const offers = offersSelectors.offers(getState())
-  if (!offers.find(e => e.itemId === payload.id + payload.offerOwner)) {
-    await dispatch(Here.loadVaultContacts())
+  const contacts = contactsSelectors.contacts(getState())
+  if (!contacts.get(payload.id + payload.offerOwner)) {
+    await dispatch(
+      contactsHandlers.actions.addContact({
+        key: payload.id + payload.offerOwner,
+        username: payload.tag + ' @' + payload.offerOwner,
+        contactAddress: payload.address,
+        isOffer: true
+      })
+    )
   }
 }
-export const loadVaultContacts = () => async (dispatch, getState) => {
-}
+export const loadVaultContacts = () => async (dispatch, getState) => {}
 
-export const initMessage = () => async (dispatch, getState) => {
-}
-const refreshMessages = id => async (dispatch, getState) => {
-}
+export const initMessage = () => async (dispatch, getState) => {}
+const refreshMessages = id => async (dispatch, getState) => {}
 
 const sendItemMessageOnEnter = event => async (dispatch, getState) => {
   const enterPressed = event.nativeEvent.keyCode === 13
