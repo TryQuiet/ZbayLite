@@ -39,6 +39,7 @@ import {
   satoshiMultiplier
 } from '../../../shared/static'
 import electronStore from '../../../shared/electronStore'
+import { formSchema as shippingDataSchema } from '../../components/widgets/settings/ShippingSettingsForm'
 // import channels from '../../zcash/channels'
 
 export const ShippingData = Immutable.Record(
@@ -54,7 +55,7 @@ export const ShippingData = Immutable.Record(
   'ShippingData'
 )
 
-const _Identity = Immutable.Record(
+const Identity = Immutable.Record(
   {
     id: null,
     address: '',
@@ -75,10 +76,10 @@ const _Identity = Immutable.Record(
   'Identity'
 )
 
-export const Identity = values => {
-  const record = _Identity(values)
-  return record.set('shippingData', ShippingData(record.shippingData))
-}
+// export const Identity = values => {
+//   const record = _Identity(values)
+//   return record.set('shippingData', ShippingData(record.shippingData))
+// }
 
 export const IdentityState = Immutable.Record(
   {
@@ -338,6 +339,10 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     //   identity = updatedIdentity
     // }
     await dispatch(setIdentity(identity))
+    const shippingAddress = electronStore.get('identity.shippingData')
+    if (shippingAddress) {
+      dispatch(setShippingData(ShippingData(shippingAddress)))
+    }
     // await dispatch(txnTimestampsHandlers.epics.getTnxTimestamps())
     // dispatch(removedChannelsHandlers.epics.getRemovedChannelsTimestamp())
 
@@ -402,6 +407,12 @@ export const updateShippingData = (values, formActions) => async (
   dispatch,
   getState
 ) => {
+<<<<<<< HEAD
+  await shippingDataSchema.validate(values)
+  electronStore.set('identity.shippingData', values)
+  await dispatch(setShippingData(ShippingData(values)))
+=======
+>>>>>>> ZbayLite
   dispatch(
     notificationsHandlers.actions.enqueueSnackbar(
       successNotification({ message: 'Shipping Address Updated' })
