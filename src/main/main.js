@@ -651,6 +651,7 @@ app.on('ready', async () => {
     autoUpdater.quitAndInstall()
   })
   client = new Client()
+  client.postMessage(12, 'rescan')
   ipcMain.on('rpcQuery', async (event, arg) => {
     const request = JSON.parse(arg)
     const response = await client.postMessage(request.id, request.method, request.args)
