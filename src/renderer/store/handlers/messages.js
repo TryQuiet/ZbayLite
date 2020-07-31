@@ -160,7 +160,6 @@ const setOutgoingTransactions = (address, messages) => async (
   getState
 ) => {
   const users = usersSelectors.users(getState())
-  console.log(messages)
   const transferCountFlag = await dispatch(
     checkTransferCount('outgoing', messages)
   )
@@ -194,9 +193,11 @@ const setOutgoingTransactions = (address, messages) => async (
   const contacts = contactsSelectors.contacts(getState())
 
   const itemMessages = messagesAll.filter(msg => msg.message.itemId)
+  console.log(itemMessages)
   const groupedItemMesssages = R.groupBy(
     msg => msg.message.itemId + msg.receiver.username
   )(itemMessages)
+  console.log(groupedItemMesssages)
   for (const key in groupedItemMesssages) {
     if (key && groupedItemMesssages.hasOwnProperty(key)) {
       const offer = contactsSelectors.getAdvertById(key.substring(0, 64))(
@@ -367,8 +368,9 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
   const itemMessages = messagesAll.filter(msg => msg.message.itemId)
   const contacts = contactsSelectors.contacts(getState())
   const groupedItemMesssages = R.groupBy(
-    msg => msg.message.itemId + msg.receiver.username
+    msg => msg.message.itemId + msg.sender.username
   )(itemMessages)
+  console.log(groupedItemMesssages)
   for (const key in groupedItemMesssages) {
     if (key && groupedItemMesssages.hasOwnProperty(key)) {
       const offer = contactsSelectors.getAdvertById(key.substring(0, 64))(
@@ -378,8 +380,8 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
         await dispatch(
           contactsHandlers.actions.addContact({
             key: key,
-            username: offer.message.tag + ' @' + offer.sender.username,
-            contactAddress: offer.sender.replyTo,
+            username: offer.message.tag + ' @' + key.substring(64),
+            contactAddress: groupedItemMesssages[key][0].sender.replyTo,
             offerId: offer.id
           })
         )
