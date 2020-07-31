@@ -13,7 +13,6 @@ import queueMessages from '../../../store/selectors/messagesQueue'
 export const mapStateToProps = (state, { offer, signerPubKey }) => {
   const qMessages = queueMessages.queue(state)
   const qDmMessages = dmQueueMessages.queue(state)
-  console.log(offer)
   return {
     triggerScroll: qDmMessages.size + qMessages.size > 0,
     qMessages: qMessages,

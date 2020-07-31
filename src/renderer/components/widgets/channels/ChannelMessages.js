@@ -80,6 +80,7 @@ export const ChannelMessages = ({
   //   const msg = messages.toJS()[0]
   //   tag = msg.message.tag
   //   username = msg.sender.username
+  //   username = msg.sender.username
   // }
   let groupedMessages = []
   if (messages.size !== 0) {

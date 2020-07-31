@@ -35,10 +35,11 @@ const contact = address =>
   createSelector(contacts, c => c.get(address, Contact()))
 const messages = address =>
   createSelector(contact(address), c => c.messages.toList())
+const allMessages = createSelector(contacts, c =>
+  c.reduce((acc, t) => acc.merge(t.messages), Immutable.Map())
+)
 const getAdvertById = txid =>
-  createSelector(contacts, c =>
-    c.reduce((acc, t) => acc.merge(t.messages), Immutable.Map()).get(txid)
-  )
+  createSelector(allMessages, msgs => msgs.get(txid))
 const lastSeen = address => createSelector(contact(address), c => c.lastSeen)
 const username = address => createSelector(contact(address), c => c.username)
 const vaultMessages = address =>
@@ -106,5 +107,6 @@ export default {
   contactsList,
   channelsList,
   offerList,
-  getAdvertById
+  getAdvertById,
+  allMessages
 }
