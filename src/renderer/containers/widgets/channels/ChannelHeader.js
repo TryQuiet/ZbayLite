@@ -14,9 +14,7 @@ import notificationCenter from '../../../store/selectors/notificationCenter'
 import { messageType, notificationFilterType } from '../../../../shared/static'
 
 export const mapStateToProps = (state, props) => {
-  console.log('props', props)
   const contact = contactsSelectors.contact(props.contactId)(state)
-  console.log('contact', contact)
   return {
     channel: Immutable.fromJS({
       name: contact.get('username'),
