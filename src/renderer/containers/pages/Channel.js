@@ -38,7 +38,7 @@ const Channel = ({ loadChannel, generalChannelId, match, resetDirectMessageChann
     },
     [match.params.id, generalChannelId]
   )
-  return <ChannelComponent channelType={CHANNEL_TYPE.NORMAL} />
+  return <ChannelComponent channelType={CHANNEL_TYPE.NORMAL} contactId={match.params.id} />
 }
 
 export default R.compose(
