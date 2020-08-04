@@ -12,9 +12,15 @@ import identitySelectors from '../selectors/identity'
 import { actions as channelActions } from './channel'
 import contactsHandlers from '../handlers/contacts'
 import usersHandlers from './users'
+import ratesHandlers from './rates'
 import publicChannelsHandlers from './publicChannels'
 import appHandlers from './app'
-import { messageType, actionTypes, unknownUserId } from '../../../shared/static'
+import {
+  messageType,
+  actionTypes,
+  unknownUserId,
+  satoshiMultiplier
+} from '../../../shared/static'
 import { messages as zbayMessages } from '../../zbay'
 import { checkMessageSizeAfterComporession } from '../../zbay/transit'
 import client from '../../zcash'
@@ -88,7 +94,11 @@ export const actions = {
 export const fetchAllMessages = async () => {
   try {
     const txns = await client.list()
-    return R.groupBy(txn => txn.address)(txns)
+    const txnsZec = txns.map(txn => ({
+      ...txn,
+      amount: txn.amount / satoshiMultiplier
+    }))
+    return R.groupBy(txn => txn.address)(txnsZec)
   } catch (err) {
     console.warn(`Can't pull messages`)
     return {}
@@ -102,6 +112,12 @@ export const fetchMessages = () => async (dispatch, getState) => {
       usersHandlers.epics.fetchUsers(
         channels.registeredUsers.mainnet.address,
         txns[channels.registeredUsers.mainnet.address]
+      )
+    )
+    await dispatch(
+      ratesHandlers.epics.fetchPrices(
+        channels.priceOracle.mainnet.address,
+        txns[channels.priceOracle.mainnet.address]
       )
     )
     await dispatch(
@@ -193,11 +209,9 @@ const setOutgoingTransactions = (address, messages) => async (
   const contacts = contactsSelectors.contacts(getState())
 
   const itemMessages = messagesAll.filter(msg => msg.message.itemId)
-  console.log(itemMessages)
   const groupedItemMesssages = R.groupBy(
     msg => msg.message.itemId + msg.receiver.username
   )(itemMessages)
-  console.log(groupedItemMesssages)
   for (const key in groupedItemMesssages) {
     if (key && groupedItemMesssages.hasOwnProperty(key)) {
       const offer = contactsSelectors.getAdvertById(key.substring(0, 64))(
@@ -335,8 +349,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       spent: new BigNumber(msg.amount),
       blockHeight: msg.block_height
     })
-  }
-  )
+  })
   const unknownUser = users.get(unknownUserId)
   dispatch(
     contactsHandlers.actions.setMessages({
