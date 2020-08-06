@@ -30,10 +30,14 @@ const contactsList = createSelector(contacts, identitySelectors.removedChannels,
 }
 )
 
-const offerList = createSelector(contacts, contacts =>
-  contacts.filter(c => !!c.offerId).toList()
+const offerList = createSelector(contacts, identitySelectors.removedChannels, (contacts, removedChannels) => {
+  if (removedChannels.size > 0) {
+    return contacts.filter(c => !!c.offerId && !removedChannels.includes(c.key)).toList()
+  }
+  return contacts.filter(c => !!c.offerId).toList()
+}
 )
-const channelsList = createSelector((contacts, identitySelectors.removedChannels), (contacts, removedChannels) => {
+const channelsList = createSelector(contacts, identitySelectors.removedChannels, (contacts, removedChannels) => {
   if (removedChannels.size > 0) {
     return contacts.filter(c => c.key.length === 78 && c.offerId === null && !removedChannels.includes(c.address)).toList()
   }

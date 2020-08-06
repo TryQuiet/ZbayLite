@@ -42,7 +42,7 @@ const actions = {
   setDecodingError
 }
 
-const removeChannel = history => async (dispatch, getState) => {
+const removeChannel = (history, isOffer = false) => async (dispatch, getState) => {
   const state = getState()
   const channel = channelSelectors.channel(state).toJS()
   try {
@@ -50,7 +50,11 @@ const removeChannel = history => async (dispatch, getState) => {
 
     const generalChannel = channels.general[network]
     if (generalChannel.address !== channel.address) {
-      electronStore.set(`removedChannels.${channel.address}`, channel)
+      if (isOffer) {
+        electronStore.set(`removedChannels.${channel.id}`, channel)
+      } else {
+        electronStore.set(`removedChannels.${channel.address}`, channel)
+      }
       const removedChannels = electronStore.get('removedChannels')
       dispatch(identityHandlers.actions.setRemovedChannels(Immutable.fromJS(Object.keys(removedChannels))))
       history.push(`/main/channel/${channelsSelectors.generalChannelId(state)}`)
