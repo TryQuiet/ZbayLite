@@ -6,6 +6,7 @@ import { errorNotification } from './utils'
 import identitySelectors from '../selectors/identity'
 import channelSelectors from '../selectors/channel'
 import channelsSelectors from '../selectors/channels'
+import identityHandlers from '../handlers/identity'
 import logsHandlers from '../handlers/logs'
 import importedChannelSelectors from '../selectors/importedChannel'
 import channelsHandlers from './channels'
@@ -16,6 +17,7 @@ import nodeSelectors from '../selectors/node'
 import modalsHandlers from './modals'
 import { actionTypes } from '../../../shared/static'
 import history from '../../../shared/history'
+import electronStore from '../../../shared/electronStore'
 
 export const ImportedChannelState = Immutable.Record(
   {
@@ -42,14 +44,15 @@ const actions = {
 
 const removeChannel = history => async (dispatch, getState) => {
   const state = getState()
-  const identityId = identitySelectors.id(state)
   const channel = channelSelectors.channel(state).toJS()
   try {
     const network = nodeSelectors.network(getState())
 
     const generalChannel = channels.general[network]
     if (generalChannel.address !== channel.address) {
-      dispatch(channelsHandlers.actions.loadChannels(identityId))
+      electronStore.set(`removedChannels.${channel.address}`, channel)
+      const removedChannels = electronStore.get('removedChannels')
+      dispatch(identityHandlers.actions.setRemovedChannels(Immutable.fromJS(Object.keys(removedChannels))))
       history.push(`/main/channel/${channelsSelectors.generalChannelId(state)}`)
       dispatch(
         notificationsHandlers.actions.enqueueSnackbar({
