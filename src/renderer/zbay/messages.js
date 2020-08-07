@@ -383,7 +383,7 @@ export const messageToTransfer = async ({
   message,
   amount = 0,
   address,
-  identityAddress,
+  identityAddress = false,
   splitTreshhold = networkFee * 20,
   fee = networkFee,
   donation = { allow: false }
@@ -405,7 +405,7 @@ export const messageToTransfer = async ({
   }
   const utxos = await client.notes()
 
-  return _buildUtxo({ transfer, utxos, fee, identityAddress, splitTreshhold })
+  return identityAddress ? _buildUtxo({ transfer, utxos, fee, identityAddress, splitTreshhold }) : transfer
 }
 export const createEmptyTransfer = ({ address, amount = 0, memo = '' }) => {
   return {
