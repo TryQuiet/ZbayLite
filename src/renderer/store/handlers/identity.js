@@ -176,15 +176,14 @@ export const fetchBalance = () => async (dispatch, getState) => {
   try {
     dispatch(setFetchingBalance(true))
     const balanceObj = await client.balance()
-    // Does not work cli need support for pending balance
-    // dispatch(
-    //   setLockedBalance(
-    //     new BigNumber(
-    //       (balanceObj.zbalance - balanceObj.verified_zbalance) /
-    //         satoshiMultiplier
-    //     )
-    //   )
-    // )
+    dispatch(
+      setLockedBalance(
+        new BigNumber(
+          (balanceObj.unconfirmed_zbalance) /
+            satoshiMultiplier
+        )
+      )
+    )
     dispatch(
       setBalance(
         new BigNumber(balanceObj.spendable_zbalance / satoshiMultiplier)
