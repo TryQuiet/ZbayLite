@@ -106,7 +106,10 @@ export const ItemTransferMessage = ({
             provideShipping: message.provideShipping,
             amountZec: parseFloat(message.spent.toString()),
             txid: message.id,
-            memo: message.message,
+            memo:
+              typeof message.message === 'object'
+                ? message.message.message
+                : message.message,
             recipient: message.receiver.replyTo,
             timestamp: message.createdAt,
             blockHeight: message.blockHeight
@@ -124,16 +127,19 @@ export const ItemTransferMessage = ({
         </Typography>
         <Typography variant='body2' className={classes.data}>
           {message.fromYou
-            ? `You sent ${message.offerOwner ||
-            isRegisteredUsername ? `@${message.receiver.username}` : message.receiver.replyTo} $${usdAmount} (${parseFloat(
-              message.spent.toString()
-            ).toFixed(4)} ZEC) ${message.tag ? `for #${message.tag}` : ''}`
+            ? `You sent ${
+              message.offerOwner || isRegisteredUsername
+                ? `@${message.offerOwner || message.receiver.username}`
+                : message.receiver.replyTo
+            } $${usdAmount} (${parseFloat(message.spent.toString()).toFixed(
+              4
+            )} ZEC) ${message.tag ? `for #${message.tag}` : ''}`
             : `Received from @${message.sender.username} $${usdAmount} (${
               message.spent
             } ZEC) ${message.tag ? `for #${message.tag}` : ''}`}
         </Typography>
         <Typography variant='body2' className={classes.message}>
-          {message.message && `${message.message}`}
+          {!typeof message.message === 'object' && `${message.message}`}
         </Typography>
         {message.shippingData && (
           <Typography variant='body2' className={classes.message}>

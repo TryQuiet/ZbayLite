@@ -282,9 +282,13 @@ export const outgoingTransferToMessage = async (props, users) => {
       },
       spent: new BigNumber(transactionData.value / satoshiMultiplier),
       sender: sender,
+      fromYou: true,
       isUnregistered,
       publicKey,
-      blockHeight
+      blockHeight,
+      offerOwner: message.message.offerOwner,
+      tag: message.message.tag,
+      shippingData: message.message.shippingData
     }
   } catch (err) {
     console.warn('Incorrect message format: ', err)
@@ -405,7 +409,9 @@ export const messageToTransfer = async ({
   }
   const utxos = await client.notes()
 
-  return identityAddress ? _buildUtxo({ transfer, utxos, fee, identityAddress, splitTreshhold }) : transfer
+  return identityAddress
+    ? _buildUtxo({ transfer, utxos, fee, identityAddress, splitTreshhold })
+    : transfer
 }
 export const createEmptyTransfer = ({ address, amount = 0, memo = '' }) => {
   return {
