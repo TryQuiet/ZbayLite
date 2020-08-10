@@ -6,10 +6,7 @@ import * as R from 'ramda'
 import { DateTime } from 'luxon'
 
 import history from '../../../shared/history'
-import operationsHandlers, {
-  operationTypes,
-  PendingMessageOp
-} from './operations'
+import operationsHandlers from './operations'
 import notificationsHandlers from './notifications'
 // import messagesQueueHandlers from './messagesQueue'
 import messagesHandlers, { _checkMessageSize } from './messages'
@@ -205,6 +202,23 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       })
       const transaction = await client.sendTransaction(transfer)
       console.log(transaction, 'transaction details')
+      if (!transaction.txid) {
+        dispatch(
+          contactsHandlers.actions.addMessage({
+            key: channel.id,
+            message: { [key]: messagePlaceholder.set('status', 'failed') }
+          })
+        )
+        dispatch(
+          notificationsHandlers.actions.enqueueSnackbar(
+            errorNotification({
+              message:
+                "Couldn't send the message, please check node connection."
+            })
+          )
+        )
+        return
+      }
       dispatch(
         operationsHandlers.epics.resolvePendingOperation({
           channelId: channel.id,
@@ -253,7 +267,6 @@ const sendChannelSettingsMessage = ({
 }
 
 const resendMessage = messageData => async (dispatch, getState) => {
-  dispatch(operationsHandlers.actions.removeOperation(messageData.id))
   const identityAddress = identitySelectors.address(getState())
   const channel = channelSelectors.data(getState()).toJS()
   const privKey = identitySelectors.signerPrivKey(getState())
@@ -261,34 +274,52 @@ const resendMessage = messageData => async (dispatch, getState) => {
     messageData: {
       type: messageData.type,
       data: messageData.message,
-      spent: '0'
+      spent: parseFloat(messageData.spent.toString())
     },
     privKey
   })
   const transfer = await messages.messageToTransfer({
     message,
     address: channel.address,
+    amount: parseFloat(messageData.spent.toString()),
     identityAddress
   })
-  try {
-    const opId = await client.payment.send(transfer)
-    await dispatch(
-      operationsHandlers.epics.observeOperation({
-        opId,
-        type: operationTypes.pendingMessage,
-        meta: PendingMessageOp({
-          channelId: channel.id,
-          message: Immutable.fromJS(message)
+  const messagePlaceholder = DisplayableMessage({
+    ...messageData,
+    status: 'pending'
+  })
+  dispatch(
+    contactsHandlers.actions.addMessage({
+      key: channel.key,
+      message: { [messageData.id]: messagePlaceholder }
+    })
+  )
+  const transaction = await client.sendTransaction(transfer)
+  if (!transaction.txid) {
+    dispatch(
+      contactsHandlers.actions.addMessage({
+        key: channel.key,
+        message: {
+          [messageData.id]: messagePlaceholder.set('status', 'failed')
+        }
+      })
+    )
+    dispatch(
+      notificationsHandlers.actions.enqueueSnackbar(
+        errorNotification({
+          message: "Couldn't send the message, please check node connection."
         })
-      })
+      )
     )
-  } catch (err) {
-    notificationsHandlers.actions.enqueueSnackbar(
-      errorNotification({
-        message: "Couldn't send the message, please check node connection."
-      })
-    )
+    return
   }
+  dispatch(
+    operationsHandlers.epics.resolvePendingOperation({
+      channelId: channel.key,
+      id: messageData.id,
+      txid: transaction.txid
+    })
+  )
 }
 
 const updateLastSeen = () => async (dispatch, getState) => {
