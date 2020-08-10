@@ -176,11 +176,12 @@ export const fetchBalance = () => async (dispatch, getState) => {
   try {
     dispatch(setFetchingBalance(true))
     const balanceObj = await client.balance()
+    const notes = await client.notes()
+    const pending = notes.pending_notes.reduce((acc, cur) => acc + cur.value, 0)
     dispatch(
       setLockedBalance(
         new BigNumber(
-          (balanceObj.unconfirmed_zbalance) /
-            satoshiMultiplier
+          (balanceObj.unverified_zbalance + pending) / satoshiMultiplier
         )
       )
     )
@@ -192,9 +193,9 @@ export const fetchBalance = () => async (dispatch, getState) => {
     dispatch(
       logsHandlers.epics.saveLogs({
         type: 'APPLICATION_LOGS',
-        payload: `Fetching balance: locked balance: ${(balanceObj.zbalance -
-          balanceObj.verified_zbalance) /
-          satoshiMultiplier}, balance: ${balanceObj.verified_zbalance /
+        payload: `Fetching balance: locked balance: ${(balanceObj.unverified_zbalance +
+          pending) /
+          satoshiMultiplier}, balance: ${balanceObj.spendable_zbalance /
           satoshiMultiplier}`
       })
     )
