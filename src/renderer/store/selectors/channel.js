@@ -37,6 +37,9 @@ export const isSizeCheckingInProgress = createSelector(channel, c =>
 export const messageSizeStatus = createSelector(channel, c =>
   c.get('messageSizeStatus')
 )
+export const displayableMessageLimit = createSelector(channel, c =>
+  c.get('displayableMessageLimit')
+)
 export const isOwner = createSelector(
   id,
   contacts.contacts,
@@ -340,5 +343,6 @@ export default {
   isSizeCheckingInProgress,
   id,
   isOwner,
-  channelDesription
+  channelDesription,
+  displayableMessageLimit
 }

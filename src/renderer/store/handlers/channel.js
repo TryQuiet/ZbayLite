@@ -36,7 +36,8 @@ export const ChannelState = Immutable.Record(
     members: null,
     showInfoMsg: true,
     isSizeCheckingInProgress: false,
-    messageSizeStatus: null
+    messageSizeStatus: null,
+    displayableMessageLimit: 10
   },
   'ChannelState'
 )
@@ -48,6 +49,7 @@ const setSpentFilterValue = createAction(
   (_, value) => value
 )
 const setMessage = createAction(actionTypes.SET_CHANNEL_MESSAGE)
+const setDisplayableLimit = createAction(actionTypes.SET_DISPLAYABLE_LIMIT)
 const setChannelId = createAction(actionTypes.SET_CHANNEL_ID)
 const setLoading = createAction(actionTypes.SET_CHANNEL_LOADING)
 const setLoadingMessage = createAction(actionTypes.SET_CHANNEL_LOADING_MESSAGE)
@@ -68,13 +70,14 @@ export const actions = {
   setChannelId,
   resetChannel,
   isSizeCheckingInProgress,
-  messageSizeStatus
+  messageSizeStatus,
+  setDisplayableLimit
 }
 
 const loadChannel = key => async (dispatch, getState) => {
   try {
     dispatch(setChannelId(key))
-
+    dispatch(setDisplayableLimit(10))
     // Calculate URI on load, that way it won't be outdated, even if someone decides
     // to update channel in vault manually
     const contact = contactsSelectors.contact(key)(getState())
@@ -361,6 +364,8 @@ export const reducer = handleActions(
       state.set('messageSizeStatus', payload),
     [setShareableUri]: (state, { payload: uri }) =>
       state.set('shareableUri', uri),
+    [setDisplayableLimit]: (state, { payload: limit }) =>
+      state.set('displayableMessageLimit', limit),
     [setAddress]: (state, { payload: address }) =>
       state.set('address', address),
     [resetChannel]: () => initialState

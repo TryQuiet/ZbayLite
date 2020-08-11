@@ -6,7 +6,7 @@ import zbayMessages from '../../zbay/messages'
 import operationsSelectors from './operations'
 import { operationTypes } from '../handlers/operations'
 import usersSelectors from './users'
-import { mergeIntoOne } from './channel'
+import { mergeIntoOne, displayableMessageLimit } from './channel'
 
 export const Contact = Immutable.Record({
   lastSeen: null,
@@ -22,36 +22,83 @@ export const Contact = Immutable.Record({
 const store = s => s
 
 const contacts = createSelector(store, state => state.get('contacts'))
-const contactsList = createSelector(contacts, identitySelectors.removedChannels, (contacts, removedChannels) => {
-  if (removedChannels.size > 0) {
-    return contacts.filter(c => c.key.length === 66 && c.offerId === null && !removedChannels.includes(c.address)).toList()
+const contactsList = createSelector(
+  contacts,
+  identitySelectors.removedChannels,
+  (contacts, removedChannels) => {
+    if (removedChannels.size > 0) {
+      return contacts
+        .filter(
+          c =>
+            c.key.length === 66 &&
+            c.offerId === null &&
+            !removedChannels.includes(c.address)
+        )
+        .toList()
+    }
+    return contacts
+      .filter(c => c.key.length === 66 && c.offerId === null)
+      .toList()
   }
-  return contacts.filter(c => c.key.length === 66 && c.offerId === null).toList()
-}
 )
 
-const offerList = createSelector(contacts, identitySelectors.removedChannels, (contacts, removedChannels) => {
-  if (removedChannels.size > 0) {
-    return contacts.filter(c => !!c.offerId && !removedChannels.includes(c.key)).toList()
+const offerList = createSelector(
+  contacts,
+  identitySelectors.removedChannels,
+  (contacts, removedChannels) => {
+    if (removedChannels.size > 0) {
+      return contacts
+        .filter(c => !!c.offerId && !removedChannels.includes(c.key))
+        .toList()
+    }
+    return contacts.filter(c => !!c.offerId).toList()
   }
-  return contacts.filter(c => !!c.offerId).toList()
-}
 )
-const channelsList = createSelector(contacts, identitySelectors.removedChannels, (contacts, removedChannels) => {
-  if (removedChannels.size > 0) {
-    return contacts.filter(c => c.key.length === 78 && c.offerId === null && !removedChannels.includes(c.address)).toList()
+const channelsList = createSelector(
+  contacts,
+  identitySelectors.removedChannels,
+  (contacts, removedChannels) => {
+    if (removedChannels.size > 0) {
+      return contacts
+        .filter(
+          c =>
+            c.key.length === 78 &&
+            c.offerId === null &&
+            !removedChannels.includes(c.address)
+        )
+        .toList()
+    }
+    return contacts
+      .filter(c => c.key.length === 78 && c.offerId === null)
+      .toList()
   }
-  return contacts.filter(c => c.key.length === 78 && c.offerId === null).toList()
-}
 )
 
 const directMessagesContact = address =>
-  createSelector(contacts, c => c.toList().find(el => el.get('address') === address))
+  createSelector(contacts, c =>
+    c.toList().find(el => el.get('address') === address)
+  )
 
 const contact = address =>
   createSelector(contacts, c => c.get(address, Contact()))
+const messagesSorted = address =>
+  createSelector(contact(address), c => {
+    return c.messages
+      .toList()
+      .sort((msg1, msg2) => msg2.createdAt - msg1.createdAt)
+  })
+const messagesLength = address =>
+  createSelector(contact(address), c => {
+    return c.messages.toList().size
+  })
 const messages = address =>
-  createSelector(contact(address), c => c.messages.toList())
+  createSelector(
+    messagesSorted(address),
+    displayableMessageLimit,
+    (msgs, limit) => {
+      return msgs.slice(0, limit)
+    }
+  )
 const allMessages = createSelector(contacts, c =>
   c.reduce((acc, t) => acc.merge(t.messages), Immutable.Map())
 )
@@ -126,5 +173,6 @@ export default {
   channelsList,
   offerList,
   getAdvertById,
-  allMessages
+  allMessages,
+  messagesLength
 }

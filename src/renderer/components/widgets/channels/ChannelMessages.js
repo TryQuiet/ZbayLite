@@ -49,6 +49,10 @@ export const ChannelMessages = ({
   isInitialLoadFinished
 }) => {
   const scrollbarRef = React.useRef()
+  // const [lastScrollHeight, setLastScrollHeight] = React.useState(0)
+  // if (scrollbarRef.current) {
+  //   console.log(scrollbarRef.current.getValues())
+  // }
   const getScrollbarRef = ref => {
     if (ref !== null) {
       scrollbarRef.current = ref
@@ -65,6 +69,26 @@ export const ChannelMessages = ({
   React.useEffect(() => {
     window.addEventListener('resize', updateSize)
   }, [])
+  // TODO work on scroll behavior
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     setLastScrollHeight(scrollbarRef.current.getScrollHeight())
+  //   }, 0)
+  // }, [contactId])
+  // React.useEffect(() => {
+  //   console.log('tick')
+
+  //   if (scrollbarRef.current) {
+  //     console.log(scrollbarRef.current)
+  //     const currentHeight = scrollbarRef.current.getScrollHeight()
+  //     console.log(lastScrollHeight)
+  //     console.log(currentHeight)
+  //     console.log(`######################`)
+
+  //     setLastScrollHeight(currentHeight)
+  //     scrollbarRef.current.scrollTop(currentHeight - lastScrollHeight)
+  //   }
+  // }, [messages.size])
   React.useEffect(() => {
     if (msgRef.current && scrollbarRef.current) {
       const margin =

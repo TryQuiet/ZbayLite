@@ -28,6 +28,8 @@ export const mapStateToProps = (state, { signerPubKey }) => {
       channelsSelectors.channelById(channelSelectors.channelId(state))(state) ||
       Immutable.fromJS({ keys: {} }),
     messages: contactsSelectors.directMessages(contactId, signerPubKey)(state),
+    messagesLength: contactsSelectors.messagesLength(contactId)(state),
+    displayableMessageLimit: channelSelectors.displayableMessageLimit(state),
     channelId: channelSelectors.channelId(state),
     users: userSelector.users(state),
     loader: channelSelectors.loader(state),
@@ -39,7 +41,8 @@ export const mapStateToProps = (state, { signerPubKey }) => {
 export const mapDispatchToProps = (dispatch, ownProps) =>
   bindActionCreators(
     {
-      onLinkedChannel: channelHandlers.epics.linkChannelRedirect
+      onLinkedChannel: channelHandlers.epics.linkChannelRedirect,
+      setDisplayableLimit: channelHandlers.actions.setDisplayableLimit
     },
     dispatch
   )
@@ -56,9 +59,15 @@ export const ChannelMessages = ({
   publicChannels,
   onLinkedChannel,
   isInitialLoadFinished,
-  loader
+  loader,
+  messagesLength,
+  displayableMessageLimit,
+  setDisplayableLimit
 }) => {
   const [scrollPosition, setScrollPosition] = React.useState(-1)
+  // console.log(messagesLength)
+  // console.log(displayableMessageLimit)
+  // console.log(scrollPosition)
   useEffect(() => {
     setScrollPosition(-1)
   }, [channelId, contactId])
@@ -67,6 +76,11 @@ export const ChannelMessages = ({
       setScrollPosition(-1)
     }
   }, [triggerScroll])
+  useEffect(() => {
+    if (scrollPosition === 0 && displayableMessageLimit < messagesLength) {
+      setDisplayableLimit(displayableMessageLimit + 5)
+    }
+  }, [scrollPosition])
   const isOwner = !!channelData.get('keys').get('sk')
   let usersRegistration = []
   let publicChannelsRegistration = []

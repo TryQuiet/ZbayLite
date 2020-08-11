@@ -26,6 +26,7 @@ export const actionTypes = mirrorKey({
   CLEAR_CURRENT_MODAL_TAB: undefined,
   SET_SPENT_FILTER_VALUE: undefined,
   SET_CHANNEL_MESSAGE: undefined,
+  SET_DISPLAYABLE_LIMIT: undefined,
   SET_CHANNEL_ID: undefined,
   SET_CHANNEL_LOADING: undefined,
   SET_CHANNEL_LOADING_MESSAGE: undefined,
