@@ -200,9 +200,6 @@ const msgTypeToNotification = new Set([
 
 export const findNewMessages = (key, messages, state) => {
   if (messages) {
-    console.log(key)
-    console.log(notificationCenterSelectors.channelFilterById(key)(state))
-    console.log(messages)
     const userFilter = notificationCenterSelectors.userFilterType(state)
     const channelFilter = notificationCenterSelectors.channelFilterById(key)(
       state
@@ -215,18 +212,15 @@ export const findNewMessages = (key, messages, state) => {
     ) {
       return []
     }
-    // console.log(messages)
     // const signerPubKey = identitySelectors.signerPrivKey(state)
     const filteredByTimeAndType = messages.filter(
       msg => msg.createdAt > lastSeen && msgTypeToNotification.has(msg.type)
     )
-    console.log(filteredByTimeAndType)
     if (
       userFilter === notificationFilterType.MENTIONS ||
       channelFilter === notificationFilterType.MENTIONS
     ) {
       const myUser = usersSelectors.myUser(state)
-      console.log('mention')
       return filteredByTimeAndType.filter(msg =>
         msg.message.itemId
           ? msg.message.text
@@ -239,7 +233,6 @@ export const findNewMessages = (key, messages, state) => {
             .includes(`@${myUser.nickname}`)
       )
     }
-    console.log(filteredByTimeAndType)
     return filteredByTimeAndType
   }
   return []

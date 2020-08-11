@@ -174,7 +174,6 @@ export const actions = {
 }
 export const loadContact = address => async (dispatch, getState) => {
   const contact = selectors.contact(address)(getState())
-  console.log(contact)
   dispatch(updateLastSeen({ contact }))
 }
 export const updatePendingMessage = ({ key, id, txid }) => async (
