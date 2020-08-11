@@ -136,10 +136,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
     if (importedChannels) {
       for (const address of Object.keys(importedChannels)) {
         await dispatch(
-          setChannelMessages(
-            importedChannels[address],
-            txns[address]
-          )
+          setChannelMessages(importedChannels[address], txns[address])
         )
       }
     }
@@ -203,23 +200,27 @@ const msgTypeToNotification = new Set([
 
 export const findNewMessages = (key, messages, state) => {
   if (messages) {
+    const userFilter = notificationCenterSelectors.userFilterType(state)
+    const channelFilter = notificationCenterSelectors.channelFilterById(key)(
+      state
+    )
     const lastSeen =
       parseInt(electronStore.get(`lastSeen.${key}`)) || Number.MAX_SAFE_INTEGER
     if (
-      notificationCenterSelectors.userFilterType(state) ===
-      notificationFilterType.NONE
+      userFilter === notificationFilterType.NONE ||
+      channelFilter === notificationFilterType.NONE
     ) {
       return []
     }
+    // const signerPubKey = identitySelectors.signerPrivKey(state)
     const filteredByTimeAndType = messages.filter(
       msg => msg.createdAt > lastSeen && msgTypeToNotification.has(msg.type)
     )
     if (
-      notificationCenterSelectors.userFilterType(state) ===
-      notificationFilterType.MENTIONS
+      userFilter === notificationFilterType.MENTIONS ||
+      channelFilter === notificationFilterType.MENTIONS
     ) {
       const myUser = usersSelectors.myUser(state)
-
       return filteredByTimeAndType.filter(msg =>
         msg.message.itemId
           ? msg.message.text
@@ -308,7 +309,9 @@ const setOutgoingTransactions = (address, messages) => async (
       )
     }
   }
-  const normalMessages = messagesAll.filter(msg => !msg.message.itemId && msg.receiver.publicKey)
+  const normalMessages = messagesAll.filter(
+    msg => !msg.message.itemId && msg.receiver.publicKey
+  )
   const groupedMesssages = R.groupBy(msg => msg.receiver.publicKey)(
     normalMessages
   )
