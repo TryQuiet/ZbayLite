@@ -37,7 +37,7 @@ export const ChannelState = Immutable.Record(
     showInfoMsg: true,
     isSizeCheckingInProgress: false,
     messageSizeStatus: null,
-    displayableMessageLimit: 10
+    displayableMessageLimit: 50
   },
   'ChannelState'
 )
@@ -77,7 +77,7 @@ export const actions = {
 const loadChannel = key => async (dispatch, getState) => {
   try {
     dispatch(setChannelId(key))
-    dispatch(setDisplayableLimit(10))
+    dispatch(setDisplayableLimit(30))
     // Calculate URI on load, that way it won't be outdated, even if someone decides
     // to update channel in vault manually
     const contact = contactsSelectors.contact(key)(getState())

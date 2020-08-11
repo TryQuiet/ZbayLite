@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import Immutable from 'immutable'
 import identitySelectors from './identity'
 import directMssagesQueueSelectors from './directMessagesQueue'
-import zbayMessages from '../../zbay/messages'
+// import zbayMessages from '../../zbay/messages'
 import operationsSelectors from './operations'
 import { operationTypes } from '../handlers/operations'
 import usersSelectors from './users'
@@ -135,24 +135,20 @@ export const directMessages = (address, signerPubKey) =>
     identitySelectors.data,
     usersSelectors.registeredUser(signerPubKey),
     messages(address),
-    vaultMessages(address),
-    (identity, registeredUser, messages, vaultMessages) => {
-      const userData = registeredUser ? registeredUser.toJS() : null
-      const identityAddress = identity.address
-      const identityName = userData ? userData.nickname : identity.name
+    (identity, registeredUser, messages) => {
+      // const userData = registeredUser ? registeredUser.toJS() : null
+      // const identityAddress = identity.address
+      // const identityName = userData ? userData.nickname : identity.name
 
-      const fetchedMessagesToDisplay = messages.map(msg =>
-        zbayMessages.receivedToDisplayableMessage({
-          message: msg,
-          identityAddress,
-          receiver: { replyTo: identityAddress, username: identityName }
-        })
-      )
+      // const fetchedMessagesToDisplay = messages.map(msg =>
+      //   zbayMessages.receivedToDisplayableMessage({
+      //     message: msg,
+      //     identityAddress,
+      //     receiver: { replyTo: identityAddress, username: identityName }
+      //   })
+      // )
 
-      const concatedMessages = fetchedMessagesToDisplay
-        .concat(vaultMessages.values())
-        .sortBy(m => m.get('createdAt'))
-      const merged = mergeIntoOne(concatedMessages)
+      const merged = mergeIntoOne(messages)
       return merged
     }
   )
