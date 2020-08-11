@@ -136,10 +136,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
     if (importedChannels) {
       for (const address of Object.keys(importedChannels)) {
         await dispatch(
-          setChannelMessages(
-            importedChannels[address],
-            txns[address]
-          )
+          setChannelMessages(importedChannels[address], txns[address])
         )
       }
     }
@@ -203,23 +200,33 @@ const msgTypeToNotification = new Set([
 
 export const findNewMessages = (key, messages, state) => {
   if (messages) {
+    console.log(key)
+    console.log(notificationCenterSelectors.channelFilterById(key)(state))
+    console.log(messages)
+    const userFilter = notificationCenterSelectors.userFilterType(state)
+    const channelFilter = notificationCenterSelectors.channelFilterById(key)(
+      state
+    )
     const lastSeen =
       parseInt(electronStore.get(`lastSeen.${key}`)) || Number.MAX_SAFE_INTEGER
     if (
-      notificationCenterSelectors.userFilterType(state) ===
-      notificationFilterType.NONE
+      userFilter === notificationFilterType.NONE ||
+      channelFilter === notificationFilterType.NONE
     ) {
       return []
     }
+    // console.log(messages)
+    // const signerPubKey = identitySelectors.signerPrivKey(state)
     const filteredByTimeAndType = messages.filter(
       msg => msg.createdAt > lastSeen && msgTypeToNotification.has(msg.type)
     )
+    console.log(filteredByTimeAndType)
     if (
-      notificationCenterSelectors.userFilterType(state) ===
-      notificationFilterType.MENTIONS
+      userFilter === notificationFilterType.MENTIONS ||
+      channelFilter === notificationFilterType.MENTIONS
     ) {
       const myUser = usersSelectors.myUser(state)
-
+      console.log('mention')
       return filteredByTimeAndType.filter(msg =>
         msg.message.itemId
           ? msg.message.text
@@ -232,6 +239,7 @@ export const findNewMessages = (key, messages, state) => {
             .includes(`@${myUser.nickname}`)
       )
     }
+    console.log(filteredByTimeAndType)
     return filteredByTimeAndType
   }
   return []
@@ -308,7 +316,9 @@ const setOutgoingTransactions = (address, messages) => async (
       )
     }
   }
-  const normalMessages = messagesAll.filter(msg => !msg.message.itemId && msg.receiver.publicKey)
+  const normalMessages = messagesAll.filter(
+    msg => !msg.message.itemId && msg.receiver.publicKey
+  )
   const groupedMesssages = R.groupBy(msg => msg.receiver.publicKey)(
     normalMessages
   )

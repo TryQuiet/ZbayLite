@@ -28,7 +28,7 @@ export const mapStateToProps = (state, props) => {
     mutedFlag:
       notificationCenter.channelFilterById(
         channelSelectors.data(state)
-          ? channelSelectors.data(state).get('address')
+          ? channelSelectors.data(state).key
           : 'none'
       )(state) === notificationFilterType.MUTE
   }
