@@ -5,7 +5,7 @@ on:
     branches:
       - ZbayLite
 
-# jobs:
+jobs:
 #   build_on_mac:
 #     runs-on: macOS-latest
 #     steps:
