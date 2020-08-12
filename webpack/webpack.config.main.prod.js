@@ -19,6 +19,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.worker\.?js$/,
+        loader: 'worker-loader'
+      },
+      {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
@@ -26,10 +30,6 @@ module.exports = {
       {
         test: /\.node$/,
         loader: 'node-loader'
-      },
-      {
-        test: /\.worker\.(c|m)?js$/i,
-        loader: 'worker-loader'
       }
     ]
   },
