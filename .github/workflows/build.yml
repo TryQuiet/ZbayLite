@@ -36,7 +36,7 @@ jobs:
 #       run: electron-builder -p always --mac
 
   build_on_linux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v1.0.0
       with:
