@@ -47,8 +47,7 @@
       "provider": "s3",
       "bucket": "release.zbay.app",
       "region": "us-east-1"
-    },
-    "extraResources": "zcash/**/*"
+    }
   },
   "homepage": "https://gitlab.rumblefishdev.com/holmes/zbay",
   "@comment version": "To build new version for specific platform, just replace platform in version tag to one of following linux, mac, windows",
@@ -58,7 +57,7 @@
   "scripts": {
     "dist": "export SOURCE_PATH=darwin && export TARGET_PATH=darwin && npm run pullBinaries && npm run build:prod && electron-builder -p always --mac",
     "disttest": "export SOURCE_PATH=darwin && export TARGET_PATH=darwin && npm run pullBinaries && npm run build:prod && electron-builder --mac",
-    "distUbuntu16": "export SOURCE_PATH=linux/ubuntu16 && export TARGET_PATH=linux && npm run pullBinaries && npm run build:prod && electron-builder -p always --linux",
+    "distUbuntu": "npm run build:prod && electron-builder --linux",
     "distUbuntu18": "export SOURCE_PATH=linux/ubuntu18 && export TARGET_PATH=linux && npm run pullBinaries && npm run build:prod && electron-builder -p always --linux",
     "distUbuntu19": "export SOURCE_PATH=linux/ubuntu19 && export TARGET_PATH=linux && npm run pullBinaries && npm run build:prod && electron-builder -p always --linux",
     "distwin": "export SOURCE_PATH=win32 && export TARGET_PATH=win32 && npm run pullBinariesWin && npm run build:prod && electron-builder -p always --win",

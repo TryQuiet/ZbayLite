@@ -5,13 +5,8 @@ const webpack = require('webpack')
 module.exports = {
   mode: 'production',
   target: 'electron-main',
-  entry: [
-    '@babel/polyfill',
-    './src/main/main.js'
-  ],
-  externals: [
-    nodeExternals()
-  ],
+  entry: ['@babel/polyfill', './src/main/main.js'],
+  externals: [nodeExternals()],
   node: {
     __dirname: false,
     __filename: false
@@ -30,14 +25,11 @@ module.exports = {
       },
       {
         test: /\.node$/,
-        use: [
-          {
-            loader: path.resolve('./webpack/loaders/NativeLoader.js'),
-            options: {
-              name: '[name]-[hash].[ext]'
-            }
-          }
-        ]
+        loader: 'node-loader'
+      },
+      {
+        test: /\.worker\.(c|m)?js$/i,
+        loader: 'worker-loader'
       }
     ]
   },

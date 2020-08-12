@@ -331,7 +331,7 @@ const createWindow = () => {
 
 let isUpdatedStatusCheckingStarted = false
 
-const checkForUpdate = win => {
+export const checkForUpdate = win => {
   if (!isUpdatedStatusCheckingStarted) {
     autoUpdater.checkForUpdates()
     autoUpdater.on('checking-for-update', () => {
@@ -638,13 +638,13 @@ app.on('ready', async () => {
         checkForPayloadOnStartup(payload)
       }
     }
-
-    if (!isDev) {
-      checkForUpdate(mainWindow)
-      setInterval(() => {
-        checkForUpdate(mainWindow)
-      }, 15 * 60000)
-    }
+    // disable update
+    // if (!isDev) {
+    //   checkForUpdate(mainWindow)
+    //   setInterval(() => {
+    //     checkForUpdate(mainWindow)
+    //   }, 15 * 60000)
+    // }
   })
 
   ipcMain.on('proceed-update', (event, arg) => {
