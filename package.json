@@ -2,7 +2,6 @@
   "name": "zbay",
   "productName": "Zbay-lite",
   "build": {
-    "afterSign": "scripts/notarize.js",
     "productName": "Zbay-lite",
     "appId": "Zbay",
     "protocols": {
@@ -12,17 +11,12 @@
       ]
     },
     "mac": {
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist",
       "category": "public.app-category.social-networking",
       "files": [
         "dist/**/*",
         "build/icon.*",
         "package.json"
-      ],
-      "extraResources": "zcash/**/*"
+      ]
     },
     "win": {
       "target": "NSIS",
@@ -53,7 +47,7 @@
   },
   "homepage": "https://gitlab.rumblefishdev.com/holmes/zbay",
   "@comment version": "To build new version for specific platform, just replace platform in version tag to one of following linux, mac, windows",
-  "version": "1.0.61-dev-mac-2",
+  "version": "0.0.1-zbay-lite-beta",
   "description": "Distributed goods and bulletin board",
   "main": "dist/main.js",
   "scripts": {
