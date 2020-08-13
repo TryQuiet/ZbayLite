@@ -21,7 +21,7 @@ jobs:
           components: clippy
           override: true
       - name: install rustfmt
-        run: rustup component add rustfmt --toolchain stable-x86_64-apple-darwin
+        run: rustup component add rustfmt --toolchain nightly-x86_64-apple-darwin
       - name: install dependencies
         run: npm install
       - name: install neon
