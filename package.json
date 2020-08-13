@@ -2,7 +2,6 @@
   "name": "zbay",
   "productName": "Zbay-lite",
   "build": {
-    "afterSign": "scripts/notarize.js",
     "productName": "Zbay-lite",
     "appId": "Zbay",
     "protocols": {
@@ -12,17 +11,12 @@
       ]
     },
     "mac": {
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist",
       "category": "public.app-category.social-networking",
       "files": [
         "dist/**/*",
         "build/icon.*",
         "package.json"
-      ],
-      "extraResources": "zcash/**/*"
+      ]
     },
     "win": {
       "target": "NSIS",
@@ -44,21 +38,22 @@
       ]
     },
     "publish": {
-      "provider": "s3",
-      "bucket": "release.zbay.app",
-      "region": "us-east-1"
+      "provider": "github",
+      "repo": "ZbayLite",
+      "owner": "NorbertBodziony",
+      "releaseType": "draft"
     },
-    "extraResources": "zcash/**/*"
+    "extraResources": "worker/**/*"
   },
   "homepage": "https://gitlab.rumblefishdev.com/holmes/zbay",
   "@comment version": "To build new version for specific platform, just replace platform in version tag to one of following linux, mac, windows",
-  "version": "1.0.61-dev-mac-2",
+  "version": "0.0.1-zbay-lite-beta",
   "description": "Distributed goods and bulletin board",
   "main": "dist/main.js",
   "scripts": {
     "dist": "export SOURCE_PATH=darwin && export TARGET_PATH=darwin && npm run pullBinaries && npm run build:prod && electron-builder -p always --mac",
     "disttest": "export SOURCE_PATH=darwin && export TARGET_PATH=darwin && npm run pullBinaries && npm run build:prod && electron-builder --mac",
-    "distUbuntu16": "export SOURCE_PATH=linux/ubuntu16 && export TARGET_PATH=linux && npm run pullBinaries && npm run build:prod && electron-builder -p always --linux",
+    "distUbuntu": "npm run build:prod && electron-builder --linux",
     "distUbuntu18": "export SOURCE_PATH=linux/ubuntu18 && export TARGET_PATH=linux && npm run pullBinaries && npm run build:prod && electron-builder -p always --linux",
     "distUbuntu19": "export SOURCE_PATH=linux/ubuntu19 && export TARGET_PATH=linux && npm run pullBinaries && npm run build:prod && electron-builder -p always --linux",
     "distwin": "export SOURCE_PATH=win32 && export TARGET_PATH=win32 && npm run pullBinariesWin && npm run build:prod && electron-builder -p always --win",
@@ -81,8 +76,9 @@
     "build-storybook": "build-storybook",
     "mainnet": "docker-compose up znode-mainnet",
     "testnet": "docker-compose up znode-testnet",
-    "neon": "electron-build-env neon build --release",
-    "neon-rebuild": "rm native/index.node && rm -rf native/target && rm native/Cargo.lock && electron-build-env neon build --release"
+    "neon": "electron-build-env neon build --release && npm run copyBinary",
+    "copyBinary": "cp native/index.node worker",
+    "neon-rebuild": "rm native/index.node && rm -rf native/target && rm native/Cargo.lock && npm run neon"
   },
   "author": {
     "name": "Bartlomiej Lisiecki/Norbert Bodziony",
@@ -232,6 +228,7 @@
     "sanitize-html": "^1.27.0",
     "touch": "^3.1.0",
     "typeface-roboto": "0.0.54",
-    "yup": "^0.27.0"
+    "yup": "^0.27.0",
+    "worker-loader": "^3.0.1"
   }
 }
