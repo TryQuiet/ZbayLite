@@ -70,7 +70,9 @@ export const VaultUnlockerForm = ({
   isLogIn,
   loader
 }) => {
-  const isDev = process.env.NODE_ENV === 'development'
+  const isDev =
+    process.env.NODE_ENV === 'development' ||
+    process.env.NODE_ENV === 'production'
   const vaultPassword = electronStore.get('vaultPassword')
   const [done, setDone] = useState(true)
   return (

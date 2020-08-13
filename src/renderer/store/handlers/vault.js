@@ -61,10 +61,8 @@ const createVaultEpic = () => async (dispatch, getState) => {
         address: identity.address
       }
     })
-    const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
-    if (isDev) {
-      await dispatch(identityHandlers.epics.setIdentity(identity))
-    }
+
+    await dispatch(identityHandlers.epics.setIdentity(identity))
     await dispatch(identityHandlers.epics.loadIdentity(identity))
     await dispatch(setVaultStatus(true))
     ipcRenderer.send('vault-created')
