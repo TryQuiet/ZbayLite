@@ -825,9 +825,7 @@ app.on('ready', async () => {
     }
     if (!running) {
       running = true
-      if (!isDev) {
-        createZcashNode(mainWindow, torUrl)
-      }
+      console.log(torUrl)
     }
   })
 })
