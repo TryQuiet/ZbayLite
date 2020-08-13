@@ -17,9 +17,9 @@ jobs:
           node-version: "12"
       - uses: actions-rs/toolchain@v1
         with:
-        toolchain: nightly
-        components: clippy
-        override: true
+          toolchain: nightly
+          components: clippy
+          override: true
       - name: install dependencies
         run: npm install
       - name: install neon
