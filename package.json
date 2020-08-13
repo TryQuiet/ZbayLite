@@ -48,7 +48,8 @@
       "repo": "ZbayLite",
       "owner": "NorbertBodziony",
       "releaseType": "draft"
-    }
+    },
+    "extraResources": "worker/**/*"
   },
   "homepage": "https://gitlab.rumblefishdev.com/holmes/zbay",
   "@comment version": "To build new version for specific platform, just replace platform in version tag to one of following linux, mac, windows",
@@ -81,8 +82,9 @@
     "build-storybook": "build-storybook",
     "mainnet": "docker-compose up znode-mainnet",
     "testnet": "docker-compose up znode-testnet",
-    "neon": "electron-build-env neon build --release",
-    "neon-rebuild": "rm native/index.node && rm -rf native/target && rm native/Cargo.lock && electron-build-env neon build --release"
+    "neon": "electron-build-env neon build --release && npm run copyBinary",
+    "copyBinary": "cp native/index.node worker",
+    "neon-rebuild": "rm native/index.node && rm -rf native/target && rm native/Cargo.lock && npm run neon"
   },
   "author": {
     "name": "Bartlomiej Lisiecki/Norbert Bodziony",

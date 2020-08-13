@@ -1,4 +1,4 @@
-const native = require('../../../native/index.node')
+const native = require('./index.node')
 class RPC {
   constructor (url = 'https://lightwalletd.zecwallet.co:1443') {
     const result = native.litelib_initialize_existing(url)

@@ -1,19 +1,15 @@
-// import { Worker } from 'worker_threads'
-/* eslint-disable */
-import { Worker as NodeWorker } from 'worker_threads'
+// /* eslint-disable */
+import { Worker } from 'worker_threads'
 import path from 'path'
-import Worker from './cli.worker.js'
-class MockWorker {
-  constructor (a) {
-    return new NodeWorker(
-      process.env.NODE_ENV === 'development'
-        ? path.resolve(__dirname, `./${a}`)
-        : `./${a}`
-    )
-  }
-}
-global.Worker = MockWorker
-const worker = new Worker()
+
+const isDev = process.env.NODE_ENV === 'development'
+const pathDev = path.join.apply(null, [process.cwd(), 'worker/cli.worker.js'])
+const pathProd = path.join.apply(null, [
+  process.resourcesPath,
+  'worker/cli.worker.js'
+])
+
+const worker = new Worker(isDev ? pathDev : pathProd)
 var mapping = new Map()
 export default class Client {
   constructor () {
