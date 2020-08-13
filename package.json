@@ -40,7 +40,7 @@
     "publish": {
       "provider": "github",
       "repo": "ZbayLite",
-      "owner": "NorbertBodziony",
+      "owner": "ZbayApp",
       "releaseType": "draft"
     },
     "extraResources": "worker/**/*"
