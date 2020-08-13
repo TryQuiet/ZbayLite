@@ -15,8 +15,11 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: "12"
+      - name: install rust
+        run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
       - name: install dependencies
         run: npm install
+
       - name: install neon
         run: npm install --global neon-cli
       - name: build  binary
