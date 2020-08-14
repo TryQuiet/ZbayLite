@@ -14,7 +14,10 @@ export const mapStateToProps = state => ({
   isLogIn: vaultSelectors.isLogIn(state),
   locked: vaultSelectors.locked(state),
   loader: identitySelectors.loader(state),
+  currentBlock: nodeSelectors.currentBlock(state),
+  latestBlock: nodeSelectors.latestBlock(state),
   nodeConnected: nodeSelectors.isConnected(state),
+  isRescanning: nodeSelectors.isRescanning(state),
   exists: vaultSelectors.exists(state)
 })
 

@@ -87,6 +87,7 @@ export const actionTypes = mirrorKey({
   SET_BOOTSTRAPPING: undefined,
   SET_BOOTSTRAPPING_MESSAGE: undefined,
   SET_FETCHING_PART: undefined,
+  SET_IS_RESCANNING: undefined,
   SET_FETCHING_SIZE_LEFT: undefined,
   SET_FETCHING_STATUS: undefined,
   SET_FETCHING_SPEED: undefined,

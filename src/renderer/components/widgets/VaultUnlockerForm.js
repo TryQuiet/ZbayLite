@@ -68,6 +68,9 @@ export const VaultUnlockerForm = ({
   nodeConnected,
   exists,
   isLogIn,
+  latestBlock,
+  currentBlock,
+  isRescanning,
   loader
 }) => {
   const isDev =
@@ -133,23 +136,27 @@ export const VaultUnlockerForm = ({
                 margin='normal'
                 text={vaultPassword ? 'Sign in' : 'Login'}
                 fullWidth
-                inProgress={!done}
+                inProgress={!done || isRescanning}
               />
             </Grid>
-            {loader.loading && (
+            {(loader.loading || isRescanning) && (
               <Grid item container justify='center' alignItems='center'>
                 <Typography variant='body2' className={classes.status}>
-                  {`${loader.message}`}
+                  {isRescanning
+                    ? `Syncing ${currentBlock.toString()} / ${latestBlock.toString()}`
+                    : `${loader.message}`}
                 </Typography>
               </Grid>
             )}
-            {locked && done && (
+            {locked && done && !isRescanning && (
               <Grid item className={classes.torDiv}>
                 <Tor />
               </Grid>
             )}
           </Grid>
-          {nodeConnected && isLogIn && <Redirect to='/main/channel/general' />}
+          {nodeConnected && isLogIn && !isRescanning && (
+            <Redirect to='/main/channel/general' />
+          )}
         </Form>
       )}
     </Formik>

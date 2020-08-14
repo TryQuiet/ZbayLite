@@ -20,7 +20,8 @@ export const NodeState = Immutable.Record(
     errors: '',
     bootstrapLoader: LoaderState(),
     fetchingStatus: FetchingState(),
-    startedAt: null
+    startedAt: null,
+    isRescanning: false
   },
   'NodeState'
 )
@@ -44,6 +45,7 @@ const setBootstrappingMessage = createAction(
 )
 
 const setFetchingPart = createAction(actionTypes.SET_FETCHING_PART)
+const setIsRescanning = createAction(actionTypes.SET_IS_RESCANNING)
 const setFetchingSizeLeft = createAction(actionTypes.SET_FETCHING_SIZE_LEFT)
 const setFetchingStatus = createAction(actionTypes.SET_FETCHING_STATUS)
 const setFetchingSpeed = createAction(actionTypes.SET_FETCHING_SPEED)
@@ -75,7 +77,8 @@ const actions = {
   setStatus,
   setGuideStatus,
   setNextSlide,
-  setPrevSlide
+  setPrevSlide,
+  setIsRescanning
 }
 
 export const startRescanningMonitor = () => async (dispatch, getState) => {
@@ -116,7 +119,9 @@ const getStatus = () => async (dispatch, getState) => {
     setTimeout(async () => {
       const syncStatus = await client.syncStatus()
       if (syncStatus.syncing === 'false') {
+        console.log('save')
         client.save()
+        await dispatch(setIsRescanning(false))
       }
     }, 3000)
     dispatch(
@@ -158,6 +163,8 @@ export const reducer = handleActions(
       state.set('errors', errors),
     [setBootstrapping]: (state, { payload: bootstrapping }) =>
       state.setIn(['bootstrapLoader', 'loading'], bootstrapping),
+    [setIsRescanning]: (state, { payload: isRescanning }) =>
+      state.set('isRescanning', isRescanning),
     [setBootstrappingMessage]: (state, { payload: message }) =>
       state.setIn(['bootstrapLoader', 'message'], message),
     [setFetchingPart]: (state, { payload: message }) =>
