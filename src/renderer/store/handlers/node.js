@@ -109,10 +109,16 @@ const getStatus = () => async (dispatch, getState) => {
     if (info.latest_block_height > height && status !== 'syncing') {
       dispatch(setStatus({ status: 'syncing' }))
       client.sync()
-      client.save()
     } else {
       dispatch(setStatus({ status: 'healthy' }))
     }
+    // Check if sync give time cli to start rescan
+    setTimeout(async () => {
+      const syncStatus = await client.syncStatus()
+      if (syncStatus.syncing === 'false') {
+        client.save()
+      }
+    }, 3000)
     dispatch(
       setStatus({
         latestBlock: new BigNumber(info.latest_block_height),
