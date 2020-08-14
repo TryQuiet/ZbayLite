@@ -214,7 +214,7 @@ export const fetchUsers = (address, messages) => async (dispatch, getState) => {
       ) {
         minfee = parseFloat(msg.message.minFee)
       }
-      if (!msg.spent.gte(minfee) || msg.type !== messageType.USER) {
+      if (msg.type !== messageType.USER || !msg.spent.gte(minfee)) {
         continue
       }
       const user = ReceivedUser(msg)

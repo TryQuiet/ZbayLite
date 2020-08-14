@@ -85,7 +85,7 @@ export const ItemTransferMessage = ({
   rateUsd,
   openSentModal,
   currentBlock,
-  isRegisteredUsername
+  isRegisteredNickname
 }) => {
   const [actionsOpen, setActionsOpen] = React.useState(false)
   const usdAmount = new BigNumber(message.spent)
@@ -128,7 +128,7 @@ export const ItemTransferMessage = ({
         <Typography variant='body2' className={classes.data}>
           {message.fromYou
             ? `You sent ${
-              message.offerOwner || isRegisteredUsername
+              message.offerOwner || isRegisteredNickname
                 ? `@${message.offerOwner || message.receiver.username}`
                 : message.receiver.replyTo
             } $${usdAmount} (${parseFloat(message.spent.toString()).toFixed(
@@ -161,7 +161,7 @@ ItemTransferMessage.propTypes = {
   currentBlock: PropTypes.number.isRequired,
   openSentModal: PropTypes.func.isRequired,
   message: PropTypes.instanceOf(_DisplayableMessage).isRequired,
-  isRegisteredUsername: PropTypes.bool
+  isRegisteredNickname: PropTypes.bool
 }
 
 export default R.compose(React.memo, withStyles(styles))(ItemTransferMessage)
