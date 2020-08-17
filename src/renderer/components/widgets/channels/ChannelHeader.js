@@ -123,7 +123,8 @@ export const ChannelHeader = ({
   mutedFlag,
   unmute,
   isRegisteredUsername,
-  userAddress
+  userAddress,
+  name
 }) => {
   const debounce = (fn, ms) => {
     let timer
@@ -142,6 +143,9 @@ export const ChannelHeader = ({
   React.useEffect(() => {
     setWrapperWidth(window.innerWidth - 300)
   })
+  React.useEffect(() => {
+    setTab(0)
+  }, [name])
   React.useEffect(() => {
     const handleResize = debounce(function handleResize () {
       setWrapperWidth(window.innerWidth - 300)

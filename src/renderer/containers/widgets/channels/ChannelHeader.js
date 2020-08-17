@@ -20,9 +20,10 @@ export const mapStateToProps = (state, props) => {
       name: contact.get('username'),
       address: props.contactId
     }),
+    name: contact.get('username'),
     userAddress: identitySelectors.address(state),
     members: channelSelectors.channelParticipiants(state),
-    showAdSwitch: !!contact.get('messages').toList()
+    showAdSwitch: !!contactsSelectors.messages(props.contactId)(state)
       .find(msg => msg.type === messageType.AD),
     mutedFlag:
       notificationCenter.channelFilterById(
