@@ -20,7 +20,6 @@ export const mapStateToProps = (state, props) => {
       name: contact.get('username'),
       address: props.contactId
     }),
-    contact,
     userAddress: identitySelectors.address(state),
     members: channelSelectors.channelParticipiants(state),
     showAdSwitch: !!contact.get('messages').toList()

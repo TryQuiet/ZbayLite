@@ -123,8 +123,7 @@ export const ChannelHeader = ({
   mutedFlag,
   unmute,
   isRegisteredUsername,
-  userAddress,
-  contact
+  userAddress
 }) => {
   const debounce = (fn, ms) => {
     let timer
