@@ -281,7 +281,8 @@ ChannelHeader.propTypes = {
   members: PropTypes.instanceOf(Set),
   updateShowInfoMsg: PropTypes.func.isRequired,
   users: PropTypes.instanceOf(Immutable.Map).isRequired,
-  isRegisteredUsername: PropTypes.bool
+  isRegisteredUsername: PropTypes.bool,
+  name: PropTypes.string.isRequired
 }
 
 ChannelHeader.defaultProps = {
