@@ -212,9 +212,13 @@ export const findNewMessages = (key, messages, state) => {
     ) {
       return []
     }
-    // const signerPubKey = identitySelectors.signerPrivKey(state)
+    const signerPubKey = identitySelectors.signerPrivKey(state)
+
     const filteredByTimeAndType = messages.filter(
-      msg => msg.createdAt > lastSeen && msgTypeToNotification.has(msg.type)
+      msg =>
+        msg.publicKey !== signerPubKey &&
+        msg.createdAt > lastSeen &&
+        msgTypeToNotification.has(msg.type)
     )
     if (
       userFilter === notificationFilterType.MENTIONS ||
