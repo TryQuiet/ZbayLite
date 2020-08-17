@@ -257,15 +257,20 @@ const sendChannelSettingsMessage = ({
     identityAddress
   })
   try {
-    await client.sendTransaction(transfer)
+    const txid = await client.sendTransaction(transfer)
+    if (txid.error) {
+      throw new Error(txid.error)
+    }
+    return 1
   } catch (err) {
-    notificationsHandlers.actions.enqueueSnackbar(
-      dispatch(
+    dispatch(
+      notificationsHandlers.actions.enqueueSnackbar(
         errorNotification({
           message: "Couldn't create channel, please check node connection."
         })
       )
     )
+    return -1
   }
 }
 

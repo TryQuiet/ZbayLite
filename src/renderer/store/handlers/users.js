@@ -171,15 +171,10 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
   })
   dispatch(actionCreators.closeModal('accountSettingsModal')())
   try {
-    await client.sendTransaction(transfer)
-    // await subscribeUsernameTxn({
-    //   opId: id,
-    //   callback: error => {
-    //     if (error !== null) {
-    //       dispatch(actionCreators.openModal('failedUsernameRegister')())
-    //     }
-    //   }
-    // })
+    const txid = await client.sendTransaction(transfer)
+    if (txid.error) {
+      throw new Error(txid.error)
+    }
   } catch (err) {
     console.log(err)
     dispatch(actionCreators.openModal('failedUsernameRegister')())

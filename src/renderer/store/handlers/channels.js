@@ -100,9 +100,14 @@ const createChannel = (values, formActions, setStep) => async (
         payload: `Creating channel ${address}`
       })
     )
-    await dispatch(
+    const result = await dispatch(
       channelHandlers.epics.sendChannelSettingsMessage({ address: address })
     )
+    if (result === -1) {
+      setStep(0)
+      dispatch(closeModal())
+      return
+    }
     const importedChannels = electronStore.get(`importedChannels`) || {}
     const viewingKey = await client.getViewingKey(address)
     electronStore.set('importedChannels', {
