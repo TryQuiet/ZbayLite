@@ -9,6 +9,8 @@ import nodeSelectors from '../../store/selectors/node'
 import identitySelectors from '../../store/selectors/identity'
 import VaultUnlockerFormComponent from '../../components/widgets/VaultUnlockerForm'
 import { actionCreators } from '../../store/handlers/modals'
+import electronStore from '../../../shared/electronStore'
+import RegistrationGuide from '../../containers/windows/RegistrationGuide'
 // import { useInterval } from '../hooks'
 
 export const mapStateToProps = state => ({
@@ -19,7 +21,8 @@ export const mapStateToProps = state => ({
   latestBlock: nodeSelectors.latestBlock(state),
   nodeConnected: nodeSelectors.isConnected(state),
   isRescanning: nodeSelectors.isRescanning(state),
-  exists: vaultSelectors.exists(state)
+  exists: vaultSelectors.exists(state),
+  guideStatus: nodeSelectors.guideStatus(state)
 })
 
 export const mapDispatchToProps = dispatch =>
@@ -39,9 +42,11 @@ export const VaultUnlockerForm = ({
   exists,
   loader,
   openModal,
+  guideStatus,
   ...props
 }) => {
-  return (
+  const isGuideCompleted = electronStore.get('storyStatus') || guideStatus
+  return isGuideCompleted ? (
     <VaultUnlockerFormComponent
       locked={locked}
       loader={loader}
@@ -51,7 +56,7 @@ export const VaultUnlockerForm = ({
       isLogIn={isLogIn}
       {...props}
     />
-  )
+  ) : <RegistrationGuide />
 }
 export default connect(
   mapStateToProps,
