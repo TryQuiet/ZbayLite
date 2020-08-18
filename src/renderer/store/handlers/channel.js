@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { createAction, handleActions } from 'redux-actions'
 import crypto from 'crypto'
 import * as R from 'ramda'
+import { remote } from 'electron'
 import { DateTime } from 'luxon'
 
 import history from '../../../shared/history'
@@ -81,6 +82,8 @@ const loadChannel = key => async (dispatch, getState) => {
     // Calculate URI on load, that way it won't be outdated, even if someone decides
     // to update channel in vault manually
     const contact = contactsSelectors.contact(key)(getState())
+    const unread = contact.newMessages.size
+    remote.app.badgeCount = remote.app.badgeCount - unread
     const ivk = electronStore.get(
       `defaultChannels.${contact.get('address')}.keys.ivk`
     )
@@ -96,6 +99,7 @@ const loadChannel = key => async (dispatch, getState) => {
       parseInt(DateTime.utc().toSeconds()).toString()
     )
     dispatch(setAddress(contact.address))
+
     dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: key }))
     // await dispatch(clearNewMessages())
     // await dispatch(updateLastSeen())
