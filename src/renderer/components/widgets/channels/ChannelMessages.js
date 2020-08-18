@@ -15,7 +15,6 @@ import ChannelAdMessage from '../../../containers/widgets/channels/ListingMessag
 import MessagesDivider from '../MessagesDivider'
 import UserRegisteredMessage from './UserRegisteredMessage'
 import ChannelRegisteredMessage from './ChannelRegisteredMessage'
-import LoadingMessage from './LoadingMessage'
 
 const styles = theme => ({
   list: {
@@ -121,7 +120,6 @@ export const ChannelMessages = ({
         .sortBy(o => o.createdAt)
     )
   }
-  const showLoader = !isInitialLoadFinished && messages.size === 0
   return (
     <Scrollbars
       ref={getScrollbarRef}
@@ -137,13 +135,12 @@ export const ChannelMessages = ({
         className={classes.list}
         style={{ marginTop: offset }}
       >
-        {isOwner && !showLoader && (
+        {isOwner && (
           <WelcomeMessage message={welcomeMessages['main']} />
         )}
         {/* {isOffer && !showLoader && (
           <WelcomeMessage message={welcomeMessages['offer'](tag, username)} />
         )} */}
-        {showLoader && <LoadingMessage />}
         {Array.from(groupedMessages).map(args => {
           const today = DateTime.utc()
           const groupName = DateTime.fromSeconds(args[0]).toFormat(
