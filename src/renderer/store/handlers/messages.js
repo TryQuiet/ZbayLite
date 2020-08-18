@@ -212,7 +212,7 @@ export const findNewMessages = (key, messages, state) => {
     ) {
       return []
     }
-    const signerPubKey = identitySelectors.signerPrivKey(state)
+    const signerPubKey = identitySelectors.signerPubKey(state)
 
     const filteredByTimeAndType = messages.filter(
       msg =>
