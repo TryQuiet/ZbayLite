@@ -14,10 +14,10 @@ import nodeSelector from '../../../store/selectors/node'
 import appSelectors from '../../../store/selectors/app'
 import publicChannelsSelector from '../../../store/selectors/publicChannels'
 import { messageType } from '../../../../shared/static'
-// import channels from '../../../zcash/channels'
+import zcashChannels from '../../../zcash/channels'
 import channelHandlers from '../../../store/handlers/channel'
 
-export const mapStateToProps = (state, { signerPubKey }) => {
+export const mapStateToProps = (state, { signerPubKey, network }) => {
   const qMessages = queueMessages.queue(state)
   const qDmMessages = dmQueueMessages.queue(state)
   const contactId = channelSelectors.id(state)
@@ -49,13 +49,13 @@ export const mapDispatchToProps = (dispatch, ownProps) =>
 export const ChannelMessages = ({
   messages,
   tab,
+  network,
   contactId,
   channelId,
   contentRect,
   triggerScroll,
   channelData,
   users,
-  network,
   publicChannels,
   onLinkedChannel,
   isInitialLoadFinished,
@@ -82,19 +82,18 @@ export const ChannelMessages = ({
     }
   }, [scrollPosition])
   const isOwner = !!channelData.get('keys').get('sk')
+  const oldestMessage = messages ? messages.last() : null
   let usersRegistration = []
   let publicChannelsRegistration = []
-  // if (channelData.get('address') === channels.general[network].address) {
-  //   usersRegistration = Array.from(users.values())
-  //   publicChannelsRegistration = Array.from(
-  //     Object.values(publicChannels.toJS())
-  //   )
-  //   for (const ch of publicChannelsRegistration) {
-  //     delete Object.assign(ch, { createdAt: parseInt(ch['timestamp']) })[
-  //       'timestamp'
-  //     ]
-  //   }
-  // }
+  if (channelId === zcashChannels.general[network].address) {
+    usersRegistration = Array.from(users.values()).filter(msg => msg.createdAt >= oldestMessage.createdAt)
+    publicChannelsRegistration = Array.from(
+      Object.values(publicChannels.toJS())
+    ).filter(msg => msg.timestamp >= oldestMessage.createdAt)
+    for (const ch of publicChannelsRegistration) {
+      delete Object.assign(ch, { createdAt: parseInt(ch['timestamp']) })['timestamp']
+    }
+  }
   return (
     <ChannelMessagesComponent
       scrollPosition={scrollPosition}

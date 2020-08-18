@@ -2,7 +2,6 @@ import { createSelector } from 'reselect'
 import Immutable from 'immutable'
 import identitySelectors from './identity'
 import directMssagesQueueSelectors from './directMessagesQueue'
-// import zbayMessages from '../../zbay/messages'
 import operationsSelectors from './operations'
 import { operationTypes } from '../handlers/operations'
 import usersSelectors from './users'
@@ -99,6 +98,7 @@ const messages = address =>
       return msgs.slice(0, limit)
     }
   )
+
 const allMessages = createSelector(contacts, c =>
   c.reduce((acc, t) => acc.merge(t.messages), Immutable.Map())
 )
