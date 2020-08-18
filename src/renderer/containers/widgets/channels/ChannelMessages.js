@@ -12,6 +12,7 @@ import userSelector from '../../../store/selectors/users'
 import contactsSelectors from '../../../store/selectors/contacts'
 import nodeSelector from '../../../store/selectors/node'
 import appSelectors from '../../../store/selectors/app'
+import ownedChannelsSelectors from '../../../store/selectors/ownedChannels'
 import publicChannelsSelector from '../../../store/selectors/publicChannels'
 import { messageType } from '../../../../shared/static'
 import zcashChannels from '../../../zcash/channels'
@@ -31,6 +32,7 @@ export const mapStateToProps = (state, { signerPubKey, network }) => {
     messagesLength: contactsSelectors.messagesLength(contactId)(state),
     displayableMessageLimit: channelSelectors.displayableMessageLimit(state),
     channelId: channelSelectors.channelId(state),
+    isOwner: ownedChannelsSelectors.isOwner(state),
     users: userSelector.users(state),
     loader: channelSelectors.loader(state),
     publicChannels: publicChannelsSelector.publicChannels(state),
@@ -62,7 +64,8 @@ export const ChannelMessages = ({
   loader,
   messagesLength,
   displayableMessageLimit,
-  setDisplayableLimit
+  setDisplayableLimit,
+  isOwner
 }) => {
   const [scrollPosition, setScrollPosition] = React.useState(-1)
   // console.log(messagesLength)
@@ -81,7 +84,6 @@ export const ChannelMessages = ({
       setDisplayableLimit(displayableMessageLimit + 5)
     }
   }, [scrollPosition])
-  const isOwner = !!channelData.get('keys').get('sk')
   const oldestMessage = messages ? messages.last() : null
   let usersRegistration = []
   let publicChannelsRegistration = []

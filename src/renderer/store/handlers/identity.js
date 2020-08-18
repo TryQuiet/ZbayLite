@@ -22,6 +22,7 @@ import txnTimestampsSelector from '../selectors/txnTimestamps'
 import coordinatorHandlers from './coordinator'
 // import offersHandlers from './offers'
 import whitelistHandlers from './whitelist'
+import ownedChannelsHandlers from './ownedChannels'
 import txnTimestampsHandlers from './txnTimestamps'
 import logsHandlers from '../../store/handlers/logs'
 // import vaultHandlers from './vault'
@@ -354,6 +355,7 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     }
     dispatch(setLoadingMessage('Fetching balance and loading channels'))
     await dispatch(initAddreses())
+    dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
     dispatch(ratesHandlers.epics.setInitialPrice())
     await dispatch(nodeHandlers.epics.getStatus())
     await dispatch(fetchBalance())
