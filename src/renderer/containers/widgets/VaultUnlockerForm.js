@@ -8,6 +8,7 @@ import vaultSelectors from '../../store/selectors/vault'
 import nodeSelectors from '../../store/selectors/node'
 import identitySelectors from '../../store/selectors/identity'
 import VaultUnlockerFormComponent from '../../components/widgets/VaultUnlockerForm'
+import { actionCreators } from '../../store/handlers/modals'
 // import { useInterval } from '../hooks'
 
 export const mapStateToProps = state => ({
@@ -25,7 +26,8 @@ export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       onSubmit: vaultHandlers.epics.unlockVault,
-      getStatus: nodeHandlers.epics.getStatus
+      getStatus: nodeHandlers.epics.getStatus,
+      openModal: actionCreators.openModal('lightWalletSecurityModal')
     },
     dispatch
   )
@@ -36,6 +38,7 @@ export const VaultUnlockerForm = ({
   isLogIn,
   exists,
   loader,
+  openModal,
   ...props
 }) => {
   return (
@@ -43,6 +46,7 @@ export const VaultUnlockerForm = ({
       locked={locked}
       loader={loader}
       exists={exists}
+      openModal={openModal}
       nodeConnected={nodeConnected}
       isLogIn={isLogIn}
       {...props}

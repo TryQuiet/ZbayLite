@@ -14,7 +14,7 @@ import Icon from '../ui/Icon'
 import LoadingButton from '../ui/LoadingButton'
 
 import icon from '../../static/images/zcash/logo-lockup--circle.svg'
-import Tor from '../../containers/windows/Tor'
+// import Tor from '../../containers/windows/Tor'
 import electronStore from '../../../shared/electronStore'
 
 const styles = theme => ({
@@ -29,15 +29,18 @@ const styles = theme => ({
     height: 67
   },
   logoContainer: {
-    height: 167
+    height: 167,
+    marginBottom: 40
   },
   passwordField: {
     width: 286
   },
   title: {
     textAlign: 'center',
-    width: '100%',
-    fontSize: 24,
+    width: 456,
+    fontSize: 14,
+    color: theme.palette.colors.black30,
+    lineHeight: '20px',
     height: 36,
     marginBottom: 16
   },
@@ -53,6 +56,9 @@ const styles = theme => ({
   },
   rootBar: {
     width: 250
+  },
+  moreOptionsButton: {
+    color: theme.palette.colors.lushSky
   }
 })
 
@@ -71,7 +77,8 @@ export const VaultUnlockerForm = ({
   latestBlock,
   currentBlock,
   isRescanning,
-  loader
+  loader,
+  openModal
 }) => {
   const isDev =
     process.env.NODE_ENV === 'development' ||
@@ -113,7 +120,7 @@ export const VaultUnlockerForm = ({
                 variant='body1'
                 gutterBottom
               >
-                {vaultPassword ? 'Welcome Back' : 'Log In'}
+                {`We're building Zbay because we want a patch of online life that's controlled by the people of the Internet.`}
               </Typography>
             </Grid>
             {((!vaultPassword && !isDev) ||
@@ -134,10 +141,17 @@ export const VaultUnlockerForm = ({
                 size='large'
                 color='primary'
                 margin='normal'
-                text={vaultPassword ? 'Sign in' : 'Login'}
+                text={' Connect now'}
                 fullWidth
                 inProgress={!done || isRescanning}
               />
+            </Grid>
+            <Grid container item justify='center'>
+              <Typography
+                variant='body'
+                className={classes.moreOptionsButton}
+                onClick={() => openModal()}
+              >More options</Typography>
             </Grid>
             {(loader.loading || isRescanning) && (
               <Grid item container justify='center' alignItems='center'>
@@ -148,11 +162,11 @@ export const VaultUnlockerForm = ({
                 </Typography>
               </Grid>
             )}
-            {locked && done && !isRescanning && (
+            {/* {locked && done && !isRescanning && (
               <Grid item className={classes.torDiv}>
                 <Tor />
               </Grid>
-            )}
+            )} */}
           </Grid>
           {nodeConnected && isLogIn && !isRescanning && (
             <Redirect to='/main/channel/general' />
