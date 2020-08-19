@@ -74,10 +74,10 @@ const createVaultEpic = () => async (dispatch, getState) => {
       identityHandlers.epics.createIdentity({ name: randomBytes })
     )
     console.log('identity', identity)
+    await dispatch(nodeHandlers.actions.setIsRescanning(true))
 
     await dispatch(identityHandlers.epics.setIdentity(identity))
     await dispatch(identityHandlers.epics.loadIdentity(identity))
-    await dispatch(nodeHandlers.actions.setIsRescanning(true))
     await dispatch(setVaultStatus(true))
     ipcRenderer.send('vault-created')
     try {
