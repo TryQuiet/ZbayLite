@@ -10,6 +10,7 @@ import store from './store'
 import Index from './containers/windows/Index'
 import Main from './containers/windows/Main'
 import Vault from './containers/windows/Vault'
+import RegistrationGuide from './containers/windows/RegistrationGuide'
 import Loading from './containers//windows/Loading'
 import Notifier from './containers/ui/Notifier'
 import ErrorModal from './containers/ui/ErrorModal'
@@ -58,6 +59,7 @@ export default () => {
             <SendFundsModal />
             <ChannelSettingsModal />
             <PublishChannelModal />
+            <RegistrationGuide />
             <SentFundsModal />
             <AddModerator />
             <OpenExternalLinkModal />
