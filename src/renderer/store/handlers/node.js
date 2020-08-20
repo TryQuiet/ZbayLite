@@ -117,12 +117,13 @@ const getStatus = () => async (dispatch, getState) => {
       dispatch(setStatus({ status: 'healthy' }))
     }
     // Check if sync give time cli to start rescan
+
     setTimeout(async () => {
       const syncStatus = await client.syncStatus()
       if (syncStatus.syncing === 'false') {
-        console.log('save')
         client.save()
-        if (nodeSelectors.isRescanning(getStatus())) {
+
+        if (nodeSelectors.isRescanning(getState())) {
           setTimeout(async () => {
             console.log('saving')
             console.log(await client.syncStatus())
