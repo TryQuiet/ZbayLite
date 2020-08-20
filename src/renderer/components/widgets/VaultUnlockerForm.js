@@ -81,13 +81,16 @@ export const VaultUnlockerForm = ({
   openModal
 }) => {
   console.log(isRescanning)
+  const isSynced = currentBlock.plus(10).gt(latestBlock)
   const isDev =
     process.env.NODE_ENV === 'development' ||
     process.env.NODE_ENV === 'production'
   const [done, setDone] = useState(true)
+  const [syncingStart, setSyncingStart] = useState(false)
   return (
     <Formik
       onSubmit={(values, actions) => {
+        setSyncingStart(true)
         onSubmit(values, actions, setDone)
       }}
       validationSchema={isDev ? null : formSchema}
@@ -132,7 +135,7 @@ export const VaultUnlockerForm = ({
                 margin='normal'
                 text={' Connect now'}
                 fullWidth
-                inProgress={!done || isRescanning}
+                inProgress={!done || isRescanning || syncingStart}
               />
             </Grid>
             <Grid container item justify='center'>
@@ -142,10 +145,10 @@ export const VaultUnlockerForm = ({
                 onClick={() => openModal()}
               >More options</Typography>
             </Grid>
-            {(loader.loading || isRescanning) && (
+            {(loader.loading || isRescanning || !isSynced) && (
               <Grid item container justify='center' alignItems='center'>
                 <Typography variant='body2' className={classes.status}>
-                  {isRescanning
+                  {isRescanning || !isSynced
                     ? `Syncing ${currentBlock.toString()} / ${latestBlock.toString()}`
                     : `${loader.message}`}
                 </Typography>
@@ -157,7 +160,7 @@ export const VaultUnlockerForm = ({
               </Grid>
             )} */}
           </Grid>
-          {nodeConnected && isLogIn && !isRescanning && (
+          {nodeConnected && isLogIn && !isRescanning && isSynced && (
             <Redirect to='/main/channel/general' />
           )}
         </Form>
