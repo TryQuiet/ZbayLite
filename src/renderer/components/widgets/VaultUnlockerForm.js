@@ -9,13 +9,16 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 
-import PasswordField from '../ui/form/PasswordField'
 import Icon from '../ui/Icon'
 import LoadingButton from '../ui/LoadingButton'
 
 import icon from '../../static/images/zcash/logo-lockup--circle.svg'
+<<<<<<< HEAD
 // import Tor from '../../containers/windows/Tor'
 import electronStore from '../../../shared/electronStore'
+=======
+import Tor from '../../containers/windows/Tor'
+>>>>>>> ZbayLite
 
 const styles = theme => ({
   paper: {
@@ -80,17 +83,17 @@ export const VaultUnlockerForm = ({
   loader,
   openModal
 }) => {
+  console.log(isRescanning)
   const isDev =
     process.env.NODE_ENV === 'development' ||
     process.env.NODE_ENV === 'production'
-  const vaultPassword = electronStore.get('vaultPassword')
   const [done, setDone] = useState(true)
   return (
     <Formik
       onSubmit={(values, actions) => {
         onSubmit(values, actions, setDone)
       }}
-      validationSchema={vaultPassword || isDev ? null : formSchema}
+      validationSchema={isDev ? null : formSchema}
       initialValues={initialValues}
     >
       {({ isSubmitting }) => (
@@ -120,20 +123,13 @@ export const VaultUnlockerForm = ({
                 variant='body1'
                 gutterBottom
               >
+<<<<<<< HEAD
                 {`We're building Zbay because we want a patch of online life that's controlled by the people of the Internet.`}
+=======
+                {'Log In'}
+>>>>>>> ZbayLite
               </Typography>
             </Grid>
-            {((!vaultPassword && !isDev) ||
-              (isDev && exists && !vaultPassword)) && (
-              <Grid container item justify='center'>
-                <PasswordField
-                  name='password'
-                  className={classes.passwordField}
-                  label='Enter Password'
-                  fullWidth
-                />
-              </Grid>
-            )}
             <Grid container item justify='center'>
               <LoadingButton
                 type='submit'
@@ -141,7 +137,11 @@ export const VaultUnlockerForm = ({
                 size='large'
                 color='primary'
                 margin='normal'
+<<<<<<< HEAD
                 text={' Connect now'}
+=======
+                text={'Login'}
+>>>>>>> ZbayLite
                 fullWidth
                 inProgress={!done || isRescanning}
               />

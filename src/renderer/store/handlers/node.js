@@ -106,6 +106,7 @@ export const checkNodeStatus = nodeProcessStatus => async (
 
 const getStatus = () => async (dispatch, getState) => {
   try {
+    console.log('status')
     const status = nodeSelectors.status(getState())
     const info = await client.info()
     const height = await client.height()
@@ -116,12 +117,19 @@ const getStatus = () => async (dispatch, getState) => {
       dispatch(setStatus({ status: 'healthy' }))
     }
     // Check if sync give time cli to start rescan
+
     setTimeout(async () => {
       const syncStatus = await client.syncStatus()
       if (syncStatus.syncing === 'false') {
-        console.log('save')
         client.save()
-        await dispatch(setIsRescanning(false))
+
+        if (nodeSelectors.isRescanning(getState())) {
+          setTimeout(async () => {
+            console.log('saving')
+            console.log(await client.syncStatus())
+            await dispatch(setIsRescanning(false))
+          }, 10000)
+        }
       }
     }, 3000)
     dispatch(

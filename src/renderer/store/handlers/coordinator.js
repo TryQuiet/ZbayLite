@@ -12,6 +12,7 @@ import identityHandlers from './identity'
 // import usersHandlers from './users'
 // import publicChannelsHandlers from './publicChannels'
 import { actionTypes } from '../../../shared/static'
+import nodeSelectors from '../selectors/node'
 // import { getClient } from '../../zcash'
 
 export const Coordinator = Immutable.Record(
@@ -52,7 +53,14 @@ const coordinator = () => async (dispatch, getState) => {
   // }
   const fetchStatus = async () => {
     for (let index = 0; index < statusActions.size; index++) {
+      console.log('coordinator status')
+
       await dispatch(statusActions.get(index)())
+      const isRescaning = nodeSelectors.isRescanning(getState())
+      console.log(isRescaning)
+      if (isRescaning) {
+        break
+      }
     }
     setTimeout(fetchStatus, 25000)
   }
