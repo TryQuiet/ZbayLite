@@ -13,12 +13,9 @@ import Icon from '../ui/Icon'
 import LoadingButton from '../ui/LoadingButton'
 
 import icon from '../../static/images/zcash/logo-lockup--circle.svg'
-<<<<<<< HEAD
 // import Tor from '../../containers/windows/Tor'
-import electronStore from '../../../shared/electronStore'
-=======
-import Tor from '../../containers/windows/Tor'
->>>>>>> ZbayLite
+// import electronStore from '../../../shared/electronStore'
+// import Tor from '../../containers/windows/Tor'
 
 const styles = theme => ({
   paper: {
@@ -123,11 +120,7 @@ export const VaultUnlockerForm = ({
                 variant='body1'
                 gutterBottom
               >
-<<<<<<< HEAD
                 {`We're building Zbay because we want a patch of online life that's controlled by the people of the Internet.`}
-=======
-                {'Log In'}
->>>>>>> ZbayLite
               </Typography>
             </Grid>
             <Grid container item justify='center'>
@@ -137,11 +130,7 @@ export const VaultUnlockerForm = ({
                 size='large'
                 color='primary'
                 margin='normal'
-<<<<<<< HEAD
                 text={' Connect now'}
-=======
-                text={'Login'}
->>>>>>> ZbayLite
                 fullWidth
                 inProgress={!done || isRescanning}
               />
