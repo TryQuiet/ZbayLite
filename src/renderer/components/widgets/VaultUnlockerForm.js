@@ -135,6 +135,7 @@ export const VaultUnlockerForm = ({
                 margin='normal'
                 text={' Connect now'}
                 fullWidth
+                disabled={!done || isRescanning || syncingStart}
                 inProgress={!done || isRescanning || syncingStart}
               />
             </Grid>

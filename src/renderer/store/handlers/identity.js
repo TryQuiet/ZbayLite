@@ -365,9 +365,7 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
 
     dispatch(setLoadingMessage('Loading users and messages'))
   } catch (err) {}
-  console.log('working here')
   const zecBalance = identitySelectors.balance('zec')(getState())
-  console.log('isnewUser', isNewUser)
   if (isNewUser === true && zecBalance.gt(0)) {
     console.log('working opening registration modal')
     dispatch(modalsHandlers.actionCreators.openModal('createUsernameModal')())
