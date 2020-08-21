@@ -88,12 +88,14 @@ export const ChannelMessages = ({
   let usersRegistration = []
   let publicChannelsRegistration = []
   if (channelId === zcashChannels.general[network].address) {
-    usersRegistration = Array.from(users.values()).filter(msg => msg.createdAt >= oldestMessage.createdAt)
-    publicChannelsRegistration = Array.from(
-      Object.values(publicChannels.toJS())
-    ).filter(msg => msg.timestamp >= oldestMessage.createdAt)
-    for (const ch of publicChannelsRegistration) {
-      delete Object.assign(ch, { createdAt: parseInt(ch['timestamp']) })['timestamp']
+    if (oldestMessage) {
+      usersRegistration = Array.from(users.values()).filter(msg => msg.createdAt >= oldestMessage.createdAt)
+      publicChannelsRegistration = Array.from(
+        Object.values(publicChannels.toJS())
+      ).filter(msg => msg.timestamp >= oldestMessage.createdAt)
+      for (const ch of publicChannelsRegistration) {
+        delete Object.assign(ch, { createdAt: parseInt(ch['timestamp']) })['timestamp']
+      }
     }
   }
   return (

@@ -13,7 +13,9 @@ import Icon from '../ui/Icon'
 import LoadingButton from '../ui/LoadingButton'
 
 import icon from '../../static/images/zcash/logo-lockup--circle.svg'
-import Tor from '../../containers/windows/Tor'
+// import Tor from '../../containers/windows/Tor'
+// import electronStore from '../../../shared/electronStore'
+// import Tor from '../../containers/windows/Tor'
 
 const styles = theme => ({
   paper: {
@@ -27,15 +29,18 @@ const styles = theme => ({
     height: 67
   },
   logoContainer: {
-    height: 167
+    height: 167,
+    marginBottom: 40
   },
   passwordField: {
     width: 286
   },
   title: {
     textAlign: 'center',
-    width: '100%',
-    fontSize: 24,
+    width: 456,
+    fontSize: 14,
+    color: theme.palette.colors.black30,
+    lineHeight: '20px',
     height: 36,
     marginBottom: 16
   },
@@ -51,6 +56,9 @@ const styles = theme => ({
   },
   rootBar: {
     width: 250
+  },
+  moreOptionsButton: {
+    color: theme.palette.colors.lushSky
   }
 })
 
@@ -69,16 +77,20 @@ export const VaultUnlockerForm = ({
   latestBlock,
   currentBlock,
   isRescanning,
-  loader
+  loader,
+  openModal
 }) => {
   console.log(isRescanning)
+  const isSynced = currentBlock.plus(10).gt(latestBlock)
   const isDev =
     process.env.NODE_ENV === 'development' ||
     process.env.NODE_ENV === 'production'
   const [done, setDone] = useState(true)
+  const [syncingStart, setSyncingStart] = useState(false)
   return (
     <Formik
       onSubmit={(values, actions) => {
+        setSyncingStart(true)
         onSubmit(values, actions, setDone)
       }}
       validationSchema={isDev ? null : formSchema}
@@ -111,7 +123,7 @@ export const VaultUnlockerForm = ({
                 variant='body1'
                 gutterBottom
               >
-                {'Log In'}
+                {`We're building Zbay because we want a patch of online life that's controlled by the people of the Internet.`}
               </Typography>
             </Grid>
             <Grid container item justify='center'>
@@ -121,27 +133,35 @@ export const VaultUnlockerForm = ({
                 size='large'
                 color='primary'
                 margin='normal'
-                text={'Login'}
+                text={' Connect now'}
                 fullWidth
-                inProgress={!done || isRescanning}
+                disabled={!done || isRescanning || syncingStart}
+                inProgress={!done || isRescanning || syncingStart}
               />
             </Grid>
-            {(loader.loading || isRescanning) && (
+            <Grid container item justify='center'>
+              <Typography
+                variant='body'
+                className={classes.moreOptionsButton}
+                onClick={() => openModal()}
+              >More options</Typography>
+            </Grid>
+            {(loader.loading || isRescanning || !isSynced) && (
               <Grid item container justify='center' alignItems='center'>
                 <Typography variant='body2' className={classes.status}>
-                  {isRescanning
+                  {isRescanning || !isSynced
                     ? `Syncing ${currentBlock.toString()} / ${latestBlock.toString()}`
                     : `${loader.message}`}
                 </Typography>
               </Grid>
             )}
-            {locked && done && !isRescanning && (
+            {/* {locked && done && !isRescanning && (
               <Grid item className={classes.torDiv}>
                 <Tor />
               </Grid>
-            )}
+            )} */}
           </Grid>
-          {nodeConnected && isLogIn && !isRescanning && (
+          {nodeConnected && isLogIn && !isRescanning && isSynced && (
             <Redirect to='/main/channel/general' />
           )}
         </Form>

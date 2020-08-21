@@ -368,6 +368,7 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
   } catch (err) {}
   const zecBalance = identitySelectors.balance('zec')(getState())
   if (isNewUser === true && zecBalance.gt(0)) {
+    console.log('working opening registration modal')
     dispatch(modalsHandlers.actionCreators.openModal('createUsernameModal')())
   }
   // dispatch(fetchAffiliateMoney())
