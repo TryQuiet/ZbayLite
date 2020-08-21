@@ -15,7 +15,7 @@ import notificationsHandlers from './notifications'
 import logsHandlers from '../handlers/logs'
 import nodeHandlers from '../handlers/node'
 import { REQUEST_MONEY_ENDPOINT, actionTypes } from '../../../shared/static'
-import electronStore from '../../../shared/electronStore'
+import electronStore, { migrationStore } from '../../../shared/electronStore'
 
 export const VaultState = Immutable.Record(
   {
@@ -59,7 +59,7 @@ const loadVaultStatus = () => async (dispatch, getState) => {
   await dispatch(setVaultStatus(true))
 }
 
-const createVaultEpic = () => async (dispatch, getState) => {
+const createVaultEpic = fromMigrationFile => async (dispatch, getState) => {
   const randomBytes = crypto.randomBytes(32).toString('hex')
   try {
     electronStore.set('isNewUser', true)
@@ -71,7 +71,10 @@ const createVaultEpic = () => async (dispatch, getState) => {
     )
     electronStore.set('vaultPassword', randomBytes)
     const identity = await dispatch(
-      identityHandlers.epics.createIdentity({ name: randomBytes })
+      identityHandlers.epics.createIdentity({
+        name: randomBytes,
+        fromMigrationFile
+      })
     )
     console.log('identity', identity)
     await dispatch(nodeHandlers.actions.setIsRescanning(true))
@@ -116,6 +119,7 @@ export const setVaultIdentity = () => async (dispatch, getState) => {
     console.log(err)
   }
 }
+
 const unlockVaultEpic = (
   { password: masterPassword },
   formActions,
@@ -123,13 +127,18 @@ const unlockVaultEpic = (
 ) => async (dispatch, getState) => {
   await dispatch(setLoginSuccessfull(false))
   setDone(false)
-  const identity = electronStore.get('identity')
-  if (!identity) {
-    await dispatch(createVaultEpic())
+  if (migrationStore.has('identity')) {
+    await dispatch(createVaultEpic(true))
   } else {
-    console.log('setid')
-    await dispatch(setVaultIdentity())
+    const identity = electronStore.get('identity')
+    if (!identity) {
+      await dispatch(createVaultEpic())
+    } else {
+      console.log('setid')
+      await dispatch(setVaultIdentity())
+    }
   }
+
   await dispatch(setLoginSuccessfull(true))
   formActions.setSubmitting(false)
   setDone(true)
