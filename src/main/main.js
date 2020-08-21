@@ -707,18 +707,18 @@ app.on('ready', async () => {
 
   ipcMain.on('vault-created', (event, arg) => {
     electronStore.set('vaultStatus', config.VAULT_STATUSES.CREATED)
-    const blockchainConfiguration = electronStore.get('blockchainConfiguration')
-    if (!isDev && (!isFetchedFromExternalSource || blockchainConfiguration === config.BLOCKCHAIN_STATUSES.TO_FETCH)) {
-      const { status } = electronStore.get('AppStatus.blockchain')
-      if (status !== config.BLOCKCHAIN_STATUSES.SUCCESS) {
-        nodeProc.on('close', code => {
-          setTimeout(() => {
-            createZcashNode(mainWindow)
-          }, 1000)
-        })
-        nodeProc.kill()
-      }
-    }
+    // const blockchainConfiguration = electronStore.get('blockchainConfiguration')
+    // if (!isDev && (!isFetchedFromExternalSource || blockchainConfiguration === config.BLOCKCHAIN_STATUSES.TO_FETCH)) {
+    //   const { status } = electronStore.get('AppStatus.blockchain')
+    //   if (status !== config.BLOCKCHAIN_STATUSES.SUCCESS) {
+    //     nodeProc.on('close', code => {
+    //       setTimeout(() => {
+    //         createZcashNode(mainWindow)
+    //       }, 1000)
+    //     })
+    //     nodeProc.kill()
+    //   }
+    // }
   })
 
   ipcMain.on('proceed-with-syncing', (event, userChoice) => {

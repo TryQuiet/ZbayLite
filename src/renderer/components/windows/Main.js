@@ -61,7 +61,6 @@ export const Main = ({ match, classes, disablePowerSleepMode, isLogWindowOpened,
     }
   })
   useEffect(() => {
-    electronStore.set('isNewUser', false)
     electronStore.set('AppStatus.blockchain.isRescanned', true)
     createWalletCopy()
     disablePowerSleepMode()
