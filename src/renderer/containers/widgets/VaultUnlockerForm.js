@@ -50,6 +50,7 @@ export const VaultUnlockerForm = ({
     openModal={openModal}
     nodeConnected={nodeConnected}
     isLogIn={isLogIn}
+    guideStatus={guideStatus}
     {...props}
   />
 )

@@ -2,6 +2,7 @@
   "name": "zbay",
   "productName": "Zbay-lite",
   "build": {
+    "afterSign": "scripts/notarize.js",
     "productName": "Zbay-lite",
     "appId": "Zbay",
     "protocols": {
@@ -11,6 +12,10 @@
       ]
     },
     "mac": {
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
       "category": "public.app-category.social-networking",
       "files": [
         "dist/**/*",
