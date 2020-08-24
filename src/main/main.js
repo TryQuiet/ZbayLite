@@ -656,10 +656,6 @@ app.on('ready', async () => {
     const response = await client.postMessage(request.id, request.method, request.args)
     mainWindow.webContents.send('rpcQuery', JSON.stringify({ id: request.id, data: response }))
   })
-  ipcMain.on('make-wallet-backup', (event, arg) => {
-    recoveryHandlers.makeWalletCopy()
-    electronStore.set('isWalletCopyCreated', true)
-  })
 
   let rescanningInterval
   let tick = 0

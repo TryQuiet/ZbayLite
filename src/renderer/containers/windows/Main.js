@@ -8,7 +8,6 @@ import vaultSelectors from '../../store/selectors/vault'
 import coordinator from '../../store/handlers/coordinator'
 import nodeHandlers from '../../store/handlers/node'
 import logsSelectors from '../../store/selectors/logs'
-import { createWalletBackup } from '../../store/handlers/identity'
 
 export const mapStateToProps = state => ({
   vaultLocked: vaultSelectors.locked(state),
@@ -19,8 +18,7 @@ export const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       fetch: coordinator.epics.coordinator,
-      disablePowerSleepMode: nodeHandlers.epics.disablePowerSaveMode,
-      createWalletCopy: createWalletBackup
+      disablePowerSleepMode: nodeHandlers.epics.disablePowerSaveMode
 
     },
     dispatch
