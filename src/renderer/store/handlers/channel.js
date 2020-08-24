@@ -84,9 +84,9 @@ const loadChannel = key => async (dispatch, getState) => {
     const contact = contactsSelectors.contact(key)(getState())
     const unread = contact.newMessages.size
     remote.app.badgeCount = remote.app.badgeCount - unread
-    const ivk = electronStore.get(
-      `defaultChannels.${contact.get('address')}.keys.ivk`
-    )
+    const ivk =
+      electronStore.get(`defaultChannels.${contact.get('address')}.keys.ivk`) ||
+      electronStore.get(`importedChannels.${contact.get('address')}.keys.ivk`)
     if (ivk) {
       const uri = await channelToUri({
         name: contact.get('username'),

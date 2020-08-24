@@ -66,7 +66,6 @@ export const Main = ({
     }
   })
   useEffect(() => {
-    electronStore.set('isNewUser', false)
     electronStore.set('AppStatus.blockchain.isRescanned', true)
     disablePowerSleepMode()
   }, [])
