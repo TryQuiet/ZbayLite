@@ -10,11 +10,13 @@ import store from './store'
 import Index from './containers/windows/Index'
 import Main from './containers/windows/Main'
 import Vault from './containers/windows/Vault'
+import RegistrationGuide from './containers/windows/RegistrationGuide'
 import Loading from './containers//windows/Loading'
 import Notifier from './containers/ui/Notifier'
 import ErrorModal from './containers/ui/ErrorModal'
 import QuitAppDialog from './containers/ui/QuitAppDialog'
 import TopUpModal from './containers/ui/TopUpModal'
+import SecurityModal from './containers/widgets/settings/SecurityModal'
 import SendMoneyModal from './containers/ui/sendMoney/SendMoneyModal'
 import UpdateModal from './containers/widgets/update/UpdateModal'
 import CreateChannelModal from './containers/widgets/channels/CreateChannelModal'
@@ -45,6 +47,7 @@ export default () => {
             <QuitAppDialog />
             <UpdateModal />
             <SendMoneyModal />
+            <SecurityModal />
             <TopUpModal />
             <CssBaseline />
             <CreateChannelModal />
@@ -56,6 +59,7 @@ export default () => {
             <SendFundsModal />
             <ChannelSettingsModal />
             <PublishChannelModal />
+            <RegistrationGuide />
             <SentFundsModal />
             <AddModerator />
             <OpenExternalLinkModal />
