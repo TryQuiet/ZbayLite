@@ -14,6 +14,7 @@ import identityHandlers from './identity'
 import notificationsHandlers from './notifications'
 import logsHandlers from '../handlers/logs'
 import nodeHandlers from '../handlers/node'
+import { actionCreators } from '../handlers/modals'
 import { REQUEST_MONEY_ENDPOINT, actionTypes } from '../../../shared/static'
 import electronStore, { migrationStore } from '../../../shared/electronStore'
 
@@ -132,6 +133,7 @@ const unlockVaultEpic = (
   } else {
     const identity = electronStore.get('identity')
     if (!identity) {
+      dispatch(actionCreators.openModal('registrationGuide')())
       await dispatch(createVaultEpic())
     } else {
       console.log('setid')

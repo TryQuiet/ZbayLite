@@ -6,6 +6,7 @@ import { shell } from 'electron'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import { Grid, Button } from '@material-ui/core'
+import Modal from '../ui/Modal'
 
 const reqSvgs = require && require.context('../../static/images/registrationGuide/', true, /\.svg$/)
 
@@ -120,47 +121,53 @@ const ContentWithRedirect = ({ classes }) => (
   </Fragment>
 )
 
-export const RegistraionGuide = ({ classes, content, currentSlide, prevSlide, nextSlide, setStoryStatus }) => {
+export const RegistraionGuide = ({ classes, content, currentSlide, prevSlide, nextSlide, setStoryStatus, open, handleClose }) => {
   return (
-    <Grid container className={classes.root} justify={'center'} alignItems={'center'} alignContent={'center'}>
-      <Grid container className={classes.wrapper} justify={'center'} alignItems={'center'} alignContent={'center'}>
-        <Grid container item className={classes.contentContainer} justify={'space-between'}>
-          <Grid container item className={classes.graphicBox} alignItems={'center'}>
-            <img src={reqSvgs(content[currentSlide].fileName)} />
+    <Modal
+      open={open}
+      handleClose={handleClose}
+      contentWidth={800}
+    >
+      <Grid container className={classes.root} justify={'center'} alignItems={'center'} alignContent={'center'}>
+        <Grid container className={classes.wrapper} justify={'center'} alignItems={'center'} alignContent={'flex-start'}>
+          <Grid container item className={classes.contentContainer} justify={'space-between'}>
+            <Grid container item className={classes.graphicBox} alignItems={'center'}>
+              <img src={reqSvgs(content[currentSlide].fileName)} />
+            </Grid>
+            <Grid container item className={classes.textBox} alignItems={'center'}>
+              {currentSlide !== 10
+                ? <Fragment>
+                  <Grid item>
+                    <Typography variant={'h3'}>{content[currentSlide].title}</Typography>
+                    {content[currentSlide].sentences.map((sentence, i) => <Typography className={classes.sentence} key={i} variant={'body2'}>{sentence}</Typography>)}
+                  </Grid>
+                </Fragment> : <ContentWithRedirect classes={classes} />}
+            </Grid>
           </Grid>
-          <Grid container item className={classes.textBox} alignItems={'center'}>
-            {currentSlide !== 10
-              ? <Fragment>
-                <Grid item>
-                  <Typography variant={'h3'}>{content[currentSlide].title}</Typography>
-                  {content[currentSlide].sentences.map((sentence, i) => <Typography className={classes.sentence} key={i} variant={'body2'}>{sentence}</Typography>)}
-                </Grid>
-              </Fragment> : <ContentWithRedirect classes={classes} />}
-          </Grid>
-        </Grid>
-        <Grid container item className={classNames(classes.navigationContainer, {
-          [classes.addMargin]: currentSlide === 0
-        })} justify={'center'} alignItems={'center'} wrap={'nowrap'}>
-          <Grid item>
-            <Button onClick={prevSlide} className={classNames(classes.buttonBack, {
-              [classes.disableButton]: currentSlide === 0
-            })}>Back</Button>
-          </Grid>
-          <Grid container item justify={currentSlide === 10 ? 'flex-end' : 'center'} className={classNames(null, { [classes.alignDots]: currentSlide === 10 })}>
-            {content.map((_, index) => <Grid key={index} item><span className={classNames(classes.dot, {
-              [classes.active]: index === currentSlide
-            })} /></Grid>)}
-          </Grid>
-          <Grid item>
-            <Button onClick={currentSlide !== 10 ? nextSlide : setStoryStatus} className={classNames(classes.buttonNext, {
-              [classes.wideButton]: currentSlide === 10
-            })}>
-              {currentSlide !== 10 ? 'Next' : 'Show download progress'}
-            </Button>
+          <Grid container item className={classNames(classes.navigationContainer, {
+            [classes.addMargin]: currentSlide === 0
+          })} justify={'center'} alignItems={'center'} wrap={'nowrap'}>
+            <Grid item>
+              <Button onClick={prevSlide} className={classNames(classes.buttonBack, {
+                [classes.disableButton]: currentSlide === 0
+              })}>Back</Button>
+            </Grid>
+            <Grid container item justify={currentSlide === 10 ? 'flex-end' : 'center'} className={classNames(null, { [classes.alignDots]: currentSlide === 10 })}>
+              {content.map((_, index) => <Grid key={index} item><span className={classNames(classes.dot, {
+                [classes.active]: index === currentSlide
+              })} /></Grid>)}
+            </Grid>
+            <Grid item>
+              <Button onClick={currentSlide !== 10 ? nextSlide : setStoryStatus} className={classNames(classes.buttonNext, {
+                [classes.wideButton]: currentSlide === 10
+              })}>
+                {currentSlide !== 10 ? 'Next' : 'Show download progress'}
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </Modal>
   )
 }
 
