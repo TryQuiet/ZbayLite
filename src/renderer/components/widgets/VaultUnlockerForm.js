@@ -11,6 +11,7 @@ import { withStyles } from '@material-ui/core/styles'
 
 import Icon from '../ui/Icon'
 import LoadingButton from '../ui/LoadingButton'
+import Carousel from '../widgets/Carousel'
 
 import icon from '../../static/images/zcash/logo-lockup--circle.svg'
 // import Tor from '../../containers/windows/Tor'
@@ -59,6 +60,10 @@ const styles = theme => ({
   },
   moreOptionsButton: {
     color: theme.palette.colors.lushSky
+  },
+  carouselContainer: {
+    width: 450,
+    height: 100
   }
 })
 
@@ -78,9 +83,9 @@ export const VaultUnlockerForm = ({
   currentBlock,
   isRescanning,
   loader,
-  openModal
+  openModal,
+  guideStatus
 }) => {
-  console.log(isRescanning)
   const isSynced = currentBlock.plus(10).gt(latestBlock)
   const isDev =
     process.env.NODE_ENV === 'development' ||
@@ -117,15 +122,20 @@ export const VaultUnlockerForm = ({
             >
               <Icon className={classes.icon} src={icon} />
             </Grid>
-            <Grid container item xs={12} wrap='wrap' justify='center'>
+            {syncingStart && guideStatus ? (
+              <Grid className={classes.carouselContainer} container item>
+                <Carousel />
+              </Grid>
+            ) : (<Grid container item xs={12} wrap='wrap' justify='center'>
               <Typography
                 className={classes.title}
                 variant='body1'
                 gutterBottom
               >
-                {`We're building Zbay because we want a patch of online life that's controlled by the people of the Internet.`}
+                {`Welcome to Zbay! Connect now to start syncing and learn more.`}
               </Typography>
             </Grid>
+            )}
             <Grid container item justify='center'>
               <LoadingButton
                 type='submit'
@@ -139,17 +149,19 @@ export const VaultUnlockerForm = ({
                 inProgress={!done || isRescanning || syncingStart}
               />
             </Grid>
-            <Grid container item justify='center'>
-              <Typography
-                variant='body'
-                className={classes.moreOptionsButton}
-                onClick={() => openModal()}
-              >More options</Typography>
-            </Grid>
+            {/* <Grid container item justify='center'>
+              {!syncingStart && (
+                <Typography
+                  variant='body'
+                  className={classes.moreOptionsButton}
+                  onClick={() => openModal()}
+                >Advanced settings"</Typography>
+              )}
+            </Grid> */}
             {(loader.loading || isRescanning || !isSynced) && (
               <Grid item container justify='center' alignItems='center'>
                 <Typography variant='body2' className={classes.status}>
-                  {isRescanning || !isSynced
+                  {syncingStart && (isRescanning || !isSynced)
                     ? `Syncing ${currentBlock.toString()} / ${latestBlock.toString()}`
                     : `${loader.message}`}
                 </Typography>
