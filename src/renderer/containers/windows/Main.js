@@ -10,6 +10,7 @@ import nodeHandlers from '../../store/handlers/node'
 import modalsHandlers from '../../store/handlers/modals'
 import logsSelectors from '../../store/selectors/logs'
 import identitySelectors from '../../store/selectors/identity'
+import { fetchBalance } from '../../store/handlers/identity'
 import electronStore from '../../../shared/electronStore'
 
 export const mapStateToProps = state => ({
@@ -21,6 +22,7 @@ export const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       fetch: coordinator.epics.coordinator,
+      fetchBalance: fetchBalance,
       disablePowerSleepMode: nodeHandlers.epics.disablePowerSaveMode,
       openSettingsModal: modalsHandlers.actionCreators.openModal('createUsernameModal')
     },
@@ -28,8 +30,9 @@ export const mapDispatchToProps = dispatch => {
   )
 }
 
-export const Main = ({ zecBalance, openSettingsModal, ...props }) => {
+export const Main = ({ zecBalance, openSettingsModal, fetchBalance, ...props }) => {
   useEffect(() => {
+    fetchBalance()
     const isNewUser = electronStore.get('isNewUser')
     if (isNewUser === true && zecBalance.gt(0)) {
       openSettingsModal()
