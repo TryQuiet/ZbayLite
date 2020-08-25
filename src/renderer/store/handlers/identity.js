@@ -39,7 +39,7 @@ import {
   networkFeeSatoshi,
   satoshiMultiplier
 } from '../../../shared/static'
-import electronStore from '../../../shared/electronStore'
+import electronStore, { migrationStore } from '../../../shared/electronStore'
 import app from './app'
 // import channels from '../../zcash/channels'
 
@@ -235,17 +235,40 @@ export const createSignerKeys = () => {
   }
 }
 
-export const createIdentity = ({ name }) => async (dispatch, getState) => {
+export const createIdentity = ({ name, fromMigrationFile }) => async (
+  dispatch,
+  getState
+) => {
+  let zAddress
+  let tAddress
+  let tpk
+  let sk
+  let signerPrivKey
+  let signerPubKey
   try {
-    const accountAddresses = await client.addresses()
-    const { z_addresses: zAddresses } = accountAddresses
-    const { t_addresses: tAddresses } = accountAddresses
-    const [zAddress] = zAddresses
-    const [tAddress] = tAddresses
-    const tpk = await client.getPrivKey(tAddress)
-    const sk = await client.getPrivKey(zAddress)
+    if (fromMigrationFile) {
+      const migrationIdentity = migrationStore.get('identity')
+      zAddress = migrationIdentity.address
+      tAddress = migrationIdentity.transparentAddress
+      tpk = migrationIdentity.keys.tpk
+      sk = migrationIdentity.keys.sk
+      await client.importKey(tpk)
+      await client.importKey(sk)
+      signerPrivKey = migrationIdentity.signerPrivKey
+      signerPubKey = migrationIdentity.signerPubKey
+    } else {
+      const accountAddresses = await client.addresses()
+      const { z_addresses: zAddresses } = accountAddresses
+      const { t_addresses: tAddresses } = accountAddresses
+      zAddress = zAddresses[0]
+      tAddress = tAddresses[0]
+      tpk = await client.getPrivKey(tAddress)
+      sk = await client.getPrivKey(zAddress)
 
-    const { signerPrivKey, signerPubKey } = exportFunctions.createSignerKeys()
+      const keys = exportFunctions.createSignerKeys()
+      signerPrivKey = keys.signerPrivKey
+      signerPubKey = keys.signerPubKey
+    }
 
     electronStore.set('identity', {
       name,
@@ -260,6 +283,20 @@ export const createIdentity = ({ name }) => async (dispatch, getState) => {
     })
     const network = 'mainnet'
 
+    const migrationChannels = Object.values(migrationStore.get('channels'))
+    for (const channel of migrationChannels) {
+      electronStore.set(`importedChannels.${channel.address}`, {
+        address: channel.address,
+        name: channel.name,
+        description: '',
+        owner: channel.keys.sk ? signerPubKey : '',
+        keys: channel.keys
+      })
+      await client.importKey(
+        channel.keys.sk ? channel.keys.sk : channel.keys.ivk
+      )
+    }
+    migrationStore.clear()
     const channelsToImport = [
       'general',
       'registeredUsers',
@@ -294,7 +331,13 @@ export const createIdentity = ({ name }) => async (dispatch, getState) => {
         740000
       )
     }
-    await client.rescan()
+
+    setTimeout(async () => {
+      console.log(await client.addresses())
+    }, 0)
+    setTimeout(() => {
+      client.rescan()
+    }, 0)
     return electronStore.get('identity')
   } catch (err) {
     console.log('error', err)
