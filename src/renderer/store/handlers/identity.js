@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import { createAction, handleActions } from 'redux-actions'
 import secp256k1 from 'secp256k1'
 import { randomBytes } from 'crypto'
-import { ipcRenderer } from 'electron'
 import { DateTime } from 'luxon'
 
 import client from '../../zcash'
@@ -355,14 +354,6 @@ export const loadIdentity = () => async (dispatch, getState) => {
         payload: `Loading identity`
       })
     )
-  }
-}
-
-export const createWalletBackup = () => async (dispatch, getState) => {
-  const isDev = process.env.NODE_ENV === 'development'
-  const isWalletCopyCreated = electronStore.get('isWalletCopyCreated')
-  if (!isWalletCopyCreated && !isDev) {
-    ipcRenderer.send('make-wallet-backup')
   }
 }
 

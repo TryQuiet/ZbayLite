@@ -10,7 +10,7 @@ import nodeHandlers from '../../store/handlers/node'
 import modalsHandlers from '../../store/handlers/modals'
 import logsSelectors from '../../store/selectors/logs'
 import identitySelectors from '../../store/selectors/identity'
-import { createWalletBackup, fetchBalance } from '../../store/handlers/identity'
+import { fetchBalance } from '../../store/handlers/identity'
 import electronStore from '../../../shared/electronStore'
 
 export const mapStateToProps = state => ({
@@ -24,7 +24,6 @@ export const mapDispatchToProps = dispatch => {
       fetch: coordinator.epics.coordinator,
       fetchBalance: fetchBalance,
       disablePowerSleepMode: nodeHandlers.epics.disablePowerSaveMode,
-      createWalletCopy: createWalletBackup,
       openSettingsModal: modalsHandlers.actionCreators.openModal('createUsernameModal')
     },
     dispatch
