@@ -2,7 +2,6 @@
   "name": "zbay",
   "productName": "Zbay-lite",
   "build": {
-    "afterSign": "scripts/notarize.js",
     "productName": "Zbay-lite",
     "appId": "Zbay",
     "protocols": {
@@ -29,8 +28,7 @@
         "dist/**/*",
         "build/icon.*",
         "package.json"
-      ],
-      "extraResources": "zcash/**/*"
+      ]
     },
     "linux": {
       "target": [
@@ -61,7 +59,7 @@
     "distUbuntu": "npm run build:prod && electron-builder --linux",
     "distUbuntu18": "export SOURCE_PATH=linux/ubuntu18 && export TARGET_PATH=linux && npm run pullBinaries && npm run build:prod && electron-builder -p always --linux",
     "distUbuntu19": "export SOURCE_PATH=linux/ubuntu19 && export TARGET_PATH=linux && npm run pullBinaries && npm run build:prod && electron-builder -p always --linux",
-    "distwin": "export SOURCE_PATH=win32 && export TARGET_PATH=win32 && npm run pullBinariesWin && npm run build:prod && electron-builder -p always --win",
+    "distwin": "npm run build:prod && electron-builder --win",
     "pullResources": "./zcash/win32/zcash-fetch-params",
     "pullBinaries": "wget -N https://zbay-binaries.s3.us-east-2.amazonaws.com/$SOURCE_PATH/zcashd -P ./zcash/$TARGET_PATH/ && wget -N https://zbay-binaries.s3.us-east-2.amazonaws.com/$SOURCE_PATH/zcash-fetch-params -P ./zcash/$TARGET_PATH/",
     "pullBinariesWin": "wget -N https://zbay-binaries.s3.us-east-2.amazonaws.com/$SOURCE_PATH/zcashd.exe -P ./zcash/$TARGET_PATH/ && wget -N https://zbay-binaries.s3.us-east-2.amazonaws.com/$SOURCE_PATH/zcash-fetch-params -P ./zcash/$TARGET_PATH/",
