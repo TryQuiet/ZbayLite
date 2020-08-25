@@ -170,5 +170,6 @@ export default {
   offerList,
   getAdvertById,
   allMessages,
-  messagesLength
+  messagesLength,
+  messagesSorted
 }
