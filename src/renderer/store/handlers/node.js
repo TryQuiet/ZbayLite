@@ -107,10 +107,9 @@ export const checkNodeStatus = nodeProcessStatus => async (
 const getStatus = () => async (dispatch, getState) => {
   try {
     console.log('status')
-    const status = nodeSelectors.status(getState())
     const info = await client.info()
     const height = await client.height()
-    if (info.latest_block_height > height && status !== 'syncing') {
+    if (info.latest_block_height > height) {
       dispatch(setStatus({ status: 'syncing' }))
       client.sync()
     } else {

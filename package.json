@@ -2,6 +2,7 @@
   "name": "zbay",
   "productName": "Zbay-lite",
   "build": {
+    "afterSign": "scripts/notarize.js",
     "productName": "Zbay-lite",
     "appId": "Zbay",
     "protocols": {
