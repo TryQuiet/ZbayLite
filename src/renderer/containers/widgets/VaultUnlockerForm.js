@@ -6,6 +6,7 @@ import vaultHandlers from '../../store/handlers/vault'
 import nodeHandlers from '../../store/handlers/node'
 import vaultSelectors from '../../store/selectors/vault'
 import nodeSelectors from '../../store/selectors/node'
+import appSelectors from '../../store/selectors/app'
 import identitySelectors from '../../store/selectors/identity'
 import VaultUnlockerFormComponent from '../../components/widgets/VaultUnlockerForm'
 import { actionCreators } from '../../store/handlers/modals'
@@ -20,7 +21,8 @@ export const mapStateToProps = state => ({
   nodeConnected: nodeSelectors.isConnected(state),
   isRescanning: nodeSelectors.isRescanning(state),
   exists: vaultSelectors.exists(state),
-  guideStatus: nodeSelectors.guideStatus(state)
+  guideStatus: nodeSelectors.guideStatus(state),
+  isInitialLoadFinished: appSelectors.isInitialLoadFinished(state)
 })
 
 export const mapDispatchToProps = dispatch =>

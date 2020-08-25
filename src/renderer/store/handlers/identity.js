@@ -40,7 +40,7 @@ import {
   satoshiMultiplier
 } from '../../../shared/static'
 import electronStore, { migrationStore } from '../../../shared/electronStore'
-import app from './app'
+// import app from './app'
 // import channels from '../../zcash/channels'
 
 export const ShippingData = Immutable.Record(
@@ -413,7 +413,7 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
       payload: ` Loading identity finished`
     })
   )
-  dispatch(app.actions.setInitialLoadFlag(true))
+  // dispatch(app.actions.setInitialLoadFlag(true))
   // Don't show deposit modal if we use faucet 12.02.2020
   // const balance = identitySelectors.balance('zec')(getState())
   // const lockedBalance = identitySelectors.lockedBalance('zec')(getState())
