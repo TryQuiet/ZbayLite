@@ -60,7 +60,10 @@ const loadVaultStatus = () => async (dispatch, getState) => {
   await dispatch(setVaultStatus(true))
 }
 
-const createVaultEpic = fromMigrationFile => async (dispatch, getState) => {
+const createVaultEpic = (fromMigrationFile = false) => async (
+  dispatch,
+  getState
+) => {
   const randomBytes = crypto.randomBytes(32).toString('hex')
   try {
     electronStore.set('isNewUser', true)

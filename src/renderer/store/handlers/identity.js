@@ -283,20 +283,22 @@ export const createIdentity = ({ name, fromMigrationFile }) => async (
     })
     const network = 'mainnet'
 
-    const migrationChannels = Object.values(migrationStore.get('channels'))
-    for (const channel of migrationChannels) {
-      electronStore.set(`importedChannels.${channel.address}`, {
-        address: channel.address,
-        name: channel.name,
-        description: '',
-        owner: channel.keys.sk ? signerPubKey : '',
-        keys: channel.keys
-      })
-      await client.importKey(
-        channel.keys.sk ? channel.keys.sk : channel.keys.ivk
-      )
+    if (fromMigrationFile) {
+      const migrationChannels = Object.values(migrationStore.get('channels'))
+      for (const channel of migrationChannels) {
+        electronStore.set(`importedChannels.${channel.address}`, {
+          address: channel.address,
+          name: channel.name,
+          description: '',
+          owner: channel.keys.sk ? signerPubKey : '',
+          keys: channel.keys
+        })
+        await client.importKey(
+          channel.keys.sk ? channel.keys.sk : channel.keys.ivk
+        )
+      }
+      migrationStore.clear()
     }
-    migrationStore.clear()
     const channelsToImport = [
       'general',
       'registeredUsers',
