@@ -34,10 +34,10 @@ jobs:
         run: npm install -g electron-builder@22.3.2
       - name: release
         env:
-          # CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          # CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          # APPLEID: ${{ secrets.APPLEID }}
-          # APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
-          # USE_HARD_LINKS: false
+          APPLEID: ${{ secrets.APPLEID }}
+          APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+          USE_HARD_LINKS: false
         run: electron-builder -p always --mac
