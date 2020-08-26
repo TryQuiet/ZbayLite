@@ -4,7 +4,7 @@ import { createAction, handleActions } from 'redux-actions'
 // import channelsSelectors from '../selectors/channels'
 // import appSelectors from '../selectors/app'
 import messagesHandlers from './messages'
-// import appHandlers from './app'
+import appHandlers from './app'
 // import contactsHandlers from './contacts'
 import nodeHandlers from './node'
 import identityHandlers from './identity'
@@ -59,6 +59,7 @@ const coordinator = () => async (dispatch, getState) => {
       const isRescaning = nodeSelectors.isRescanning(getState())
       console.log(isRescaning)
       if (isRescaning) {
+        dispatch(appHandlers.actions.setInitialLoadFlag(false))
         break
       }
     }
@@ -103,7 +104,7 @@ const coordinator = () => async (dispatch, getState) => {
   //       break
   //     }
   //   }
-  //   dispatch(appHandlers.actions.setInitialLoadFlag(true))
+
   //   setTimeout(fetchData, 5000)
   // }
   fetchStatus()

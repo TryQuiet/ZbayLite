@@ -84,7 +84,8 @@ export const VaultUnlockerForm = ({
   isRescanning,
   loader,
   openModal,
-  guideStatus
+  guideStatus,
+  isInitialLoadFinished
 }) => {
   const isSynced = currentBlock.plus(10).gt(latestBlock)
   const isDev =
@@ -126,15 +127,16 @@ export const VaultUnlockerForm = ({
               <Grid className={classes.carouselContainer} container item>
                 <Carousel />
               </Grid>
-            ) : (<Grid container item xs={12} wrap='wrap' justify='center'>
-              <Typography
-                className={classes.title}
-                variant='body1'
-                gutterBottom
-              >
-                {`Welcome to Zbay! Connect now to start syncing and learn more.`}
-              </Typography>
-            </Grid>
+            ) : (
+              <Grid container item xs={12} wrap='wrap' justify='center'>
+                <Typography
+                  className={classes.title}
+                  variant='body1'
+                  gutterBottom
+                >
+                  {`Welcome to Zbay! Connect now to start syncing and learn more.`}
+                </Typography>
+              </Grid>
             )}
             <Grid container item justify='center'>
               <LoadingButton
@@ -173,9 +175,11 @@ export const VaultUnlockerForm = ({
               </Grid>
             )} */}
           </Grid>
-          {nodeConnected && isLogIn && !isRescanning && isSynced && (
-            <Redirect to='/main/channel/general' />
-          )}
+          {nodeConnected &&
+            isLogIn &&
+            !isRescanning &&
+            isSynced &&
+            isInitialLoadFinished && <Redirect to='/main/channel/general' />}
         </Form>
       )}
     </Formik>

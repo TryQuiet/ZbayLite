@@ -154,6 +154,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
     )
     await dispatch(setOutgoingTransactions(identityAddress, txns['undefined']))
     dispatch(setUsersMessages(identityAddress, txns[identityAddress]))
+    dispatch(appHandlers.actions.setInitialLoadFlag(true))
   } catch (err) {
     console.warn(`Can't pull messages`)
     console.warn(err)

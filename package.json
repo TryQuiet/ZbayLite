@@ -24,6 +24,7 @@
     },
     "win": {
       "target": "NSIS",
+      "sign": "scripts/sign.js",
       "files": [
         "dist/**/*",
         "build/icon.*",
