@@ -103,7 +103,11 @@ export const fetchAllMessages = async () => {
       ...txn,
       amount: txn.amount / satoshiMultiplier
     }))
-    return R.mergeDeepLeft(R.groupBy(txn => txn.address)(txnsZec), staticChannelsMessages)
+    return R.mergeDeepWith(
+      R.concat,
+      R.groupBy(txn => txn.address)(txnsZec),
+      staticChannelsMessages
+    )
   } catch (err) {
     console.warn(`Can't pull messages`)
     console.warn(err)
