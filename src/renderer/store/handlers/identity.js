@@ -42,6 +42,7 @@ import {
 import electronStore, { migrationStore } from '../../../shared/electronStore'
 // import app from './app'
 // import channels from '../../zcash/channels'
+import staticChannelsSyncHeight from '../../static/staticChannelsSyncHeight.json'
 
 export const ShippingData = Immutable.Record(
   {
@@ -330,7 +331,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async (
     for (const channel of channelsToLoad) {
       await client.importKey(
         channelsWithDetails[channel]['keys']['ivk'],
-        740000
+        staticChannelsSyncHeight.height
       )
     }
 
