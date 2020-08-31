@@ -10,6 +10,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { messageType } from '../../../../shared/static'
 import ChannelMessage from '../../../containers/widgets/channels/ChannelMessage'
 import WelcomeMessage from './WelcomeMessage'
+import RescanMessage from '../../../containers/widgets/channels/RescanMessage'
 import ChannelItemTransferMessage from '../../../containers/widgets/channels/ItemTransferMessage'
 import ChannelAdMessage from '../../../containers/widgets/channels/ListingMessage'
 import MessagesDivider from '../MessagesDivider'
@@ -45,7 +46,8 @@ export const ChannelMessages = ({
   users,
   onLinkedChannel,
   publicChannels,
-  isInitialLoadFinished
+  isInitialLoadFinished,
+  isRescanned
 }) => {
   const scrollbarRef = React.useRef()
   // const [lastScrollHeight, setLastScrollHeight] = React.useState(0)
@@ -137,6 +139,9 @@ export const ChannelMessages = ({
       >
         {isOwner && (
           <WelcomeMessage message={welcomeMessages['main']} />
+        )}
+        {!isRescanned && (
+          <RescanMessage message={welcomeMessages['main']} />
         )}
         {/* {isOffer && !showLoader && (
           <WelcomeMessage message={welcomeMessages['offer'](tag, username)} />

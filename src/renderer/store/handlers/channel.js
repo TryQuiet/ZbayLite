@@ -130,6 +130,7 @@ const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
       username: targetChannel.name
     })
   )
+  electronStore.set(`channelsToRescan.${targetChannel.address}`, true)
   const importedChannels = electronStore.get(`importedChannels`) || {}
   electronStore.set('importedChannels', {
     ...importedChannels,
