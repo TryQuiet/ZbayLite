@@ -13,6 +13,9 @@ class RPC {
   rescan = async () => {
     return native.litelib_execute('rescan', '')
   }
+  seed = async () => {
+    return JSON.parse(native.litelib_execute('seed', ''))
+  }
   syncStatus = async () => {
     return JSON.parse(native.litelib_execute('syncstatus', ''))
   }
