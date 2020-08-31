@@ -25,15 +25,18 @@ class RPC {
   notes = async () => {
     return JSON.parse(native.litelib_execute('notes', ''))
   }
-  sendTransaction = async ({ address, amount = 0, memo = '' }) => {
-    const result = await native.litelib_execute(
-      'send',
-      `${address},${amount},${memo}`
-    )
-    return JSON.parse(result)
-  }
+  // sendTransaction = async ({ address, amount = 0, memo = '' }) => {
+  //   console.log('a')
+  //   const result = await native.litelib_execute(
+  //     'send',
+  //     `${address},${amount},${memo}`
+  //   )
+  //   return JSON.parse(result)
+  // }
   sendTransaction = async (txns = []) => {
     // TODO add validation of payload
+    console.log('b')
+    console.log(txns)
     const txnsArray = Array.isArray(txns) ? txns : [txns]
     const result = JSON.parse(
       await native.litelib_execute('send', JSON.stringify(txnsArray))
