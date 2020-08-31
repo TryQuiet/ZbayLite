@@ -20,7 +20,7 @@ const styles = theme => ({
     marginTop: 8
   },
   infoDiv: {
-    marginTop: 16,
+    marginTop: 32,
     textAlign: 'center'
   },
   info: {
@@ -32,14 +32,11 @@ const styles = theme => ({
     color: theme.palette.colors.black30,
     textAlign: 'start'
   },
-  seedDiv: {
-    width: 250
-  }
+  seedDiv: {}
 })
-export const SeedModal = ({ classes, open, handleClose }) => {
-  const words = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+export const SeedModal = ({ classes, open, handleClose, seedWords }) => {
   return (
-    <Modal open handleClose={handleClose} title=''>
+    <Modal open={open} handleClose={handleClose} title=''>
       <AutoSizer>
         {({ width, height }) => (
           <Scrollbars
@@ -68,28 +65,31 @@ export const SeedModal = ({ classes, open, handleClose }) => {
                 </Typography>
               </Grid>
               <Grid item className={classes.infoDiv}>
-                <Grid
-                  container
-                  className={classes.seedDiv}
-                  justify='space-evenly'
-                >
-                  <Grid item>
-                    {words.slice(0, 6).map((word, index) => (
-                      <Typography
-                        variant='body2'
-                        className={classes.seedWord}
-                      >{`${index + 1}. ${word}`}</Typography>
-                    ))}
+                {seedWords && (
+                  <Grid
+                    container
+                    className={classes.seedDiv}
+                    justify='space-evenly'
+                    spacing={8}
+                  >
+                    <Grid item>
+                      {seedWords.slice(0, 12).map((word, index) => (
+                        <Typography
+                          variant='body2'
+                          className={classes.seedWord}
+                        >{`${index + 1}. ${word}`}</Typography>
+                      ))}
+                    </Grid>
+                    <Grid item>
+                      {seedWords.slice(12).map((word, index) => (
+                        <Typography
+                          variant='body2'
+                          className={classes.seedWord}
+                        >{`${index + 12}. ${word}`}</Typography>
+                      ))}
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    {words.slice(6).map((word, index) => (
-                      <Typography
-                        variant='body2'
-                        className={classes.seedWord}
-                      >{`${index + 6}. ${word}`}</Typography>
-                    ))}
-                  </Grid>
-                </Grid>
+                )}
               </Grid>
             </Grid>
           </Scrollbars>
