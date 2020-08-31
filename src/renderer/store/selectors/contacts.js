@@ -6,6 +6,7 @@ import operationsSelectors from './operations'
 import { operationTypes } from '../handlers/operations'
 import usersSelectors from './users'
 import { mergeIntoOne, displayableMessageLimit } from './channel'
+import { unknownUserId } from '../../../shared/static'
 
 export const Contact = Immutable.Record({
   lastSeen: null,
@@ -40,6 +41,12 @@ const contactsList = createSelector(
       .toList()
   }
 )
+
+const unknownMessages = createSelector(contacts, (contacts) => {
+  return contacts
+    .filter(c => c.key === unknownUserId)
+    .toList()
+})
 
 const offerList = createSelector(
   contacts,
@@ -171,5 +178,6 @@ export default {
   getAdvertById,
   allMessages,
   messagesLength,
-  messagesSorted
+  messagesSorted,
+  unknownMessages
 }
