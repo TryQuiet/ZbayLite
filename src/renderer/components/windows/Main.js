@@ -14,6 +14,7 @@ import Offer from '../../containers/pages/Offer'
 import DirectMessages from '../../containers/pages/DirectMessages'
 import DepositMoneyModal from '../../containers/ui/DepositMoneyModal'
 import LogsContainer from '../../containers/widgets/logs/Logs'
+import SeedModal from '../../containers/widgets/channels/SeedModal'
 import electronStore from '../../../shared/electronStore'
 
 const styles = {
@@ -72,6 +73,7 @@ export const Main = ({
   return (
     <>
       <DepositMoneyModal />
+      <SeedModal />
       <WindowWrapper>
         <Grid container direction='row' className={classes.gridRoot}>
           <Grid item>
