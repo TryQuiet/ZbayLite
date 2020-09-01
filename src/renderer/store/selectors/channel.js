@@ -295,11 +295,15 @@ export const INPUT_STATE = {
 
 export const channelId = createSelector(channel, ch => ch.id)
 
-export const members = createSelector(messages(), msgs =>
-  msgs.reduce((acc, msg) => {
+export const members = createSelector(contacts.contacts, id, (c, channelId) => {
+  const contact = c.get(channelId)
+  if (!contact) {
+    return new Set()
+  }
+  return contact.messages.toList().reduce((acc, msg) => {
     return acc.add(msg.sender.replyTo)
   }, new Set())
-)
+})
 
 export const channelParticipiants = createSelector(
   contacts.contacts,

@@ -93,6 +93,11 @@ export const VaultUnlockerForm = ({
     process.env.NODE_ENV === 'production'
   const [done, setDone] = useState(true)
   const [syncingStart, setSyncingStart] = useState(false)
+  React.useEffect(() => {
+    if (isRescanning === true) {
+      setSyncingStart(true)
+    }
+  }, [isRescanning])
   return (
     <Formik
       onSubmit={(values, actions) => {

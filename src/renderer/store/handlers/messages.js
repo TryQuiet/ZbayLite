@@ -30,6 +30,7 @@ import channels from '../../zcash/channels'
 import { displayMessageNotification } from '../../notifications'
 import electronStore from '../../../shared/electronStore'
 import notificationCenterSelectors from '../selectors/notificationCenter'
+import staticChannelsMessages from '../../static/staticChannelsMessages.json'
 
 export const MessageSender = Immutable.Record(
   {
@@ -102,7 +103,11 @@ export const fetchAllMessages = async () => {
       ...txn,
       amount: txn.amount / satoshiMultiplier
     }))
-    return R.groupBy(txn => txn.address)(txnsZec)
+    return R.mergeDeepWith(
+      R.concat,
+      R.groupBy(txn => txn.address)(txnsZec),
+      staticChannelsMessages
+    )
   } catch (err) {
     console.warn(`Can't pull messages`)
     console.warn(err)
@@ -112,7 +117,6 @@ export const fetchAllMessages = async () => {
 export const fetchMessages = () => async (dispatch, getState) => {
   try {
     const txns = await fetchAllMessages()
-    console.log(txns)
     const identityAddress = identitySelectors.address(getState())
     await dispatch(
       usersHandlers.epics.fetchUsers(

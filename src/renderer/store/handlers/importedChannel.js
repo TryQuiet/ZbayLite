@@ -105,6 +105,7 @@ const importChannel = () => async (dispatch, getState) => {
   const channel = importedChannelSelectors.data(state).toJS()
   try {
     const importedChannels = electronStore.get(`importedChannels`) || {}
+    electronStore.set(`channelsToRescan.${channel.address}`, true)
     electronStore.set('importedChannels', {
       ...importedChannels,
       [channel.address]: {
@@ -171,6 +172,7 @@ const decodeChannelEpic = uri => async (dispatch, getState) => {
         x => !addressBefore.z_addresses.includes(x)
       )
       importAddress = addressesDifference[0]
+      electronStore.set(`channelsToRescan.${importAddress}`, true)
     } else {
       importAddress = checkExisting[0].address
       checkImported = true

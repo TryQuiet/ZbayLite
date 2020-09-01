@@ -42,6 +42,7 @@ import {
 import electronStore, { migrationStore } from '../../../shared/electronStore'
 // import app from './app'
 // import channels from '../../zcash/channels'
+import staticChannelsSyncHeight from '../../static/staticChannelsSyncHeight.json'
 
 export const ShippingData = Immutable.Record(
   {
@@ -246,20 +247,20 @@ export const createIdentity = ({ name, fromMigrationFile }) => async (
   let signerPrivKey
   let signerPubKey
   try {
+    const accountAddresses = await client.addresses()
+    const { t_addresses: tAddresses } = accountAddresses
+
     if (fromMigrationFile) {
       const migrationIdentity = migrationStore.get('identity')
       zAddress = migrationIdentity.address
-      tAddress = migrationIdentity.transparentAddress
-      tpk = migrationIdentity.keys.tpk
+      tAddress = tAddresses[0]
+      tpk = await client.getPrivKey(tAddress)
       sk = migrationIdentity.keys.sk
-      await client.importKey(tpk)
       await client.importKey(sk)
       signerPrivKey = migrationIdentity.signerPrivKey
       signerPubKey = migrationIdentity.signerPubKey
     } else {
-      const accountAddresses = await client.addresses()
       const { z_addresses: zAddresses } = accountAddresses
-      const { t_addresses: tAddresses } = accountAddresses
       zAddress = zAddresses[0]
       tAddress = tAddresses[0]
       tpk = await client.getPrivKey(tAddress)
@@ -330,7 +331,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async (
     for (const channel of channelsToLoad) {
       await client.importKey(
         channelsWithDetails[channel]['keys']['ivk'],
-        740000
+        staticChannelsSyncHeight.height
       )
     }
 

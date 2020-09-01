@@ -17,6 +17,7 @@ import publicChannelsSelector from '../../../store/selectors/publicChannels'
 import { messageType } from '../../../../shared/static'
 import zcashChannels from '../../../zcash/channels'
 import channelHandlers from '../../../store/handlers/channel'
+import electronStore from '../../../../shared/electronStore'
 
 export const mapStateToProps = (state, { signerPubKey, network }) => {
   const qMessages = queueMessages.queue(state)
@@ -68,11 +69,12 @@ export const ChannelMessages = ({
   isOwner
 }) => {
   const [scrollPosition, setScrollPosition] = React.useState(-1)
-  // console.log(messagesLength)
+  const [isRescanned, setIsRescanned] = React.useState(true)
   // console.log(displayableMessageLimit)
   // console.log(scrollPosition)
   useEffect(() => {
     setScrollPosition(-1)
+    setIsRescanned(!electronStore.get(`channelsToRescan.${channelId}`))
   }, [channelId, contactId])
   useEffect(() => {
     if (triggerScroll) {
@@ -102,6 +104,7 @@ export const ChannelMessages = ({
     <ChannelMessagesComponent
       scrollPosition={scrollPosition}
       setScrollPosition={setScrollPosition}
+      isRescanned={isRescanned}
       messages={
         tab === 0
           ? messages
@@ -129,6 +132,9 @@ export default connect(
       Immutable.is(before.messages, after.messages) &&
       before.tab === after.tab &&
       before.isInitialLoadFinished === after.isInitialLoadFinished &&
+      before.isOwner === after.isOwner &&
+      before.channelId === after.channelId &&
+      before.contactId === after.contactId &&
       Immutable.is(before.users, after.users) &&
       Immutable.is(before.publicChannels, after.publicChannels)
     )
