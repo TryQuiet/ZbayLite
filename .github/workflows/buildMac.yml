@@ -23,6 +23,8 @@ jobs:
           toolchain: nightly-x86_64-apple-darwin
           components: clippy
           override: true
+      - name: fix rust
+        run: rustup toolchain remove stable && rustup toolchain install stable
       - name: install rustfmt
         run: rustup component add rustfmt
       - name: install dependencies
