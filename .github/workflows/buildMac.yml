@@ -20,13 +20,9 @@ jobs:
           component: clippy
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly-x86_64-apple-darwin
+          toolchain: nightly-2020-08-28
           components: clippy
           override: true
-      - name: fix rust
-        run: rustup toolchain remove stable && rustup toolchain install stable
-      - name: fix rust
-        run: rustup toolchain remove nightly && rustup toolchain add nightly
       - name: install rustfmt
         run: rustup component add rustfmt
       - name: install dependencies
