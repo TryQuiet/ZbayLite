@@ -4,6 +4,7 @@ import * as R from 'ramda'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
+import { shell } from 'electron'
 
 import red from '@material-ui/core/colors/red'
 
@@ -48,12 +49,7 @@ const styles = theme => ({
 
 export const MigrationModal = ({ classes, open, handleClose }) => {
   return (
-    <Modal
-      open={open}
-      handleClose={handleClose}
-      title=''
-      isCloseDisabled
-    >
+    <Modal open={open} handleClose={handleClose} title='' isCloseDisabled>
       <Grid
         container
         justify='flex-start'
@@ -71,7 +67,15 @@ export const MigrationModal = ({ classes, open, handleClose }) => {
           <Typography variant='body2' className={classes.info}>
             Any "transparent" Zcash addresses from before this update are no
             longer working. Only use new addresses.{' '}
-            <span className={classes.link}>Learn more </span>
+            <span
+              className={classes.link}
+              onClick={e => {
+                e.preventDefault()
+                shell.openExternal('https://github.com/ZbayApp/zbay#removing-data')
+              }}
+            >
+              Learn more
+            </span>
           </Typography>
         </Grid>
 
