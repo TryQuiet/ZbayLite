@@ -15,13 +15,16 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: "12"
+      - uses: actions-rs/components-nightly@v1
+        with:
+          component: clippy
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: nightly-2020-08-28
           components: clippy
           override: true
       - name: install rustfmt
-        run: rustup component add rustfmt --toolchain nightly-x86_64-apple-darwin
+        run: rustup component add rustfmt
       - name: install dependencies
         run: npm install
       - name: install neon
@@ -36,3 +39,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: electron-builder -p always --mac
+
