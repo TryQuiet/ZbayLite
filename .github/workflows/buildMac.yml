@@ -39,3 +39,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: electron-builder -p always --mac
+
