@@ -14,8 +14,8 @@ jobs:
           ref: refs/heads/master
       - uses: actions/setup-node@master
         with:
-      - node-version: "12"
-        uses: actions-rs/components-nightly@v1
+          node-version: "12"
+      - uses: actions-rs/components-nightly@v1
         with:
           component: clippy
       - uses: actions-rs/toolchain@v1
