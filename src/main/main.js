@@ -834,7 +834,8 @@ process.on('exit', () => {
   }
 })
 
-app.on('before-quit', () => {
+app.on('before-quit', async (e) => {
+  await client.terminate()
   if (browserWidth && browserHeight) {
     electronStore.set('windowSize', { width: browserWidth, height: browserHeight })
   }
