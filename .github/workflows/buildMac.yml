@@ -25,6 +25,8 @@ jobs:
           override: true
       - name: fix rust
         run: rustup toolchain remove stable && rustup toolchain install stable
+      - name: fix rust
+        run: rustup toolchain remove nightly && rustup toolchain add nightly
       - name: install rustfmt
         run: rustup component add rustfmt
       - name: install dependencies
