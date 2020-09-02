@@ -39,9 +39,3 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: electron-builder -p always --mac
-
- Current runner version: '2.273.0'
-Operating System
-  Mac OS X
-  10.15.6
-  19G2021
