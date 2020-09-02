@@ -14,6 +14,7 @@ import RegistrationGuide from './containers/windows/RegistrationGuide'
 import Loading from './containers//windows/Loading'
 import Notifier from './containers/ui/Notifier'
 import ErrorModal from './containers/ui/ErrorModal'
+import MigrationModal from './containers/ui/MigrationModal'
 import QuitAppDialog from './containers/ui/QuitAppDialog'
 import TopUpModal from './containers/ui/TopUpModal'
 import SecurityModal from './containers/widgets/settings/SecurityModal'
@@ -43,6 +44,7 @@ export default () => {
         <Provider store={store}>
           <SnackbarProvider maxSnack={3}>
             <Notifier />
+            <MigrationModal />
             <ErrorModal />
             <QuitAppDialog />
             <UpdateModal />
