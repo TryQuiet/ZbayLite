@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - test
 
 jobs:
   build_on_mac:
@@ -14,14 +14,14 @@ jobs:
           ref: refs/heads/master
       - uses: actions/setup-node@master
         with:
-          node-version: "12"
+      - node-version: "12"
+        uses: actions-rs/components-nightly@v1
+        with:
+          component: clippy
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
-          components: clippy
+          toolchain: ${{ steps.component.outputs.toolchain }}
           override: true
-      - name: install rustfmt
-        run: rustup component add rustfmt --toolchain nightly-x86_64-apple-darwin
       - name: install dependencies
         run: npm install
       - name: install neon
@@ -36,3 +36,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: electron-builder -p always --mac
+
+ Current runner version: '2.273.0'
+Operating System
+  Mac OS X
+  10.15.6
+  19G2021
