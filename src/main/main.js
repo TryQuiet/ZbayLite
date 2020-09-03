@@ -364,9 +364,7 @@ export const checkForUpdate = win => {
 }
 
 const checkPath = pathToCreate => {
-  console.log('test', pathToCreate)
   if (!fs.existsSync(pathToCreate)) {
-    console.log('working', pathToCreate)
     fs.ensureDirSync(pathToCreate)
   }
 }
