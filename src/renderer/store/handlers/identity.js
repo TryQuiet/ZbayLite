@@ -251,6 +251,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async (
     const { t_addresses: tAddresses } = accountAddresses
 
     if (fromMigrationFile) {
+      electronStore.set('isMigrating', true)
       const migrationIdentity = migrationStore.get('identity')
       zAddress = migrationIdentity.address
       tAddress = tAddresses[0]
@@ -416,6 +417,9 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
       payload: ` Loading identity finished`
     })
   )
+  if (electronStore.get('isMigrating')) {
+    dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
+  }
   // dispatch(app.actions.setInitialLoadFlag(true))
   // Don't show deposit modal if we use faucet 12.02.2020
   // const balance = identitySelectors.balance('zec')(getState())

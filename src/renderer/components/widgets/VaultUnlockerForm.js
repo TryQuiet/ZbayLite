@@ -139,7 +139,7 @@ export const VaultUnlockerForm = ({
                   variant='body1'
                   gutterBottom
                 >
-                  {`Welcome to Zbay! Connect now to start syncing and learn more.`}
+                  {`Welcome to Zbay! Connect now to start syncing.`}
                 </Typography>
               </Grid>
             )}

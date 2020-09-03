@@ -40,6 +40,7 @@ export const ChannelMessages = ({
   }, [triggerScroll])
   return (
     <ChannelMessagesComponent
+      isDM
       scrollPosition={scrollPosition}
       setScrollPosition={setScrollPosition}
       messages={messages}

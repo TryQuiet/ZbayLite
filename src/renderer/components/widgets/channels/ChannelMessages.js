@@ -47,7 +47,8 @@ export const ChannelMessages = ({
   onLinkedChannel,
   publicChannels,
   isInitialLoadFinished,
-  isRescanned
+  isRescanned,
+  isDM
 }) => {
   const scrollbarRef = React.useRef()
   // const [lastScrollHeight, setLastScrollHeight] = React.useState(0)
@@ -137,12 +138,8 @@ export const ChannelMessages = ({
         className={classes.list}
         style={{ marginTop: offset }}
       >
-        {isOwner && (
-          <WelcomeMessage message={welcomeMessages['main']} />
-        )}
-        {!isRescanned && (
-          <RescanMessage message={welcomeMessages['main']} />
-        )}
+        {isOwner && <WelcomeMessage message={welcomeMessages['main']} />}
+        {!isRescanned && !isDM && <RescanMessage />}
         {/* {isOffer && !showLoader && (
           <WelcomeMessage message={welcomeMessages['offer'](tag, username)} />
         )} */}
@@ -216,6 +213,7 @@ ChannelMessages.propTypes = {
   publicChannelsRegistration: PropTypes.array.isRequired,
   contactId: PropTypes.string,
   isOwner: PropTypes.bool.isRequired,
+  isDM: PropTypes.bool,
   isInitialLoadFinished: PropTypes.bool.isRequired,
   isOffer: PropTypes.bool.isRequired,
   messages: PropTypes.instanceOf(Immutable.List).isRequired,
@@ -231,7 +229,8 @@ ChannelMessages.defaultProps = {
   usersRegistration: [],
   publicChannelsRegistration: [],
   isOwner: false,
-  isOffer: false
+  isOffer: false,
+  isDM: false
 }
 
 export default React.memo(withStyles(styles)(ChannelMessages))

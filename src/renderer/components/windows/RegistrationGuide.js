@@ -109,7 +109,7 @@ const ContentWithRedirect = ({ classes }) => (
     <Grid item>
       <Typography variant={'h3'}>And now... some waiting!</Typography>
       <Typography className={classes.sentence} variant={'body2'}>
-      Our tour has concluded! Now, we just have to wait for some blockchain files to download. Perhaps leave your computer and go have a sandwich.
+      Our tour has concluded! Now, we just have to wait for some blockchain files to download.
       </Typography>
       <Typography className={classes.sentence} variant={'body2'}>
     If you'd like to learn more about the values and vision behind the Zbay project, there's <span onClick={() => shell.openExternal('https://www.zbay.app/why.html')} className={classes.linkBlue}>a great (and long) essay on our site.</span>

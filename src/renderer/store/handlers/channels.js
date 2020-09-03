@@ -25,6 +25,7 @@ import { networkFee, actionTypes } from '../../../shared/static'
 import history from '../../../shared/history'
 import electronStore from '../../../shared/electronStore'
 import contactsHandlers from './contacts'
+import ownedChannelsHandlers from './ownedChannels'
 
 const toBigNumber = x => new BigNumber(x)
 
@@ -127,6 +128,7 @@ const createChannel = (values, formActions, setStep) => async (
         username: values.name
       })
     )
+    dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
     history.push(`/main/channel/${address}`)
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
