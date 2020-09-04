@@ -638,13 +638,12 @@ app.on('ready', async () => {
         checkForPayloadOnStartup(payload)
       }
     }
-    // disable update
-    // if (!isDev) {
-    //   checkForUpdate(mainWindow)
-    //   setInterval(() => {
-    //     checkForUpdate(mainWindow)
-    //   }, 15 * 60000)
-    // }
+    if (!isDev) {
+      checkForUpdate(mainWindow)
+      setInterval(() => {
+        checkForUpdate(mainWindow)
+      }, 15 * 60000)
+    }
   })
 
   ipcMain.on('proceed-update', (event, arg) => {
