@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 
 import Icon from '../../ui/Icon'
-import usernameIcon from '../../../static/images/username.svg'
+import usernameIcon from '../../../static/images/userIcon.svg'
 
 const styles = theme => ({
   createUsernameContainer: {
@@ -102,7 +102,7 @@ export const AccountSettingsForm = ({
       </Grid>
       <Grid container justify='center'>
         <Grid container xs item className={classes.createUsernameContainer}>
-          {user && !user.nickname.startsWith('anon') ? (
+          {!user && !user.nickname.startsWith('anon') ? (
             <Grid item xs={12}>
               <Typography variant='h4'>@{user.nickname}</Typography>
             </Grid>
