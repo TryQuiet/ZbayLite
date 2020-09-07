@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
@@ -10,6 +10,7 @@ import appSelectors from '../../store/selectors/app'
 import identitySelectors from '../../store/selectors/identity'
 import VaultUnlockerFormComponent from '../../components/widgets/VaultUnlockerForm'
 import { actionCreators } from '../../store/handlers/modals'
+import electronStore from '../../../shared/electronStore'
 // import { useInterval } from '../hooks'
 
 export const mapStateToProps = state => ({
@@ -44,18 +45,26 @@ export const VaultUnlockerForm = ({
   openModal,
   guideStatus,
   ...props
-}) => (
-  <VaultUnlockerFormComponent
-    locked={locked}
-    loader={loader}
-    exists={exists}
-    openModal={openModal}
-    nodeConnected={nodeConnected}
-    isLogIn={isLogIn}
-    guideStatus={guideStatus}
-    {...props}
-  />
-)
+}) => {
+  const [isNewUser, setUserStatus] = useState(false)
+  useEffect(() => {
+    const userStatus = electronStore.get('isNewUser')
+    setUserStatus(userStatus)
+  }, [])
+  return (
+    <VaultUnlockerFormComponent
+      locked={locked}
+      loader={loader}
+      exists={exists}
+      openModal={openModal}
+      nodeConnected={nodeConnected}
+      isLogIn={isLogIn}
+      guideStatus={guideStatus}
+      isNewUser={isNewUser}
+      {...props}
+    />
+  )
+}
 export default connect(
   mapStateToProps,
   mapDispatchToProps
