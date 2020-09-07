@@ -10,6 +10,8 @@ import Icon from '../../ui/Icon'
 
 import lock from '../../../static/images/lock.svg'
 import { Grid, Typography } from '@material-ui/core'
+import client from '../../../zcash'
+
 const styles = theme => ({
   root: {
     marginTop: 40,
@@ -34,7 +36,17 @@ const styles = theme => ({
   },
   seedDiv: {}
 })
-export const SeedModal = ({ classes, open, handleClose, seedWords }) => {
+export const SeedModal = ({ classes, open, handleClose }) => {
+  const [seedWords, setSeedWords] = React.useState(null)
+  React.useEffect(() => {
+    const fetchSeed = async () => {
+      const seedData = await client.seed()
+      setSeedWords(seedData.seed.split(' '))
+    }
+    if (open === true) {
+      fetchSeed()
+    }
+  }, [open])
   return (
     <Modal open={open} handleClose={handleClose} title=''>
       <AutoSizer>
