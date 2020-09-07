@@ -294,6 +294,9 @@ const setOutgoingTransactions = (address, messages) => async (
       const offer = contactsSelectors.getAdvertById(key.substring(0, 64))(
         getState()
       )
+      if (!offer) {
+        continue
+      }
       if (!contacts.get(key)) {
         await dispatch(
           contactsHandlers.actions.addContact({
