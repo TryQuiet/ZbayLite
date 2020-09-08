@@ -489,6 +489,9 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       const offer = contactsSelectors.getAdvertById(key.substring(0, 64))(
         getState()
       )
+      if (!offer) {
+        continue
+      }
       if (!contacts.get(key)) {
         await dispatch(
           contactsHandlers.actions.addContact({
@@ -537,6 +540,10 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
   for (const key in groupedMesssages) {
     if (groupedMesssages.hasOwnProperty(key)) {
       const user = users.get(key)
+      // filter unregistered users
+      if (!user) {
+        continue
+      }
       dispatch(
         contactsHandlers.actions.setMessages({
           key: key,
