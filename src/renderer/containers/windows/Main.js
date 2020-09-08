@@ -36,8 +36,8 @@ export const Main = ({ zecBalance, openSettingsModal, fetchBalance, ...props }) 
     const isNewUser = electronStore.get('isNewUser')
     if (isNewUser === true && zecBalance.gt(0)) {
       openSettingsModal()
-      electronStore.set('isNewUser', false)
     }
+    electronStore.set('isNewUser', false)
   }, [])
   return <MainComponent {...props} />
 }

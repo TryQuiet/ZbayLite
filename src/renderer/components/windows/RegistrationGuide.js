@@ -135,7 +135,7 @@ export const RegistraionGuide = ({ classes, content, currentSlide, prevSlide, ne
               <img src={reqSvgs(content[currentSlide].fileName)} />
             </Grid>
             <Grid container item className={classes.textBox} alignItems={'center'}>
-              {currentSlide !== 10
+              {currentSlide !== 9
                 ? <Fragment>
                   <Grid item>
                     <Typography variant={'h3'}>{content[currentSlide].title}</Typography>
@@ -152,16 +152,16 @@ export const RegistraionGuide = ({ classes, content, currentSlide, prevSlide, ne
                 [classes.disableButton]: currentSlide === 0
               })}>Back</Button>
             </Grid>
-            <Grid container item justify={currentSlide === 10 ? 'flex-end' : 'center'} className={classNames(null, { [classes.alignDots]: currentSlide === 10 })}>
+            <Grid container item justify={currentSlide === 9 ? 'flex-end' : 'center'} className={classNames(null, { [classes.alignDots]: currentSlide === 9 })}>
               {content.map((_, index) => <Grid key={index} item><span className={classNames(classes.dot, {
                 [classes.active]: index === currentSlide
               })} /></Grid>)}
             </Grid>
             <Grid item>
-              <Button onClick={currentSlide !== 10 ? nextSlide : setStoryStatus} className={classNames(classes.buttonNext, {
-                [classes.wideButton]: currentSlide === 10
+              <Button onClick={currentSlide !== 9 ? nextSlide : setStoryStatus} className={classNames(classes.buttonNext, {
+                [classes.wideButton]: currentSlide === 9
               })}>
-                {currentSlide !== 10 ? 'Next' : 'Show download progress'}
+                {currentSlide !== 9 ? 'Next' : 'Show download progress'}
               </Button>
             </Grid>
           </Grid>
