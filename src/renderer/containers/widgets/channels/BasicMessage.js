@@ -7,9 +7,11 @@ import channelSelectors from '../../../store/selectors/channel'
 export const mapStateToProps = state => {
   const isOwner = channelSelectors.isOwner(state)
   // TODO fix selector once moderation messages work
-  const channelModerators = channelSelectors.channelModerators(state)
+  // const channelModerators = channelSelectors.channelModerators(state)
+  // console.log(isOwner)
+  // console.log(channelModerators)
   return {
-    allowModeration: isOwner || channelModerators
+    allowModeration: isOwner
   }
 }
 
