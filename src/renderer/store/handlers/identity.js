@@ -405,7 +405,6 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     dispatch(setLoadingMessage('Loading users and messages'))
   } catch (err) {}
   if (isNewUser === true) {
-    console.log('working opening registration modal')
     dispatch(modalsHandlers.actionCreators.openModal('createUsernameModal')())
   }
   // dispatch(fetchAffiliateMoney())

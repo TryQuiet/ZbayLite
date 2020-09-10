@@ -153,7 +153,6 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     debounce = false,
     retry = 0
   } = payload
-  console.log(`retry:${retry}`)
   const address = identitySelector.address(getState())
   const privKey = identitySelector.signerPrivKey(getState())
   const fee = feesSelector.userFee(getState())
