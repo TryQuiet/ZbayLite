@@ -5,6 +5,7 @@ import * as R from 'ramda'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
+import ConfirmModal from '../channelSettings/ConfirmModal'
 
 const styles = theme => ({
   root: {
@@ -26,16 +27,36 @@ const styles = theme => ({
 })
 
 export const RescanMessage = ({ classes, onClick }) => {
+  const [open, setOpen] = React.useState(false)
   return (
-    <Grid container className={classes.root}>
-      <Grid item xs className={classes.item}>
-        <Typography variant='caption' className={classes.info}>
-          Showing only future messages.{' '}
-          <span className={classes.rescanButton} onClick={onClick}>Restart Zbay</span> to see
-          older messages.
-        </Typography>
+    <>
+      <ConfirmModal
+        open={open}
+        handleAction={() => {
+          onClick()
+        }}
+        handleClose={() => {
+          setOpen(false)
+        }}
+        title='Do you want to rescan this channel?'
+        actionName='Confirm'
+        cancelName='Cancel'
+      />
+      <Grid container className={classes.root}>
+        <Grid item xs className={classes.item}>
+          <Typography variant='caption' className={classes.info}>
+            Showing only future messages.{' '}
+            <span
+              className={classes.rescanButton}
+              onClick={() => setOpen(true)}
+            >
+              Restart Zbay
+            </span>{' '}
+            to see older messages.
+          </Typography>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   )
 }
 
