@@ -4,9 +4,10 @@ import identitySelectors from './identity'
 import directMssagesQueueSelectors from './directMessagesQueue'
 import operationsSelectors from './operations'
 import { operationTypes } from '../handlers/operations'
-import usersSelectors from './users'
+// import usersSelectors from './users'
 import { mergeIntoOne, displayableMessageLimit } from './channel'
-import { unknownUserId } from '../../../shared/static'
+import { unknownUserId, messageType } from '../../../shared/static'
+// import messagesSelectors from './messages'
 
 export const Contact = Immutable.Record({
   lastSeen: null,
@@ -87,12 +88,20 @@ const directMessagesContact = address =>
 
 const contact = address =>
   createSelector(contacts, c => c.get(address, Contact()))
+
 const messagesSorted = address =>
   createSelector(contact(address), c => {
     return c.messages
       .toList()
       .sort((msg1, msg2) => msg2.createdAt - msg1.createdAt)
   })
+const messagesSortedDesc = address =>
+  createSelector(contact(address), c => {
+    return c.messages
+      .toList()
+      .sort((msg1, msg2) => msg1.createdAt - msg2.createdAt)
+  })
+
 const messagesLength = address =>
   createSelector(contact(address), c => {
     return c.messages.toList().size
@@ -103,6 +112,14 @@ const messages = address =>
     displayableMessageLimit,
     (msgs, limit) => {
       return msgs.slice(0, limit)
+    }
+  )
+
+const channelSettingsMessages = address =>
+  createSelector(
+    messagesSortedDesc(address),
+    (msgs) => {
+      return msgs.filter(msg => msg.get('type') === 6)
     }
   )
 
@@ -137,26 +154,75 @@ export const pendingMessages = address =>
     )
   )
 
+const channelOwner = channelId => createSelector(
+  channelSettingsMessages(channelId),
+  msgs => {
+    let channelOwner = null
+    channelOwner = msgs.get(0) ? msgs.get(0).get('publicKey') : null
+    for (const msg of msgs) {
+      if (channelOwner === msg.get('publicKey')) {
+        channelOwner = msg.getIn(['message', 'owner'])
+      }
+    }
+    return channelOwner
+  }
+)
+
 export const directMessages = (address, signerPubKey) =>
   createSelector(
-    identitySelectors.data,
-    usersSelectors.registeredUser(signerPubKey),
     messages(address),
-    (identity, registeredUser, messages) => {
-      // const userData = registeredUser ? registeredUser.toJS() : null
-      // const identityAddress = identity.address
-      // const identityName = userData ? userData.nickname : identity.name
-
-      // const fetchedMessagesToDisplay = messages.map(msg =>
-      //   zbayMessages.receivedToDisplayableMessage({
-      //     message: msg,
-      //     identityAddress,
-      //     receiver: { replyTo: identityAddress, username: identityName }
-      //   })
-      // )
-
-      const merged = mergeIntoOne(messages)
-      return merged
+    channelOwner(address),
+    (messages, channelOwner) => {
+      let channelModerators = Immutable.List()
+      let messsagesToRemove = Immutable.List()
+      let blockedUsers = Immutable.List()
+      let visibleMessages = Immutable.List()
+      for (const msg of messages.reverse()) {
+        switch (msg.get('type')) {
+          case messageType.AD:
+            if (!blockedUsers.includes(msg.get('publicKey'))) {
+              visibleMessages = visibleMessages.push(msg)
+            }
+            break
+          case messageType.BASIC:
+            if (!blockedUsers.includes(msg.get('publicKey'))) {
+              visibleMessages = visibleMessages.push(msg)
+            }
+            break
+          case messageType.MODERATION:
+            const senderPk = msg.get('publicKey')
+            const moderationType = msg.getIn(['message', 'moderationType'])
+            const moderationTarget = msg.getIn(['message', 'moderationTarget'])
+            if (channelOwner === senderPk && moderationType === 'ADD_MOD') {
+              channelModerators = channelModerators.push(moderationTarget)
+            } else if (channelOwner === senderPk && moderationType === 'REMOVE_MOD') {
+              const indexToRemove = channelModerators.findIndex(el => el === moderationTarget)
+              if (indexToRemove !== -1) {
+                channelModerators = channelModerators.remove(indexToRemove)
+              }
+            } else if ((channelOwner === senderPk || channelModerators.includes(senderPk)) && moderationType === 'BLOCK_USER') {
+              blockedUsers = blockedUsers.push(moderationTarget)
+              visibleMessages = visibleMessages.filter(msg => !blockedUsers.includes(msg.publicKey))
+            } else if ((channelOwner === senderPk || channelModerators.includes(senderPk)) && moderationType === 'UNBLOCK_USER') {
+              const indexToRemove = blockedUsers.findIndex(el => el === moderationTarget)
+              if (indexToRemove !== -1) {
+                blockedUsers = blockedUsers.remove(indexToRemove)
+              }
+            } else if ((channelOwner === senderPk || channelModerators.includes(senderPk)) && moderationType === 'REMOVE_MESSAGE') {
+              const indexToRemove = visibleMessages.findIndex(el => el.get('id') === moderationTarget)
+              if (indexToRemove !== -1) {
+                visibleMessages = visibleMessages.remove(indexToRemove)
+              }
+            } else {}
+            break
+        }
+      }
+      return Immutable.fromJS({
+        channelModerators,
+        messsagesToRemove,
+        blockedUsers,
+        visibleMessages: mergeIntoOne(visibleMessages.reverse())
+      })
     }
   )
 

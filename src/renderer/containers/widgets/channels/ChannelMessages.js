@@ -29,7 +29,7 @@ export const mapStateToProps = (state, { signerPubKey, network }) => {
     channelData:
       channelsSelectors.channelById(channelSelectors.channelId(state))(state) ||
       Immutable.fromJS({ keys: {} }),
-    messages: contactsSelectors.directMessages(contactId, signerPubKey)(state),
+    messages: contactsSelectors.directMessages(contactId, signerPubKey)(state).get('visibleMessages'),
     messagesLength: contactsSelectors.messagesLength(contactId)(state),
     displayableMessageLimit: channelSelectors.displayableMessageLimit(state),
     channelId: channelSelectors.channelId(state),
