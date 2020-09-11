@@ -189,6 +189,11 @@ export const directMessages = (address, signerPubKey) =>
               visibleMessages = visibleMessages.push(msg)
             }
             break
+          case messageType.TRANSFER:
+            if (!blockedUsers.includes(msg.get('publicKey'))) {
+              visibleMessages = visibleMessages.push(msg)
+            }
+            break
           case messageType.MODERATION:
             const senderPk = msg.get('publicKey')
             const moderationType = msg.getIn(['message', 'moderationType'])
