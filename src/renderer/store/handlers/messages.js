@@ -95,14 +95,24 @@ export const actions = {
   cleanNewMessages,
   appendNewMessages
 }
-
+export const brokenMemoToMemohex = memo => {
+  const curPrefix = memo.substring(2)
+  return curPrefix + '0'.repeat(1024 - curPrefix.length)
+}
 export const fetchAllMessages = async () => {
   try {
     const txns = await client.list()
-    const txnsZec = txns.map(txn => ({
-      ...txn,
-      amount: txn.amount / satoshiMultiplier
-    }))
+    const txnsZec = txns
+      .map(txn => ({
+        ...txn,
+        amount: txn.amount / satoshiMultiplier
+      }))
+      .sort((a, b) => a.block_height - b.block_height)
+      .map(tx =>
+        tx.memo && tx.memohex
+          ? { ...tx, memohex: brokenMemoToMemohex(tx.memo) }
+          : tx
+      )
     return R.mergeDeepWith(
       R.concat,
       R.groupBy(txn => txn.address)(txnsZec),
@@ -399,10 +409,12 @@ const setChannelMessages = (channel, messages = []) => async (
       key: channel.address,
       contactAddress: channel.address,
       username: channel.name,
-      messages: messagesAll.reduce((acc, cur) => {
-        acc[cur.id] = cur
-        return acc
-      }, {})
+      messages: messagesAll
+        .filter(msg => msg.id !== null)
+        .reduce((acc, cur) => {
+          acc[cur.id] = cur
+          return acc
+        }, {})
     })
   )
   const newMsgs = findNewMessages(channel.address, messagesAll, getState())
