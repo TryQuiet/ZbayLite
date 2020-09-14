@@ -126,13 +126,14 @@ export const BasicMessage = ({
   const handleClose = () => setAnchorEl(null)
   const sender = message.sender
   const isUnregistered = message.isUnregistered
-  const username = sender.username.substring(0, 20) || 'Unnamed'
+  const username = sender.username.substring(0, 20) || 'unknown'
   const time = DateTime.fromSeconds(message.createdAt)
   const timeFormat = getTimeFormat(time)
   const timeString = transformToLowercase(time.toFormat(timeFormat))
   const fromYou = message.fromYou
   const status = message.status || 'broadcasted'
   const StatusIcon = statusComponent[status]
+  console.log(sender.username, 'username')
   const isFromZbayUser = username !== 'unknown'
   return (
     <ListItem
