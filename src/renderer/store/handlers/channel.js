@@ -83,7 +83,7 @@ const loadChannel = key => async (dispatch, getState) => {
     // to update channel in vault manually
     const contact = contactsSelectors.contact(key)(getState())
     const unread = contact.newMessages.size
-    remote.app.badgeCount = remote.app.badgeCount - unread
+    remote.app.setBadgeCount(remote.app.getBadgeCount() - unread)
     const ivk =
       electronStore.get(`defaultChannels.${contact.get('address')}.keys.ivk`) ||
       electronStore.get(`importedChannels.${contact.get('address')}.keys.ivk`)
