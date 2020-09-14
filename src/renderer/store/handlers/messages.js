@@ -215,6 +215,10 @@ const msgTypeToNotification = new Set([
 
 export const findNewMessages = (key, messages, state) => {
   if (messages) {
+    const currentChannel = channelSelectors.channel(state)
+    if (key === currentChannel.address) {
+      return []
+    }
     const userFilter = notificationCenterSelectors.userFilterType(state)
     const channelFilter = notificationCenterSelectors.channelFilterById(key)(
       state
