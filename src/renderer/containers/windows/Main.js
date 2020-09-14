@@ -24,17 +24,25 @@ export const mapDispatchToProps = dispatch => {
       fetch: coordinator.epics.coordinator,
       fetchBalance: fetchBalance,
       disablePowerSleepMode: nodeHandlers.epics.disablePowerSaveMode,
-      openSettingsModal: modalsHandlers.actionCreators.openModal('createUsernameModal')
+      openSettingsModal: modalsHandlers.actionCreators.openModal(
+        'createUsernameModal'
+      )
     },
     dispatch
   )
 }
 
-export const Main = ({ zecBalance, openSettingsModal, fetchBalance, ...props }) => {
+export const Main = ({
+  zecBalance,
+  openSettingsModal,
+  fetchBalance,
+  ...props
+}) => {
   useEffect(() => {
     fetchBalance()
     const isNewUser = electronStore.get('isNewUser')
-    if (isNewUser === true && zecBalance.gt(0)) {
+    const isMigrating = electronStore.get('isMigrating')
+    if (isNewUser === true && !isMigrating && zecBalance.gt(0)) {
       openSettingsModal()
     }
     electronStore.set('isNewUser', false)
@@ -44,8 +52,5 @@ export const Main = ({ zecBalance, openSettingsModal, fetchBalance, ...props }) 
 
 export default R.compose(
   React.memo,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(Main)

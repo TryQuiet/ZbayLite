@@ -12,7 +12,6 @@ const handleModerationAction = ({ moderationType, moderationTarget }) => async (
   dispatch,
   getState
 ) => {
-  const identityAddress = identitySelectors.address(getState())
   const channel = channelSelectors.data(getState()).toJS()
   const privKey = identitySelectors.signerPrivKey(getState())
   const message = zbayMessages.createMessage({
@@ -27,21 +26,13 @@ const handleModerationAction = ({ moderationType, moderationTarget }) => async (
   })
   const transfer = await zbayMessages.messageToTransfer({
     message,
-    address: channel.address,
-    identityAddress
+    address: channel.address
   })
   try {
-    await client.payment.send(transfer)
-    // await dispatch(
-    //   operationsHandlers.epics.observeOperation({
-    //     opId,
-    //     type: operationTypes.pendingMessage,
-    //     meta: {
-    //       channelId: channel.id,
-    //       message: message
-    //     }
-    //   })
-    // )
+    const txid = await client.sendTransaction(transfer)
+    if (txid.error) {
+      throw new Error(txid.error)
+    }
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
         successNotification({
@@ -50,8 +41,8 @@ const handleModerationAction = ({ moderationType, moderationTarget }) => async (
       )
     )
   } catch (err) {
-    notificationsHandlers.actions.enqueueSnackbar(
-      dispatch(
+    dispatch(
+      notificationsHandlers.actions.enqueueSnackbar(
         errorNotification({
           message: "Couldn't send the message, please check node connection."
         })

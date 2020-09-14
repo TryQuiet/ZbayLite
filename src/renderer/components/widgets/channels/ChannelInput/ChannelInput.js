@@ -180,7 +180,9 @@ export const ChannelInput = ({
   }
   const scrollToBottom = () => {
     const scroll = document.getElementById('messages-scroll').parentElement
-    scroll.scrollTop = scroll.scrollHeight
+    setTimeout(() => {
+      scroll.scrollTop = scroll.scrollHeight
+    }, 100)
   }
   React.useEffect(() => {
     inputRef.current.updater.enqueueForceUpdate(inputRef.current)

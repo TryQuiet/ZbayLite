@@ -146,7 +146,13 @@ export const registerAnonUsername = () => async (dispatch, getState) => {
   )
 }
 export const createOrUpdateUser = payload => async (dispatch, getState) => {
-  const { nickname, firstName = '', lastName = '' } = payload
+  const {
+    nickname,
+    firstName = '',
+    lastName = '',
+    debounce = false,
+    retry = 0
+  } = payload
   const address = identitySelector.address(getState())
   const privKey = identitySelector.signerPrivKey(getState())
   const fee = feesSelector.userFee(getState())
@@ -177,6 +183,12 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     }
   } catch (err) {
     console.log(err)
+    if (debounce === true && retry < 10) {
+      setTimeout(() => {
+        dispatch(createOrUpdateUser({ ...payload, retry: retry + 1 }))
+      }, 75000)
+      return
+    }
     dispatch(actionCreators.openModal('failedUsernameRegister')())
   }
 }
