@@ -138,8 +138,6 @@ export const ChannelHeader = ({
   }
   const ActionsMenu = channelTypeToActions[channelType]
   const isFromZbay = channel.get('name') !== 'Unknown'
-  console.log('k4gcw', channel.toJS())
-  console.log('isfROMzbay', isFromZbay)
   const [silenceHover, setSilenceHover] = React.useState(false)
   const [wrapperWidth, setWrapperWidth] = React.useState(0)
   React.useEffect(() => {

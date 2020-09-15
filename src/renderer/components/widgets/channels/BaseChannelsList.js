@@ -28,8 +28,6 @@ export const BaseChannelsList = ({
   selectedOffer
 }) => {
   const [...keys] = offers.keys()
-  console.log('channels', channels.toJS())
-  console.log('dupa', unknownMessages.get(0) ? console.log(unknownMessages.get(0).toJS()) : null)
   return (
     <List disablePadding>
       {channels

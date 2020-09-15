@@ -133,7 +133,6 @@ export const BasicMessage = ({
   const fromYou = message.fromYou
   const status = message.status || 'broadcasted'
   const StatusIcon = statusComponent[status]
-  console.log(sender.username, 'username')
   const isFromZbayUser = username !== 'unknown'
   return (
     <ListItem

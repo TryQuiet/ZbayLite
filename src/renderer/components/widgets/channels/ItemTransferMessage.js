@@ -134,7 +134,7 @@ export const ItemTransferMessage = ({
             } $${usdAmount} (${parseFloat(message.spent.toString()).toFixed(
               4
             )} ZEC) ${message.tag ? `for #${message.tag}` : ''}`
-            : `Received from @${message.sender.username} $${usdAmount} (${
+            : `${message.sender.username ? `Received from @${message.sender.username}` : `Received from unknown`} $${usdAmount} (${
               message.spent
             } ZEC) ${message.tag ? `for #${message.tag}` : ''}`}
         </Typography>
