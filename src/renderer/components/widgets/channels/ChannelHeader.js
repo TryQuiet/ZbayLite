@@ -21,7 +21,7 @@ import Icon from '../../ui/Icon'
 import silenced from '../../../static/images/silenced.svg'
 import silencedBlack from '../../../static/images/silencedBlack.svg'
 import Tooltip from '../../ui/Tooltip'
-import { unknownUserId } from '../../../../shared/static'
+// import { unknownUserId } from '../../../../shared/static'
 
 const styles = theme => ({
   root: {
@@ -137,7 +137,7 @@ export const ChannelHeader = ({
     }
   }
   const ActionsMenu = channelTypeToActions[channelType]
-  const isFromZbay = channel.get('name') !== unknownUserId
+  const isFromZbay = channel.get('name') !== 'Unknown'
   const [silenceHover, setSilenceHover] = React.useState(false)
   const [wrapperWidth, setWrapperWidth] = React.useState(0)
   React.useEffect(() => {
