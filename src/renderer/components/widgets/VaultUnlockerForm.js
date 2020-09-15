@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import * as Yup from 'yup'
 import { Formik, Form } from 'formik'
 import { Redirect } from 'react-router'
+import classNames from 'classnames'
 // import BigNumber from 'bignumber.js'
 
 import Grid from '@material-ui/core/Grid'
@@ -30,8 +31,7 @@ const styles = theme => ({
     height: 67
   },
   logoContainer: {
-    height: 167,
-    marginBottom: 40
+    height: 167
   },
   passwordField: {
     width: 286
@@ -41,9 +41,7 @@ const styles = theme => ({
     width: 456,
     fontSize: 14,
     color: theme.palette.colors.black30,
-    lineHeight: '20px',
-    height: 36,
-    marginBottom: 16
+    lineHeight: '20px'
   },
   torDiv: {
     marginTop: -8
@@ -64,6 +62,12 @@ const styles = theme => ({
   carouselContainer: {
     width: 450,
     height: 100
+  },
+  existingUser: {
+    fontSize: 24,
+    lineHeight: '36px',
+    color: theme.palette.colors.trueBlack,
+    margin: 0
   }
 })
 
@@ -84,9 +88,11 @@ export const VaultUnlockerForm = ({
   isRescanning,
   loader,
   openModal,
+  isNewUser,
   guideStatus,
   isInitialLoadFinished
 }) => {
+  console.log('isNewUser', isNewUser)
   const isSynced = currentBlock.plus(10).gt(latestBlock)
   const isDev =
     process.env.NODE_ENV === 'development' ||
@@ -112,7 +118,7 @@ export const VaultUnlockerForm = ({
           <Grid
             container
             direction='column'
-            spacing={2}
+            spacing={!isNewUser ? 4 : 6}
             justfy='center'
             alignItems='center'
             alignContent='center'
@@ -135,11 +141,11 @@ export const VaultUnlockerForm = ({
             ) : (
               <Grid container item xs={12} wrap='wrap' justify='center'>
                 <Typography
-                  className={classes.title}
+                  className={classNames({ [classes.title]: true, [classes.existingUser]: !isNewUser })}
                   variant='body1'
                   gutterBottom
                 >
-                  {`Welcome to Zbay! Connect now to start syncing.`}
+                  {!isNewUser ? `Welcome Back` : `Welcome to Zbay! Connect now to start syncing.`}
                 </Typography>
               </Grid>
             )}
@@ -150,7 +156,7 @@ export const VaultUnlockerForm = ({
                 size='large'
                 color='primary'
                 margin='normal'
-                text={' Connect now'}
+                text={!isNewUser ? 'Sign in' : 'Connect Now'}
                 fullWidth
                 disabled={!done || isRescanning || syncingStart}
                 inProgress={!done || isRescanning || syncingStart}
@@ -200,6 +206,7 @@ VaultUnlockerForm.propTypes = {
   nodeConnected: PropTypes.bool.isRequired,
   onSubmit: PropTypes.func.isRequired,
   loader: PropTypes.object.isRequired,
+  isNewUser: PropTypes.bool.isRequired,
   initialValue: PropTypes.shape({
     password: PropTypes.string.isRequired
   })
