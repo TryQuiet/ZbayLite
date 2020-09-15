@@ -10,6 +10,9 @@ class RPC {
   sync = async () => {
     return native.litelib_execute('sync', '')
   }
+  shield = async (address = '') => {
+    return native.litelib_execute('shield', address)
+  }
   rescan = async () => {
     return native.litelib_execute('rescan', '')
   }
