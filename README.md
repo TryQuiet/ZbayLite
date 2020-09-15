@@ -54,13 +54,7 @@ On Windows ```%HOMEPATH%\\AppData\\Roaming\\Zbay-lite\\```
 
 ## Tor support
 
-To use Zbay over the Tor network you will need to install tor:
-
-Linux ```apt-get install tor```
-
-macOS ```brew install tor```
-
-Run it in console by typing ```tor```. It should create socks5 proxy on port 9050. Run Zbay, check the "Connect with tor" option on the "enter password" screen, and Zbay will auto-detect the tor proxy and connect to it.
+The full node version of Zbay gave users the option of connecting via Tor. The light client version of Zbay removed the option of connecting via Tor, but we're working on bundling Tor with Zbay and using it by default, in all cases.
 
 ## Not enough disk space?
 
