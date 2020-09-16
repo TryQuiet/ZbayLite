@@ -14,6 +14,8 @@ import { messageType, actionTypes } from '../../../shared/static'
 import { messages as zbayMessages } from '../../zbay'
 import client from '../../zcash'
 import staticChannels from '../../zcash/channels'
+import notificationsHandlers from './notifications'
+import { infoNotification, successNotification } from './utils'
 
 const _ReceivedUser = publicKey =>
   Immutable.Record(
@@ -181,8 +183,26 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     if (txid.error) {
       throw new Error(txid.error)
     }
+    dispatch(
+      notificationsHandlers.actions.enqueueSnackbar(
+        successNotification({
+          message: `Your username will be confirmed in few minutes`
+        })
+      )
+    )
+    dispatch(notificationsHandlers.actions.removeSnackbar('username'))
   } catch (err) {
     console.log(err)
+    if (retry === 0) {
+      dispatch(
+        notificationsHandlers.actions.enqueueSnackbar(
+          infoNotification({
+            message: `Waiting for funds from faucet`,
+            key: 'username'
+          })
+        )
+      )
+    }
     if (debounce === true && retry < 10) {
       setTimeout(() => {
         dispatch(createOrUpdateUser({ ...payload, retry: retry + 1 }))
