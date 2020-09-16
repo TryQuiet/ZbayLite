@@ -1,6 +1,6 @@
 const native = require('./index.node')
 class RPC {
-  constructor (url = 'https://lightwalletd.zecwallet.co:1443') {
+  constructor (url = 'https://lightd-main.zcashfr.io:443') {
     const result = native.litelib_initialize_existing(url)
     console.log(`Intialization: ${result}`)
     if (result !== 'OK') {
