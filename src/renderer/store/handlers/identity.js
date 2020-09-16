@@ -9,7 +9,6 @@ import client from '../../zcash'
 import channels from '../../zcash/channels'
 
 import identitySelectors from '../selectors/identity'
-import nodeSelectors from '../selectors/node'
 import txnTimestampsSelector from '../selectors/txnTimestamps'
 // import channelsSelectors from '../selectors/channels'
 // import channelsHandlers from './channels'
@@ -178,23 +177,14 @@ export const fetchBalance = () => async (dispatch, getState) => {
 
     const balanceObj = await client.balance()
     const notes = await client.notes()
-    console.log(balanceObj)
-    for (const userAddress of balanceObj.t_addresses) {
-      try {
-        console.log(userAddress)
-        const balance = userAddress.balance / satoshiMultiplier
-        console.log(balance)
-        if (balance > networkFee) {
-          await dispatch(
-            shieldBalance({
-              to: address,
-              amount: balance - networkFee
-            })
-          )
-        }
-      } catch (err) {
-        console.warn(err)
-      }
+    const balance = balanceObj.tbalance / satoshiMultiplier
+    if (balance > networkFee) {
+      await dispatch(
+        shieldBalance({
+          to: address,
+          amount: balance - networkFee
+        })
+      )
     }
     const pending = notes.pending_notes.reduce((acc, cur) => acc + cur.value, 0)
     dispatch(
@@ -252,43 +242,23 @@ export const createSignerKeys = () => {
     signerPubKey: secp256k1.publicKeyCreate(signerPrivKey, true).toString('hex')
   }
 }
+let shielding = false
 export const shieldBalance = ({ to, amount }) => async (dispatch, getState) => {
-  const donationAllow = identitySelectors.donationAllow(getState())
-  const network = nodeSelectors.network(getState())
-  const zbay = channels.zbay[network]
-  const donationAddress = identitySelectors.donationAddress(getState())
-  const isAddressValid = /^t1[a-zA-Z0-9]{33}$|^ztestsapling1[a-z0-9]{75}$|^zs1[a-z0-9]{75}$|[A-Za-z0-9]{35}/.test(
-    donationAddress
-  )
-  let transactions = []
-  const taxAmount = parseFloat(amount / 100).toFixed(8) // 1% tax
-  const newAmount = parseFloat(amount - taxAmount).toFixed(8)
-  if (donationAllow === 'true') {
-    transactions.push({
-      address: isAddressValid ? donationAddress : zbay.address,
-      amount: parseFloat(taxAmount.toString()) * satoshiMultiplier
-    })
-    transactions.push({
-      address: to,
-      amount: parseFloat(newAmount.toString()) * satoshiMultiplier
-    })
-  } else {
-    transactions.push({
-      address: to,
-      amount: parseFloat(amount.toString()) * satoshiMultiplier
-    })
+  if (shielding === true) {
+    return
   }
-
-  const transaction = await client.sendTransaction(transactions)
-
-  console.log(transaction)
+  shielding = true
+  await client.shield(to)
   dispatch(
     notificationsHandlers.actions.enqueueSnackbar(
       successNotification({
-        message: `You will soon receive ${newAmount.toString()} from your transparent address`
+        message: `You will soon receive ${amount.toString()} from your transparent address`
       })
     )
   )
+  setTimeout(() => {
+    shielding = false
+  }, 300000)
 }
 
 export const createIdentity = ({ name, fromMigrationFile }) => async (
