@@ -134,12 +134,16 @@ export const ItemTransferMessage = ({
             } $${usdAmount} (${parseFloat(message.spent.toString()).toFixed(
               4
             )} ZEC) ${message.tag ? `for #${message.tag}` : ''}`
-            : `${message.sender.username ? `Received from @${message.sender.username}` : `Received from unknown`} $${usdAmount} (${
-              message.spent
-            } ZEC) ${message.tag ? `for #${message.tag}` : ''}`}
+            : `${
+              message.sender.username
+                ? `Received from @${message.sender.username}`
+                : `Received from unknown`
+            } $${usdAmount} (${message.spent} ZEC) ${
+              message.tag ? `for #${message.tag}` : ''
+            }`}
         </Typography>
         <Typography variant='body2' className={classes.message}>
-          {!typeof message.message === 'object' && `${message.message}`}
+          {!(typeof message.message === 'object') && `${message.message}`}
         </Typography>
         {message.shippingData && (
           <Typography variant='body2' className={classes.message}>
