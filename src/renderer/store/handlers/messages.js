@@ -213,7 +213,7 @@ const msgTypeToNotification = new Set([
   messageType.TRANSFER
 ])
 
-export const findNewMessages = (key, messages, state) => {
+export const findNewMessages = (key, messages, state, isDM = false) => {
   if (messages) {
     const currentChannel = channelSelectors.channel(state)
     if (key === currentChannel.address) {
@@ -240,8 +240,9 @@ export const findNewMessages = (key, messages, state) => {
         msgTypeToNotification.has(msg.type)
     )
     if (
+      isDM ||
       userFilter === notificationFilterType.MENTIONS ||
-      channelFilter === notificationFilterType.MENTIONS
+        channelFilter === notificationFilterType.MENTIONS
     ) {
       const myUser = usersSelectors.myUser(state)
       return filteredByTimeAndType.filter(msg =>
@@ -521,7 +522,8 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       const newMsgs = findNewMessages(
         key,
         groupedItemMesssages[key],
-        getState()
+        getState(),
+        true
       )
       newMsgs.forEach(msg => {
         displayMessageNotification({
