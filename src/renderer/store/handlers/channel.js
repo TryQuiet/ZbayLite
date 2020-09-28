@@ -25,6 +25,7 @@ import usersSelectors from '../selectors/users'
 import contactsHandlers from './contacts'
 import electronStore from '../../../shared/electronStore'
 import { channelToUri } from '../../../renderer/zbay/channels'
+import { sendMessage } from '../../zcash/websocketClient'
 
 export const ChannelState = Immutable.Record(
   {
@@ -152,6 +153,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
   const shiftPressed = event.nativeEvent.shiftKey === true
   const channel = channelSelectors.channel(getState()).toJS()
   const messageToSend = channelSelectors.message(getState())
+
   let message
   if (enterPressed && !shiftPressed) {
     event.preventDefault()
@@ -208,6 +210,16 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         address: channel.address,
         identityAddress
       })
+      try {
+        const result = await sendMessage(messageToSend)
+        if (result === -1) {
+          throw new Error('unable to connect')
+        }
+        return
+      } catch (error) {
+        console.log(error)
+        console.log('socket timeout')
+      }
       const transaction = await client.sendTransaction(transfer)
       console.log(transaction, 'transaction details')
       if (!transaction.txid) {

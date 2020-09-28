@@ -17,6 +17,7 @@ import config from './config'
 import { spawnZcashNode } from './zcash/bootstrap'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
+import websockets from './websockets/client'
 
 const _killProcess = util.promisify(ps.kill)
 
@@ -299,6 +300,13 @@ app.on('ready', async () => {
     const request = JSON.parse(arg)
     const response = await client.postMessage(request.id, request.method, request.args)
     mainWindow.webContents.send('rpcQuery', JSON.stringify({ id: request.id, data: response }))
+  })
+
+  ipcMain.on('sendWebsocket', async (event, arg) => {
+    const request = JSON.parse(arg)
+    const response = await websockets.handleSend(request)
+    // const response = await client.postMessage(request.id, request.method, request.args)
+    mainWindow.webContents.send('sendWebsocket', JSON.stringify({ id: request.id, response: response }))
   })
 
   ipcMain.on('vault-created', (event, arg) => {
