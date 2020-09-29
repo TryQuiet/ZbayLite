@@ -18,6 +18,7 @@ import { spawnZcashNode } from './zcash/bootstrap'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
 import websockets from './websockets/client'
+import { createServer } from './websockets/server'
 
 const _killProcess = util.promisify(ps.kill)
 
@@ -301,7 +302,7 @@ app.on('ready', async () => {
     const response = await client.postMessage(request.id, request.method, request.args)
     mainWindow.webContents.send('rpcQuery', JSON.stringify({ id: request.id, data: response }))
   })
-
+  createServer(mainWindow)
   ipcMain.on('sendWebsocket', async (event, arg) => {
     const request = JSON.parse(arg)
     const response = await websockets.handleSend(request)

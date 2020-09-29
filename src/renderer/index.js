@@ -11,6 +11,7 @@ import updateHandlers from './store/handlers/update'
 import invitationHandlers from './store/handlers/invitation'
 import importChannelHandlers from './store/handlers/importedChannel'
 import coordinatorHandlers from './store/handlers/coordinator'
+import messagesHandlers from './store/handlers/messages'
 import nodeSelectors from './store/selectors/node'
 import coordinatorSelectors from './store/selectors/coordinator'
 import logsHandlers from './store/handlers/logs'
@@ -56,6 +57,10 @@ ipcRenderer.on('fetchingStatus', (event, { sizeLeft, part, status, speed, eta, r
 
 ipcRenderer.on('newUpdateAvailable', event => {
   store.dispatch(updateHandlers.epics.checkForUpdate())
+})
+
+ipcRenderer.on('wsMessage', (_, data) => {
+  store.dispatch(messagesHandlers.epics.handleWebsocketMessage(data))
 })
 
 ipcRenderer.on('askForUsingDefaultBlockchainLocation', event => {

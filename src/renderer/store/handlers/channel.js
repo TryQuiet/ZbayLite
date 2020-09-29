@@ -26,6 +26,7 @@ import contactsHandlers from './contacts'
 import electronStore from '../../../shared/electronStore'
 import { channelToUri } from '../../../renderer/zbay/channels'
 import { sendMessage } from '../../zcash/websocketClient'
+import { packMemo } from '../../zbay/transit'
 
 export const ChannelState = Immutable.Record(
   {
@@ -173,7 +174,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       const myUser = usersSelectors.myUser(getState())
       const messageDigest = crypto.createHash('sha256')
 
-      const messageEssentials = R.pick(['createdAt', 'message', 'spent'])(
+      const messageEssentials = R.pick(['createdAt', 'message'])(
         message
       )
       const key = messageDigest
@@ -203,15 +204,13 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
           id: key
         })
       )
+      console.log(key)
+
       const identityAddress = identitySelectors.address(getState())
 
-      const transfer = await messages.messageToTransfer({
-        message: message,
-        address: channel.address,
-        identityAddress
-      })
       try {
-        const result = await sendMessage(messageToSend)
+        const memo = await packMemo(message)
+        const result = await sendMessage(memo)
         if (result === -1) {
           throw new Error('unable to connect')
         }
@@ -220,6 +219,11 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         console.log(error)
         console.log('socket timeout')
       }
+      const transfer = await messages.messageToTransfer({
+        message: message,
+        address: channel.address,
+        identityAddress
+      })
       const transaction = await client.sendTransaction(transfer)
       console.log(transaction, 'transaction details')
       if (!transaction.txid) {
