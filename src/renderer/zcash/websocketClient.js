@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron'
 
 var endpoint =
-  'ws://qow7lnr5knkhea336336vrfh34iuxapsciglnp7x3tww4p7idxoospad.onion'
+  'ws://4vgnk45ts72fkqu6em5ldh3w3ka54rsqghe6ptvhslygeowdpirlpeid.onion'
 let counter = 0
 var mapping = new Map()
 export const sendMessage = async (message, address = endpoint) => {

@@ -58,6 +58,7 @@ export const actionTypes = mirrorKey({
   SET_USER_FEE: undefined,
   SET_PUBLIC_CHANNEL_FEE: undefined,
   SET_IDENTITY: undefined,
+  SET_ONION_ADDRESS: undefined,
   SET_IDENTITY_BALANCE: undefined,
   SET_IDENTITY_LOCKED_BALANCE: undefined,
   SET_IDENTITY_ERROR: undefined,

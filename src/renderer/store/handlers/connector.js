@@ -3,7 +3,7 @@ import url from 'url'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 var proxy = 'http://localhost:9080'
 var endpoint =
-  'ws://qow7lnr5knkhea336336vrfh34iuxapsciglnp7x3tww4p7idxoospad.onion'
+  'ws://4vgnk45ts72fkqu6em5ldh3w3ka54rsqghe6ptvhslygeowdpirlpeid.onion'
 
 export const connection = (
   address = endpoint,
