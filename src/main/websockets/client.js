@@ -1,7 +1,7 @@
 var WebSocketClient = require('ws')
 var url = require('url')
 var HttpsProxyAgent = require('https-proxy-agent')
-var proxy = 'http://localhost:9080'
+var proxy = 'http://localhost:9082'
 
 const connections = new Map()
 
@@ -20,11 +20,7 @@ export const connect = address =>
       resolve(socket)
     })
     socket.on('close', function () {
-      console.log('delete')
-      console.log(connections)
-
       connections.delete(address)
-      console.log(connections)
     })
   })
 

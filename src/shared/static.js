@@ -180,6 +180,7 @@ export const messageType = {
   PUBLISH_CHANNEL: 8,
   ITEM_BASIC: 11,
   ITEM_TRANSFER: 41,
+  USER_V2: 51,
   CHANNEL_SETTINGS_UPDATE: 61,
   AFFILIATE: 170 // 'aa' in hex
 }

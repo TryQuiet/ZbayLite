@@ -1,22 +1,20 @@
 const path = require('path')
 const pathDev = path.join.apply(null, [process.cwd(), 'tor/tor'])
 const pathSettings = path.join.apply(null, [process.cwd(), 'tor/torrc'])
-console.log(pathDev)
-console.log(pathSettings)
 const spawn = require('child_process').spawn
 
 const spawnTor = () =>
   new Promise((resolve, reject) => {
     const proc = spawn(pathDev, ['-f', pathSettings])
     const id = setTimeout(() => {
-      resolve(-1)
+      resolve(null)
     }, 5000)
     proc.stdout.on('data', data => {
       console.log(`stdout: ${data}`)
       if (data.includes('100%')) {
         console.log(data)
         clearTimeout(id)
-        resolve(1)
+        resolve(proc)
       }
     })
     proc.stderr.on('data', data => {

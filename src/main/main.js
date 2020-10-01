@@ -249,6 +249,7 @@ ipcMain.on('restart-node-proc', async (event, arg) => {
 })
 
 let client
+let torProcess = null
 app.on('ready', async () => {
   const template = [
     {
@@ -285,7 +286,7 @@ app.on('ready', async () => {
   mainWindow.webContents.on('did-finish-load', async () => {
     mainWindow.webContents.send('ping')
     try {
-      await spawnTor()
+      torProcess = await spawnTor()
       createServer(mainWindow)
       mainWindow.webContents.send('onionAddress', getOnionAddress())
     } catch (error) {
@@ -462,6 +463,9 @@ process.on('exit', () => {
 })
 
 app.on('before-quit', async e => {
+  if (torProcess !== null) {
+    torProcess.kill()
+  }
   await client.terminate()
   if (browserWidth && browserHeight) {
     electronStore.set('windowSize', {
