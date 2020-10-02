@@ -13,7 +13,7 @@ export const connect = address =>
     const id = setTimeout(() => {
       // eslint-disable-next-line
       reject('timeout')
-    }, 6000)
+    }, 9000)
     socket.on('open', function (a) {
       console.log('connected')
       clearTimeout(id)

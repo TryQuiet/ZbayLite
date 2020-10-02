@@ -8,7 +8,7 @@ const spawnTor = () =>
     const proc = spawn(pathDev, ['-f', pathSettings])
     const id = setTimeout(() => {
       resolve(null)
-    }, 5000)
+    }, 8000)
     proc.stdout.on('data', data => {
       console.log(`stdout: ${data}`)
       if (data.includes('100%')) {
