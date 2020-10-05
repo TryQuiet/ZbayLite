@@ -16,24 +16,13 @@ const spawn = require('child_process').spawn
 const spawnTor = () =>
   new Promise((resolve, reject) => {
     var fs = require('fs')
-    fs.readFile(isDev ? pathDevSettings : pathProdSettings, 'utf8', function (
-      err,
-      data
-    ) {
-      if (err) {
-        return console.log(err)
-      }
-      var result = data.replace(/PATH_TO_CHANGE/g, `${os.homedir()}/zbay_tor`)
+    const data = fs.readFileSync(
+      isDev ? pathDevSettings : pathProdSettings,
+      'utf8'
+    )
+    const result = data.replace(/PATH_TO_CHANGE/g, `${os.homedir()}/zbay_tor`)
+    fs.writeFileSync(isDev ? pathDevSettings : pathProdSettings, result, 'utf8')
 
-      fs.writeFile(
-        isDev ? pathDevSettings : pathProdSettings,
-        result,
-        'utf8',
-        function (err) {
-          if (err) return console.log(err)
-        }
-      )
-    })
     const proc = spawn(isDev ? pathDev : pathProd, [
       '-f',
       isDev ? pathDevSettings : pathProdSettings
