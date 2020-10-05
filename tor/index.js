@@ -1,11 +1,19 @@
 const path = require('path')
+const isDev = process.env.NODE_ENV === 'development'
 const pathDev = path.join.apply(null, [process.cwd(), 'tor/tor'])
-const pathSettings = path.join.apply(null, [process.cwd(), 'tor/torrc'])
+const pathDevSettings = path.join.apply(null, [process.cwd(), 'tor/torrc'])
+const pathProd = path.join.apply(null, [process.resourcesPath, 'tor/tor'])
+const pathProdSettings = path.join.apply(null, [
+  process.resourcesPath,
+  'tor/torrcProd'
+])
 const spawn = require('child_process').spawn
-
 const spawnTor = () =>
   new Promise((resolve, reject) => {
-    const proc = spawn(pathDev, ['-f', pathSettings])
+    const proc = spawn(isDev ? pathDev : pathProd, [
+      '-f',
+      isDev ? pathDevSettings : pathProdSettings
+    ])
     const id = setTimeout(() => {
       resolve(null)
     }, 8000)
@@ -31,9 +39,12 @@ const getOnionAddress = () => {
     process.cwd(),
     'tor/hidden_service/hostname'
   ])
-
+  const pathProd = path.join.apply(null, [
+    process.resourcesPath,
+    'tor/hidden_serviceProd/hostname'
+  ])
   var fs = require('fs')
-  const address = fs.readFileSync(pathDev, 'utf8')
+  const address = fs.readFileSync(isDev ? pathDev : pathProd, 'utf8')
   return address
 }
 module.exports = { spawnTor, getOnionAddress }
