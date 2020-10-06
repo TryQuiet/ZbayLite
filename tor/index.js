@@ -21,11 +21,11 @@ const spawnTor = () =>
       'utf8'
     )
     const result = data.replace(/PATH_TO_CHANGE/g, `${os.homedir()}/zbay_tor`)
-    fs.writeFileSync(isDev ? pathDevSettings : pathProdSettings, result, 'utf8')
+    fs.writeFileSync(isDev ? pathDevSettings : `${os.homedir()}/torrc`, result, 'utf8')
 
     const proc = spawn(isDev ? pathDev : pathProd, [
       '-f',
-      isDev ? pathDevSettings : pathProdSettings
+      isDev ? pathDevSettings : `${os.homedir()}/torrc`
     ])
     const id = setTimeout(() => {
       resolve(null)
