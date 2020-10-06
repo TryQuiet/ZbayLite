@@ -20,13 +20,18 @@ const styles = theme => ({
     marginTop: 3
   },
   labelDiv: {
-    marginTop: 16,
-    marginBottom: 50
+    marginTop: 16
   },
   itemName: {
     fontSize: 14
   },
   imageHostsDiv: {
+    marginTop: 32
+  },
+  recoveryDiv: {
+    marginTop: 32
+  },
+  allowedSitesDiv: {
     marginTop: 32
   },
   button: {
@@ -83,7 +88,7 @@ export const Security = ({
         />
       </Grid>
       {!!whitelisted.size && (
-        <>
+        <Grid item className={classes.allowedSitesDiv}>
           <Grid item className={classes.subtitle}>
             <Typography variant='h5'>Allowed sites</Typography>
           </Grid>
@@ -107,7 +112,7 @@ export const Security = ({
               </Grid>
             )
           })}
-        </>
+        </Grid>
       )}
       {!!autoload.size && (
         <Grid item className={classes.imageHostsDiv}>
@@ -136,7 +141,7 @@ export const Security = ({
           })}
         </Grid>
       )}
-      <Grid item>
+      <Grid className={classes.recoveryDiv} item>
         <Grid item className={classes.subtitle}>
           <Typography variant='h5'>Your private recovery key</Typography>
         </Grid>
