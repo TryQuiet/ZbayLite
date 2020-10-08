@@ -64,7 +64,7 @@
     "dist": "export SOURCE_PATH=darwin && npm run pullBinaries && npm run build:prod && electron-builder --mac",
     "distUbuntu": "export SOURCE_PATH=linux && npm run pullBinaries && npm run build:prod && electron-builder --linux",
     "distwin": "export SOURCE_PATH=win32 && npm run pullBinariesWin && npm run build:prod && electron-builder --win",
-    "lint": "standard",
+    "lint": "standard --fix",
     "test": "npm run lint && jest",
     "test:watch": "npm run lint && jest --watchAll",
     "build:prod": "concurrently \"npm run build:main:prod\" \"npm run build:renderer:prod\"",

@@ -1,32 +1,45 @@
-import Immutable from 'immutable'
+// import Immutable from 'immutable'
+import produce from 'immer'
 import BigNumber from 'bignumber.js'
 import { ipcRenderer } from 'electron'
 import { createAction, handleActions } from 'redux-actions'
 
-import { typeRejected, LoaderState, FetchingState } from './utils'
+import { typeRejected, FetchingStateStd } from './utils'
 import client from '../../zcash'
 import { actionTypes } from '../../../shared/static'
 import nodeSelectors from '../selectors/node'
 
 const DEFAULT_ADDRESS_TYPE = 'sapling'
 
-export const NodeState = Immutable.Record(
-  {
-    latestBlock: new BigNumber(999999),
-    currentBlock: new BigNumber(0),
-    connections: new BigNumber(0),
-    isTestnet: null,
-    status: 'healthy',
-    errors: '',
-    bootstrapLoader: LoaderState(),
-    fetchingStatus: FetchingState(),
-    startedAt: null,
-    isRescanning: false
-  },
-  'NodeState'
-)
+// export const NodeState = Immutable.Record(
+//   {
+//     latestBlock: new BigNumber(999999),
+//     currentBlock: new BigNumber(0),
+//     connections: new BigNumber(0),
+//     isTestnet: null,
+//     status: 'healthy',
+//     errors: '',
+//     bootstrapLoader: LoaderState(),
+//     fetchingStatus: FetchingState(),
+//     startedAt: null,
+//     isRescanning: false
+//   },
+//   'NodeState'
+// )
 
-export const initialState = NodeState()
+export const initialState = {
+  latestBlock: new BigNumber(999999),
+  currentBlock: new BigNumber(0),
+  connections: new BigNumber(0),
+  isTestnet: null,
+  status: 'healthy',
+  errors: '',
+  loading: false,
+  bootstrapMessage: '',
+  fetchingStatus: FetchingStateStd,
+  startedAt: null,
+  isRescanning: false
+}
 
 const setStatus = createAction(actionTypes.SET_STATUS, null, {
   ignoreError: true
@@ -163,58 +176,42 @@ const epics = {
 
 export const reducer = handleActions(
   {
-    [actionTypes.SET_STATUS]: (state, { payload: status }) =>
-      state.merge(status),
+    [actionTypes.SET_STATUS]: (state, { payload: status }) => {
+      return produce(state, (draft) => {
+        return Object.assign({}, draft, status)
+      })
+    },
     [typeRejected(actionTypes.CREATE_ADDRESS)]: (state, { payload: errors }) =>
-      state.set('errors', errors),
+      produce(state, (draft) => {
+        draft.errors = errors
+      }),
     [setBootstrapping]: (state, { payload: bootstrapping }) =>
-      state.setIn(['bootstrapLoader', 'loading'], bootstrapping),
+      produce(state, (draft) => {
+        draft.loading = bootstrapping
+      }),
     [setIsRescanning]: (state, { payload: isRescanning }) =>
-      state.set('isRescanning', isRescanning),
+      produce(state, (draft) => {
+        draft.isRescanning = isRescanning
+      }),
     [setBootstrappingMessage]: (state, { payload: message }) =>
-      state.setIn(['bootstrapLoader', 'message'], message),
-    [setFetchingPart]: (state, { payload: message }) =>
-      state.setIn(['fetchingStatus', 'part'], message),
-    [setFetchingSizeLeft]: (state, { payload: sizeLeft }) =>
-      state.setIn(['fetchingStatus', 'sizeLeft'], sizeLeft),
-    [setFetchingStatus]: (state, { payload: fetchingStatus }) =>
-      state.setIn(['fetchingStatus', 'fetchingStatus'], fetchingStatus),
-    [setFetchingSpeed]: (state, { payload: fetchingSpeed }) =>
-      state.setIn(['fetchingStatus', 'fetchingSpeed'], fetchingSpeed),
-    [setFetchingEndTime]: (state, { payload: fetchingEndTime }) =>
-      state.setIn(['fetchingStatus', 'fetchingEndTime'], fetchingEndTime),
-    [setConnectionStatus]: (state, { payload: isFetching }) =>
-      state.setIn(['fetchingStatus', 'isFetching'], isFetching),
-    [setRescanningProgress]: (state, { payload: rescanningProgress }) =>
-      state.setIn(['fetchingStatus', 'rescanningProgress'], rescanningProgress),
-    [setRescanningMonitorStatus]: (
-      state,
-      { payload: isRescanningMonitorStarted }
-    ) =>
-      state.setIn(
-        ['fetchingStatus', 'isRescanningMonitorStarted'],
-        isRescanningMonitorStarted
-      ),
-    [setRescanningStatus]: (state, { payload: isRescanningInitialized }) =>
-      state.setIn(
-        ['fetchingStatus', 'isRescanningInitialized'],
-        isRescanningInitialized
-      ),
+      produce(state, (draft) => {
+        draft.bootstrapMessage = message
+      }),
     [setGuideStatus]: (state, { payload: guideStatus }) =>
-      state.setIn(['fetchingStatus', 'guideStatus'], guideStatus),
+      produce(state, (draft) => {
+        draft.fetchingStatus.guideStatus = guideStatus
+      }),
     [setNextSlide]: state => {
-      const currentSlide = state.getIn(['fetchingStatus', 'currentSlide'])
-      return state.setIn(
-        ['fetchingStatus', 'currentSlide'],
-        currentSlide === 10 ? currentSlide : currentSlide + 1
-      )
+      produce(state, (draft) => {
+        const currentSlide = draft.fetchingStatus.currentSlide
+        draft.fetchingStatus.currentSlide = currentSlide === 10 ? currentSlide : currentSlide + 1
+      })
     },
     [setPrevSlide]: state => {
-      const currentSlide = state.getIn(['fetchingStatus', 'currentSlide'])
-      return state.setIn(
-        ['fetchingStatus', 'currentSlide'],
-        currentSlide === 0 ? currentSlide : currentSlide - 1
-      )
+      produce(state, (draft) => {
+        const currentSlide = draft.fetchingStatus.currentSlide
+        draft.fetchingStatus.currentSlide = currentSlide === 0 ? currentSlide : currentSlide - 1
+      })
     }
   },
   initialState
