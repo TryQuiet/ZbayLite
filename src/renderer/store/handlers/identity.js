@@ -582,7 +582,7 @@ export const reducer = handleActions(
       }),
     [setUserAddreses]: (state, { payload: addresses }) =>
       produce(state, (draft) => {
-        draft.data.address = addresses
+        draft.data.addresses = addresses
       }),
     [setUserShieldedAddreses]: (state, { payload: shieldedAddresses }) =>
       produce(state, (draft) => {

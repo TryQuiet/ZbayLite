@@ -1,3 +1,4 @@
+import { enableMapSet } from 'immer'
 import { applyMiddleware, createStore, compose } from 'redux'
 import thunk from 'redux-thunk'
 import promise from 'redux-promise-middleware'
@@ -5,6 +6,8 @@ import createDebounce from 'redux-debounced'
 
 import reducers from './reducers'
 import { errorsMiddleware } from './middlewares'
+
+enableMapSet()
 
 const composer = (enhancers) => {
   if (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&

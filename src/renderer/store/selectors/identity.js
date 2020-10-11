@@ -39,12 +39,12 @@ const onionAddress = createSelector(data, d => d.onionAddress)
 const transparentAddress = createSelector(data, d => d.transparentAddress)
 const topAddress = createSelector(
   data,
-  d => d.addresses.get(0) || d.transparentAddress
+  d => d.addresses[0] || d.transparentAddress
 )
 const addresses = createSelector(data, d => d.addresses)
 const topShieldedAddress = createSelector(
   data,
-  d => d.shieldedAddresses.get(0) || d.address
+  d => d.shieldedAddresses[0] || d.address
 )
 const shieldedAddresses = createSelector(data, d => d.shieldedAddresses)
 
