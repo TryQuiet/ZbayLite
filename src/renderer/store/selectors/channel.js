@@ -29,7 +29,7 @@ export const message = createSelector(
 )
 export const id = createSelector(channel, c => c.get('id'))
 const data = createSelector(contacts.contacts, id, (channels, id) =>
-  channels.get(id)
+  channels[id]
 )
 export const isSizeCheckingInProgress = createSelector(channel, c =>
   c.get('isSizeCheckingInProgress')
@@ -45,13 +45,14 @@ export const isOwner = createSelector(
   contacts.contacts,
   identitySelectors.signerPubKey,
   (id, con, myKey) => {
-    const contact = con.get(id)
+    const contact = con[id]
     if (!contact) {
       return false
     }
-    const settingsMsg = contact.messages.find(
+    const settingsMsg = Array.from(Object.values(contact.messages)).filter(
       msg => msg.type === messageType.CHANNEL_SETTINGS
-    )
+    )[0]
+    console.log('settingsmsg', settingsMsg)
     if (settingsMsg && settingsMsg.message.owner === myKey) {
       return true
     }
@@ -65,7 +66,8 @@ export const channelSettingsMessage = createSelector(
     if (!data) {
       return null
     }
-    const settingsMsg = data.messages.filter(
+    console.log('test', data)
+    const settingsMsg = Array.from(Object.values(data.messages)).filter(
       msg =>
         msg.type === messageType.CHANNEL_SETTINGS ||
         msg.type === messageType.CHANNEL_SETTINGS_UPDATE
@@ -165,24 +167,23 @@ const checkMessageTargetTimeWindow = ({
 }
 
 const concatMessages = (mainMsg, messagesToConcat) => {
-  if (messagesToConcat.size === 1) {
+  if (messagesToConcat.length === 1) {
     return mainMsg
   } else {
     const messagesArray = messagesToConcat.map(msg => msg.message)
-    const lastMessageStatus = messagesToConcat.getIn([
-      messagesToConcat.size - 1,
-      'status'
-    ])
+    const lastMessageStatus = messagesToConcat[messagesToConcat.length - 1].status
     const concatedMessages = messagesArray.join('\n')
-    const mergedMessage = mainMsg
-      .set('message', concatedMessages)
-      .set('status', lastMessageStatus)
+    const mergedMessage = {
+      ...mainMsg,
+      message: concatedMessages,
+      status: lastMessageStatus
+    }
     return mergedMessage
   }
 }
 
 export const mergeIntoOne = messages => {
-  if (messages.size === 0) return
+  if (messages.length === 0) return
   let result = [[]]
   let last = null
   for (const msg of messages) {
@@ -210,9 +211,8 @@ export const mergeIntoOne = messages => {
     }
     last = msg
   }
-  const list = Immutable.fromJS(result)
-  const concatedMessages = list.map(array => {
-    return concatMessages(array.get(0), array)
+  const concatedMessages = result.map(array => {
+    return concatMessages(array[0], array)
   })
   return concatedMessages
 }
@@ -296,25 +296,26 @@ export const INPUT_STATE = {
 export const channelId = createSelector(channel, ch => ch.id)
 
 export const members = createSelector(contacts.contacts, id, (c, channelId) => {
-  const contact = c.get(channelId)
+  const contact = c[channelId]
   if (!contact) {
     return new Set()
   }
-  return contact.messages.toList().reduce((acc, msg) => {
-    return acc.add(msg.sender.replyTo)
-  }, new Set())
+  return Array.from(Object.values(contact.messages))
+    .reduce((acc, msg) => {
+      return acc.add(msg.sender.replyTo)
+    }, new Set())
 })
 
 export const channelParticipiants = createSelector(
   contacts.contacts,
   id,
   (c, i) => {
-    const contact = c.get(i)
+    const contact = c[i]
     if (!contact) {
       return new Set()
     }
     const messages = contact.messages
-    const members = messages.reduce((acc, msg) => {
+    const members = Array.from(Object.values(messages)).reduce((acc, msg) => {
       return acc.add(msg.sender.replyTo)
     }, new Set())
     return members

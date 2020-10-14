@@ -137,7 +137,7 @@ export const ChannelHeader = ({
     }
   }
   const ActionsMenu = channelTypeToActions[channelType]
-  const isFromZbay = channel.get('name') !== 'Unknown'
+  const isFromZbay = channel.name !== 'Unknown'
   const [silenceHover, setSilenceHover] = React.useState(false)
   const [wrapperWidth, setWrapperWidth] = React.useState(0)
   React.useEffect(() => {
@@ -180,9 +180,9 @@ export const ChannelHeader = ({
               >
                 {isRegisteredUsername || !isFromZbay
                   ? `${prefix[channelType]}${
-                    isFromZbay ? channel.get('name') : 'unknown'
+                    isFromZbay ? channel.name : 'unknown'
                   }`
-                  : channel.get('address')}
+                  : channel.address}
               </Typography>
             </Grid>
             {mutedFlag && (
@@ -244,11 +244,11 @@ export const ChannelHeader = ({
           </Grid>
         </Grid>
       </Grid>
-      {channel.get('showInfoMsg') && channel.get('description') && (
+      {channel.showInfoMsg && channel.description && (
         <Grid container className={classes.descriptionDiv}>
           <Grid item xs>
             <Typography variant='body2'>
-              {channel.get('description')}
+              {channel.description}
             </Typography>
           </Grid>
           <Grid item className={classes.iconDiv}>

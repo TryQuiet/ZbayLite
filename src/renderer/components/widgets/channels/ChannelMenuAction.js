@@ -45,7 +45,7 @@ export const ChannelMenuAction = ({
   openNotificationsTab
 }) => {
   const alreadyRegistered = publicChannels.find(
-    ch => ch.address === channel.get('address')
+    ch => ch.address === channel.address
   )
   const [openDialog, setOpenDialog] = React.useState(false)
   return (

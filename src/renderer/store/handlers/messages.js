@@ -32,9 +32,9 @@ import {
 } from '../../zbay/transit'
 import client from '../../zcash'
 import {
-  DisplayableMessage,
+  displayableMessage,
   getPublicKeysFromSignature,
-  ExchangeParticipant,
+  exchangeParticipant,
   usernameSchema,
   messageSchema
 } from '../../zbay/messages'
@@ -44,48 +44,73 @@ import electronStore from '../../../shared/electronStore'
 import notificationCenterSelectors from '../selectors/notificationCenter'
 import staticChannelsMessages from '../../static/staticChannelsMessages.json'
 
-export const MessageSender = Immutable.Record(
-  {
-    replyTo: '',
-    username: ''
-  },
-  'MessageSender'
-)
+export const messageSender = {
+  replyTo: '',
+  username: ''
+}
 
-const _ReceivedMessage = Immutable.Record(
-  {
-    id: null,
-    type: messageType.BASIC,
-    sender: MessageSender(),
-    createdAt: 0,
-    message: '',
-    spent: new BigNumber(0),
-    isUnregistered: false,
-    tag: '',
-    offerOwner: '',
-    publicKey: null,
-    blockTime: Number.MAX_SAFE_INTEGER
-  },
-  'ReceivedMessage'
-)
+export const _receivedMessage = {
+  id: null,
+  type: messageType.BASIC,
+  sender: messageSender,
+  createdAt: 0,
+  message: '',
+  spent: new BigNumber(0),
+  isUnregistered: false,
+  tag: '',
+  offerOwner: '',
+  publicKey: null,
+  blockTime: Number.MAX_SAFE_INTEGER
+}
 
-const _RecivedFromUnknownMessage = Immutable.Record(
-  {
-    id: null,
-    sender: MessageSender(),
-    type: messageType.BASIC,
-    message: '',
-    spent: new BigNumber(0),
-    createdAt: 0,
-    specialType: null,
-    blockHeight: Number.MAX_SAFE_INTEGER
-  },
-  'RecivedFromUnknownMessage'
-)
+// const _ReceivedMessage = Immutable.Record(
+//   {
+//     id: null,
+//     type: messageType.BASIC,
+//     sender: MessageSender(),
+//     createdAt: 0,
+//     message: '',
+//     spent: new BigNumber(0),
+//     isUnregistered: false,
+//     tag: '',
+//     offerOwner: '',
+//     publicKey: null,
+//     blockTime: Number.MAX_SAFE_INTEGER
+//   },
+//   'ReceivedMessage'
+// )
+
+const _receivedFromUnknownMessage = {
+  id: null,
+  sender: messageSender,
+  type: messageType.BASIC,
+  message: '',
+  spent: new BigNumber(0),
+  createdAt: 0,
+  specialType: null,
+  blockHeight: Number.MAX_SAFE_INTEGER
+}
+
+// const _RecivedFromUnknownMessage = Immutable.Record(
+//   {
+//     id: null,
+//     sender: MessageSender(),
+//     type: messageType.BASIC,
+//     message: '',
+//     spent: new BigNumber(0),
+//     createdAt: 0,
+//     specialType: null,
+//     blockHeight: Number.MAX_SAFE_INTEGER
+//   },
+//   'RecivedFromUnknownMessage'
+// )
 
 export const ReceivedMessage = values => {
-  const record = _ReceivedMessage(values)
-  return record.set('sender', MessageSender(record.sender))
+  const record = R.clone(_receivedMessage)
+  return {
+    ...record,
+    ...values
+  }
 }
 
 export const ChannelMessages = Immutable.Record(
@@ -95,6 +120,11 @@ export const ChannelMessages = Immutable.Record(
   },
   'ChannelMessages'
 )
+
+// const channelMessages = {
+//   messages: [],
+//   newMessages: []
+// }
 
 export const initialState = Immutable.Map()
 
@@ -131,7 +161,7 @@ export const fetchAllMessages = async () => {
       R.groupBy(txn => txn.address)(txnsZec)
     )
   } catch (err) {
-    console.warn(`Can't pull messages`)
+    console.warn(`Can't pull messages dupa123`)
     console.warn(err)
     return {}
   }
@@ -182,7 +212,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
     dispatch(setUsersMessages(identityAddress, txns[identityAddress]))
     dispatch(appHandlers.actions.setInitialLoadFlag(true))
   } catch (err) {
-    console.warn(`Can't pull messages`)
+    console.warn(`Can't pull messages dupa321`)
     console.warn(err)
     return {}
   }
@@ -305,9 +335,9 @@ const setOutgoingTransactions = (address, messages) => async (
         users
       )
       if (message === null) {
-        return DisplayableMessage(message)
+        return displayableMessage(message)
       }
-      return DisplayableMessage(message)
+      return displayableMessage(message)
     })
   )
   const contacts = contactsSelectors.contacts(getState())
@@ -324,7 +354,7 @@ const setOutgoingTransactions = (address, messages) => async (
       if (!offer) {
         continue
       }
-      if (!contacts.get(key)) {
+      if (!contacts[key]) {
         await dispatch(
           contactsHandlers.actions.addContact({
             key: key,
@@ -356,7 +386,7 @@ const setOutgoingTransactions = (address, messages) => async (
   )
   for (const key in groupedMesssages) {
     if (key && groupedMesssages.hasOwnProperty(key)) {
-      if (!contacts.get(key)) {
+      if (!contacts[key]) {
         const contact = users.get(key)
         await dispatch(
           contactsHandlers.actions.addContact({
@@ -397,7 +427,7 @@ const setChannelMessages = (channel, messages = []) => async (
     filteredZbayMessages.map(async transfer => {
       const message = await zbayMessages.transferToMessage(transfer, users)
       if (message === null) {
-        return DisplayableMessage(message)
+        return displayableMessage(message)
       }
       // const pendingMessage = pendingMessages.find(
       //   pm => pm.txId && pm.txId === message.id
@@ -407,11 +437,11 @@ const setChannelMessages = (channel, messages = []) => async (
       //     operationsHandlers.actions.removeOperation(pendingMessage.opId)
       //   )
       // }
-      return DisplayableMessage(message)
+      return displayableMessage(message)
     })
   )
   const contacts = contactsSelectors.contacts(getState())
-  if (messagesAll.length === 0 && !contacts.get(channel.address)) {
+  if (messagesAll.length === 0 && !contacts[channel.address]) {
     dispatch(
       contactsHandlers.actions.addContact({
         key: channel.address,
@@ -466,9 +496,10 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
     msg.memohex.startsWith('ff')
   )
   const parsedTextMessages = filteredTextMessages.map(msg => {
-    return _RecivedFromUnknownMessage({
+    const record = R.clone(_receivedFromUnknownMessage)
+    return {
+      ...record,
       id: msg.txid,
-      sender: MessageSender(),
       type: new BigNumber(msg.amount).gt(new BigNumber(0))
         ? messageType.TRANSFER
         : messageType.BASIC,
@@ -477,7 +508,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       specialType: null,
       spent: new BigNumber(msg.amount),
       blockHeight: msg.block_height
-    })
+    }
   })
   const unknownUser = users.get(unknownUserId)
   dispatch(
@@ -495,7 +526,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
     filteredZbayMessages.map(async transfer => {
       const message = await zbayMessages.transferToMessage(transfer, users)
       if (message === null) {
-        return DisplayableMessage(message)
+        return displayableMessage(message)
       }
       // const pendingMessage = pendingMessages.find(
       //   pm => pm.txId && pm.txId === message.id
@@ -505,7 +536,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       //     operationsHandlers.actions.removeOperation(pendingMessage.opId)
       //   )
       // }
-      return DisplayableMessage(message)
+      return displayableMessage(message)
     })
   )
   const itemMessages = messagesAll.filter(msg => msg.message.itemId)
@@ -521,7 +552,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       if (!offer) {
         continue
       }
-      if (!contacts.get(key)) {
+      if (!contacts[key]) {
         await dispatch(
           contactsHandlers.actions.addContact({
             key: key,
@@ -668,17 +699,19 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
       const fromUser = users.get(publicKey)
       if (fromUser !== undefined) {
         const isUsernameValid = usernameSchema.isValidSync(fromUser)
-        sender = ExchangeParticipant({
+        sender = {
+          ...exchangeParticipant,
           replyTo: fromUser.address,
           username: isUsernameValid
             ? fromUser.nickname
             : `anon${publicKey.substring(0, 10)}`
-        })
+        }
       } else {
-        sender = ExchangeParticipant({
+        sender = {
+          ...exchangeParticipant,
           replyTo: '',
           username: `anon${publicKey}`
-        })
+        }
         isUnregistered = true
       }
     }
@@ -688,7 +721,9 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
   }
   try {
     const toUser =
-      users.find(u => u.address === sender.replyTo) || ExchangeParticipant()
+      users.find(u => u.address === sender.replyTo) || {
+        ...exchangeParticipant
+      }
     const messageDigest = crypto.createHash('sha256')
 
     const messageEssentials = R.pick(['createdAt', 'message'])(
@@ -714,9 +749,9 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
       tag: message.message.tag,
       shippingData: message.message.shippingData
     }
-    const parsedMsg = DisplayableMessage(msg)
+    const parsedMsg = displayableMessage(msg)
     const contacts = contactsSelectors.contacts(getState())
-    if (!contacts.get(publicKey)) {
+    if (!contacts[publicKey]) {
       await dispatch(
         contactsHandlers.actions.addContact({
           key: publicKey,

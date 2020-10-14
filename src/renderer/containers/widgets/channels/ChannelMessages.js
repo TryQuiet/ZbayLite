@@ -29,7 +29,7 @@ export const mapStateToProps = (state, { signerPubKey, network }) => {
     channelData:
       channelsSelectors.channelById(channelSelectors.channelId(state))(state) ||
       Immutable.fromJS({ keys: {} }),
-    messages: contactsSelectors.directMessages(contactId, signerPubKey)(state).get('visibleMessages'),
+    messages: contactsSelectors.directMessages(contactId, signerPubKey)(state).visibleMessages,
     messagesLength: contactsSelectors.messagesLength(contactId)(state),
     displayableMessageLimit: channelSelectors.displayableMessageLimit(state),
     channelId: channelSelectors.channelId(state),
@@ -86,7 +86,7 @@ export const ChannelMessages = ({
       setDisplayableLimit(displayableMessageLimit + 5)
     }
   }, [scrollPosition])
-  const oldestMessage = messages ? messages.last() : null
+  const oldestMessage = messages ? messages[messages.length - 1] : null
   let usersRegistration = []
   let publicChannelsRegistration = []
   if (channelId === zcashChannels.general[network].address) {

@@ -36,8 +36,6 @@ import {
   networkFee
 } from '../../../shared/static'
 import electronStore, { migrationStore } from '../../../shared/electronStore'
-// import app from './app'
-// import channels from '../../zcash/channels'
 import staticChannelsSyncHeight from '../../static/staticChannelsSyncHeight.json'
 
 export const initialState = {

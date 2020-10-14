@@ -29,7 +29,7 @@ export const mapStateToProps = state => {
     mutedFlag:
       notificationCenterSelectors.channelFilterById(
         channelSelectors.data(state)
-          ? channelSelectors.data(state).get('address')
+          ? channelSelectors.data(state).address
           : 'none'
       )(state) === notificationFilterType.MUTE,
     notificationFilter:
@@ -37,7 +37,7 @@ export const mapStateToProps = state => {
       filterToText[
         notificationCenterSelectors.channelFilterById(
           channelSelectors.channel(state)
-            ? channelSelectors.channel(state).get('address')
+            ? channelSelectors.channel(state).address
             : 'none'
         )(state)
       ]

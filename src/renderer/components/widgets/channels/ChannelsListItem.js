@@ -70,11 +70,10 @@ const styles = theme => ({
 })
 
 export const ChannelsListItem = ({ classes, channel, history, directMessages, selected, isRegisteredUsername }) => {
-  const channelObj = channel.toJS()
-  const isFromZbay = channelObj.username !== 'Unknown'
+  const isFromZbay = channel.username !== 'Unknown'
   // const size = 15
   const highlight = selected.id === channel.key
-  const newMessages = channelObj.newMessages.length
+  const newMessages = channel.newMessages.length
   // const recievedMoney =
   //   directMessages &&
   //   channelObj.messages.find(
@@ -88,8 +87,8 @@ export const ChannelsListItem = ({ classes, channel, history, directMessages, se
         history.push(
           `/main/${
             directMessages
-              ? `direct-messages/${channelObj.key}/${channelObj.username}`
-              : `channel/${channelObj.key}`
+              ? `direct-messages/${channel.key}/${channel.username}`
+              : `channel/${channel.key}`
           }`
         )
       }}
@@ -114,7 +113,7 @@ export const ChannelsListItem = ({ classes, channel, history, directMessages, se
                   [classes.anonTile]: !isFromZbay
                 })}
               >
-                {directMessages ? `${isFromZbay ? `@ ${isRegisteredUsername ? channelObj.username : channelObj.address}` : 'unknown'}` : `# ${channelObj.username}`}
+                {directMessages ? `${isFromZbay ? `@ ${isRegisteredUsername ? channel.username : channel.address}` : 'unknown'}` : `# ${channel.username}`}
               </Typography>
             </Grid>
             {/* {recievedMoney && (

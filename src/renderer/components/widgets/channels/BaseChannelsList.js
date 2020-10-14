@@ -40,7 +40,7 @@ export const BaseChannelsList = ({
             selected={selected}
           />
         ))}
-      {offers.toList().map((offer, index) => (
+      {Array.from(offers.values).map((offer, index) => (
         <OfferListItem
           key={keys[index]}
           channel={offer}

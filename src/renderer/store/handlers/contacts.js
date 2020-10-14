@@ -1,3 +1,4 @@
+import produce from 'immer'
 import Immutable from 'immutable'
 import { DateTime } from 'luxon'
 import { createAction, handleActions } from 'redux-actions'
@@ -11,7 +12,7 @@ import appSelectors from '../selectors/app'
 import offersSelectors from '../selectors/offers'
 import messagesSelectors from '../selectors/messages'
 import channelSelectors from '../selectors/channel'
-import selectors, { Contact } from '../selectors/contacts'
+import selectors from '../selectors/contacts'
 import directMessageChannelSelector, {
   directMessageChannel
 } from '../selectors/directMessageChannel'
@@ -143,7 +144,7 @@ const sendDirectMessage = (payload, redirect = true) => async (
 
 const resendMessage = messageData => async (dispatch, getState) => {}
 
-const initialState = Immutable.Map()
+const initialState = {}
 
 const setMessages = createAction(actionTypes.SET_DIRECT_MESSAGES)
 const updateMessage = createAction(actionTypes.UPDATE_MESSAGE)
@@ -613,95 +614,88 @@ export const reducer = handleActions(
       state,
       { payload: { key, username, contactAddress, messages } }
     ) =>
-      state.update(
-        key,
-        Contact({ key: key, address: contactAddress, username: username }),
-        cm =>
-          cm.update('messages', msgs => {
-            return msgs.merge(messages)
-          })
-      ),
+      produce(state, (draft) => {
+        if (!draft[key]) {
+          draft[key] = {
+            lastSeen: null,
+            messages: {},
+            newMessages: [],
+            vaultMessages: [],
+            offerId: null,
+            key,
+            address: contactAddress,
+            username
+          }
+        }
+        draft[key].messages = {
+          ...draft[key].messages,
+          ...messages
+        }
+      }),
     [addContact]: (
       state,
       { payload: { key, username, contactAddress, offerId = null } }
-    ) => {
-      return state.merge({
-        [key]: Contact({
-          key: key,
+    ) =>
+      produce(state, (draft) => {
+        draft[key] = {
+          lastSeen: null,
+          messages: {},
+          newMessages: [],
+          vaultMessages: [],
+          offerId: null,
+          key,
           address: contactAddress,
-          username: username,
-          offerId
-        })
-      })
-    },
+          username
+        }
+      }),
     [addMessage]: (state, { payload: { key, message } }) =>
-      state.update(key, cm =>
-        cm.update('messages', msgs => {
-          return msgs.merge(message)
-        })
-      ),
+      produce(state, (draft) => {
+        draft[key].messages = {
+          ...draft[key].messages,
+          ...message
+        }
+      }),
     [updateMessage]: (state, { payload: { key, id, txid } }) =>
-      state.update(key, cm =>
-        cm.update('messages', msgs => {
-          const tempMsg = msgs.get(id)
-          return msgs.delete(id).merge({ [txid]: tempMsg })
-        })
-      ),
+      produce(state, (draft) => {
+        const tempMsg = draft[key].messages[id]
+        delete draft[key].messages[id]
+        draft[key].messages[txid] = tempMsg
+      }),
     [setMessageBlockTime]: (
       state,
       { payload: { contactAddress, messageId, blockTime } }
     ) =>
-      state.update(contactAddress, Contact(), cm =>
-        cm.update('messages', messages => {
-          const index = messages.findIndex(msg => msg.id === messageId)
-          return messages.setIn([index, 'blockTime'], blockTime)
-        })
-      ),
-
-    [setVaultMessageBlockTime]: (
-      state,
-      { payload: { contactAddress, messageId, blockTime } }
-    ) =>
-      state.update(contactAddress, Contact(), cm =>
-        cm.update('vaultMessages', messages => {
-          const index = messages.findIndex(msg => msg.id === messageId)
-          return messages.setIn([index, 'blockTime'], blockTime)
-        })
-      ),
-    [setVaultMessages]: (
-      state,
-      { payload: { contactAddress, vaultMessagesToDisplay } }
-    ) =>
-      state.update(contactAddress, Contact(), cm =>
-        cm.set('vaultMessages', Immutable.fromJS(vaultMessagesToDisplay))
-      ),
-    [cleanNewMessages]: (state, { payload: { contactAddress } }) => {
-      const newState = state.update(contactAddress, Contact(), cm =>
-        cm.set('newMessages', Immutable.List())
-      )
-      return newState
-    },
+      produce(state, (draft) => {
+        draft[contactAddress].messages[messageId].blockTime = blockTime
+      }),
+    [cleanNewMessages]: (state, { payload: { contactAddress } }) =>
+      produce(state, (draft) => {
+        draft[contactAddress].newMessages = []
+      }),
     [appendNewMessages]: (
       state,
       { payload: { contactAddress, messagesIds } }
-    ) =>
-      state.update(contactAddress, Contact(), cm =>
-        cm.update('newMessages', nm => {
-          remote.app.setBadgeCount(
-            remote.app.getBadgeCount() - nm.size + messagesIds.length
-          )
-          return Immutable.List(messagesIds)
-        })
-      ),
+    ) => {
+      // const newMessagesLength = state.get(contactAddress).newMessages.length
+      // remote.app.badgeCount(
+      //   remote.app.getBadgeCount() - newMessagesLength
+      // )
+      return produce(state, (draft) => {
+        // draft[contactAddress].newMessages = messagesIds + messagesIds.length
+      })
+    },
     [setLastSeen]: (state, { payload: { lastSeen, contact } }) =>
-      state.update(contact.key || contact.key, Contact(), cm =>
-        cm.set('lastSeen', lastSeen)
-      ),
-    [removeContact]: (state, { payload: address }) => state.delete(address),
+      produce(state, (draft) => {
+        draft[contact.key].lastSeen = lastSeen
+      }),
+    [removeContact]: (state, { payload: address }) => produce(state, (draft) => {
+      delete draft[address]
+    }),
     [setUsernames]: (state, { payload: { sender } }) =>
-      state.update(sender.replyTo, Contact(), cm =>
-        cm.set('username', sender.username).set('address', sender.replyTo)
-      )
+      produce(state, (draft) => {
+        draft[sender.replyTo].username = sender.username
+        draft[sender.replyTo].address = sender.replyTo
+      })
   },
   initialState
 )

@@ -81,7 +81,7 @@ export const ChannelSettingsModal = ({
     <Modal
       open={open}
       handleClose={handleClose}
-      title={`Settings for #${channel.get('username')}`}
+      title={`Settings for #${channel.username}`}
       isBold
       addBorder
     >

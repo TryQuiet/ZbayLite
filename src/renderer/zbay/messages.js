@@ -23,6 +23,12 @@ export const ExchangeParticipant = Immutable.Record(
   'ExchangeParticipant'
 )
 
+export const exchangeParticipant = {
+  replyTo: '',
+  username: 'Unnamed',
+  publicKey: ''
+}
+
 export const _DisplayableMessage = Immutable.Record(
   {
     id: null,
@@ -45,12 +51,39 @@ export const _DisplayableMessage = Immutable.Record(
   'DisplayableMessage'
 )
 
+export const _displayableMessage = {
+  id: null,
+  type: messageType.BASIC,
+  sender: exchangeParticipant,
+  receiver: exchangeParticipant,
+  createdAt: null,
+  message: '',
+  spent: new BigNumber(0),
+  fromYou: false,
+  status: 'broadcasted',
+  error: null,
+  shippingData: null,
+  tag: '',
+  offerOwner: null,
+  isUnregistered: false,
+  publicKey: null,
+  blockHeight: Number.MAX_SAFE_INTEGER
+}
+
 export const DisplayableMessage = values => {
   const record = _DisplayableMessage(values)
   return record.merge({
     sender: ExchangeParticipant(record.sender),
     receiver: ExchangeParticipant(record.receiver)
   })
+}
+
+export const displayableMessage = values => {
+  const record = R.clone(_displayableMessage)
+  return {
+    ...record,
+    ...values
+  }
 }
 
 const _isOwner = (identityAddress, message) =>
@@ -188,17 +221,19 @@ export const transferToMessage = async (props, users) => {
       const fromUser = users.get(publicKey)
       if (fromUser !== undefined) {
         const isUsernameValid = usernameSchema.isValidSync(fromUser)
-        sender = ExchangeParticipant({
+        sender = {
+          ...exchangeParticipant,
           replyTo: fromUser.address,
           username: isUsernameValid
             ? fromUser.nickname
             : `anon${publicKey.substring(0, 10)}`
-        })
+        }
       } else {
-        sender = ExchangeParticipant({
+        sender = {
+          ...exchangeParticipant,
           replyTo: '',
           username: `anon${publicKey}`
-        })
+        }
         isUnregistered = true
       }
     }
@@ -250,17 +285,19 @@ export const outgoingTransferToMessage = async (props, users) => {
       const fromUser = users.get(publicKey)
       if (fromUser !== undefined) {
         const isUsernameValid = usernameSchema.isValidSync(fromUser)
-        sender = ExchangeParticipant({
+        sender = {
+          ...exchangeParticipant,
           replyTo: fromUser.address,
           username: isUsernameValid
             ? fromUser.nickname
             : `anon${publicKey.substring(0, 10)}`
-        })
+        }
       } else {
-        sender = ExchangeParticipant({
+        sender = {
+          ...exchangeParticipant,
           replyTo: '',
           username: `anon${publicKey}`
-        })
+        }
         isUnregistered = true
       }
     }
@@ -271,7 +308,9 @@ export const outgoingTransferToMessage = async (props, users) => {
   try {
     const toUser =
       users.find(u => u.address === transactionData.address) ||
-      ExchangeParticipant()
+      {
+        ...exchangeParticipant
+      }
     return {
       ...(await messageSchema.validate(message)),
       id: txid,
