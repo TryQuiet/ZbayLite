@@ -10,7 +10,7 @@ const publicChannels = createSelector(
 const publicChannelsByAddress = address =>
   createSelector(
     publicChannels,
-    channels => channels.get(address)
+    channels => channels[address]
   )
 
 export default {

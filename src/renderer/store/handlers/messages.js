@@ -387,7 +387,7 @@ const setOutgoingTransactions = (address, messages) => async (
   for (const key in groupedMesssages) {
     if (key && groupedMesssages.hasOwnProperty(key)) {
       if (!contacts[key]) {
-        const contact = users.get(key)
+        const contact = users[key]
         await dispatch(
           contactsHandlers.actions.addContact({
             key: contact.publicKey,
@@ -510,18 +510,20 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       blockHeight: msg.block_height
     }
   })
-  const unknownUser = users.get(unknownUserId)
-  dispatch(
-    contactsHandlers.actions.setMessages({
-      key: unknownUserId,
-      contactAddress: unknownUser.address,
-      username: unknownUser.nickname,
-      messages: parsedTextMessages.reduce((acc, cur) => {
-        acc[cur.id] = cur
-        return acc
-      }, {})
-    })
-  )
+  const unknownUser = users[unknownUserId]
+  if (unknownUser) {
+    dispatch(
+      contactsHandlers.actions.setMessages({
+        key: unknownUserId,
+        contactAddress: unknownUser.address,
+        username: unknownUser.nickname,
+        messages: parsedTextMessages.reduce((acc, cur) => {
+          acc[cur.id] = cur
+          return acc
+        }, {})
+      })
+    )
+  }
   const messagesAll = await Promise.all(
     filteredZbayMessages.map(async transfer => {
       const message = await zbayMessages.transferToMessage(transfer, users)
@@ -600,7 +602,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
   const groupedMesssages = R.groupBy(msg => msg.publicKey)(normalMessages)
   for (const key in groupedMesssages) {
     if (groupedMesssages.hasOwnProperty(key)) {
-      const user = users.get(key)
+      const user = users[key]
       // filter unregistered users
       if (!user) {
         continue
@@ -696,7 +698,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     }
     publicKey = getPublicKeysFromSignature(message).toString('hex')
     if (users !== undefined) {
-      const fromUser = users.get(publicKey)
+      const fromUser = users[publicKey]
       if (fromUser !== undefined) {
         const isUsernameValid = usernameSchema.isValidSync(fromUser)
         sender = {
@@ -721,7 +723,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
   }
   try {
     const toUser =
-      users.find(u => u.address === sender.replyTo) || {
+      Array.from(Object.values).find(u => u.address === sender.replyTo) || {
         ...exchangeParticipant
       }
     const messageDigest = crypto.createHash('sha256')

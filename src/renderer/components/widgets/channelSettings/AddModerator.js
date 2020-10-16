@@ -36,8 +36,8 @@ export const AddModerator = ({
 }) => {
   const channelsArray = Array.from(members)
   const options = channelsArray.map(member => {
-    if (users.get(member)) {
-      return users.get(member).nickname
+    if (users.member) {
+      return users.member.nickname
     } else {
       return member
     }

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import Immutable from 'immutable'
 import { bindActionCreators } from 'redux'
+import * as R from 'ramda'
 
 import ChannelMessagesComponent from '../../../components/widgets/channels/ChannelMessages'
 import channelSelectors from '../../../store/selectors/channel'
@@ -88,13 +89,15 @@ export const ChannelMessages = ({
   }, [scrollPosition])
   const oldestMessage = messages ? messages[messages.length - 1] : null
   let usersRegistration = []
-  let publicChannelsRegistration = []
+  let _publicChannelsRegistration = []
+  let publicChannelsRegistration
   if (channelId === zcashChannels.general[network].address) {
     if (oldestMessage) {
-      usersRegistration = Array.from(users.values()).filter(msg => msg.createdAt >= oldestMessage.createdAt)
-      publicChannelsRegistration = Array.from(
-        Object.values(publicChannels.toJS())
+      usersRegistration = Array.from(Object.values(users)).filter(msg => msg.createdAt >= oldestMessage.createdAt)
+      _publicChannelsRegistration = Array.from(
+        Object.values(publicChannels)
       ).filter(msg => msg.timestamp >= oldestMessage.createdAt)
+      publicChannelsRegistration = R.clone(_publicChannelsRegistration)
       for (const ch of publicChannelsRegistration) {
         delete Object.assign(ch, { createdAt: parseInt(ch['timestamp']) })['timestamp']
       }

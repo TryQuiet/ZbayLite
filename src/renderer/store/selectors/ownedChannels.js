@@ -10,7 +10,7 @@ export const ownedChannels = createSelector(store, state =>
 const isOwner = createSelector(
   ownedChannels,
   channelsSelectors.channel,
-  (a, channel) => !!a.get(channel.address)
+  (a, channel) => !!a[channel.address]
 )
 
 export default {

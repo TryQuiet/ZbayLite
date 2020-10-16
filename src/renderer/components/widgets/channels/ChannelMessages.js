@@ -167,13 +167,13 @@ export const ChannelMessages = ({
                       <ChannelRegisteredMessage
                         message={msg}
                         address={
-                          users.get(msg.owner)
-                            ? users.get(msg.owner).address
+                          users[msg.owner]
+                            ? users[msg.owner].address
                             : ''
                         }
                         username={
-                          users.get(msg.owner)
-                            ? users.get(msg.owner).nickname
+                          users[msg.owner]
+                            ? users[msg.owner].nickname
                             : `anon${msg.owner.substring(0, 16)}`
                         }
                         onChannelClick={() => {

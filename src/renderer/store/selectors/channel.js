@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import { createSelector } from 'reselect'
 import identitySelectors from './identity'
 import usersSelectors from './users'
@@ -7,7 +8,6 @@ import messagesSelectors from './messages'
 import zbayMessages from '../../zbay/messages'
 import contacts from './contacts'
 import { operationTypes } from '../handlers/operations'
-import Immutable from 'immutable'
 import { networkFee, messageType } from '../../../shared/static'
 
 const store = s => s
@@ -15,30 +15,34 @@ const store = s => s
 export const channel = createSelector(store, state => {
   return state.get('channel')
 })
-export const channelInfo = createSelector(store, state =>
-  state.get('channel').delete('message')
-) // TODO refactor
+export const channelInfo = createSelector(channel, ch => {
+  const channel = {
+    ...ch
+  }
+  delete channel.message
+  return channel
+}) // TODO refactor
 
 export const spentFilterValue = createSelector(channel, c =>
-  c.get('spentFilterValue', -1)
+  c.spentFilterValue ? spentFilterValue : -1
 )
 
 export const message = createSelector(
   channel,
-  c => c.getIn(['message', c.get('id')]) || ''
+  c => c.message[c.id] || ''
 )
-export const id = createSelector(channel, c => c.get('id'))
+export const id = createSelector(channel, c => c.id)
 const data = createSelector(contacts.contacts, id, (channels, id) =>
   channels[id]
 )
 export const isSizeCheckingInProgress = createSelector(channel, c =>
-  c.get('isSizeCheckingInProgress')
+  c.isSizeCheckingInProgress
 )
 export const messageSizeStatus = createSelector(channel, c =>
-  c.get('messageSizeStatus')
+  c.messageSizeStatus
 )
 export const displayableMessageLimit = createSelector(channel, c =>
-  c.get('displayableMessageLimit')
+  c.displayableMessageLimit
 )
 export const isOwner = createSelector(
   id,
@@ -52,7 +56,6 @@ export const isOwner = createSelector(
     const settingsMsg = Array.from(Object.values(contact.messages)).filter(
       msg => msg.type === messageType.CHANNEL_SETTINGS
     )[0]
-    console.log('settingsmsg', settingsMsg)
     if (settingsMsg && settingsMsg.message.owner === myKey) {
       return true
     }
@@ -66,7 +69,6 @@ export const channelSettingsMessage = createSelector(
     if (!data) {
       return null
     }
-    console.log('test', data)
     const settingsMsg = Array.from(Object.values(data.messages)).filter(
       msg =>
         msg.type === messageType.CHANNEL_SETTINGS ||
@@ -105,7 +107,7 @@ export const onlyRegistered = createSelector(
   }
 )
 export const unread = createSelector(data, data =>
-  data ? data.get('unread') : 0
+  data ? data.unread : 0
 )
 
 export const pendingMessages = createSelector(
@@ -231,7 +233,7 @@ export const messages = signerPubKey =>
       pendingMessages,
       queuedMessages
     ) => {
-      const userData = registeredUser ? registeredUser.toJS() : null
+      const userData = registeredUser || null
       const identityAddress = identity.address
       const identityName = userData ? userData.nickname : identity.name
       const displayableBroadcasted = receivedMessages.map(message => {

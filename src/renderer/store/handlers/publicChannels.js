@@ -1,4 +1,4 @@
-import Immutable from 'immutable'
+import produce from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import * as R from 'ramda'
 import feesSelectors from '../selectors/fees'
@@ -14,18 +14,17 @@ import staticChannels from '../../zcash/channels'
 import { messageType, actionTypes } from '../../../shared/static'
 import { checkTransferCount } from '../handlers/messages'
 
-export const _PublicChannelData = Immutable.Record(
-  {
-    address: '',
-    name: '',
-    description: '',
-    owner: '',
-    timestamp: 0,
-    keys: {}
-  },
-  'PublicChannelData'
-)
-export const initialState = Immutable.Map({})
+export const _PublicChannelData = {
+  address: '',
+  name: '',
+  description: '',
+  owner: '',
+  timestamp: 0,
+  keys: {}
+}
+export const initialState = {
+  ..._PublicChannelData
+}
 
 export const setPublicChannels = createAction(actionTypes.SET_PUBLIC_CHANNELS)
 
@@ -53,7 +52,7 @@ export const fetchPublicChannels = (address, messages) => async (dispatch, getSt
     const sortedMessages = registrationMessages
       .filter(msg => msg !== null)
     let minfee = 0
-    let publicChannelsMap = Immutable.Map({})
+    let publicChannelsMap = {}
     const network = nodeSelectors.network(getState())
     for (const msg of sortedMessages) {
       if (
@@ -72,7 +71,7 @@ export const fetchPublicChannels = (address, messages) => async (dispatch, getSt
           settingsMsg.message.updateChannelAddress ===
             msg.message.channelAddress
       )(sortedMessages)
-      const channel = _PublicChannelData({
+      const channel = {
         address: msg.message.channelAddress,
         name: msg.message.channelName,
         description: updateChannelSettings
@@ -81,9 +80,14 @@ export const fetchPublicChannels = (address, messages) => async (dispatch, getSt
         owner: msg.publicKey,
         keys: { ivk: msg.message.channelIvk },
         timestamp: msg.createdAt
-      })
-      if (channel !== null && !publicChannelsMap.get(channel.name)) {
-        publicChannelsMap = publicChannelsMap.merge({ [channel.name]: channel })
+      }
+      if (channel !== null && !publicChannelsMap[channel.name]) {
+        publicChannelsMap = {
+          ...publicChannelsMap,
+          [channel.name]: {
+            ...channel
+          }
+        }
       }
     }
     await dispatch(feesHandlers.actions.setPublicChannelFee(minfee))
@@ -153,9 +157,12 @@ export const epics = {
 
 export const reducer = handleActions(
   {
-    [setPublicChannels]: (state, { payload: publicChannels }) => {
-      return state.merge(publicChannels)
-    }
+    [setPublicChannels]: (state, { payload: publicChannels }) => produce(state, (draft) => {
+      return {
+        ...draft,
+        ...publicChannels
+      }
+    })
   },
   initialState
 )

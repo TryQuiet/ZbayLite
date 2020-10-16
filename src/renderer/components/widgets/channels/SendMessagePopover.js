@@ -22,10 +22,8 @@ export const SendMessagePopover = ({
 }) => {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
-  const registeredUsername = users
-    .toList()
-    .filter(obj => obj.get('address') === address)
-    .first()
+  const registeredUsername = Array.from(Object.values(users))
+    .filter(obj => obj.address === address)[0]
   return (
     <Popover
       className={classes.popover}

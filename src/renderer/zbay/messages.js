@@ -218,7 +218,7 @@ export const transferToMessage = async (props, users) => {
     }
     publicKey = getPublicKeysFromSignature(message).toString('hex')
     if (users !== undefined) {
-      const fromUser = users.get(publicKey)
+      const fromUser = users[publicKey]
       if (fromUser !== undefined) {
         const isUsernameValid = usernameSchema.isValidSync(fromUser)
         sender = {
@@ -282,7 +282,7 @@ export const outgoingTransferToMessage = async (props, users) => {
     }
     publicKey = getPublicKeysFromSignature(message).toString('hex')
     if (users !== undefined) {
-      const fromUser = users.get(publicKey)
+      const fromUser = users[publicKey]
       if (fromUser !== undefined) {
         const isUsernameValid = usernameSchema.isValidSync(fromUser)
         sender = {
@@ -357,6 +357,9 @@ export const signMessage = ({ messageData, privKey }) => {
   }
 }
 export const getPublicKeysFromSignature = message => {
+  // console.log('tetetet', message.message)
+  // console.log('signature', message.signature)
+  // console.log('signatureR', message.r)
   return secp256k1.recover(
     hash(JSON.stringify(message.message)),
     message.signature,

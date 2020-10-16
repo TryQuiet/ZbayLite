@@ -50,7 +50,7 @@ export const NewMessageModal = ({
   users,
   showNotification
 }) => {
-  const usersArray = users.toList().toJS()
+  const usersArray = Array.from(Object.values(users))
   return (
     <Modal open={open} handleClose={handleClose} title='' fullPage>
       <Grid className={classes.root}>

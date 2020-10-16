@@ -91,7 +91,7 @@ const channelsList = createSelector(
 
 const directMessagesContact = address =>
   createSelector(contacts, c =>
-    c.toList().find(el => el.get('address') === address)
+    Array.from(Object.values(c)).find(el => el.address === address)
   )
 
 const contact = address =>

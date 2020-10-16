@@ -495,7 +495,8 @@ export const createVaultContact = ({
 }) => async (dispatch, getState) => {
   const contacts = selectors.contacts(getState())
   // Create temp user
-  if (!contacts.get(contact.publicKey)) {
+  console.log('cosnt', contacts)
+  if (!contacts[contact.publicKey]) {
     await dispatch(
       addContact({
         key: contact.publicKey,

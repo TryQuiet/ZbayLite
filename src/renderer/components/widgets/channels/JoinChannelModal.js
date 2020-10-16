@@ -95,7 +95,7 @@ export const JoinChannelModal = ({
   showNotification,
   users
 }) => {
-  const channelsArray = publicChannels.toList().toJS()
+  const channelsArray = Array.from(Object.values(publicChannels))
   const [step, setStep] = React.useState(0)
   const [loading, setLoading] = React.useState(false)
   return (
@@ -153,8 +153,8 @@ export const JoinChannelModal = ({
                   {step !== 0 && (
                     <Typography variant='caption' className={classes.timeInfo}>
                       {`Created by @${
-                        users.get(values.channel.owner)
-                          ? users.get(values.channel.owner).nickname
+                        users[values.channel.owner]
+                          ? users[values.channel.owner].nickname
                           : 'Unnamed'
                       } on ${DateTime.fromSeconds(
                         parseInt(values.channel.timestamp)
@@ -187,8 +187,8 @@ export const JoinChannelModal = ({
                               className={classes.channelInfo}
                             >
                               {`Created by @${
-                                users.get(option.owner)
-                                  ? users.get(option.owner).nickname
+                                users[option.owner]
+                                  ? users[option.owner].nickname
                                   : 'Unnamed'
                               } on ${time.toFormat('LLL d, y')} `}
                             </Typography>

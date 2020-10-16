@@ -94,7 +94,7 @@ export const ChannelInfoModal = ({
             <Grid container direction='column' className={classes.root}>
               <Grid item className={classes.section}>
                 <Typography variant='h3' className={classes.title}>
-                  {channel.get('name')}
+                  {channel.name}
                 </Typography>
               </Grid>
               <Grid
@@ -102,10 +102,10 @@ export const ChannelInfoModal = ({
                 className={classNames(classes.section, classes.spacing24)}
               >
                 <Typography variant='subtitle1' className={classes.infoTitle}>
-                  {!directMessage && `About #${channel.get('name')}`}
+                  {!directMessage && `About #${channel.name}`}
                 </Typography>
                 <Typography variant='body2' className={classes.description}>
-                  {channel.get('description')}
+                  {channel.name}
                 </Typography>
               </Grid>
               <Grid

@@ -112,7 +112,7 @@ const checkLinking = (
           key={index}
           onClick={e => {
             e.preventDefault()
-            if (allowAll || whitelisted.contains(new URL(part).hostname)) {
+            if (allowAll || whitelisted.includes(new URL(part).hostname)) {
               shell.openExternal(part)
               return
             }
@@ -153,7 +153,7 @@ const checkLinking = (
   })
 
   parsedMessage = reactStringReplace(parsedMessage, /@(\w+)/g, (match, i) => {
-    if (!users.find(user => user.nickname === match)) {
+    if (!Array.from(Object.values(users)).find(user => user.nickname === match)) {
       return `@${match}`
     }
     return (
@@ -254,7 +254,7 @@ export const ChannelMessage = ({
     : message.message
   const autoloadImage =
     imageUrl && !torEnabled
-      ? autoload.contains(new URL(imageUrl).hostname)
+      ? autoload.includes(new URL(imageUrl).hostname)
       : false
   React.useEffect(() => {
     setParsedMessage(
@@ -272,7 +272,7 @@ export const ChannelMessage = ({
     )
   }, [messageData, whitelisted, allowAll])
   React.useEffect(() => {
-    if (allowAll || whitelisted.contains(imageUrl)) {
+    if (allowAll || whitelisted.includes(imageUrl)) {
       setShowImage(true)
     }
   }, [imageUrl])
@@ -299,7 +299,7 @@ export const ChannelMessage = ({
           justify='center'
           spacing={0}
           onClick={() => {
-            if (whitelisted.contains(new URL(imageUrl).hostname)) {
+            if (whitelisted.includes(new URL(imageUrl).hostname)) {
               setShowImage(true)
             } else {
               setOpenModal(true)

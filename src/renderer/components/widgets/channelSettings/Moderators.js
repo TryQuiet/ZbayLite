@@ -57,7 +57,7 @@ export const Moderators = ({
               </Grid>
             </Grid>
             {moderators.map(pubKey => {
-              const userData = users.get(pubKey)
+              const userData = users[pubKey]
               return (
                 <Grid item>
                   <UserListItem

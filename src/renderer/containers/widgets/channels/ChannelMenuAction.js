@@ -2,7 +2,6 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as R from 'ramda'
 import { withRouter } from 'react-router-dom'
-import Immutable from 'immutable'
 import ChannelMenuAction from '../../../components/widgets/channels/ChannelMenuAction'
 import { actionCreators } from '../../../store/handlers/modals'
 import importedChannelHandler from '../../../store/handlers/importedChannel'
@@ -25,7 +24,7 @@ export const mapStateToProps = state => {
     targetAddress: dmChannelSelectors.targetRecipientAddress(state),
     isOwner: channelSelectors.isOwner(state),
     publicChannels: publicChannelsSelectors.publicChannels(state),
-    channel: channelSelectors.data(state) || Immutable.Map({}),
+    channel: channelSelectors.data(state) || {},
     mutedFlag:
       notificationCenterSelectors.channelFilterById(
         channelSelectors.data(state)

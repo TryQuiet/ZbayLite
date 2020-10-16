@@ -145,7 +145,7 @@ Yup.addMethod(Yup.mixed, 'validateName', function (publicChannels) {
     'test',
     'Sorry channel name already taken. please choose another',
     function (value) {
-      const isNameTaken = publicChannels.get(parseChannelName(value))
+      const isNameTaken = publicChannels[(parseChannelName(value))]
       return !isNameTaken
     }
   )
@@ -191,7 +191,7 @@ export const PublishChannelModal = ({
         setSending(false)
         handleClose()
       }}
-      isInitialValid={!publicChannels.get(parseChannelName(channel.username))}
+      isInitialValid={!publicChannels[parseChannelName(channel.username)]}
       initialValues={{ name: channel.username, description: '' }}
       validate={values => {
         try {

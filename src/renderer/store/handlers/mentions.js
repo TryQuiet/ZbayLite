@@ -42,14 +42,13 @@ const checkMentions = () => async (dispatch, getState) => {
     getState()
   )
 
-  const usersOnChannel = users
-    .toList()
+  const usersOnChannel = Array.from(Object.values(users))
     .filter(user => members.has(user.address))
   const splitMessage = message
     .split(String.fromCharCode(160))
     .filter(part => part.startsWith('@'))
     .filter(part =>
-      users.toList().find(user => user.nickname === part.substring(1))
+      Array.from(Object.values(users)).find(user => user.nickname === part.substring(1))
     )
 
   const foundMentions = []
@@ -97,7 +96,7 @@ const sendInvitation = nickname => async (dispatch, getState) => {
 
       return
     }
-    const targetUser = users.toList().find(user => user.nickname === nickname)
+    const targetUser = Array.from(Object.values(users)).find(user => user.nickname === nickname)
     const message = zbayMessages.createMessage({
       messageData: {
         type: zbayMessages.messageType.BASIC,

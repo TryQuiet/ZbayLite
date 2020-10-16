@@ -1,4 +1,4 @@
-import Immutable from 'immutable'
+import produce from 'immer'
 import BigNumber from 'bignumber.js'
 import { createAction, handleActions } from 'redux-actions'
 import crypto from 'crypto'
@@ -18,7 +18,7 @@ import identitySelectors from '../selectors/identity'
 import contactsSelectors from '../selectors/contacts'
 import client from '../../zcash'
 import { messages } from '../../zbay'
-import { errorNotification, LoaderState } from './utils'
+import { errorNotification } from './utils'
 import { messageType, actionTypes } from '../../../shared/static'
 import { DisplayableMessage } from '../../zbay/messages'
 import usersSelectors from '../selectors/users'
@@ -28,24 +28,24 @@ import { channelToUri } from '../../../renderer/zbay/channels'
 import { sendMessage } from '../../zcash/websocketClient'
 import { packMemo } from '../../zbay/transit'
 
-export const ChannelState = Immutable.Record(
-  {
-    spentFilterValue: new BigNumber(0),
-    id: null,
-    message: Immutable.Map(),
-    shareableUri: '',
-    address: '',
-    loader: LoaderState({ loading: false }),
-    members: null,
-    showInfoMsg: true,
-    isSizeCheckingInProgress: false,
-    messageSizeStatus: null,
-    displayableMessageLimit: 50
+const ChannelState = {
+  spentFilterValue: new BigNumber(0),
+  id: null,
+  message: {},
+  shareableUri: '',
+  address: '',
+  loader: {
+    loading: false,
+    message: ''
   },
-  'ChannelState'
-)
+  members: null,
+  showInfoMsg: true,
+  isSizeCheckingInProgress: false,
+  messageSizeStatus: null,
+  displayableMessageLimit: 50
+}
 
-export const initialState = ChannelState()
+export const initialState = R.clone(ChannelState)
 
 const setSpentFilterValue = createAction(
   actionTypes.SET_SPENT_FILTER_VALUE,
@@ -84,14 +84,14 @@ const loadChannel = key => async (dispatch, getState) => {
     // Calculate URI on load, that way it won't be outdated, even if someone decides
     // to update channel in vault manually
     const contact = contactsSelectors.contact(key)(getState())
-    const unread = contact.newMessages.size
+    const unread = contact.newMessages.length
     remote.app.setBadgeCount(remote.app.getBadgeCount() - unread)
     const ivk =
-      electronStore.get(`defaultChannels.${contact.get('address')}.keys.ivk`) ||
-      electronStore.get(`importedChannels.${contact.get('address')}.keys.ivk`)
+      electronStore.get(`defaultChannels.${contact.address}.keys.ivk`) ||
+      electronStore.get(`importedChannels.${contact.address}.keys.ivk`)
     if (ivk) {
       const uri = await channelToUri({
-        name: contact.get('username'),
+        name: contact.username,
         ivk
       })
       dispatch(setShareableUri(uri))
@@ -152,7 +152,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
   }
   const enterPressed = event.nativeEvent.keyCode === 13
   const shiftPressed = event.nativeEvent.shiftKey === true
-  const channel = channelSelectors.channel(getState()).toJS()
+  const channel = channelSelectors.channel(getState())
   const messageToSend = channelSelectors.message(getState())
   const users = usersSelectors.users(getState())
   let message
@@ -205,12 +205,12 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
 
       const identityAddress = identitySelectors.address(getState())
 
-      if (users.get(channel.id) && users.get(channel.id).onionAddress) {
+      if (users[channel.id] && users[channel.id].onionAddress) {
         try {
           const memo = await packMemo(message)
           const result = await sendMessage(
             memo,
-            users.get(channel.id).onionAddress
+            users[channel.id].onionAddress
           )
           if (result === -1) {
             throw new Error('unable to connect')
@@ -379,24 +379,44 @@ export const epics = {
 export const reducer = handleActions(
   {
     [setLoading]: (state, { payload: loading }) =>
-      state.setIn(['loader', 'loading'], loading),
+      produce(state, (draft) => {
+        draft.loader.loading = loading
+      }),
     [setLoadingMessage]: (state, { payload: message }) =>
-      state.setIn(['loader', 'message'], message),
+      produce(state, (draft) => {
+        draft.loader.message = message
+      }),
     [setSpentFilterValue]: (state, { payload: value }) =>
-      state.set('spentFilterValue', new BigNumber(value)),
+      produce(state, (draft) => {
+        draft.spentFilterValue = new BigNumber(value)
+      }),
     [setMessage]: (state, { payload: value }) =>
-      state.setIn(['message', state.get('id')], value),
-    [setChannelId]: (state, { payload: id }) => state.set('id', id),
+      produce(state, (draft) => {
+        draft.message[draft.id] = value
+      }),
+    [setChannelId]: (state, { payload: id }) => produce(state, (draft) => {
+      draft.id = id
+    }),
     [isSizeCheckingInProgress]: (state, { payload }) =>
-      state.set('isSizeCheckingInProgress', payload),
+      produce(state, (draft) => {
+        draft.isSizeCheckingInProgress = payload
+      }),
     [messageSizeStatus]: (state, { payload }) =>
-      state.set('messageSizeStatus', payload),
+      produce(state, (draft) => {
+        draft.messageSizeStatus = payload
+      }),
     [setShareableUri]: (state, { payload: uri }) =>
-      state.set('shareableUri', uri),
+      produce(state, (draft) => {
+        draft.shareableUri = uri
+      }),
     [setDisplayableLimit]: (state, { payload: limit }) =>
-      state.set('displayableMessageLimit', limit),
+      produce(state, (draft) => {
+        draft.displayableMessageLimit = limit
+      }),
     [setAddress]: (state, { payload: address }) =>
-      state.set('address', address),
+      produce(state, (draft) => {
+        draft.address = address
+      }),
     [resetChannel]: () => initialState
   },
   initialState

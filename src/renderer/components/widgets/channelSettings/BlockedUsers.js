@@ -28,7 +28,7 @@ export const BlockedUsers = ({ classes, blockedUsers, unblockUser, users }) => {
               <Typography variant='h3'>Blocked users</Typography>
             </Grid>
             {blockedUsers.map(pubKey => {
-              const userData = users.get(pubKey)
+              const userData = users[pubKey]
               return (
                 <Grid item key={pubKey}>
                   <UserListItem

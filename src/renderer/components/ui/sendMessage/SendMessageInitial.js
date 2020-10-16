@@ -128,13 +128,14 @@ export const SendMessageInitial = ({
   openSentFundsModal
 }) => {
   const title = 'Message sent'
-  const usersArray = users.toList().toJS()
+  const usersArray = Array.from(Object.values(users))
   const { recipient } = values
   const userNamesArray = usersArray.map(user => user.nickname)
   const isUserSelected = userNamesArray.includes(recipient)
   const isShielded = values.recipient ? values.recipient.length >= 78 : false
   const shouldSendAnonymously = isShielded && !isUserSelected && !errors.recipient
   const checkField = (v) => {
+    console.log('v', v)
     return v.length >= 78 && !userNamesArray.includes(v)
   }
   const ErrorText = ({ name }) => {
@@ -249,6 +250,7 @@ export const SendMessageInitial = ({
       <Button
         className={classes.button}
         onClick={() => {
+          console.log('working here')
           submitForm()
           handleClose()
           if (values.sendAnonymously === true) {
