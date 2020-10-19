@@ -94,7 +94,6 @@ export const Security = ({
             <Checkbox
               checked={useTor}
               onChange={e => {
-                console.log('0')
                 registerOnionAddress(true)
               }}
               color='default'
@@ -111,7 +110,6 @@ export const Security = ({
             <Checkbox
               checked={!useTor}
               onChange={e => {
-                console.log('1')
                 registerOnionAddress(false)
               }}
               color='default'
