@@ -233,6 +233,9 @@ export const registerOnionAddress = torStatus => async (dispatch, getState) => {
     dispatch(appHandlers.actions.setUseTor(torStatus))
     return
   }
+  ipcRenderer.send('spawnTor')
+  dispatch(appHandlers.actions.setUseTor(torStatus))
+  electronStore.set('useTor', true)
   const privKey = identitySelector.signerPrivKey(getState())
   const onionAddress = identitySelector.onionAddress(getState())
   const messageData = {
