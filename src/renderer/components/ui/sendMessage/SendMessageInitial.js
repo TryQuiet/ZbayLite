@@ -135,7 +135,6 @@ export const SendMessageInitial = ({
   const isShielded = values.recipient ? values.recipient.length >= 78 : false
   const shouldSendAnonymously = isShielded && !isUserSelected && !errors.recipient
   const checkField = (v) => {
-    console.log('v', v)
     return v.length >= 78 && !userNamesArray.includes(v)
   }
   const ErrorText = ({ name }) => {
@@ -250,7 +249,6 @@ export const SendMessageInitial = ({
       <Button
         className={classes.button}
         onClick={() => {
-          console.log('working here')
           submitForm()
           handleClose()
           if (values.sendAnonymously === true) {

@@ -32,7 +32,7 @@ import {
 } from '../../zbay/transit'
 import client from '../../zcash'
 import {
-  displayableMessage,
+  DisplayableMessage,
   getPublicKeysFromSignature,
   exchangeParticipant,
   usernameSchema,
@@ -161,7 +161,7 @@ export const fetchAllMessages = async () => {
       R.groupBy(txn => txn.address)(txnsZec)
     )
   } catch (err) {
-    console.warn(`Can't pull messages dupa123`)
+    console.warn(`Can't pull messages`)
     console.warn(err)
     return {}
   }
@@ -335,9 +335,9 @@ const setOutgoingTransactions = (address, messages) => async (
         users
       )
       if (message === null) {
-        return displayableMessage(message)
+        return DisplayableMessage(message)
       }
-      return displayableMessage(message)
+      return DisplayableMessage(message)
     })
   )
   const contacts = contactsSelectors.contacts(getState())
@@ -427,7 +427,7 @@ const setChannelMessages = (channel, messages = []) => async (
     filteredZbayMessages.map(async transfer => {
       const message = await zbayMessages.transferToMessage(transfer, users)
       if (message === null) {
-        return displayableMessage(message)
+        return DisplayableMessage(message)
       }
       // const pendingMessage = pendingMessages.find(
       //   pm => pm.txId && pm.txId === message.id
@@ -437,7 +437,7 @@ const setChannelMessages = (channel, messages = []) => async (
       //     operationsHandlers.actions.removeOperation(pendingMessage.opId)
       //   )
       // }
-      return displayableMessage(message)
+      return DisplayableMessage(message)
     })
   )
   const contacts = contactsSelectors.contacts(getState())
@@ -528,7 +528,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
     filteredZbayMessages.map(async transfer => {
       const message = await zbayMessages.transferToMessage(transfer, users)
       if (message === null) {
-        return displayableMessage(message)
+        return DisplayableMessage(message)
       }
       // const pendingMessage = pendingMessages.find(
       //   pm => pm.txId && pm.txId === message.id
@@ -538,7 +538,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       //     operationsHandlers.actions.removeOperation(pendingMessage.opId)
       //   )
       // }
-      return displayableMessage(message)
+      return DisplayableMessage(message)
     })
   )
   const itemMessages = messagesAll.filter(msg => msg.message.itemId)
@@ -751,7 +751,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
       tag: message.message.tag,
       shippingData: message.message.shippingData
     }
-    const parsedMsg = displayableMessage(msg)
+    const parsedMsg = DisplayableMessage(msg)
     const contacts = contactsSelectors.contacts(getState())
     if (!contacts[publicKey]) {
       await dispatch(

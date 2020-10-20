@@ -27,7 +27,7 @@ export const BaseChannelsList = ({
   offers,
   selectedOffer
 }) => {
-  const [...keys] = offers.keys()
+  const [...keys] = Object.keys(offers)
   return (
     <List disablePadding>
       {channels
@@ -40,7 +40,7 @@ export const BaseChannelsList = ({
             selected={selected}
           />
         ))}
-      {Array.from(offers.values).map((offer, index) => (
+      {Array.from(Object.values(offers)).map((offer, index) => (
         <OfferListItem
           key={keys[index]}
           channel={offer}
@@ -50,7 +50,7 @@ export const BaseChannelsList = ({
       {unknownMessages.size > 0 && (
         <ChannelsListItem
           key={unknownUserId}
-          channel={unknownMessages.get(0)}
+          channel={unknownMessages[0]}
           directMessages={directMessages}
           selected={selected}
         />
@@ -68,9 +68,9 @@ BaseChannelsList.propTypes = {
 }
 
 BaseChannelsList.defaultProps = {
-  channels: Immutable.List(),
-  unknownMessages: Immutable.List(),
-  offers: Immutable.Map(),
+  channels: [],
+  unknownMessages: [],
+  offers: {},
   displayAddress: false,
   directMessages: false
 }

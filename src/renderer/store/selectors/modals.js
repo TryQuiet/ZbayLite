@@ -4,9 +4,9 @@ const store = s => s
 
 const modals = createSelector(store, s => s.get('modals'))
 
-const open = name => createSelector(modals, m => m.get(name, false))
+const open = name => createSelector(modals, m => m[name] || false)
 
-const payload = name => createSelector(modals, m => m.getIn(['payloads', name]))
+const payload = name => createSelector(modals, m => m.payloads[name])
 
 export default {
   modals,

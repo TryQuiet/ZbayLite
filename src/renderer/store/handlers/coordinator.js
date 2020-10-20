@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import messagesHandlers from './messages'
 import appHandlers from './app'

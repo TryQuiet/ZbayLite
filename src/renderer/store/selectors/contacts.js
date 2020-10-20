@@ -62,7 +62,7 @@ const offerList = createSelector(
   contacts,
   identitySelectors.removedChannels,
   (contacts, removedChannels) => {
-    if (removedChannels.size > 0) {
+    if (removedChannels.length > 0) {
       return Array.from(Object.values(contacts))
         .filter(c => !!c.offerId && !removedChannels.includes(c.key))
     }
@@ -133,11 +133,19 @@ const channelSettingsMessages = address =>
     }
   )
 
-const allMessages = createSelector(contacts, c =>
-  c.reduce((acc, t) => acc.merge(t.messages), Immutable.Map())
-)
+const allMessages = createSelector(contacts, c => {
+  return Array.from(Object.keys(c)).reduce((acc, t) => {
+    const temp = acc[t] = {
+      ...acc,
+      ...c[t].messages
+    }
+    return temp
+  }, {})
+})
 const getAdvertById = txid =>
-  createSelector(allMessages, msgs => msgs.get(txid))
+  createSelector(allMessages, msgs => {
+    return msgs[txid]
+  })
 const lastSeen = address => createSelector(contact(address), c => c.lastSeen)
 const username = address => createSelector(contact(address), c => c.username)
 const vaultMessages = address =>
@@ -150,7 +158,7 @@ export const queuedMessages = address =>
     directMssagesQueueSelectors.queue,
     queue =>
       queue.filter(
-        m => m.recipientAddress === address && m.message.get('type') < 10
+        m => m.recipientAddress === address && m.message.type < 10
       ) //  separate offer messages and direct messages
   )
 
@@ -160,7 +168,7 @@ export const pendingMessages = address =>
       o =>
         o.type === operationTypes.pendingDirectMessage &&
         o.meta.recipientAddress === address &&
-        o.meta.message.get('type') < 10 //  separate offer messages and direct messages
+        o.meta.message.type < 10 //  separate offer messages and direct messages
     )
   )
 

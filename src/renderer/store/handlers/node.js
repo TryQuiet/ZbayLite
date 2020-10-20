@@ -1,5 +1,5 @@
 // import Immutable from 'immutable'
-import produce from 'immer'
+import { produce } from 'immer'
 import BigNumber from 'bignumber.js'
 import { ipcRenderer } from 'electron'
 import { createAction, handleActions } from 'redux-actions'

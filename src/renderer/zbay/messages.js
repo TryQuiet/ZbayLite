@@ -54,8 +54,8 @@ export const _DisplayableMessage = Immutable.Record(
 export const _displayableMessage = {
   id: null,
   type: messageType.BASIC,
-  sender: exchangeParticipant,
-  receiver: exchangeParticipant,
+  sender: { ...exchangeParticipant },
+  receiver: { ...exchangeParticipant },
   createdAt: null,
   message: '',
   spent: new BigNumber(0),
@@ -71,19 +71,8 @@ export const _displayableMessage = {
 }
 
 export const DisplayableMessage = values => {
-  const record = _DisplayableMessage(values)
-  return record.merge({
-    sender: ExchangeParticipant(record.sender),
-    receiver: ExchangeParticipant(record.receiver)
-  })
-}
-
-export const displayableMessage = values => {
-  const record = R.clone(_displayableMessage)
-  return {
-    ...record,
-    ...values
-  }
+  const record = R.mergeDeepRight(_displayableMessage, values)
+  return record
 }
 
 const _isOwner = (identityAddress, message) =>
@@ -94,10 +83,14 @@ export const receivedToDisplayableMessage = ({
   identityAddress,
   receiver = { replyTo: '', username: 'Unnamed' }
 }) => {
-  return DisplayableMessage(message).merge({
+  const record = R.mergeDeepRight(DisplayableMessage, {
     fromYou: _isOwner(identityAddress, message),
-    receiver: ExchangeParticipant(receiver)
+    receiver: {
+      ...exchangeParticipant,
+      ...receiver
+    }
   })
+  return record
 }
 
 export const vaultToDisplayableMessage = ({
@@ -105,10 +98,14 @@ export const vaultToDisplayableMessage = ({
   identityAddress,
   receiver = { replyTo: '', username: 'Unnamed' }
 }) => {
-  return DisplayableMessage(message).merge({
+  const record = R.mergeDeepRight(DisplayableMessage, {
     fromYou: _isOwner(identityAddress, message),
-    receiver: ExchangeParticipant(receiver)
+    receiver: {
+      ...exchangeParticipant,
+      ...receiver
+    }
   })
+  return record
 }
 
 export const operationToDisplayableMessage = ({
@@ -119,19 +116,24 @@ export const operationToDisplayableMessage = ({
   identityName,
   receiver = { replyTo: '', username: 'Unnamed' }
 }) => {
-  return DisplayableMessage(operation.meta.message).merge({
+  const record = R.mergeDeepRight(operation.meta.message, {
     tag,
     offerOwner,
     error: operation.error,
     status: operation.status,
     id: operation.opId,
-    sender: ExchangeParticipant({
+    sender: {
+      ...exchangeParticipant,
       replyTo: identityAddress,
       username: identityName
-    }),
+    },
     fromYou: true,
-    receiver: ExchangeParticipant(receiver)
+    receiver: {
+      ...exchangeParticipant,
+      ...receiver
+    }
   })
+  return record
 }
 
 export const queuedToDisplayableMessage = ({
@@ -142,19 +144,25 @@ export const queuedToDisplayableMessage = ({
   identityAddress,
   identityName,
   receiver = { replyTo: '', username: 'Unnamed' }
-}) =>
-  DisplayableMessage(queuedMessage.message).merge({
+}) => {
+  const record = R.mergeDeepRight(queuedMessage.message, {
     tag,
     offerOwner,
     fromYou: true,
     id: messageKey,
     status: 'pending',
-    sender: ExchangeParticipant({
+    sender: {
+      ...exchangeParticipant,
       replyTo: identityAddress,
       username: identityName
-    }),
-    receiver: ExchangeParticipant(receiver)
+    },
+    receiver: {
+      ...exchangeParticipant,
+      ...receiver
+    }
   })
+  return record
+}
 
 Yup.addMethod(Yup.mixed, 'validateMessage', function (params) {
   return this.test('test', null, async function (value) {
@@ -307,7 +315,7 @@ export const outgoingTransferToMessage = async (props, users) => {
   }
   try {
     const toUser =
-      users.find(u => u.address === transactionData.address) ||
+      Array.from(Object.values(users)).find(u => u.address === transactionData.address) ||
       {
         ...exchangeParticipant
       }
@@ -357,9 +365,6 @@ export const signMessage = ({ messageData, privKey }) => {
   }
 }
 export const getPublicKeysFromSignature = message => {
-  // console.log('tetetet', message.message)
-  // console.log('signature', message.signature)
-  // console.log('signatureR', message.r)
   return secp256k1.recover(
     hash(JSON.stringify(message.message)),
     message.signature,

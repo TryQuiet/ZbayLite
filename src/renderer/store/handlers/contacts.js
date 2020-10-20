@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import Immutable from 'immutable'
 import { DateTime } from 'luxon'
 import { createAction, handleActions } from 'redux-actions'
@@ -495,7 +495,6 @@ export const createVaultContact = ({
 }) => async (dispatch, getState) => {
   const contacts = selectors.contacts(getState())
   // Create temp user
-  console.log('cosnt', contacts)
   if (!contacts[contact.publicKey]) {
     await dispatch(
       addContact({
@@ -643,7 +642,7 @@ export const reducer = handleActions(
           messages: {},
           newMessages: [],
           vaultMessages: [],
-          offerId: null,
+          offerId: offerId,
           key,
           address: contactAddress,
           username

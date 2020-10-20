@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import { handleActions, createAction } from 'redux-actions'
 
 import { actionTypes } from '../../../shared/static'

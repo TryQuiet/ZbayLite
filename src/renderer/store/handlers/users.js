@@ -1,11 +1,11 @@
-
+import { produce } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import * as R from 'ramda'
 
 import feesSelector from '../selectors/fees'
 import nodeSelectors from '../selectors/node'
 import feesHandlers from '../handlers/fees'
-import { checkTransferCount } from '../handlers/messages'
+// import { checkTransferCount } from '../handlers/messages'
 import { actionCreators } from './modals'
 import usersSelector from '../selectors/users'
 import identitySelector from '../selectors/identity'
@@ -16,7 +16,6 @@ import client from '../../zcash'
 import staticChannels from '../../zcash/channels'
 import notificationsHandlers from './notifications'
 import { infoNotification, successNotification } from './utils'
-import produce from 'immer'
 
 export const _UserData = {
   firstName: '',
@@ -159,16 +158,15 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
 
 export const fetchUsers = (address, messages) => async (dispatch, getState) => {
   try {
-    const transferCountFlag = await dispatch(
-      checkTransferCount(address, messages)
-    )
-    if (transferCountFlag === -1 || !messages) {
-      return
-    }
+    // const transferCountFlag = await dispatch(
+    //   checkTransferCount(address, messages)
+    // )
+    // if (transferCountFlag === -1 || !messages) {
+    //   return
+    // }
     const filteredZbayMessages = messages.filter(msg =>
       msg.memohex.startsWith('ff')
     )
-
     const registrationMessages = await Promise.all(
       filteredZbayMessages.map(transfer => {
         const message = zbayMessages.transferToMessage(transfer)
@@ -200,7 +198,7 @@ export const fetchUsers = (address, messages) => async (dispatch, getState) => {
     await dispatch(feesHandlers.actions.setUserFee(minfee))
     await dispatch(setUsers({ users }))
   } catch (err) {
-    console.warn(err)
+    throw err
   }
 }
 

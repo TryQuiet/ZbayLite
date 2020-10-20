@@ -78,7 +78,6 @@ export const SendMessageMain = ({
       enableReinitialize
       onSubmit={(values, { resetForm }) => {
         const { recipient, sendAnonymously } = values
-          .filter(obj => obj.nickname === recipient)[0]
         const includesNickname =
         Array.from(Object.values(users))
           .filter(obj => obj.nickname === recipient)[0] ||

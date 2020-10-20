@@ -55,7 +55,7 @@ const styles = theme => ({
 })
 
 export const OfferListItem = ({ classes, channel, history, selected }) => {
-  const channelObj = channel.toJS()
+  const channelObj = channel
   const highlight = channelObj.key === selected.id
   const newMessages = channelObj.newMessages.length
   return (

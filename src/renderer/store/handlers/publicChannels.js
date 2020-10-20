@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import * as R from 'ramda'
 import feesSelectors from '../selectors/fees'
@@ -22,9 +22,7 @@ export const _PublicChannelData = {
   timestamp: 0,
   keys: {}
 }
-export const initialState = {
-  ..._PublicChannelData
-}
+export const initialState = {}
 
 export const setPublicChannels = createAction(actionTypes.SET_PUBLIC_CHANNELS)
 

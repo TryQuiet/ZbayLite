@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import BigNumber from 'bignumber.js'
 import { createAction, handleActions } from 'redux-actions'
 import secp256k1 from 'secp256k1'
@@ -496,10 +496,8 @@ export const initAddreses = () => async (dispatch, getState) => {
     electronStore.set('shieldedAddresses', JSON.stringify([]))
   }
   const addresses = JSON.parse(electronStore.get('addresses'))
-  console.log('addresses', addresses)
   dispatch(setUserAddreses(addresses))
   const shieldedAddreses = JSON.parse(electronStore.get('shieldedAddresses'))
-  console.log('shieldedAddreses', shieldedAddreses)
   dispatch(setUserShieldedAddreses(shieldedAddreses))
 }
 const epics = {

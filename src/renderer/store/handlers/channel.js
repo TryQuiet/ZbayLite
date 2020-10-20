@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import BigNumber from 'bignumber.js'
 import { createAction, handleActions } from 'redux-actions'
 import crypto from 'crypto'
@@ -228,7 +228,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         identityAddress
       })
       const transaction = await client.sendTransaction(transfer)
-      console.log(transaction, 'transaction details')
       if (!transaction.txid) {
         dispatch(
           contactsHandlers.actions.addMessage({

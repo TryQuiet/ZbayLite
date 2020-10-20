@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import net from 'net'
 import { ipcRenderer } from 'electron'
 

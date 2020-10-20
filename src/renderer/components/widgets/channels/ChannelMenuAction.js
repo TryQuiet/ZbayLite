@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import * as R from 'ramda'
-import Immutable from 'immutable'
 
 import { withStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
@@ -128,7 +127,7 @@ ChannelMenuAction.propTypes = {
   notificationFilter: PropTypes.number.isRequired
 }
 ChannelMenuAction.defaultProps = {
-  publicChannels: Immutable.Map({}),
+  publicChannels: {},
   disableSettings: false
 }
 
