@@ -111,7 +111,7 @@ export const JoinChannelModal = ({
       <Grid className={classes.root}>
         <Formik
           onSubmit={async (values, { resetForm }) => {
-            const ch = publicChannels.find(
+            const ch = channelsArray.find(
               channel => channel.name === values.channel.name
             )
             if (ch) {

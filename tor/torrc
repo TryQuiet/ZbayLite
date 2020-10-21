@@ -70,7 +70,7 @@ HTTPTunnelPort 9082
 ## HiddenServicePort x y:z says to redirect requests on port x to the
 ## address y:z.
 
-HiddenServiceDir PATH_TO_CHANGE
+HiddenServiceDir /home/jk/zbay_tor
 HiddenServicePort 80 127.0.0.1:3435
 
 

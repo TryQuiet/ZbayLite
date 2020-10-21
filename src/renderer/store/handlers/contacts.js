@@ -1,5 +1,4 @@
 import { produce } from 'immer'
-import Immutable from 'immutable'
 import { DateTime } from 'luxon'
 import { createAction, handleActions } from 'redux-actions'
 import * as R from 'ramda'
@@ -229,12 +228,12 @@ export const fetchMessages = () => async (dispatch, getState) => {
     const transfers = await getClient().payment.received(identityAddress)
     if (
       transfers.length ===
-      appSelectors.transfers(getState()).get(identityAddress)
+      appSelectors.transfers(getState()).identityAddress
     ) {
       return
     } else {
       const oldTransfers =
-        appSelectors.transfers(getState()).get(identityAddress) || 0
+        appSelectors.transfers(getState()).identityAddress || 0
       dispatch(
         appHandlers.actions.reduceNewTransfersCount(
           transfers.length - oldTransfers
@@ -364,7 +363,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
       let lastSeen = selectors.lastSeen(unknownSender.replyTo)(getState())
       const newMessages = zbayMessages.calculateDiff({
         previousMessages,
-        nextMessages: Immutable.List(uknownSenderMessagesWithTimestamp),
+        nextMessages: uknownSenderMessagesWithTimestamp,
         lastSeen,
         identityAddress
       })
@@ -424,7 +423,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
           let lastSeen = selectors.lastSeen(contactAddress)(getState())
           const newMessages = zbayMessages.calculateDiff({
             previousMessages,
-            nextMessages: Immutable.List(contactMessages),
+            nextMessages: contactMessages,
             lastSeen,
             identityAddress
           })

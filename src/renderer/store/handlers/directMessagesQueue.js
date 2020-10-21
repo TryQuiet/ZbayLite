@@ -1,4 +1,4 @@
-import Immutable from 'immutable'
+import { produce } from 'immer'
 import * as R from 'ramda'
 import crypto from 'crypto'
 import { createAction, handleActions } from 'redux-actions'
@@ -28,17 +28,14 @@ import history from '../../../shared/history'
 export const DEFAULT_DEBOUNCE_INTERVAL = 2000
 const POLLING_OFFSET = 60000
 
-export const PendingMessage = Immutable.Record(
-  {
-    recipientAddress: '',
-    recipientUsername: '',
-    offerId: '',
-    message: null
-  },
-  'PendingDirectMessage'
-)
+export const PendingMessage = {
+  recipientAddress: '',
+  recipientUsername: '',
+  offerId: '',
+  message: null
+}
 
-export const initialState = Immutable.Map()
+export const initialState = {}
 
 const addDirectMessage = createAction(
   actionTypes.ADD_PENDING_DIRECT_MESSAGE,
@@ -313,18 +310,21 @@ export const reducer = handleActions(
     [addDirectMessage]: (
       state,
       { payload: { recipientUsername, recipientAddress, message, key } }
-    ) => {
-      return state.set(
-        key,
-        PendingMessage({
+    ) =>
+      produce(state, (draft) => {
+        draft[key] = {
+          ...PendingMessage,
           recipientAddress,
           recipientUsername,
           offerId: message.message.itemId,
-          message: Immutable.fromJS(message)
-        })
-      )
-    },
-    [removeMessage]: (state, { payload: key }) => state.remove(key)
+          message: {
+            ...message
+          }
+        }
+      }),
+    [removeMessage]: (state, { payload: key }) => produce(state, (draft) => {
+      delete draft[key]
+    })
   },
   initialState
 )

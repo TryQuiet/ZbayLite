@@ -212,7 +212,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
     dispatch(setUsersMessages(identityAddress, txns[identityAddress]))
     dispatch(appHandlers.actions.setInitialLoadFlag(true))
   } catch (err) {
-    console.warn(`Can't pull messages dupa321`)
+    console.warn(`Can't pull messages`)
     console.warn(err)
     return {}
   }
@@ -230,7 +230,7 @@ export const checkTransferCount = (address, messages) => async (
       console.log('skip wrong state')
       return -1
     }
-    if (messages.length === appSelectors.transfers(getState()).get(address)) {
+    if (messages.length === appSelectors.transfers(getState()).address) {
       return -1
     } else {
       // const oldTransfers = appSelectors.transfers(getState()).get(address) || 0

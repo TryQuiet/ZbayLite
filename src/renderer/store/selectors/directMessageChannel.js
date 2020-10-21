@@ -4,7 +4,7 @@ const store = s => s
 
 export const directMessageChannel = createSelector(store, state => state.get('directMessageChannel'))
 
-export const targetRecipientAddress = createSelector(directMessageChannel, d => d.get('targetRecipientAddress'))
+export const targetRecipientAddress = createSelector(directMessageChannel, d => d.targetRecipientAddress)
 
 export default {
   directMessageChannel,
