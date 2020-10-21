@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js'
 const store = s => s
 
 export const node = createSelector(store, state => {
-  return state.get('node')
+  return state.node
 })
 
 const currentBlock = createSelector(node, n => n.currentBlock)

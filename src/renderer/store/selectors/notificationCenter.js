@@ -3,7 +3,7 @@ import { notificationFilterType, soundType } from '../../../shared/static'
 const store = s => s
 
 export const notificationCenter = createSelector(store, state =>
-  state.get('notificationCenter')
+  state.notificationCenter
 )
 
 const channels = createSelector(notificationCenter, a => a.channels)

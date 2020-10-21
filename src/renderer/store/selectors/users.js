@@ -3,7 +3,7 @@ import identitySelectors from './identity'
 const store = s => s
 
 const users = createSelector(store, state => {
-  return state.get('users')
+  return state.users
 })
 
 const isRegisteredUsername = nickname => createSelector(users, (users) => {

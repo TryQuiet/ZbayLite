@@ -12,7 +12,7 @@ const store = s => s
 
 const offers = createSelector(
   store,
-  s => s.get('offers')
+  s => s.offers
 )
 
 const filteredOffers = createSelector(

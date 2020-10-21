@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import { networkFee } from '../../../shared/static'
 const store = s => s
 
-const rates = createSelector(store, state => state.get('rates'))
+const rates = createSelector(store, state => state.rates)
 
 export const rate = currency =>
   createSelector(rates, r => new BigNumber(r[currency] || 0))

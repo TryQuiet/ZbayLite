@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux-immutable'
+import { combineReducers } from 'redux'
 
 import identityHandlers from './handlers/identity'
 import notificationsHandlers from './handlers/notifications'

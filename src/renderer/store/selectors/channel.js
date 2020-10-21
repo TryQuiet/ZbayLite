@@ -13,7 +13,7 @@ import { networkFee, messageType } from '../../../shared/static'
 const store = s => s
 
 export const channel = createSelector(store, state => {
-  return state.get('channel')
+  return state.channel
 })
 export const channelInfo = createSelector(channel, ch => {
   const channel = {

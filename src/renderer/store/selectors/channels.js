@@ -14,8 +14,8 @@ const channels = createSelector(
   nodeSelectors.network,
   (state, network) => {
     return {
-      ...state.get('channels'),
-      data: state.get('channels').data.filter(ch => !ignoredChannels(network).includes(ch.address))
+      ...state.channels,
+      data: state.channels.data.filter(ch => !ignoredChannels(network).includes(ch.address))
     }
   }
 )
@@ -51,8 +51,8 @@ const usersChannel = createSelector(
   nodeSelectors.network,
   (state, network) => {
     const temp = {
-      ...state.get('channels'),
-      data: state.get('channels').data.find(ch => ch.address === zcashChannels.registeredUsers[network].address)
+      ...state.channels,
+      data: state.channels.data.find(ch => ch.address === zcashChannels.registeredUsers[network].address)
     }
     return temp.data
   }
@@ -62,8 +62,8 @@ const priceOracleChannel = createSelector(
   nodeSelectors.network,
   (state, network) => {
     const temp = {
-      ...state.get('channels'),
-      data: state.get('channels').data.find(ch => ch.address === zcashChannels.priceOracle[network].address)
+      ...state.channels,
+      data: state.channels.data.find(ch => ch.address === zcashChannels.priceOracle[network].address)
     }
     return temp.data
   }
@@ -73,8 +73,8 @@ const publicChannels = createSelector(
   nodeSelectors.network,
   (state, network) => {
     const temp = {
-      ...state.get('channels'),
-      data: state.get('channels').data.find(ch => ch.address === zcashChannels.channelOfChannels[network].address)
+      ...state.channels,
+      data: state.channels.data.find(ch => ch.address === zcashChannels.channelOfChannels[network].address)
     }
     return temp.data
   }

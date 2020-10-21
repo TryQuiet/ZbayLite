@@ -33,7 +33,7 @@ const contactBase = {
 
 const store = s => s
 
-const contacts = createSelector(store, state => state.get('contacts'))
+const contacts = createSelector(store, state => state.contacts)
 const contactsList = createSelector(
   contacts,
   identitySelectors.removedChannels,

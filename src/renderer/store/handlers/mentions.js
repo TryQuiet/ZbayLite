@@ -1,4 +1,4 @@
-import Immutable from 'immutable'
+import { produce } from 'immer'
 import { DateTime } from 'luxon'
 import { createAction, handleActions } from 'redux-actions'
 
@@ -14,15 +14,12 @@ import notificationsHandlers from './notifications'
 import modalsHandlers from './modals'
 import { errorNotification, successNotification } from './utils'
 
-export const ChannelMentions = Immutable.Record(
-  {
-    nickname: '',
-    timeStamp: 0
-  },
-  'ChannelMentions'
-)
+export const ChannelMentions = {
+  nickname: '',
+  timeStamp: 0
+}
 
-export const initialState = Immutable.Map()
+export const initialState = {}
 
 const addMentionMiss = createAction(actionTypes.ADD_MENTION_MISS)
 const clearMentionMiss = createAction(actionTypes.CLEAR_MENTION_MISS)
@@ -72,7 +69,7 @@ const checkMentions = () => async (dispatch, getState) => {
   }
   if (foundMentions.length > 0) {
     dispatch(
-      addMentionMiss({ [channelId]: foundMentions.concat(currentMentions) })
+      addMentionMiss({ mentions: foundMentions.concat(currentMentions), channelId })
     )
   }
 }
@@ -133,12 +130,22 @@ export const epics = {
 }
 export const reducer = handleActions(
   {
-    [clearMentionMiss]: () => initialState,
+    [clearMentionMiss]: (state) => produce(state, (draft) => {
+      return {
+        ...initialState
+      }
+    }),
     [removeMentionMiss]: (state, { payload: { channelId, nickname } }) =>
-      state.updateIn([channelId], mentions =>
-        mentions.filter(mention => mention.nickname !== nickname)
-      ),
-    [addMentionMiss]: (state, { payload: channel }) => state.merge(channel)
+      produce(state, (draft) => {
+        draft[channelId] = draft[channelId].filter(mention => mention.nickname !== nickname)
+      }),
+    [addMentionMiss]: (state, { payload: { mentions, channelId } }) =>
+      produce(state, (draft) => {
+        draft[channelId] = {
+          ...draft[channelId],
+          ...mentions
+        }
+      })
   },
   initialState
 )

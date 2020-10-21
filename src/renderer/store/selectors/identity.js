@@ -5,7 +5,7 @@ import { rate } from './rates'
 
 const store = s => s
 
-const identity = createSelector(store, state => state.get('identity'))
+const identity = createSelector(store, state => state.identity)
 
 const data = createSelector(identity, i => i.data)
 

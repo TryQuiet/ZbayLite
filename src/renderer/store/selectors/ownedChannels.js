@@ -4,7 +4,7 @@ import channelsSelectors from './channel'
 const store = s => s
 
 export const ownedChannels = createSelector(store, state =>
-  state.get('ownedChannels')
+  state.ownedChannels
 )
 
 const isOwner = createSelector(
