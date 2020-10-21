@@ -191,6 +191,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
     const importedChannels = electronStore.get(`importedChannels`)
     if (importedChannels) {
       for (const address of Object.keys(importedChannels)) {
+        console.log('working here', txns[address], importedChannels[address])
         await dispatch(
           setChannelMessages(importedChannels[address], txns[address])
         )
@@ -481,14 +482,14 @@ const setChannelMessages = (channel, messages = []) => async (
 }
 const setUsersMessages = (address, messages) => async (dispatch, getState) => {
   const users = usersSelectors.users(getState())
-  const transferCountFlag = await dispatch(
-    checkTransferCount(address, messages)
-  )
-  if (transferCountFlag === -1 || !messages) {
-    console.log('skip')
+  // const transferCountFlag = await dispatch(
+  //   checkTransferCount(address, messages)
+  // )
+  // if (transferCountFlag === -1 || !messages) {
+  //   console.log('skip')
 
-    return
-  }
+  //   return
+  // }
   const filteredTextMessages = messages.filter(
     msg => !msg.memohex.startsWith('f6') && !msg.memohex.startsWith('ff')
   )

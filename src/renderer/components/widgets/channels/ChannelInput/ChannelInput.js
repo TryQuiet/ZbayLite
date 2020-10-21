@@ -208,10 +208,10 @@ export const ChannelInput = ({
       .split(String.fromCharCode(160))
     const lastMention = splitedMsg[splitedMsg.length - 1].startsWith('@')
     if (lastMention) {
-      const possibleMentions = users.filter(user =>
+      const possibleMentions = Array.from(Object.values(users)).filter(user =>
         user.nickname.startsWith(splitedMsg[splitedMsg.length - 1].substring(1))
       )
-      const sortedMentions = Object.values(possibleMentions.toJS()).sort(
+      const sortedMentions = Object.values(possibleMentions).sort(
         function (a, b) {
           if (a.nickname > b.nickname) {
             return 1
@@ -244,7 +244,7 @@ export const ChannelInput = ({
       const element = splitedMsg[key]
       if (
         element.startsWith('@') &&
-        users.find(user => user.nickname === element.substring(1))
+        Array.from(Object.values(users)).find(user => user.nickname === element.substring(1))
       ) {
         splitedMsg[key] = renderToString(
           <span className={classes.highlight}>{element}</span>

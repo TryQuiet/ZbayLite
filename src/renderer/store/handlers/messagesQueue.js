@@ -1,4 +1,4 @@
-import Immutable from 'immutable'
+import { produce } from 'immer'
 import * as R from 'ramda'
 import crypto from 'crypto'
 import { createAction, handleActions } from 'redux-actions'
@@ -16,15 +16,12 @@ import { actionTypes } from '../../../shared/static'
 
 export const DEFAULT_DEBOUNCE_INTERVAL = 2000
 
-export const PendingMessage = Immutable.Record(
-  {
-    channelId: '',
-    message: null
-  },
-  'PendingMessage'
-)
+export const PendingMessage = {
+  channelId: '',
+  message: null
+}
 
-export const initialState = Immutable.Map()
+export const initialState = {}
 
 const addMessage = createAction(
   actionTypes.ADD_PENDING_MESSAGE,
@@ -53,7 +50,7 @@ export const actions = {
 }
 const _sendPendingMessages = async (dispatch, getState) => {
   const lock = appSelectors.messageQueueLock(getState())
-  const messages = selectors.queue(getState())
+  const messages = Array.from(Object.values(selectors.queue(getState())))
   if (lock === false) {
     await dispatch(appHandlers.actions.lockMessageQueue())
   } else {
@@ -122,16 +119,17 @@ export const epics = {
 
 export const reducer = handleActions(
   {
-    [addMessage]: (state, { payload: { channelId, message, key } }) => {
-      return state.set(
-        key,
-        PendingMessage({
+    [addMessage]: (state, { payload: { channelId, message, key } }) =>
+      produce(state, (draft) => {
+        draft[key] = {
+          ...PendingMessage,
           channelId,
-          message: Immutable.fromJS(message)
-        })
-      )
-    },
-    [removeMessage]: (state, { payload: key }) => state.remove(key)
+          message
+        }
+      }),
+    [removeMessage]: (state, { payload: key }) => produce(state, (draft) => {
+      delete draft[key]
+    })
   },
   initialState
 )
