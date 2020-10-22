@@ -12,7 +12,7 @@ import config from './config'
 import { spawnZcashNode } from './zcash/bootstrap'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
-import websockets from './websockets/client'
+import websockets, { clearConnections } from './websockets/client'
 import { createServer } from './websockets/server'
 import { spawnTor, getOnionAddress } from '../../tor'
 
@@ -190,16 +190,7 @@ export const checkForUpdate = win => {
     })
 
     autoUpdater.on('update-downloaded', info => {
-      const blockchainStatus = electronStore.get('AppStatus.blockchain.status')
-      const paramsStatus = electronStore.get('AppStatus.params.status')
-      if (
-        blockchainStatus !== config.BLOCKCHAIN_STATUSES.SUCCESS ||
-        paramsStatus !== config.PARAMS_STATUSES.SUCCESS
-      ) {
-        autoUpdater.quitAndInstall()
-      } else {
-        win.webContents.send('newUpdateAvailable')
-      }
+      win.webContents.send('newUpdateAvailable')
     })
     isUpdatedStatusCheckingStarted = true
   }
@@ -286,9 +277,12 @@ app.on('ready', async () => {
   mainWindow.webContents.on('did-finish-load', async () => {
     mainWindow.webContents.send('ping')
     try {
+      // Spawn and kill tor to generate onionAddress
       torProcess = await spawnTor()
       createServer(mainWindow)
       mainWindow.webContents.send('onionAddress', getOnionAddress())
+      torProcess.kill()
+      torProcess = null
     } catch (error) {
       console.log(error)
     }
@@ -306,6 +300,17 @@ app.on('ready', async () => {
     }
   })
 
+  ipcMain.on('spawnTor', async (event, arg) => {
+    if (torProcess === null) {
+      torProcess = await spawnTor()
+    }
+  })
+  ipcMain.on('killTor', async (event, arg) => {
+    if (torProcess !== null) {
+      torProcess.kill()
+      torProcess = null
+    }
+  })
   ipcMain.on('proceed-update', (event, arg) => {
     autoUpdater.quitAndInstall()
   })
@@ -480,6 +485,7 @@ app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   const vaultStatus = electronStore.get('vaultStatus')
+  clearConnections()
   const shouldFullyClose =
     isFetchedFromExternalSource || vaultStatus !== config.VAULT_STATUSES.CREATED
   if (process.platform !== 'darwin' || shouldFullyClose) {

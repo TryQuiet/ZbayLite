@@ -39,7 +39,10 @@ import {
   messageSchema
 } from '../../zbay/messages'
 import channels from '../../zcash/channels'
-import { displayMessageNotification } from '../../notifications'
+import {
+  displayDirectMessageNotification,
+  displayMessageNotification
+} from '../../notifications'
 import electronStore from '../../../shared/electronStore'
 import notificationCenterSelectors from '../selectors/notificationCenter'
 import staticChannelsMessages from '../../static/staticChannelsMessages.json'
@@ -141,6 +144,16 @@ export const brokenMemoToMemohex = memo => {
   const curPrefix = memo.substring(2)
   return curPrefix + '0'.repeat(1024 - curPrefix.length)
 }
+// Generate Json file that contains transactions from default channels
+export const createSnapshot = groupedMesssages => {
+  const fs = require('fs')
+  const defaultChannels = Object.values(channels).map(ch => ch.mainnet.address)
+  let data = {}
+  for (const ch of defaultChannels) {
+    data[ch] = groupedMesssages[ch]
+  }
+  fs.writeFileSync('staticChannelsMessages.json', JSON.stringify(data))
+}
 export const fetchAllMessages = async () => {
   try {
     const txns = await client.list()
@@ -169,11 +182,19 @@ export const fetchAllMessages = async () => {
 export const fetchMessages = () => async (dispatch, getState) => {
   try {
     const txns = await fetchAllMessages()
+    // Uncomment to create snapshot on next run.
+    // createSnapshot(txns)
     const identityAddress = identitySelectors.address(getState())
     await dispatch(
       usersHandlers.epics.fetchUsers(
         channels.registeredUsers.mainnet.address,
         txns[channels.registeredUsers.mainnet.address]
+      )
+    )
+    await dispatch(
+      usersHandlers.epics.fetchOnionAddresses(
+        channels.tor.mainnet.address,
+        txns[channels.tor.mainnet.address]
       )
     )
     await dispatch(
@@ -288,17 +309,25 @@ export const findNewMessages = (key, messages, state, isDM = false) => {
       channelFilter === notificationFilterType.MENTIONS
     ) {
       const myUser = usersSelectors.myUser(state)
-      return filteredByTimeAndType.filter(msg =>
-        msg.message.itemId
-          ? msg.message.text
-            .split(' ')
-            .map(text => text.trim())
-            .includes(`@${myUser.nickname}`)
-          : msg.message
-            .split(' ')
-            .map(text => text.trim())
-            .includes(`@${myUser.nickname}`)
-      )
+      return filteredByTimeAndType.filter(msg => {
+        if (msg.message.itemId) {
+          return (
+            msg.message.text &&
+            msg.message.text
+              .split(' ')
+              .map(text => text.trim())
+              .includes(`@${myUser.nickname}`)
+          )
+        } else {
+          return (
+            msg.message &&
+            msg.message
+              .split(' ')
+              .map(text => text.trim())
+              .includes(`@${myUser.nickname}`)
+          )
+        }
+      })
     }
     return filteredByTimeAndType
   }
@@ -687,6 +716,8 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
   let message = null
   let sender = { replyTo: '', username: 'Unnamed' }
   let isUnregistered = false
+  const currentChannel = channelSelectors.channel(getState())
+  const userFilter = notificationCenterSelectors.userFilterType(getState())
   try {
     message = await unpackMemo(data)
     const { type } = message
@@ -728,10 +759,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
         ...exchangeParticipant
       }
     const messageDigest = crypto.createHash('sha256')
-
-    const messageEssentials = R.pick(['createdAt', 'message'])(
-      message
-    )
+    const messageEssentials = R.pick(['createdAt', 'message'])(message)
     const key = messageDigest
       .update(JSON.stringify(messageEssentials))
       .digest('hex')
@@ -754,21 +782,66 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     }
     const parsedMsg = DisplayableMessage(msg)
     const contacts = contactsSelectors.contacts(getState())
-    if (!contacts[publicKey]) {
-      await dispatch(
-        contactsHandlers.actions.addContact({
-          key: publicKey,
-          contactAddress: msg.sender.replyTo,
-          username: msg.sender.username
+    if (msg.message.itemId) {
+      const item = msg.message.itemId
+      const contacts = contactsSelectors.contacts(getState())
+      const offer = contactsSelectors.getAdvertById(item)(getState())
+      if (!offer) {
+        return
+      }
+      if (!contacts[item + msg.sender.username]) {
+        await dispatch(
+          contactsHandlers.actions.addContact({
+            key: key,
+            username: offer.message.tag + ' @' + msg.sender.username,
+            contactAddress: msg.sender.replyTo,
+            offerId: offer.id
+          })
+        )
+      }
+
+      dispatch(
+        contactsHandlers.actions.addMessage({
+          key: item + msg.sender.username,
+          message: { [key]: parsedMsg }
         })
       )
+      if (
+        currentChannel.id !== item + msg.sender.username &&
+        userFilter !== notificationFilterType.NONE
+      ) {
+        displayMessageNotification({
+          senderName: msg.sender.username,
+          message: msg.message.text,
+          channelName: offer.message.tag + ' @' + msg.sender.username
+        })
+      }
+    } else {
+      if (!contacts.get(publicKey)) {
+        await dispatch(
+          contactsHandlers.actions.addContact({
+            key: publicKey,
+            contactAddress: msg.sender.replyTo,
+            username: msg.sender.username
+          })
+        )
+      }
+      dispatch(
+        contactsHandlers.actions.addMessage({
+          key: publicKey,
+          message: { [key]: parsedMsg }
+        })
+      )
+      if (
+        currentChannel.id !== msg.publicKey &&
+        userFilter !== notificationFilterType.NONE
+      ) {
+        displayDirectMessageNotification({
+          username: msg.sender.username,
+          message: msg
+        })
+      }
     }
-    dispatch(
-      contactsHandlers.actions.addMessage({
-        key: publicKey,
-        message: { [key]: parsedMsg }
-      })
-    )
   } catch (err) {
     console.warn('Incorrect message format: ', err)
     return null

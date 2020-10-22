@@ -18,7 +18,8 @@ export const AppState = {
   newTransfersCounter: 0,
   directMessageQueueLock: false,
   messageQueueLock: false,
-  isInitialLoadFinished: false
+  isInitialLoadFinished: false,
+  useTor: false
 }
 
 export const initialState = {
@@ -29,6 +30,7 @@ const loadVersion = createAction(actionTypes.SET_APP_VERSION, () =>
   remote.app.getVersion()
 )
 const setTransfers = createAction(actionTypes.SET_TRANSFERS)
+const setUseTor = createAction(actionTypes.SET_USE_TOR)
 const setModalTab = createAction(actionTypes.SET_CURRENT_MODAL_TAB)
 const clearModalTab = createAction(actionTypes.CLEAR_CURRENT_MODAL_TAB)
 const setAllTransfersCount = createAction(actionTypes.SET_ALL_TRANSFERS_COUNT)
@@ -54,11 +56,22 @@ export const actions = {
   unlockDmQueue,
   lockMessageQueue,
   unlockMessageQueue,
-  setInitialLoadFlag
+  setInitialLoadFlag,
+  setUseTor
 }
 
 export const askForBlockchainLocation = () => async (dispatch, getState) => {
   dispatch(actionCreators.openModal('blockchainLocation')())
+}
+
+export const initializeUseTor = () => async (dispatch, getState) => {
+  const savedUseTor = electronStore.get(`useTor`)
+  if (savedUseTor !== undefined) {
+    if (savedUseTor === true) {
+      ipcRenderer.send('spawnTor')
+    }
+    dispatch(actions.setUseTor(savedUseTor))
+  }
 }
 
 export const proceedWithSyncing = payload => async (dispatch, getState) => {
@@ -77,6 +90,7 @@ export const restartAndRescan = () => async (dispatch, getState) => {
   setTimeout(() => {
     history.push(`/vault`)
     electronStore.set('channelsToRescan', {})
+    electronStore.set('isRescanned', true)
   }, 500)
 }
 
@@ -90,6 +104,9 @@ export const reducer = handleActions(
       produce(state, (draft) => {
         draft.isInitialLoadFinished = flag
       }),
+    [setUseTor]: (state, { payload: flag }) => produce(state, (draft) => {
+      draft.useTor = flag
+    }),
     [reduceNewTransfersCount]: (state, { payload: amount }) =>
       produce(state, (draft) => {
         draft.newTransfersCounter = draft.newTransfersCounter - amount
@@ -132,7 +149,8 @@ export const reducer = handleActions(
 export const epics = {
   askForBlockchainLocation,
   proceedWithSyncing,
-  restartAndRescan
+  restartAndRescan,
+  initializeUseTor
 }
 
 export default {

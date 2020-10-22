@@ -24,6 +24,7 @@ import txnTimestampsHandlers from './txnTimestamps'
 import logsHandlers from '../../store/handlers/logs'
 import ratesHandlers from './rates'
 import nodeHandlers from './node'
+import appHandlers from './app'
 import notificationCenterHandlers from './notificationCenter'
 import { successNotification } from './utils'
 import modalsHandlers from './modals'
@@ -308,7 +309,8 @@ export const createIdentity = ({ name, fromMigrationFile }) => async (
       'registeredUsers',
       'channelOfChannels',
       'store',
-      'priceOracle'
+      'priceOracle',
+      'tor'
     ]
     const channelsWithDetails = channelsToImport.reduce((o, key) => {
       const channelDetails = channels[key][network]
@@ -402,6 +404,7 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     await dispatch(fetchBalance())
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
+    await dispatch(appHandlers.epics.initializeUseTor())
     setTimeout(() => dispatch(coordinatorHandlers.epics.coordinator()), 5000)
 
     dispatch(setLoadingMessage('Loading users and messages'))
