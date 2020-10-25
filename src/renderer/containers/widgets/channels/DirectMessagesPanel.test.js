@@ -1,25 +1,23 @@
-import Immutable from 'immutable'
-
 import { mapStateToProps, mapDispatchToProps } from './DirectMessagesPanel'
 import create from '../../../store/create'
-import { IdentityState } from '../../../store/handlers/identity'
-import { LoaderState } from '../../../store/handlers/utils'
+import { initialState } from '../../../store/handlers/identity'
 describe('ChannelsPanel', () => {
   let store = null
 
   beforeEach(() => {
     jest.clearAllMocks()
     store = create({
-      initialState: Immutable.fromJS({
+      initialState: {
         contacts: {
           address123: {
             username: 'testusername'
           }
         },
-        identity: IdentityState({
-          loader: LoaderState({ loading: false })
-        })
-      })
+        identity: {
+          ...initialState,
+          loader: { loading: false }
+        }
+      }
     })
   })
 

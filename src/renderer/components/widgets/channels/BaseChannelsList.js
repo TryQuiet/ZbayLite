@@ -1,5 +1,4 @@
 import React from 'react'
-import Immutable from 'immutable'
 import PropTypes from 'prop-types'
 
 import List from '@material-ui/core/List'
@@ -60,10 +59,10 @@ export const BaseChannelsList = ({
 }
 
 BaseChannelsList.propTypes = {
-  channels: PropTypes.instanceOf(Immutable.List).isRequired,
-  unknownMessages: PropTypes.instanceOf(Immutable.List).isRequired,
-  selected: PropTypes.instanceOf(Immutable.Record).isRequired,
-  selectedOffer: PropTypes.instanceOf(Immutable.Record).isRequired,
+  channels: PropTypes.array.isRequired,
+  unknownMessages: PropTypes.array.isRequired,
+  selected: PropTypes.array.isRequired,
+  selectedOffer: PropTypes.array.isRequired,
   directMessages: PropTypes.bool
 }
 

@@ -1,6 +1,4 @@
 /* eslint import/first: 0 */
-import Immutable from 'immutable'
-
 import { mapStateToProps } from './ChannelContent'
 
 import create from '../../../store/create'
@@ -11,7 +9,7 @@ describe('ChannelContent', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     store = create({
-      initialState: Immutable.Map({
+      initialState: {
         channel: ChannelState({ id: 'test', shareableUri: 'testuri' }),
         messages: {},
         identity: {
@@ -19,7 +17,7 @@ describe('ChannelContent', () => {
             signerPubKey: 123
           }
         }
-      })
+      }
     })
   })
 

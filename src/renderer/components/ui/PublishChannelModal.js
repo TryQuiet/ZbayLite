@@ -8,7 +8,6 @@ import { Scrollbars } from 'react-custom-scrollbars'
 import BigNumber from 'bignumber.js'
 import { withStyles } from '@material-ui/core/styles'
 import { Typography, Grid } from '@material-ui/core'
-import Immutable from 'immutable'
 import WarningIcon from '@material-ui/icons/Warning'
 import { TextField } from './form/TextField'
 import exclamationMark from '../../static/images/exclamationMark.svg'
@@ -182,7 +181,7 @@ export const PublishChannelModal = ({
         setSending(true)
         await publishChannel({
           channelAddress: channel.address,
-          channelName: parseChannelName(values.name),
+          channelName: parseChannelName(channel.name),
           channelDescription: values.description,
           channelIvk: electronStore.get(
             `importedChannels.${channel.address}.keys.ivk`
@@ -373,7 +372,7 @@ PublishChannelModal.propTypes = {
 }
 
 PublishChannelModal.defaultProps = {
-  channel: Immutable.Map({ name: '', description: '' })
+  channel: { name: '', description: '' }
 }
 
 export default R.compose(React.memo, withStyles(styles))(PublishChannelModal)

@@ -30,8 +30,14 @@ describe('notifications reducer handles', () => {
       // Test if generates ids and remove them for snapshot
       const withoutKeys = notifications.map(
         n => {
+          const temp = {
+            ...n
+          }
+          delete temp.key
           expect(typeof n.key).toEqual('number')
-          return n
+          return {
+            ...temp
+          }
         }
       )
       expect(withoutKeys).toMatchSnapshot()

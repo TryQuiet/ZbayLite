@@ -1,5 +1,3 @@
-import Immutable from 'immutable'
-
 import { mapStateToProps, mapDispatchToProps } from './ErrorModal'
 
 import create from '../../store/create'
@@ -10,12 +8,12 @@ describe('ErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     store = create({
-      initialState: Immutable.Map({
+      initialState: {
         criticalError: CriticalError({
           message: 'Something failed',
           traceback: 'Error: something failed'
         })
-      })
+      }
     })
   })
 

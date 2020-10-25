@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { DateTime } from 'luxon'
 import * as R from 'ramda'
 import { Formik, Form } from 'formik'
-import Immutable from 'immutable'
 import { Typography } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
@@ -261,8 +260,8 @@ JoinChannelModal.propTypes = {
   handleClose: PropTypes.func.isRequired,
   joinChannel: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired,
-  publicChannels: PropTypes.instanceOf(Immutable.Map).isRequired,
-  users: PropTypes.instanceOf(Immutable.Map).isRequired
+  publicChannels: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired
 }
 
 export default R.compose(React.memo, withStyles(styles))(JoinChannelModal)

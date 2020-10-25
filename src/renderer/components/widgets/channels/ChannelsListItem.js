@@ -1,5 +1,4 @@
 import React from 'react'
-import Immutable from 'immutable'
 import PropTypes from 'prop-types'
 import * as R from 'ramda'
 import classNames from 'classnames'
@@ -133,11 +132,8 @@ export const ChannelsListItem = ({ classes, channel, history, directMessages, se
 }
 ChannelsListItem.propTypes = {
   classes: PropTypes.object.isRequired,
-  channel: PropTypes.oneOfType([
-    PropTypes.instanceOf(Immutable.Map),
-    PropTypes.instanceOf(Immutable.Record)
-  ]).isRequired,
-  selected: PropTypes.instanceOf(Immutable.Record).isRequired,
+  channel: PropTypes.object.isRequired,
+  selected: PropTypes.object.isRequired,
   directMessages: PropTypes.bool,
   history: PropTypes.object.isRequired,
   isRegisteredUsername: PropTypes.bool

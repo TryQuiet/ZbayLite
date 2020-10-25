@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import * as R from 'ramda'
 import crypto from 'crypto'
 
-import { createAction, handleActions } from 'redux-actions'
+import { createAction } from 'redux-actions'
 // import { remote } from 'electron'
 
 import appSelectors from '../selectors/app'
@@ -116,13 +116,10 @@ export const ReceivedMessage = values => {
   }
 }
 
-export const ChannelMessages = Immutable.Record(
-  {
-    messages: Immutable.List(),
-    newMessages: Immutable.List()
-  },
-  'ChannelMessages'
-)
+export const ChannelMessages = {
+  messages: [],
+  newMessages: []
+}
 
 // const channelMessages = {
 //   messages: [],
@@ -853,26 +850,25 @@ export const epics = {
   handleWebsocketMessage
 }
 
-export const reducer = handleActions(
-  {
-    [setMessages]: (state, { payload: { channelId, messages } }) =>
-      state.update(channelId, ChannelMessages(), cm =>
-        cm.set('messages', Immutable.fromJS(messages))
-      ),
-    [cleanNewMessages]: (state, { payload: { channelId } }) =>
-      state.update(channelId, ChannelMessages(), cm =>
-        cm.set('newMessages', Immutable.List())
-      ),
-    [appendNewMessages]: (state, { payload: { channelId, messagesIds } }) =>
-      state.update(channelId, ChannelMessages(), cm =>
-        cm.update('newMessages', nm => nm.concat(messagesIds))
-      )
-  },
-  initialState
-)
+// export const reducer = handleActions(
+//   {
+//     [setMessages]: (state, { payload: { channelId, messages } }) =>
+//       state.update(channelId, {}, cm =>
+//         cm.set('messages', Immutable.fromJS(messages))
+//       ),
+//     [cleanNewMessages]: (state, { payload: { channelId } }) =>
+//       state.update(channelId, ChannelMessages(), cm =>
+//         cm.set('newMessages', Immutable.List())
+//       ),
+//     [appendNewMessages]: (state, { payload: { channelId, messagesIds } }) =>
+//       state.update(channelId, ChannelMessages(), cm =>
+//         cm.update('newMessages', nm => nm.concat(messagesIds))
+//       )
+//   },
+//   initialState
+// )
 
 export default {
-  reducer,
   epics,
   actions
 }

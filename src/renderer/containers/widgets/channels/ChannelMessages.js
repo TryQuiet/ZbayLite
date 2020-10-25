@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import Immutable from 'immutable'
 import { bindActionCreators } from 'redux'
 import * as R from 'ramda'
 
@@ -30,7 +29,7 @@ export const mapStateToProps = (state, { signerPubKey, network }) => {
     qMessages: qMessages,
     channelData:
       channelsSelectors.channelById(channelSelectors.channelId(state))(state) ||
-      Immutable.fromJS({ keys: {} }),
+      { keys: {} },
     messages: contactsSelectors.directMessages(contactId, signerPubKey)(state).visibleMessages,
     messagesLength: contactsSelectors.messagesLength(contactId)(state),
     displayableMessageLimit: channelSelectors.displayableMessageLimit(state),
@@ -139,14 +138,14 @@ export default connect(
 )(
   React.memo(ChannelMessages, (before, after) => {
     return (
-      Immutable.is(before.messages, after.messages) &&
+      Object.is(before.messages, after.messages) &&
       before.tab === after.tab &&
       before.isInitialLoadFinished === after.isInitialLoadFinished &&
       before.isOwner === after.isOwner &&
       before.channelId === after.channelId &&
       before.contactId === after.contactId &&
-      Immutable.is(before.users, after.users) &&
-      Immutable.is(before.publicChannels, after.publicChannels)
+      Object.is(before.users, after.users) &&
+      Object.is(before.publicChannels, after.publicChannels)
     )
   })
 )

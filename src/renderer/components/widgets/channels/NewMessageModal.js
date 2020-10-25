@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import * as R from 'ramda'
 import { Formik, Form } from 'formik'
-import Immutable from 'immutable'
 import { Typography } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
 import { withStyles } from '@material-ui/core/styles'
@@ -175,7 +174,7 @@ NewMessageModal.propTypes = {
   handleClose: PropTypes.func.isRequired,
   sendMessage: PropTypes.func.isRequired,
   showNotification: PropTypes.func.isRequired,
-  users: PropTypes.instanceOf(Immutable.Map).isRequired
+  users: PropTypes.object.isRequired
 }
 export default R.compose(
   React.memo,

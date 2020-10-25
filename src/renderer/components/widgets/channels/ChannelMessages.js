@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Immutable from 'immutable'
 import { Scrollbars } from 'react-custom-scrollbars'
 import { DateTime } from 'luxon'
 import * as R from 'ramda'
@@ -240,7 +239,7 @@ ChannelMessages.propTypes = {
   isDM: PropTypes.bool,
   isInitialLoadFinished: PropTypes.bool.isRequired,
   isOffer: PropTypes.bool.isRequired,
-  messages: PropTypes.instanceOf(Immutable.List).isRequired,
+  messages: PropTypes.array.isRequired,
   contentRect: PropTypes.shape({
     bounds: PropTypes.shape({
       height: PropTypes.number
@@ -249,7 +248,7 @@ ChannelMessages.propTypes = {
 }
 
 ChannelMessages.defaultProps = {
-  messages: Immutable.List(),
+  messages: [],
   usersRegistration: [],
   publicChannelsRegistration: [],
   isOwner: false,

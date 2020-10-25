@@ -1,10 +1,8 @@
-import Immutable from 'immutable'
-
 import { mapStateToProps } from './ChannelHeader'
 
 import create from '../../../store/create'
 import { ChannelState } from '../../../store/handlers/channel'
-import { ChannelsState } from '../../../store/handlers/channels'
+import { initialState } from '../../../store/handlers/channels'
 import { createChannel } from '../../../testUtils'
 import { NodeState } from '../../../store/handlers/node'
 
@@ -13,21 +11,24 @@ describe('ChannelHeader', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     store = create({
-      initialState: Immutable.Map({
-        channel: ChannelState({
+      initialState: {
+        channel: {
+          ...ChannelState,
           spentFilterValue: 38,
           id: 1
-        }),
-        node: NodeState({
+        },
+        node: {
+          ...NodeState,
           isTestnet: true
-        }),
-        channels: ChannelsState({
-          data: Immutable.fromJS([
+        },
+        channels: {
+          ...initialState,
+          data: [
             createChannel(1),
             createChannel(2)
-          ])
-        })
-      })
+          ]
+        }
+      }
     })
   })
 

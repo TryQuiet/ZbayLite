@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import * as R from 'ramda'
 import { shell } from 'electron'
-import Immutable from 'immutable'
 import Jdenticon from 'react-jdenticon'
 import isImageUrl from 'is-image-url'
 import reactStringReplace from 'react-string-replace'
@@ -347,10 +346,10 @@ export const ChannelMessage = ({
 ChannelMessage.propTypes = {
   classes: PropTypes.object.isRequired,
   message: PropTypes.instanceOf(_DisplayableMessage).isRequired,
-  publicChannels: PropTypes.instanceOf(Immutable.Map).isRequired,
-  users: PropTypes.instanceOf(Immutable.Map).isRequired,
-  whitelisted: PropTypes.instanceOf(Immutable.List).isRequired,
-  autoload: PropTypes.instanceOf(Immutable.List).isRequired,
+  publicChannels: PropTypes.object.isRequired,
+  users: PropTypes.object.isRequired,
+  whitelisted: PropTypes.array.isRequired,
+  autoload: PropTypes.array.isRequired,
   onResend: PropTypes.func,
   onLinkedChannel: PropTypes.func.isRequired,
   onLinkedUser: PropTypes.func.isRequired,

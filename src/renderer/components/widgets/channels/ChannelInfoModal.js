@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Immutable from 'immutable'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import * as R from 'ramda'
 import { AutoSizer } from 'react-virtualized'
@@ -165,10 +164,7 @@ export const ChannelInfoModal = ({
 
 ChannelInfoModal.propTypes = {
   classes: PropTypes.object.isRequired,
-  channel: PropTypes.oneOfType([
-    PropTypes.instanceOf(Immutable.Map),
-    PropTypes.instanceOf(Immutable.Record)
-  ]).isRequired,
+  channel: PropTypes.object.isRequired,
   shareUrl: PropTypes.string.isRequired,
   handleClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
@@ -177,7 +173,7 @@ ChannelInfoModal.propTypes = {
 
 ChannelInfoModal.defaultProps = {
   open: false,
-  channel: Immutable.Map(),
+  channel: {},
   shareUrl: '',
   directMessage: false
 }

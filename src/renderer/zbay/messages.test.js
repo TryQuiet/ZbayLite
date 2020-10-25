@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon'
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import * as R from 'ramda'
 import testUtils from '../testUtils'
@@ -130,17 +129,18 @@ describe('messages -', () => {
   })
 
   describe('calculate diff', () => {
-    const nextMessages = Immutable.List(
-      R.range(0, 5).map(id =>
-        ReceivedMessage(
-          testUtils.messages.createReceivedMessage({
-            id,
-            createdAt: testUtils.now.minus({ hours: 2 * id }).toSeconds(),
-            sender: testUtils.identities[1]
-          })
-        )
-      )
-    )
+    const nextMessages =
+      R.range(0, 5).map(id => {
+        return {
+          ...ReceivedMessage(
+            testUtils.messages.createReceivedMessage({
+              id,
+              createdAt: testUtils.now.minus({ hours: 2 * id }).toSeconds(),
+              sender: testUtils.identities[1]
+            })
+          )
+        }
+      })
 
     const previousMessages = nextMessages.slice(0, 3)
 
@@ -189,7 +189,7 @@ describe('messages -', () => {
 
     it('when no previous messages', () => {
       const diff = zbayMessages.calculateDiff({
-        previousMessages: Immutable.List(),
+        previousMessages: [],
         nextMessages,
         identityAddress,
         lastSeen

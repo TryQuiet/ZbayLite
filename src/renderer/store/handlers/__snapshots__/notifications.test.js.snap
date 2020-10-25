@@ -3,7 +3,6 @@
 exports[`notifications reducer handles action enqueueSnackbar 1`] = `
 Array [
   Object {
-    "key": 1603456190824.9949,
     "message": "This is a sample message",
     "options": Object {
       "persistent": true,

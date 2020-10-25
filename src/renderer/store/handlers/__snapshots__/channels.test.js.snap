@@ -124,13 +124,6 @@ Immutable.List [
 ]
 `;
 
-exports[`channels reducer handles load channels cleans up loading when rejected 1`] = `
-Immutable.Record {
-  "loading": false,
-  "message": "Loading channels",
-}
-`;
-
 exports[`channels reducer handles load channels when fulfilled 1`] = `
 Immutable.List [
   Immutable.Map {
@@ -182,11 +175,11 @@ Immutable.List [
 `;
 
 exports[`channels reducer handles load channels when pending 1`] = `
-Immutable.ChannelsState {
-  "data": Immutable.List [],
-  "loader": Immutable.Record {
+Object {
+  "data": Array [],
+  "loader": Object {
     "loading": true,
-    "message": "Loading channels",
+    "message": "Loading channel",
   },
 }
 `;

@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Immutable from 'immutable'
 import * as R from 'ramda'
 
 import Typography from '@material-ui/core/Typography'
@@ -277,20 +276,20 @@ ChannelHeader.propTypes = {
   setTab: PropTypes.func.isRequired,
   userAddress: PropTypes.string.isRequired,
   unmute: PropTypes.func,
-  channel: PropTypes.instanceOf(Immutable.Map).isRequired,
+  channel: PropTypes.object.isRequired,
   members: PropTypes.instanceOf(Set),
   updateShowInfoMsg: PropTypes.func.isRequired,
-  users: PropTypes.instanceOf(Immutable.Map).isRequired,
+  users: PropTypes.object.isRequired,
   isRegisteredUsername: PropTypes.bool,
   name: PropTypes.string.isRequired
 }
 
 ChannelHeader.defaultProps = {
-  channel: Immutable.Map(),
+  channel: {},
   directMessage: false,
   channelType: 3,
   showAdSwitch: false,
-  users: Immutable.Map(),
+  users: {},
   shouldCheckNickname: false,
   isRegisteredUsername: true
 }

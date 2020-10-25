@@ -1,7 +1,5 @@
 /* eslint import/first: 0 */
 jest.mock('../../zcash')
-
-import Immutable from 'immutable'
 // import * as R from 'ramda'
 
 import create from '../create'
@@ -14,9 +12,7 @@ describe('Operations reducer handles ', () => {
   let store = null
 
   const addMessageOperation = () => {
-    const message = Immutable.fromJS(
-      createMessage('test-message-id-1')
-    )
+    const message = createMessage('test-message-id-1')
 
     store.dispatch(
       actions.addOperation({
@@ -32,9 +28,11 @@ describe('Operations reducer handles ', () => {
 
   beforeEach(() => {
     store = create({
-      initialState: Immutable.Map({
-        operations: initialState
-      })
+      initialState: {
+        operations: {
+          ...initialState
+        }
+      }
     })
     jest.clearAllMocks()
   })
@@ -107,7 +105,7 @@ describe('Operations reducer handles ', () => {
           error: { code: -1, message: 'no error' }
         }])
       })
-      const message = Immutable.fromJS(createMessage(`test-message-id-1`))
+      const message = createMessage(`test-message-id-1`)
       const opId = 'test-op-id-1'
       const type = operationTypes.pendingMessage
 
@@ -153,9 +151,7 @@ describe('Operations reducer handles for direct messages', () => {
   let store = null
 
   const addMessageOperation = () => {
-    const message = Immutable.fromJS(
-      createSendableTransferMessage({ id: 'test-message-id-1' })
-    )
+    const message = createSendableTransferMessage({ id: 'test-message-id-1' })
 
     store.dispatch(
       actions.addOperation({
@@ -172,9 +168,11 @@ describe('Operations reducer handles for direct messages', () => {
 
   beforeEach(() => {
     store = create({
-      initialState: Immutable.Map({
-        operations: initialState
-      })
+      initialState: {
+        operations: {
+          ...initialState
+        }
+      }
     })
     jest.clearAllMocks()
   })
@@ -247,7 +245,7 @@ describe('Operations reducer handles for direct messages', () => {
           error: null
         }])
       })
-      const message = Immutable.fromJS(createMessage(`test-message-id-1`))
+      const message = createMessage(`test-message-id-1`)
       const opId = 'test-op-id-1'
       const type = operationTypes.pendingMessage
 

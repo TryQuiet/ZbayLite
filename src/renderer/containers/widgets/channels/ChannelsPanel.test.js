@@ -1,29 +1,30 @@
-import Immutable from 'immutable'
-
-import { ChannelsState } from '../../../store/handlers/channels'
+import { initialState as channelsState } from '../../../store/handlers/channels'
 import { mapStateToProps, mapDispatchToProps } from './ChannelsPanel'
 import { createChannel } from '../../../testUtils'
 import create from '../../../store/create'
 import { NodeState } from '../../../store/handlers/node'
-import { IdentityState } from '../../../store/handlers/identity'
-import { LoaderState } from '../../../store/handlers/utils'
+import { initialState } from '../../../store/handlers/identity'
+
 describe('ChannelsPanel', () => {
   let store = null
 
   beforeEach(() => {
     jest.clearAllMocks()
     store = create({
-      initialState: Immutable.Map({
-        node: NodeState({
+      initialState: {
+        node: {
+          ...NodeState,
           isTestnet: true
-        }),
-        channels: ChannelsState({
-          data: Immutable.fromJS([createChannel(1), createChannel(2)])
-        }),
-        identity: IdentityState({
-          loader: LoaderState({ loading: false })
-        })
-      })
+        },
+        channels: {
+          ...channelsState,
+          data: [createChannel(1), createChannel(2)]
+        },
+        identity: {
+          initialState,
+          loader: { loading: false }
+        }
+      }
     })
   })
 
