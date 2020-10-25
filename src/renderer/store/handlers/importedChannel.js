@@ -45,7 +45,7 @@ const removeChannel = (history, isOffer = false) => async (
   getState
 ) => {
   const state = getState()
-  const channel = channelSelectors.channel(state).toJS()
+  const channel = channelSelectors.channel(state)
   try {
     const network = nodeSelectors.network(getState())
 

@@ -29,7 +29,7 @@ import { channelToUri } from '../../../renderer/zbay/channels'
 import { sendMessage } from '../../zcash/websocketClient'
 import { packMemo } from '../../zbay/transit'
 
-const ChannelState = {
+export const ChannelState = {
   spentFilterValue: new BigNumber(0),
   id: null,
   message: {},

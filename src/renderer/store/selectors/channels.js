@@ -26,13 +26,15 @@ const data = createSelector(channels, nodeSelectors.network, (ch, network) => {
     const storeId = channelsData.findIndex(
       ch => ch.address === zcashChannels.store[network].address
     )
-    const storeChannel = channelsData.get(storeId)
-    channelsData = channelsData.delete(storeId).unshift(storeChannel)
+    const storeChannel = channelsData[storeId]
+    channelsData.splice(storeId, 1)
+    channelsData.unshift(storeChannel)
     const zbayId = channelsData.findIndex(
       ch => ch.address === zcashChannels.general[network].address
     )
-    const zbayChannel = channelsData.get(zbayId)
-    channelsData = channelsData.delete(zbayId).unshift(zbayChannel)
+    const zbayChannel = channelsData[zbayId]
+    channelsData.splice(zbayId, 1)
+    channelsData.unshift(zbayChannel)
   }
   return channelsData
 })

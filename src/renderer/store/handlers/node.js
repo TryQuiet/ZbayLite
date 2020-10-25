@@ -35,7 +35,7 @@ export const initialState = {
   status: 'healthy',
   errors: '',
   loading: false,
-  bootstrapMessage: '',
+  bootstrappingMessage: '',
   fetchingStatus: FetchingStateStd,
   startedAt: null,
   isRescanning: false

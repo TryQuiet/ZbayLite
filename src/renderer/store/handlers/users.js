@@ -286,7 +286,7 @@ export const fetchOnionAddresses = (address, messages) => async (
       msg => msg.type === messageType.USER_V2
     )
     for (const msg of filteredRegistrationMessages) {
-      if (users.get(msg.publicKey)) {
+      if (users[msg.publicKey]) {
         users = users.setIn(
           [msg.publicKey, 'onionAddress'],
           msg.message.onionAddress

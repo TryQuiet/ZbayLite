@@ -209,7 +209,7 @@ const _sendPendingDirectMessages = redirect => async (dispatch, getState) => {
   if (lock === false) {
     await dispatch(appHandlers.actions.lockDmQueue())
   } else {
-    if (messages.size !== 0) {
+    if (messages.length !== 0) {
       dispatch(sendPendingDirectMessages(null, redirect))
     }
     return
@@ -217,9 +217,9 @@ const _sendPendingDirectMessages = redirect => async (dispatch, getState) => {
   const identityAddress = identitySelectors.address(getState())
   const donation = identitySelectors.donation(getState())
   await Promise.all(
-    messages
+    Array.from(Object.values(messages))
       .map(async (msg, key) => {
-        const { message, recipientAddress } = msg.toJS()
+        const { message, recipientAddress } = msg
         const transfer = await messageToTransfer({
           message,
           address: recipientAddress,

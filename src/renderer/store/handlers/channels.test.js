@@ -1,31 +1,32 @@
 /* eslint import/first: 0 */
 jest.mock('../../zcash')
 
-import Immutable from 'immutable'
 import { DateTime } from 'luxon'
 import * as R from 'ramda'
 
 import create from '../create'
 import { ChannelsState, actions, epics } from './channels'
 import channelsSelectors from '../selectors/channels'
-import { IdentityState, Identity } from './identity'
+import { initialState } from './identity'
 import testUtils from '../../testUtils'
 import { typePending } from './utils'
 import { actionTypes } from '../../../shared/static'
 
-// import { mock as zcashMock } from '../../zcash'
 import { NodeState } from './node'
 
 describe('channels reducer', () => {
   let store = null
   beforeEach(async () => {
     store = create({
-      initialState: Immutable.Map({
-        node: NodeState({
+      initialState: {
+        node: {
+          ...NodeState,
           isTestnet: true
-        }),
-        channels: ChannelsState()
-      })
+        },
+        channels: {
+          ...ChannelsState
+        }
+      }
     })
     jest.clearAllMocks()
   })
@@ -73,14 +74,16 @@ describe('channels reducer', () => {
     it('-setLastSeen sets last seen for channel', () => {
       const channels = R.range(0, 3).map(testUtils.channels.createChannel)
       store = create({
-        initialState: Immutable.Map({
-          channels: ChannelsState({
-            data: Immutable.fromJS(channels)
-          }),
-          node: NodeState({
+        initialState: {
+          channels: {
+            ...ChannelsState,
+            data: channels
+          },
+          node: {
+            ...NodeState,
             isTestnet: true
-          })
-        })
+          }
+        }
       })
 
       store.dispatch(
@@ -96,14 +99,16 @@ describe('channels reducer', () => {
     it('-setUnread sets unread for channel', () => {
       const channels = R.range(0, 3).map(testUtils.channels.createChannel)
       store = create({
-        initialState: Immutable.Map({
-          channels: ChannelsState({
-            data: Immutable.fromJS(channels)
-          }),
-          node: NodeState({
+        initialState: {
+          channels: {
+            ...ChannelsState,
+            data: channels
+          },
+          node: {
+            ...NodeState,
             isTestnet: true
-          })
-        })
+          }
+        }
       })
 
       store.dispatch(
@@ -119,14 +124,16 @@ describe('channels reducer', () => {
     it('-setUnread sets unread for channel', () => {
       const channels = R.range(0, 3).map(testUtils.channels.createChannel)
       store = create({
-        initialState: Immutable.Map({
-          channels: ChannelsState({
-            data: Immutable.fromJS(channels)
-          }),
-          node: NodeState({
+        initialState: {
+          channels: {
+            ...ChannelsState,
+            data: channels
+          },
+          node: {
+            ...NodeState,
             isTestnet: true
-          })
-        })
+          }
+        }
       })
 
       store.dispatch(
@@ -149,16 +156,19 @@ describe('channels reducer', () => {
       beforeEach(async () => {
         jest.spyOn(DateTime, 'utc').mockImplementation(() => newLastSeen)
         store = create({
-          initialState: Immutable.Map({
-            identity: IdentityState({
-              data: Identity({
+          initialState: {
+            identity: ({
+              ...initialState,
+              data: {
+                ...initialState.data,
                 id: identityId
-              })
+              }
             }),
-            node: NodeState({
+            node: {
+              ...NodeState,
               isTestnet: true
-            })
-          })
+            }
+          }
         })
       })
 

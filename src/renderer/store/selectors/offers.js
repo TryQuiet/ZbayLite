@@ -24,7 +24,7 @@ const filteredOffers = createSelector(
       .map((offer, i) => {
         const messages = offer.messages
         const [newestMsg] = messages.sort((a, b) => parseInt(b.createdAt) - parseInt(a.createdAt))
-        const removedChannelTimestamp = removedChannels.get(offer.itemId)
+        const removedChannelTimestamp = removedChannels[offer.itemId]
         if (!newestMsg) {
           return
         }
@@ -112,7 +112,7 @@ const offerMessages = (id, signerPubKey) =>
           }
         })
       })
-      const vaultMessages = a.get(id).messages
+      const vaultMessages = a[id].messages
       const concatedMessages = vaultMessages
         .concat(displayableQueued.values(), displayablePending.values())
         .sortBy(m => m.createdAt)

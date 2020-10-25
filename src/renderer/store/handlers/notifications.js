@@ -20,10 +20,12 @@ export const actions = {
 
 // TODO: [refactoring] rewrite rest of the notifications to use Notifier
 export const reducer = handleActions({
-  [enqueueSnackbar]: (state, { payload: notification }) =>
-    produce(state, (draft) => {
+  [enqueueSnackbar]: (state, { payload: notification }) => {
+    console.log('test', notification)
+    return produce(state, (draft) => {
       draft.push(notification)
-    }),
+    })
+  },
   [removeSnackbar]: (state, { payload: key }) => produce(state, (draft) => draft.filter(n => n.key !== key))
 }, initialState)
 
