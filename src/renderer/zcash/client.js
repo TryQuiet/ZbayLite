@@ -4,6 +4,10 @@ export default class Client {
   sync = async () => {
     return postMessage('sync', '')
   }
+  init = async (seed, birthday) => {
+    console.log('init')
+    return postMessage('init', { seed, birthday })
+  }
   seed = async () => {
     return postMessage('seed', '')
   }

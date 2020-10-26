@@ -407,6 +407,10 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
   // const isRescanned = electronStore.get('AppStatus.blockchain.isRescanned')
   const isNewUser = electronStore.get('isNewUser')
   try {
+    // Here we will add seed and birthday
+    const a = await client.init()
+    console.log(a)
+    await dispatch(nodeHandlers.epics.getStatus())
     const removedChannels = electronStore.get('removedChannels')
     if (removedChannels) {
       const removedChannelsList = Immutable.fromJS(Object.keys(removedChannels))
@@ -426,7 +430,6 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     await dispatch(initAddreses())
     dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
     dispatch(ratesHandlers.epics.setInitialPrice())
-    await dispatch(nodeHandlers.epics.getStatus())
     await dispatch(fetchBalance())
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())

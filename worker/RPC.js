@@ -8,9 +8,22 @@ const publicLiteNodes = [
 ]
 
 class RPC {
-  constructor () {
+  constructor (seed = null, birthday = 0) {
     for (const nodeUrl of publicLiteNodes) {
-      const result = native.litelib_initialize_existing(nodeUrl)
+      let result
+      console.log('###########')
+      console.log(seed)
+      console.log(birthday)
+      if (!seed) {
+        result = native.litelib_initialize_existing(nodeUrl)
+      } else {
+        result = native.litelib_initialize_new_from_phrase(
+          nodeUrl,
+          seed,
+          parseInt(birthday),
+          true
+        )
+      }
       if (result.startsWith('Error: grpc-status')) {
         console.log(`Unable to connect to ${nodeUrl}`)
         continue

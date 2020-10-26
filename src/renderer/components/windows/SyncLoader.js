@@ -8,7 +8,7 @@ import WindowWrapper from '../ui/WindowWrapper'
 import ZcashIcon from '../../static/images/zcash/logo-lockup--circle.svg'
 import Carousel from '../widgets/Carousel'
 import Icon from '../ui/Icon'
-import { useInterval } from '../../containers/hooks'
+// import { useInterval } from '../../containers/hooks'
 
 const styles = theme => ({
   root: {
@@ -87,71 +87,58 @@ export const SyncLoader = ({
   currentBlock,
   getStatus
 }) => {
-  React.useEffect(() => {
-    getStatus()
-  }, [])
-  useInterval(() => {
-    getStatus()
-  }, 10000)
-  if (currentBlock.plus(10).gt(latestBlock)) {
-    return <Redirect to='/vault' />
-  } else {
-    return (
-      <WindowWrapper className={classes.root}>
+  return (
+    <WindowWrapper className={classes.root}>
+      <Redirect to='/vault' />
+      <Grid
+        container
+        className={classes.box}
+        justify='center'
+        alignItems='center'
+        alignContent='center'
+      >
         <Grid
+          className={classes.logoContainer}
           container
-          className={classes.box}
+          item
+          xs={12}
           justify='center'
           alignItems='center'
           alignContent='center'
         >
-          <Grid
-            className={classes.logoContainer}
-            container
-            item
-            xs={12}
-            justify='center'
-            alignItems='center'
-            alignContent='center'
-          >
-            <Grid item className={classes.iconDiv}>
-              <Icon
-                className={classes.icon}
-                src={ZcashIcon}
-                image={ZcashIcon}
-              />
-            </Grid>
+          <Grid item className={classes.iconDiv}>
+            <Icon className={classes.icon} src={ZcashIcon} image={ZcashIcon} />
           </Grid>
-          <Grid className={classes.carouselContainer} container item>
-            <Carousel />
+        </Grid>
+        <Grid className={classes.carouselContainer} container item>
+          <Carousel />
+        </Grid>
+        <Grid item container>
+          <Grid item container justify='center' alignItems='center'>
+            <LinearProgress
+              classes={{
+                root: classes.rootBar,
+                barColorPrimary: classes.progressBar
+              }}
+            />
           </Grid>
-          <Grid item container>
-            <Grid item container justify='center' alignItems='center'>
-              <LinearProgress
-                classes={{
-                  root: classes.rootBar,
-                  barColorPrimary: classes.progressBar
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} className={classes.statusDiv}>
-              <Grid
-                item
-                container
-                justify='center'
-                alignItems='center'
-                wrap={'wrap'}
-              >
-                <Typography variant='caption' className={classes.status}>
-                  {`Syncing ${currentBlock} / ${latestBlock}`}
-                </Typography>
-              </Grid>
+          <Grid item xs={12} className={classes.statusDiv}>
+            <Grid
+              item
+              container
+              justify='center'
+              alignItems='center'
+              wrap={'wrap'}
+            >
+              <Typography variant='caption' className={classes.status}>
+                {`Syncing ${currentBlock} / ${latestBlock}`}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
-      </WindowWrapper>
-    )
-  }
+      </Grid>
+    </WindowWrapper>
+  )
 }
 SyncLoader.propTypes = {
   classes: PropTypes.object.isRequired
