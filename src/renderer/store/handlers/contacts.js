@@ -408,6 +408,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
       R.groupBy(msg => msg.sender.replyTo),
       R.filter(R.identity)
     )(messages)
+    console.log('start')
     await Promise.all(
       Object.entries(senderToMessages).map(
         async ([contactAddress, contactMessages]) => {
@@ -463,6 +464,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
         }
       )
     )
+    console.log('stop')
     return 1
   } catch (err) {
     console.warn(err)

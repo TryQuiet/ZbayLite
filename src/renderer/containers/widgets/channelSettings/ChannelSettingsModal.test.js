@@ -33,7 +33,9 @@ describe('Send message popover', () => {
       initialState: {
         ...baseStore,
         messages: {
-          [channelId]: ChannelMessages({})
+          [channelId]: {
+            ...ChannelMessages
+          }
         }
       }
     })

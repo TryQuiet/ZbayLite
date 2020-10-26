@@ -13,7 +13,10 @@ describe('ChannelsListItem', () => {
     const result = shallow(
       <ChannelsListItem
         classes={mockClasses}
-        channel={privateChannel}
+        channel={{
+          ...privateChannel,
+          newMessages: []
+        }}
         selected={{}}
         isRegisteredUsername
       />
@@ -25,7 +28,10 @@ describe('ChannelsListItem', () => {
     const result = shallow(
       <ChannelsListItem
         classes={mockClasses}
-        channel={privateChannel}
+        channel={{
+          ...privateChannel,
+          newMessages: []
+        }}
         displayAddress
         selected={{}}
         isRegisteredUsername
@@ -38,7 +44,10 @@ describe('ChannelsListItem', () => {
     const result = shallow(
       <ChannelsListItem
         classes={mockClasses}
-        channel={publicChannel}
+        channel={{
+          ...publicChannel,
+          newMessages: []
+        }}
         selected={{}}
         isRegisteredUsername
       />

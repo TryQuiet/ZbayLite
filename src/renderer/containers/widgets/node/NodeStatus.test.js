@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { mapStateToProps } from './NodeStatus'
 
 import create from '../../../store/create'
-import { NodeState } from '../../../store/handlers/node'
+import { initialState } from '../../../store/handlers/node'
 
 describe('NodeStatus', () => {
   let store = null
@@ -12,7 +12,7 @@ describe('NodeStatus', () => {
     store = create({
       initialState: {
         node: {
-          ...NodeState,
+          ...initialState,
           status: 'down',
           latestBlock: new BigNumber(100),
           currentBlock: new BigNumber(18)

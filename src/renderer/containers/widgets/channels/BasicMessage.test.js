@@ -10,7 +10,7 @@ describe('ChannelContent', () => {
     jest.clearAllMocks()
     store = create({
       initialState: {
-        channel: ChannelState({ id: 'test', shareableUri: 'testuri' }),
+        channel: { ...ChannelState, id: 'test', shareableUri: 'testuri' },
         messages: {},
         identity: {
           data: {

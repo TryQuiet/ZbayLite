@@ -9,10 +9,11 @@ describe('ErrorModal', () => {
     jest.clearAllMocks()
     store = create({
       initialState: {
-        criticalError: CriticalError({
+        criticalError: {
+          ...CriticalError,
           message: 'Something failed',
           traceback: 'Error: something failed'
-        })
+        }
       }
     })
   })

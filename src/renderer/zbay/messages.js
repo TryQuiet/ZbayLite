@@ -479,6 +479,7 @@ export const calculateDiff = ({
   identityAddress,
   lastSeen
 }) => {
+  console.log('test diff', previousMessages, nextMessages, identityAddress, lastSeen)
   return nextMessages.filter(nextMessage => {
     const isNew =
       DateTime.fromSeconds(nextMessage.createdAt) > lastSeen ||

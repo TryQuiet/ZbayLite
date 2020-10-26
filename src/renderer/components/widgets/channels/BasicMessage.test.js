@@ -87,15 +87,16 @@ describe('BasicMessage', () => {
   })
 
   it('renders component with status failed', () => {
-    const message = createMessage(1)
-      .set('status', 'failed')
-      .set(
-        'error',
-        ZcashError({
-          code: -2,
-          message: 'This is some kind of error message'
-        })
-      )
+    const message = {
+      ...createMessage,
+      status: 'failed',
+      createdAt: 1603231234,
+      error: {
+        ...ZcashError,
+        code: -2,
+        message: 'This is some kind of error message'
+      }
+    }
     const result = shallow(
       <BasicMessage
         classes={mockClasses}
