@@ -218,12 +218,12 @@ export const registerOnionAddress = torStatus => async (dispatch, getState) => {
 
 export const fetchUsers = (address, messages) => async (dispatch, getState) => {
   try {
-    // const transferCountFlag = await dispatch(
-    //   checkTransferCount(address, messages)
-    // )
-    // if (transferCountFlag === -1 || !messages) {
-    //   return
-    // }
+    const transferCountFlag = await dispatch(
+      checkTransferCount(address, messages)
+    )
+    if (transferCountFlag === -1 || !messages) {
+      return
+    }
     const filteredZbayMessages = messages.filter(msg =>
       msg.memohex.startsWith('ff')
     )
@@ -252,7 +252,10 @@ export const fetchUsers = (address, messages) => async (dispatch, getState) => {
       const user = ReceivedUser(msg)
 
       if (user !== null) {
-        users = R.mergeDeepRight(users, user)
+        users = {
+          ...users,
+          ...user
+        }
       }
     }
     await dispatch(feesHandlers.actions.setUserFee(minfee))
@@ -287,10 +290,13 @@ export const fetchOnionAddresses = (address, messages) => async (
     )
     for (const msg of filteredRegistrationMessages) {
       if (users[msg.publicKey]) {
-        users = users.setIn(
-          [msg.publicKey, 'onionAddress'],
-          msg.message.onionAddress
-        )
+        users = {
+          ...users,
+          [msg.publicKey]: {
+            ...users[msg.publicKey],
+            onionAddress: msg.message.onionAddress
+          }
+        }
       }
     }
     await dispatch(setUsers({ users }))

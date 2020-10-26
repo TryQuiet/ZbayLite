@@ -507,14 +507,14 @@ const setChannelMessages = (channel, messages = []) => async (
 }
 const setUsersMessages = (address, messages) => async (dispatch, getState) => {
   const users = usersSelectors.users(getState())
-  // const transferCountFlag = await dispatch(
-  //   checkTransferCount(address, messages)
-  // )
-  // if (transferCountFlag === -1 || !messages) {
-  //   console.log('skip')
+  const transferCountFlag = await dispatch(
+    checkTransferCount(address, messages)
+  )
+  if (transferCountFlag === -1 || !messages) {
+    console.log('skip')
 
-  //   return
-  // }
+    return
+  }
   const filteredTextMessages = messages.filter(
     msg => !msg.memohex.startsWith('f6') && !msg.memohex.startsWith('ff')
   )

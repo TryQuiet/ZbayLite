@@ -12,7 +12,7 @@ import { ADDRESS_TYPE } from '../../zbay/transit'
 import feesHandlers from '../handlers/fees'
 import staticChannels from '../../zcash/channels'
 import { messageType, actionTypes } from '../../../shared/static'
-// import { checkTransferCount } from '../handlers/messages'
+import { checkTransferCount } from '../handlers/messages'
 
 export const _PublicChannelData = {
   address: '',
@@ -31,12 +31,12 @@ export const actions = {
 }
 export const fetchPublicChannels = (address, messages) => async (dispatch, getState) => {
   try {
-    // const transferCountFlag = await dispatch(
-    //   checkTransferCount(address, messages)
-    // )
-    // if (transferCountFlag === -1 || !messages) {
-    //   return
-    // }
+    const transferCountFlag = await dispatch(
+      checkTransferCount(address, messages)
+    )
+    if (transferCountFlag === -1 || !messages) {
+      return
+    }
     const filteredZbayMessages = messages.filter(msg =>
       msg.memohex.startsWith('ff')
     )

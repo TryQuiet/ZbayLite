@@ -36,7 +36,9 @@ export const initialState = {
   errors: '',
   loading: false,
   bootstrappingMessage: '',
-  fetchingStatus: FetchingStateStd,
+  fetchingStatus: {
+    ...FetchingStateStd
+  },
   startedAt: null,
   isRescanning: false
 }
@@ -201,18 +203,18 @@ export const reducer = handleActions(
       produce(state, (draft) => {
         draft.fetchingStatus.guideStatus = guideStatus
       }),
-    [setNextSlide]: state => {
+    [setNextSlide]: state =>
       produce(state, (draft) => {
         const currentSlide = draft.fetchingStatus.currentSlide
-        draft.fetchingStatus.currentSlide = currentSlide === 10 ? currentSlide : currentSlide + 1
-      })
-    },
-    [setPrevSlide]: state => {
+        const slideToSet = currentSlide === 10 ? currentSlide : currentSlide + 1
+        draft.fetchingStatus.currentSlide = slideToSet
+      }),
+    [setPrevSlide]: state =>
       produce(state, (draft) => {
         const currentSlide = draft.fetchingStatus.currentSlide
-        draft.fetchingStatus.currentSlide = currentSlide === 0 ? currentSlide : currentSlide - 1
+        const slideToSet = currentSlide === 0 ? currentSlide : currentSlide - 1
+        draft.fetchingStatus.currentSlide = slideToSet
       })
-    }
   },
   initialState
 )

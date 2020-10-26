@@ -128,7 +128,7 @@ const checkLinking = (
     }
   }
   parsedMessage = reactStringReplace(parsedMessage, /#(\w+)/g, (match, i) => {
-    if (!tags.get(match)) {
+    if (!tags[match]) {
       return `#${match}`
     }
     return (
@@ -142,7 +142,7 @@ const checkLinking = (
         key={match + i}
         onClick={e => {
           e.preventDefault()
-          onLinkedChannel(tags.get(match))
+          onLinkedChannel(tags[match])
         }}
         href={``}
       >
