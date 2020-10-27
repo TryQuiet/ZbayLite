@@ -93,7 +93,7 @@ const refreshMessages = id => async (dispatch, getState) => {}
 const sendItemMessageOnEnter = event => async (dispatch, getState) => {
   const enterPressed = event.nativeEvent.keyCode === 13
   const shiftPressed = event.nativeEvent.shiftKey === true
-  const channel = channelSelectors.channel(getState()).toJS()
+  const channel = channelSelectors.channel(getState())
   const messageToSend = channelSelectors.message(getState())
   const useTor = appSelectors.useTor(getState())
 
@@ -150,7 +150,7 @@ const sendItemMessageOnEnter = event => async (dispatch, getState) => {
         })
       )
       const users = usersSelectors.users(getState())
-      const user = [...users.values()].filter(
+      const user = [...Object.values(users)].filter(
         user => user.nickname === channel.id.substring(64)
       )[0]
       if (useTor && user && user.onionAddress) {

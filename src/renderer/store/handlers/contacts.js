@@ -184,7 +184,7 @@ export const updatePendingMessage = ({ key, id, txid }) => async (
 }
 export const linkUserRedirect = contact => async (dispatch, getState) => {
   const contacts = selectors.contacts(getState())
-  if (contacts.get(contact.address)) {
+  if (contacts[contact.address]) {
     history.push(`/main/direct-messages/${contact.address}/${contact.nickname}`)
   }
   await dispatch(
