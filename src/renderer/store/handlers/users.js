@@ -258,8 +258,8 @@ export const fetchUsers = (address, messages) => async (dispatch, getState) => {
         }
       }
     }
-    await dispatch(feesHandlers.actions.setUserFee(minfee))
-    await dispatch(setUsers({ users }))
+    dispatch(feesHandlers.actions.setUserFee(minfee))
+    dispatch(setUsers({ users }))
   } catch (err) {
     throw err
   }
@@ -299,7 +299,7 @@ export const fetchOnionAddresses = (address, messages) => async (
         }
       }
     }
-    await dispatch(setUsers({ users }))
+    dispatch(setUsers({ users }))
   } catch (err) {
     console.warn(err)
   }

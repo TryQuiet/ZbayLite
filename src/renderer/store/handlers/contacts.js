@@ -676,15 +676,14 @@ export const reducer = handleActions(
     [appendNewMessages]: (
       state,
       { payload: { contactAddress, messagesIds } }
-    ) => {
-      // const newMessagesLength = state.get(contactAddress).newMessages.length
-      // remote.app.badgeCount(
-      //   remote.app.getBadgeCount() - newMessagesLength
-      // )
-      return produce(state, (draft) => {
-        // draft[contactAddress].newMessages = messagesIds + messagesIds.length
-      })
-    },
+    ) =>
+      produce(state, (draft) => {
+        const newMessagesLength = draft[contactAddress].newMessages.length
+        remote.app.setBadgeCount(
+          remote.app.getBadgeCount() - newMessagesLength + messagesIds.length
+        )
+        draft[contactAddress].newMessages = messagesIds
+      }),
     [setLastSeen]: (state, { payload: { lastSeen, contact } }) =>
       produce(state, (draft) => {
         draft[contact.key].lastSeen = lastSeen

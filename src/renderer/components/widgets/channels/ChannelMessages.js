@@ -182,7 +182,7 @@ export const ChannelMessages = ({
                             : `anon${msg.owner.substring(0, 16)}`
                         }
                         onChannelClick={() => {
-                          onLinkedChannel(publicChannels.get(msg.name))
+                          onLinkedChannel(publicChannels[msg.name])
                         }}
                       />
                     )
