@@ -7,7 +7,7 @@ import { withStyles } from '@material-ui/core/styles'
 
 import QuickActionLayout from '../../ui/QuickActionLayout'
 
-const styles = theme => ({})
+const styles = (theme) => ({})
 
 export const SendMessagePopover = ({
   classes,
@@ -22,8 +22,9 @@ export const SendMessagePopover = ({
 }) => {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
-  const registeredUsername = Array.from(Object.values(users))
-    .filter(obj => obj.address === address)[0]
+  const registeredUsername = Array.from(Object.values(users)).filter(
+    (obj) => obj.address === address
+  )[0]
   return (
     <Popover
       className={classes.popover}
@@ -52,12 +53,13 @@ export const SendMessagePopover = ({
             contact: {
               address,
               nickname: username,
-              publicKey: registeredUsername ? registeredUsername.get('publicKey') : null
+              publicKey: registeredUsername
+                ? registeredUsername.get('publicKey')
+                : null
             },
             history
           })
-        }
-        }
+        }}
       >
         <Jdenticon size='100' value={username} />
       </QuickActionLayout>
@@ -74,7 +76,4 @@ SendMessagePopover.propTypes = {
   isUnregistered: PropTypes.bool
 }
 
-export default R.compose(
-  React.memo,
-  withStyles(styles)
-)(SendMessagePopover)
+export default R.compose(React.memo, withStyles(styles))(SendMessagePopover)
