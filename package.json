@@ -100,6 +100,7 @@
     "@storybook/addon-links": "^5.2.8",
     "@storybook/addons": "^5.2.8",
     "@storybook/react": "^5.2.8",
+    "@types/react": "^16.9.54",
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.6",
     "axios-mock-adapter": "^1.16.0",
