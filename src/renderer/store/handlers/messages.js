@@ -512,7 +512,6 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
   )
   if (transferCountFlag === -1 || !messages) {
     console.log('skip')
-
     return
   }
   const filteredTextMessages = messages.filter(
@@ -536,20 +535,23 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       blockHeight: msg.block_height
     }
   })
-  const unknownUser = users[unknownUserId]
-  if (unknownUser) {
-    dispatch(
-      contactsHandlers.actions.setMessages({
-        key: unknownUserId,
-        contactAddress: unknownUser.address,
-        username: unknownUser.nickname,
-        messages: parsedTextMessages.reduce((acc, cur) => {
-          acc[cur.id] = cur
-          return acc
-        }, {})
-      })
-    )
+
+  const unknownUser = {
+    address: unknownUserId,
+    nickname: 'unknown'
   }
+  await dispatch(usersHandlers.actions.addUnknownUser())
+  dispatch(
+    contactsHandlers.actions.setMessages({
+      key: unknownUserId,
+      contactAddress: unknownUser.address,
+      username: unknownUser.nickname,
+      messages: parsedTextMessages.reduce((acc, cur) => {
+        acc[cur.id] = cur
+        return acc
+      }, {})
+    })
+  )
   const messagesAll = await Promise.all(
     filteredZbayMessages.map(async transfer => {
       const message = await zbayMessages.transferToMessage(transfer, users)

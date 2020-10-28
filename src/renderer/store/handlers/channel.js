@@ -175,7 +175,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       dispatch(setMessage(''))
       const myUser = usersSelectors.myUser(getState())
       const messageDigest = crypto.createHash('sha256')
-
       const messageEssentials = R.pick(['createdAt', 'message'])(message)
       const key = messageDigest
         .update(JSON.stringify(messageEssentials))

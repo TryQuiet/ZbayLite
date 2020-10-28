@@ -150,8 +150,8 @@ const sendMessage = (payload, redirect = true) => async (
   dispatch,
   getState
 ) => {
-  console.log(payload)
   const myUser = usersSelectors.myUser(getState())
+  console.log('my user', myUser)
   const messageDigest = crypto.createHash('sha256')
   // Generate unique id for txn until we get response from blockchain
   const messageEssentials = R.pick(['createdAt', 'message'])(payload)
@@ -175,7 +175,7 @@ const sendMessage = (payload, redirect = true) => async (
   })
   const contacts = contactsSelectors.contacts(getState())
   // Create user
-  if (!contacts.get(payload.receiver.publicKey)) {
+  if (!contacts[payload.receiver.publicKey]) {
     await dispatch(
       contactsHandlers.actions.addContact({
         key: payload.receiver.publicKey,

@@ -260,6 +260,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
       .filter(msg => msg !== null)
       .filter(msg => msg.sender.username === 'unknown')
       .filter(msg => msg.specialType === 1)
+
     const messages = messagesAll
       .filter(msg => msg !== null)
       .filter(msg => msg.sender.replyTo !== '')

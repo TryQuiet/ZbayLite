@@ -13,7 +13,7 @@ import usersSelector from '../selectors/users'
 import identitySelector from '../selectors/identity'
 import appSelectors from '../selectors/app'
 import { getPublicKeysFromSignature } from '../../zbay/messages'
-import { messageType, actionTypes } from '../../../shared/static'
+import { messageType, actionTypes, unknownUserId } from '../../../shared/static'
 import { messages as zbayMessages } from '../../zbay'
 import client from '../../zcash'
 import staticChannels from '../../zcash/channels'
@@ -89,9 +89,11 @@ export const ReceivedUser = values => {
 export const initialState = {}
 
 export const setUsers = createAction(actionTypes.SET_USERS)
+export const addUnknownUser = createAction(actionTypes.ADD_UNKNOWN_USER)
 
 export const actions = {
-  setUsers
+  setUsers,
+  addUnknownUser
 }
 
 export const registerAnonUsername = () => async (dispatch, getState) => {
@@ -335,7 +337,14 @@ export const reducer = handleActions(
         }
         return usersObj
       })
-    }
+    },
+    [addUnknownUser]: (state) => produce(state, (draft) => {
+      draft[unknownUserId] = {
+        key: unknownUserId,
+        nickname: 'unknown',
+        address: unknownUserId
+      }
+    })
   },
   initialState
 )

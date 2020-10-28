@@ -18,7 +18,7 @@ const myUser = createSelector(
   identitySelectors.signerPubKey,
   (users, signerPubKey) => {
     return (
-      users.signerPubKey || {
+      users[signerPubKey] || {
         firstName: '',
         lastName: '',
         nickname: 'anon' + signerPubKey.substring(0, 16),

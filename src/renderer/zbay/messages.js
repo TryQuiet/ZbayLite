@@ -71,8 +71,13 @@ export const _displayableMessage = {
 }
 
 export const DisplayableMessage = values => {
-  const record = R.mergeDeepRight(_displayableMessage, values)
-  return record
+  if (values) {
+    const record = R.mergeDeepRight(_displayableMessage, values)
+    return record
+  }
+  return {
+    ..._displayableMessage
+  }
 }
 
 const _isOwner = (identityAddress, message) =>
@@ -479,7 +484,6 @@ export const calculateDiff = ({
   identityAddress,
   lastSeen
 }) => {
-  console.log('test diff', previousMessages, nextMessages, identityAddress, lastSeen)
   return nextMessages.filter(nextMessage => {
     const isNew =
       DateTime.fromSeconds(nextMessage.createdAt) > lastSeen ||
