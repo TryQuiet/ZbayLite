@@ -13,7 +13,6 @@ import {
 import identityHandlers from './identity'
 import notificationsHandlers from './notifications'
 import logsHandlers from '../handlers/logs'
-import nodeHandlers from '../handlers/node'
 import { actionCreators } from '../handlers/modals'
 import { REQUEST_MONEY_ENDPOINT, actionTypes } from '../../../shared/static'
 import electronStore, { migrationStore } from '../../../shared/electronStore'
@@ -80,8 +79,6 @@ const createVaultEpic = (fromMigrationFile = false) => async (
         fromMigrationFile
       })
     )
-    console.log('identity', identity)
-    await dispatch(nodeHandlers.actions.setIsRescanning(true))
 
     await dispatch(identityHandlers.epics.setIdentity(identity))
     await dispatch(identityHandlers.epics.loadIdentity(identity))

@@ -92,7 +92,6 @@ export const VaultUnlockerForm = ({
   guideStatus,
   isInitialLoadFinished
 }) => {
-  const isSynced = currentBlock.plus(10).gt(latestBlock)
   const isDev =
     process.env.NODE_ENV === 'development' ||
     process.env.NODE_ENV === 'production'
@@ -170,10 +169,10 @@ export const VaultUnlockerForm = ({
                 >Advanced settings"</Typography>
               )}
             </Grid> */}
-            {(loader.loading || isRescanning || !isSynced) && (
+            {(loader.loading || isRescanning) && (
               <Grid item container justify='center' alignItems='center'>
                 <Typography variant='body2' className={classes.status}>
-                  {syncingStart && (isRescanning || !isSynced)
+                  {syncingStart && (isRescanning)
                     ? `Syncing ${currentBlock.toString()} / ${latestBlock.toString()}`
                     : `${loader.message}`}
                 </Typography>
@@ -188,7 +187,6 @@ export const VaultUnlockerForm = ({
           {nodeConnected &&
             isLogIn &&
             !isRescanning &&
-            isSynced &&
             isInitialLoadFinished && <Redirect to='/main/channel/general' />}
         </Form>
       )}
