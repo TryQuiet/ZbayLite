@@ -65,6 +65,8 @@ interface IChannelMessagesProps {
   onLinkedChannel: (arg0: any) => void;
   publicChannels: any;
   onRescan: () => void;
+  contentRect: string;
+  isInitialLoadFinished: boolean;
 }
 
 // TODO: scrollbar smart pagination

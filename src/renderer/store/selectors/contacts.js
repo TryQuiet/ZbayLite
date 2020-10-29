@@ -31,9 +31,9 @@ const contactBase = {
   offerId: null
 }
 
-const store = s => s
+const store = (s) => s
 
-const contacts = createSelector(store, state => state.contacts)
+const contacts = createSelector(store, (state) => state.contacts)
 const contactsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
@@ -41,21 +41,23 @@ const contactsList = createSelector(
     if (removedChannels.size > 0) {
       return contacts
         .filter(
-          c =>
+          (c) =>
             c.key.length === 66 &&
             c.offerId === null &&
             !removedChannels.includes(c.address)
         )
         .toList()
     }
-    return Array.from(Object.values(contacts))
-      .filter(c => c.key.length === 66 && c.offerId === null)
+    return Array.from(Object.values(contacts)).filter(
+      (c) => c.key.length === 66 && c.offerId === null
+    )
   }
 )
 
 const unknownMessages = createSelector(contacts, (contacts) => {
-  return Array.from(Object.values(contacts))
-    .filter(c => c.key === unknownUserId)
+  return Array.from(Object.values(contacts)).filter(
+    (c) => c.key === unknownUserId
+  )
 })
 
 const offerList = createSelector(
@@ -63,11 +65,11 @@ const offerList = createSelector(
   identitySelectors.removedChannels,
   (contacts, removedChannels) => {
     if (removedChannels.length > 0) {
-      return Array.from(Object.values(contacts))
-        .filter(c => !!c.offerId && !removedChannels.includes(c.key))
+      return Array.from(Object.values(contacts)).filter(
+        (c) => !!c.offerId && !removedChannels.includes(c.key)
+      )
     }
-    return Array.from(Object.values(contacts))
-      .filter(c => !!c.offerId)
+    return Array.from(Object.values(contacts)).filter((c) => !!c.offerId)
   }
 )
 const channelsList = createSelector(
@@ -77,25 +79,26 @@ const channelsList = createSelector(
     if (removedChannels.size > 0) {
       return contacts
         .filter(
-          c =>
+          (c) =>
             c.key.length === 78 &&
             c.offerId === null &&
             !removedChannels.includes(c.address)
         )
         .toList()
     }
-    return Array.from(Object.values(contacts))
-      .filter(c => c.key.length === 78 && c.offerId === null)
+    return Array.from(Object.values(contacts)).filter(
+      (c) => c.key.length === 78 && c.offerId === null
+    )
   }
 )
 
-const directMessagesContact = address =>
-  createSelector(contacts, c =>
-    Array.from(Object.values(c)).find(el => el.address === address)
+const directMessagesContact = (address) =>
+  createSelector(contacts, (c) =>
+    Array.from(Object.values(c)).find((el) => el.address === address)
   )
 
-const contact = address =>
-  createSelector(contacts, c => {
+const contact = (address) =>
+  createSelector(contacts, (c) => {
     if (!c[address]) {
       return contactBase
     } else {
@@ -103,20 +106,24 @@ const contact = address =>
     }
   })
 
-const messagesSorted = address =>
-  createSelector(contact(address), c => {
-    return Array.from(Object.values(c.messages)).sort((a, b) => b.createdAt - a.createdAt)
+const messagesSorted = (address) =>
+  createSelector(contact(address), (c) => {
+    return Array.from(Object.values(c.messages)).sort(
+      (a, b) => b.createdAt - a.createdAt
+    )
   })
-const messagesSortedDesc = address =>
-  createSelector(contact(address), c => {
-    return Array.from(Object.values(c.messages)).sort((a, b) => a.createdAt - b.createdAt)
+const messagesSortedDesc = (address) =>
+  createSelector(contact(address), (c) => {
+    return Array.from(Object.values(c.messages)).sort(
+      (a, b) => a.createdAt - b.createdAt
+    )
   })
 
-const messagesLength = address =>
-  createSelector(contact(address), c => {
+const messagesLength = (address) =>
+  createSelector(contact(address), (c) => {
     return Array.from(Object.values(c.messages)).length
   })
-const messages = address =>
+const messages = (address) =>
   createSelector(
     messagesSorted(address),
     displayableMessageLimit,
@@ -125,56 +132,52 @@ const messages = address =>
     }
   )
 
-const channelSettingsMessages = address =>
-  createSelector(
-    messagesSortedDesc(address),
-    (msgs) => {
-      return msgs.filter(msg => msg.type === 6)
-    }
-  )
+const channelSettingsMessages = (address) =>
+  createSelector(messagesSortedDesc(address), (msgs) => {
+    return msgs.filter((msg) => msg.type === 6)
+  })
 
-const allMessages = createSelector(contacts, c => {
+const allMessages = createSelector(contacts, (c) => {
   return Array.from(Object.keys(c)).reduce((acc, t) => {
-    const temp = acc[t] = {
+    const temp = (acc[t] = {
       ...acc,
       ...c[t].messages
-    }
+    })
     return temp
   }, {})
 })
-const getAdvertById = txid =>
-  createSelector(allMessages, msgs => {
+const getAdvertById = (txid) =>
+  createSelector(allMessages, (msgs) => {
     return msgs[txid]
   })
-const lastSeen = address => createSelector(contact(address), c => c.lastSeen)
-const username = address => createSelector(contact(address), c => c.username)
-const vaultMessages = address =>
-  createSelector(contact(address), c => c.vaultMessages)
-const newMessages = address =>
-  createSelector(contact(address), c => c.newMessages)
+const lastSeen = (address) =>
+  createSelector(contact(address), (c) => c.lastSeen)
+const username = (address) =>
+  createSelector(contact(address), (c) => c.username)
+const vaultMessages = (address) =>
+  createSelector(contact(address), (c) => c.vaultMessages)
+const newMessages = (address) =>
+  createSelector(contact(address), (c) => c.newMessages)
 
-export const queuedMessages = address =>
+export const queuedMessages = (address) =>
   createSelector(
     directMssagesQueueSelectors.queue,
-    queue =>
-      queue.filter(
-        m => m.recipientAddress === address && m.message.type < 10
-      ) //  separate offer messages and direct messages
+    (queue) =>
+      queue.filter((m) => m.recipientAddress === address && m.message.type < 10) //  separate offer messages and direct messages
   )
 
-export const pendingMessages = address =>
-  createSelector(operationsSelectors.operations, operations =>
+export const pendingMessages = (address) =>
+  createSelector(operationsSelectors.operations, (operations) =>
     operations.filter(
-      o =>
+      (o) =>
         o.type === operationTypes.pendingDirectMessage &&
         o.meta.recipientAddress === address &&
         o.meta.message.type < 10 //  separate offer messages and direct messages
     )
   )
 
-const channelOwner = channelId => createSelector(
-  channelSettingsMessages(channelId),
-  msgs => {
+const channelOwner = (channelId) =>
+  createSelector(channelSettingsMessages(channelId), (msgs) => {
     let channelOwner = null
     channelOwner = msgs[0] ? msgs[0].publicKey : null
     for (const msg of msgs) {
@@ -183,10 +186,9 @@ const channelOwner = channelId => createSelector(
       }
     }
     return channelOwner
-  }
-)
+  })
 
-export const directMessages = (address, signerPubKey) =>
+export const directMessages = (address) =>
   createSelector(
     messages(address),
     channelOwner(address),
@@ -218,25 +220,49 @@ export const directMessages = (address, signerPubKey) =>
             const moderationTarget = msg.message.moderationTarget
             if (channelOwner === senderPk && moderationType === 'ADD_MOD') {
               channelModerators.push(moderationTarget)
-            } else if (channelOwner === senderPk && moderationType === 'REMOVE_MOD') {
-              const indexToRemove = channelModerators.findIndex(el => el === moderationTarget)
+            } else if (
+              channelOwner === senderPk &&
+              moderationType === 'REMOVE_MOD'
+            ) {
+              const indexToRemove = channelModerators.findIndex(
+                (el) => el === moderationTarget
+              )
               if (indexToRemove !== -1) {
                 channelModerators.splice(indexToRemove, 1)
               }
-            } else if ((channelOwner === senderPk || channelModerators.includes(senderPk)) && moderationType === 'BLOCK_USER') {
+            } else if (
+              (channelOwner === senderPk ||
+                channelModerators.includes(senderPk)) &&
+              moderationType === 'BLOCK_USER'
+            ) {
               blockedUsers.push(moderationTarget)
-              visibleMessages = visibleMessages.filter(msg => !blockedUsers.includes(msg.publicKey))
-            } else if ((channelOwner === senderPk || channelModerators.includes(senderPk)) && moderationType === 'UNBLOCK_USER') {
-              const indexToRemove = blockedUsers.findIndex(el => el === moderationTarget)
+              visibleMessages = visibleMessages.filter(
+                (msg) => !blockedUsers.includes(msg.publicKey)
+              )
+            } else if (
+              (channelOwner === senderPk ||
+                channelModerators.includes(senderPk)) &&
+              moderationType === 'UNBLOCK_USER'
+            ) {
+              const indexToRemove = blockedUsers.findIndex(
+                (el) => el === moderationTarget
+              )
               if (indexToRemove !== -1) {
                 blockedUsers.splice(indexToRemove, 1)
               }
-            } else if ((channelOwner === senderPk || channelModerators.includes(senderPk)) && moderationType === 'REMOVE_MESSAGE') {
-              const indexToRemove = visibleMessages.findIndex(el => el.id === moderationTarget)
+            } else if (
+              (channelOwner === senderPk ||
+                channelModerators.includes(senderPk)) &&
+              moderationType === 'REMOVE_MESSAGE'
+            ) {
+              const indexToRemove = visibleMessages.findIndex(
+                (el) => el.id === moderationTarget
+              )
               if (indexToRemove !== -1) {
                 visibleMessages.splice(indexToRemove, 1)
               }
-            } else {}
+            } else {
+            }
             break
         }
       }
