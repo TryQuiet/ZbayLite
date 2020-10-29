@@ -13,11 +13,11 @@ const useStyles = makeStyles((theme) => ({
 
 export const IconButton: React.FC<IIconButtonProps> = ({
   children,
-  ...props
+  onClick,
 }) => {
   const classes = useStyles({});
   return (
-    <IconButtonMui classes={{ root: classes.root }} {...props}>
+    <IconButtonMui classes={{ root: classes.root }} onClick={onClick}>
       {children}
     </IconButtonMui>
   );

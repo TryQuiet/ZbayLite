@@ -1,5 +1,5 @@
-import { ElementType } from "react";
+import { IconButtonProps } from "@material-ui/core/IconButton";
 
 export interface IIconButtonProps {
-  children: ElementType;
+  onClick: IconButtonProps["onClick"];
 }
