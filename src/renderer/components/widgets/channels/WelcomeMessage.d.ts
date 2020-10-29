@@ -1,4 +1,6 @@
+import React from "react";
+
 export interface IWelcomeMessageProps {
-  message: string;
+  message: string | React.ReactNode;
   timestamp: number;
 }
