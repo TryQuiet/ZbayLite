@@ -11,7 +11,7 @@ import BackIcon from "@material-ui/icons/ArrowBack";
 
 import IconButton from "./IconButton";
 
-import { ModalProps } from "@material-ui/core/Modal";
+import { IModalProps } from "./Modal.d";
 
 const constants = {
   headerHeight: 60,
@@ -62,20 +62,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 500,
   },
 }));
-
-interface IModalProps {
-  open: boolean;
-  handleClose: ModalProps["onClose"];
-  title?: string;
-  canGoBack?: boolean;
-  isBold: boolean;
-  step: number;
-  setStep: (arg0?: any) => void;
-  contentWidth?: string | number;
-  isCloseDisabled?: boolean;
-  alignCloseLeft: boolean;
-  addBorder: boolean;
-}
 
 export const Modal: React.FC<IModalProps> = ({
   open,
