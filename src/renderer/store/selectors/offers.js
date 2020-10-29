@@ -81,7 +81,9 @@ const offerMessages = (id, signerPubKey) =>
       const identityName = userData ? userData.nickname : identity.name
       const displayablePending = pendingMessages.map(operation => {
         const textMsg = operation.operation.meta.message.message.text
-        let tempMsg = R.clone(operation.operation)
+        let tempMsg = {
+          ...operation.operation
+        }
         tempMsg.meta.message.message = textMsg
         return zbayMessages.operationToDisplayableMessage({
           operation: tempMsg,
@@ -97,7 +99,9 @@ const offerMessages = (id, signerPubKey) =>
       })
       const displayableQueued = queuedMessages.map((queuedMessage, messageKey) => {
         const textMsg = queuedMessage.message.message.text
-        let tempMsg = R.clone(queuedMessage)
+        let tempMsg = {
+          ...queuedMessage
+        }
         tempMsg.message.message = textMsg
         return zbayMessages.queuedToDisplayableMessage({
           queuedMessage: tempMsg,

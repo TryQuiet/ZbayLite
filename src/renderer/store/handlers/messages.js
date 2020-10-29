@@ -109,9 +109,8 @@ const _receivedFromUnknownMessage = {
 // )
 
 export const ReceivedMessage = values => {
-  const record = R.clone(_receivedMessage)
   return {
-    ...record,
+    ..._receivedMessage,
     ...values
   }
 }
@@ -248,7 +247,7 @@ export const checkTransferCount = (address, messages) => async (
       console.log('skip wrong state')
       return -1
     }
-    if (messages.length === appSelectors.transfers(getState()).address) {
+    if (messages.length === appSelectors.transfers(getState())[address]) {
       return -1
     } else {
       // const oldTransfers = appSelectors.transfers(getState()).get(address) || 0
@@ -521,9 +520,8 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
     msg.memohex.startsWith('ff')
   )
   const parsedTextMessages = filteredTextMessages.map(msg => {
-    const record = R.clone(_receivedFromUnknownMessage)
     return {
-      ...record,
+      ..._receivedFromUnknownMessage,
       id: msg.txid,
       type: new BigNumber(msg.amount).gt(new BigNumber(0))
         ? messageType.TRANSFER
@@ -815,7 +813,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
         })
       }
     } else {
-      if (!contacts.get(publicKey)) {
+      if (!contacts[publicKey]) {
         await dispatch(
           contactsHandlers.actions.addContact({
             key: publicKey,

@@ -52,7 +52,7 @@ export const SendMessagePopover = ({
             contact: {
               address,
               nickname: username,
-              publicKey: registeredUsername ? registeredUsername.get('publicKey') : null
+              publicKey: registeredUsername ? registeredUsername.publicKey : null
             },
             history
           })

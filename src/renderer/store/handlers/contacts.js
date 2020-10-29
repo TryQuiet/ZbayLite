@@ -219,10 +219,10 @@ export const fetchMessages = () => async (dispatch, getState) => {
       )
     }
     const contacts = selectors.contacts(getState())
-    const currentContact = contacts.get(currentDmChannel)
+    const currentContact = contacts[currentDmChannel]
     if (currentContact) {
       await dispatch(
-        updateLastSeen({ contact: contacts.get(currentDmChannel) })
+        updateLastSeen({ contact: contacts[currentDmChannel] })
       )
     }
     const transfers = await getClient().payment.received(identityAddress)
@@ -539,7 +539,7 @@ export const checkConfirmationOfTransfers = async (dispatch, getState) => {
     const contacts = selectors.contacts(getState())
     const offers = offersSelectors.offers(getState())
     for (const key of Array.from(contacts.keys())) {
-      for (const msg of contacts.get(key).messages) {
+      for (const msg of contacts[key].messages) {
         if (
           (msg.type === messageType.ITEM_TRANSFER ||
             msg.type === messageType.TRANSFER) &&
@@ -555,7 +555,7 @@ export const checkConfirmationOfTransfers = async (dispatch, getState) => {
           )
         }
       }
-      for (const msg of contacts.get(key).vaultMessages) {
+      for (const msg of contacts[key].vaultMessages) {
         if (
           (msg.type === messageType.ITEM_TRANSFER ||
             msg.type === messageType.TRANSFER) &&

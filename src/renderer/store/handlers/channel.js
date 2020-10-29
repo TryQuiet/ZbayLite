@@ -46,7 +46,9 @@ export const ChannelState = {
   displayableMessageLimit: 50
 }
 
-export const initialState = R.clone(ChannelState)
+export const initialState = {
+  ...ChannelState
+}
 
 const setSpentFilterValue = createAction(
   actionTypes.SET_SPENT_FILTER_VALUE,
