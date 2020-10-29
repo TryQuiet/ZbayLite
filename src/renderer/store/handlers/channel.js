@@ -235,8 +235,11 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         dispatch(
           contactsHandlers.actions.addMessage({
             key: channel.id,
-            message: { [key]: messagePlaceholder.set('status', 'failed') }
-          })
+            message: { [key]: {
+              ...messagePlaceholder,
+              status: 'failed'
+            }
+            } })
         )
         dispatch(
           notificationsHandlers.actions.enqueueSnackbar(
@@ -302,8 +305,9 @@ const sendChannelSettingsMessage = ({
 
 const resendMessage = messageData => async (dispatch, getState) => {
   const identityAddress = identitySelectors.address(getState())
-  const channel = channelSelectors.data(getState()).toJS()
+  const channel = channelSelectors.data(getState())
   const privKey = identitySelectors.signerPrivKey(getState())
+  console.log('message data', messageData)
   const message = messages.createMessage({
     messageData: {
       type: messageData.type,
@@ -334,7 +338,10 @@ const resendMessage = messageData => async (dispatch, getState) => {
       contactsHandlers.actions.addMessage({
         key: channel.key,
         message: {
-          [messageData.id]: messagePlaceholder.set('status', 'failed')
+          [messageData.id]: {
+            ...messagePlaceholder,
+            status: 'failed'
+          }
         }
       })
     )
