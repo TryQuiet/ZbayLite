@@ -2,11 +2,10 @@
 
 exports[`users selectors  - myUser 1`] = `
 Object {
-  "address": "",
-  "createdAt": 0,
-  "firstName": "",
-  "lastName": "",
-  "nickname": "anonmyUser",
+  "address": "myUserAddres",
+  "firstName": "myUserName",
+  "lastName": "myUserLastName",
+  "nickname": "myUser",
 }
 `;
 

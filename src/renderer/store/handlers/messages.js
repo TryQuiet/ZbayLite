@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import * as R from 'ramda'
 import crypto from 'crypto'
 
-import { createAction, handleActions } from 'redux-actions'
+import { createAction } from 'redux-actions'
 // import { remote } from 'electron'
 
 import appSelectors from '../selectors/app'
@@ -848,24 +848,6 @@ export const epics = {
   checkMessageSize,
   handleWebsocketMessage
 }
-
-export const reducer = handleActions(
-  {
-    [setMessages]: (state, { payload: { channelId, messages } }) =>
-      state.update(channelId, {}, cm =>
-        cm.set('messages', Immutable.fromJS(messages))
-      ),
-    [cleanNewMessages]: (state, { payload: { channelId } }) =>
-      state.update(channelId, ChannelMessages(), cm =>
-        cm.set('newMessages', Immutable.List())
-      ),
-    [appendNewMessages]: (state, { payload: { channelId, messagesIds } }) =>
-      state.update(channelId, ChannelMessages(), cm =>
-        cm.update('newMessages', nm => nm.concat(messagesIds))
-      )
-  },
-  initialState
-)
 
 export default {
   epics,
