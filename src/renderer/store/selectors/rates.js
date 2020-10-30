@@ -18,8 +18,9 @@ export const priceByTime = time =>
     return parseFloat(closesTransaction.price)
   })
 
-export const feeUsd = createSelector(rates, r =>
-  parseFloat(r.usd || 0 * networkFee).toFixed(4)
+export const feeUsd = createSelector(rates, r => {
+  return parseFloat((r.usd || 0) * networkFee).toFixed(4)
+}
 )
 
 export default {

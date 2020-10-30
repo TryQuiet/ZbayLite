@@ -369,7 +369,7 @@ export const signMessage = ({ messageData, privKey }) => {
   )
   return {
     type: messageData.type,
-    spent: messageData.spent,
+    spent: messageData.spent || new BigNumber(0),
     signature: sigObj.signature,
     r: sigObj.recovery,
     createdAt: parseInt(DateTime.utc().toSeconds()),

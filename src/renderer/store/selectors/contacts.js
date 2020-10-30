@@ -38,15 +38,14 @@ const contactsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
   (contacts, removedChannels) => {
-    if (removedChannels.size > 0) {
-      return contacts
+    if (removedChannels.length > 0) {
+      return Array.from(Object.values(contacts))
         .filter(
           c =>
             c.key.length === 66 &&
             c.offerId === null &&
             !removedChannels.includes(c.address)
         )
-        .toList()
     }
     return Array.from(Object.values(contacts))
       .filter(c => c.key.length === 66 && c.offerId === null)
@@ -74,15 +73,14 @@ const channelsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
   (contacts, removedChannels) => {
-    if (removedChannels.size > 0) {
-      return contacts
+    if (removedChannels.length > 0) {
+      return Array.from(Object.values(contacts))
         .filter(
           c =>
             c.key.length === 78 &&
             c.offerId === null &&
             !removedChannels.includes(c.address)
         )
-        .toList()
     }
     return Array.from(Object.values(contacts))
       .filter(c => c.key.length === 78 && c.offerId === null)
