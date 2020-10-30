@@ -1,17 +1,17 @@
-import mirrorKey from 'keymirror'
-export const networkFee = 0.0000025
-export const satoshiMultiplier = 100000000
-export const networkFeeSatoshi = networkFee * satoshiMultiplier
-export const targetUtxoCount = 25
-export const debounceThreshold = 10
-export const unknownUserId = 'c7e7c14740c3372fffe47c845a2b6720'
-export const DOMAIN = 'handlers.zbay.app'
-export const LOG_ENDPOINT = 'https://handlers.zbay.app/email'
+import mirrorKey from "keymirror";
+export const networkFee = 0.0000025;
+export const satoshiMultiplier = 100000000;
+export const networkFeeSatoshi = networkFee * satoshiMultiplier;
+export const targetUtxoCount = 25;
+export const debounceThreshold = 10;
+export const unknownUserId = "c7e7c14740c3372fffe47c845a2b6720";
+export const DOMAIN = "handlers.zbay.app";
+export const LOG_ENDPOINT = "https://handlers.zbay.app/email";
 export const PRICE_ORACLE_PUB_KEY =
-  '0225528107f2b0cd8f0a7bedfa218ee8511b1753f87c76886d0ea7dd0e813270da'
+  "0225528107f2b0cd8f0a7bedfa218ee8511b1753f87c76886d0ea7dd0e813270da";
 export const REQUEST_MONEY_ENDPOINT =
-  ' https://u1uxu6p870.execute-api.us-east-1.amazonaws.com/Prod/requestMoney'
-export { MessageType as messageType } from './static.d'
+  " https://u1uxu6p870.execute-api.us-east-1.amazonaws.com/Prod/requestMoney";
+export { MessageType as messageType } from "./static.types";
 
 export const actionTypes = mirrorKey({
   DECODE_CHANNEL: undefined,
@@ -169,26 +169,26 @@ export const actionTypes = mirrorKey({
   IS_SIZE_CHECKING_IN_PROGRESS: undefined,
   MESSAGE_SIZE_STATUS: undefined,
   SET_INITIAL_LOAD_FLAG: undefined,
-  SET_REMOVED_CHANNELS: undefined
-})
+  SET_REMOVED_CHANNELS: undefined,
+});
 
 export const moderationActionsType = {
-  REMOVE_MESSAGE: 'REMOVE_MESSAGE',
-  BLOCK_USER: 'BLOCK_USER',
-  UNBLOCK_USER: 'UNBLOCK_USER',
-  ADD_MOD: 'ADD_MOD',
-  REMOVE_MOD: 'REMOVE_MOD',
-  REMOVE_CHANNEL: 'REMOVE_CHANNEL'
-}
+  REMOVE_MESSAGE: "REMOVE_MESSAGE",
+  BLOCK_USER: "BLOCK_USER",
+  UNBLOCK_USER: "UNBLOCK_USER",
+  ADD_MOD: "ADD_MOD",
+  REMOVE_MOD: "REMOVE_MOD",
+  REMOVE_CHANNEL: "REMOVE_CHANNEL",
+};
 export const notificationFilterType = {
   ALL_MESSAGES: 1,
   MENTIONS: 2,
   NONE: 3,
-  MUTE: 4
-}
+  MUTE: 4,
+};
 export const soundType = {
   NONE: 0,
   POW: 1,
   BANG: 2,
-  SPLAT: 3
-}
+  SPLAT: 3,
+};

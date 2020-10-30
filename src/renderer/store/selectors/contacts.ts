@@ -6,7 +6,9 @@ import operationsSelectors from "./operations";
 import { operationTypes } from "../handlers/operations";
 // import usersSelectors from './users'
 import { mergeIntoOne, displayableMessageLimit } from "./channel";
-import { unknownUserId, messageType } from "../../../shared/static.js";
+import { MessageType } from "../../../shared/static.types";
+import { unknownUserId } from "../../../shared/static";
+
 // import messagesSelectors from './messages'
 
 import { IDisplayableMessage } from "./../../../renderer/zbay/messages.d";
@@ -219,22 +221,22 @@ export const directMessages = (address) =>
       let visibleMessages = [];
       for (const msg of messages.reverse()) {
         switch (msg.type) {
-          case messageType.AD:
+          case MessageType.AD:
             if (!blockedUsers.includes(msg.publicKey)) {
               visibleMessages.push(msg);
             }
             break;
-          case messageType.BASIC:
+          case MessageType.BASIC:
             if (!blockedUsers.includes(msg.publicKey)) {
               visibleMessages.push(msg);
             }
             break;
-          case messageType.TRANSFER:
+          case MessageType.TRANSFER:
             if (!blockedUsers.includes(msg.publicKey)) {
               visibleMessages.push(msg);
             }
             break;
-          case messageType.MODERATION:
+          case MessageType.MODERATION:
             const senderPk = msg.publicKey;
             const moderationType = msg.message.moderationType;
             const moderationTarget = msg.message.moderationTarget;
