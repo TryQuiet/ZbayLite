@@ -47,7 +47,7 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
               address,
               nickname: username,
               publicKey: registeredUsername
-                ? registeredUsername.get("publicKey")
+                ? registeredUsername.publicKey
                 : null,
             },
             history,

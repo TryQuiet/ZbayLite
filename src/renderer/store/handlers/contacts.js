@@ -184,7 +184,7 @@ export const updatePendingMessage = ({ key, id, txid }) => async (
 }
 export const linkUserRedirect = contact => async (dispatch, getState) => {
   const contacts = selectors.contacts(getState())
-  if (contacts.get(contact.address)) {
+  if (contacts[contact.address]) {
     history.push(`/main/direct-messages/${contact.address}/${contact.nickname}`)
   }
   await dispatch(
@@ -219,10 +219,10 @@ export const fetchMessages = () => async (dispatch, getState) => {
       )
     }
     const contacts = selectors.contacts(getState())
-    const currentContact = contacts.get(currentDmChannel)
+    const currentContact = contacts[currentDmChannel]
     if (currentContact) {
       await dispatch(
-        updateLastSeen({ contact: contacts.get(currentDmChannel) })
+        updateLastSeen({ contact: contacts[currentDmChannel] })
       )
     }
     const transfers = await getClient().payment.received(identityAddress)
@@ -260,6 +260,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
       .filter(msg => msg !== null)
       .filter(msg => msg.sender.username === 'unknown')
       .filter(msg => msg.specialType === 1)
+
     const messages = messagesAll
       .filter(msg => msg !== null)
       .filter(msg => msg.sender.replyTo !== '')
@@ -538,7 +539,7 @@ export const checkConfirmationOfTransfers = async (dispatch, getState) => {
     const contacts = selectors.contacts(getState())
     const offers = offersSelectors.offers(getState())
     for (const key of Array.from(contacts.keys())) {
-      for (const msg of contacts.get(key).messages) {
+      for (const msg of contacts[key].messages) {
         if (
           (msg.type === messageType.ITEM_TRANSFER ||
             msg.type === messageType.TRANSFER) &&
@@ -554,7 +555,7 @@ export const checkConfirmationOfTransfers = async (dispatch, getState) => {
           )
         }
       }
-      for (const msg of contacts.get(key).vaultMessages) {
+      for (const msg of contacts[key].vaultMessages) {
         if (
           (msg.type === messageType.ITEM_TRANSFER ||
             msg.type === messageType.TRANSFER) &&

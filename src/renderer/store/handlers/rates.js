@@ -66,8 +66,8 @@ export const fetchPrices = (address, messages) => async (
           })
         )
         electronStore.set('rates.usd', price)
-        break
       } catch (err) {
+        console.log('error', err)
         continue
       }
     }

@@ -46,7 +46,7 @@ export const BaseChannelsList = ({
           selected={selectedOffer}
         />
       ))}
-      {unknownMessages.size > 0 && (
+      {unknownMessages.length > 0 && (
         <ChannelsListItem
           key={unknownUserId}
           channel={unknownMessages[0]}

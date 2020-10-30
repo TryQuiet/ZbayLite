@@ -45,6 +45,7 @@ interface IC {
   messages: Array<IMessages>;
   key: string;
   offerId: string;
+  address: string;
 }
 
 const store = (s) => s;
@@ -54,15 +55,13 @@ const contactsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
   (contacts, removedChannels) => {
-    if (removedChannels.size > 0) {
-      return contacts
-        .filter(
-          (c) =>
-            c.key.length === 66 &&
-            c.offerId === null &&
-            !removedChannels.includes(c.address)
-        )
-        .toList();
+    if (removedChannels.length > 0) {
+      return Array.from(Object.values(contacts)).filter(
+        (c: IC) =>
+          c.key.length === 66 &&
+          c.offerId === null &&
+          !removedChannels.includes(c.address)
+      );
     }
     return Array.from(Object.values(contacts)).filter(
       (c: IC) => c.key.length === 66 && c.offerId === null
@@ -92,15 +91,13 @@ const channelsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
   (contacts, removedChannels) => {
-    if (removedChannels.size > 0) {
-      return contacts
-        .filter(
-          (c) =>
-            c.key.length === 78 &&
-            c.offerId === null &&
-            !removedChannels.includes(c.address)
-        )
-        .toList();
+    if (removedChannels.length > 0) {
+      return Array.from(Object.values(contacts)).filter(
+        (c: IC) =>
+          c.key.length === 78 &&
+          c.offerId === null &&
+          !removedChannels.includes(c.address)
+      );
     }
     return Array.from(Object.values(contacts)).filter(
       (c: IC) => c.key.length === 78 && c.offerId === null

@@ -9,7 +9,6 @@
     "moduleResolution": "node",
     "lib": ["es2015", "dom"],
     "esModuleInterop": true,
-    "typeRoots": ["node_modules/@types", "src/renderer/expanded-theme.ts"],
-    "include": ["src/components", "src/custom.d.ts"]
+    "typeRoots": ["node_modules/@types", "src/renderer/expanded-theme.ts"]
   }
 }

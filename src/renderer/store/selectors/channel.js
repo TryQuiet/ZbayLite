@@ -262,7 +262,7 @@ export const messages = signerPubKey =>
       )
       let concatedMessages = displayableBroadcasted
         .concat(displayablePending.values(), displayableQueued.values())
-        .sortBy(m => m.get('createdAt'))
+        .sortBy(m => m.createdAt)
       if (concatedMessages.size > 0) {
         const merged = mergeIntoOne(concatedMessages)
         concatedMessages = Immutable.fromJS(merged)

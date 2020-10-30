@@ -3,15 +3,13 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - feature/refactoring-changes
 
 jobs:
   build_on_windows:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v1.0.0
-      with:
-        ref: refs/heads/master
     - uses: actions/setup-node@master
       with:
         node-version: '12'

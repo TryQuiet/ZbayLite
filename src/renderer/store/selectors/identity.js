@@ -50,7 +50,7 @@ const shieldedAddresses = createSelector(data, d => d.shieldedAddresses)
 
 const loader = createSelector(identity, i => i.loader)
 
-const removedChannels = createSelector(identity, i => i.removedChannels)
+const removedChannels = createSelector(identity, i => Array.from(Object.values(i.removedChannels)))
 
 const shippingData = createSelector(data, d => d.shippingData)
 

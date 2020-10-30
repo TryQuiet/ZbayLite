@@ -81,7 +81,7 @@ const removeMention = nickname => async (dispatch, getState) => {
 const sendInvitation = nickname => async (dispatch, getState) => {
   try {
     const channelId = channelSelectors.channelId(getState())
-    const channelAddress = channelSelectors.data(getState()).get('address')
+    const channelAddress = channelSelectors.data(getState()).address
     const privKey = identitySelectors.signerPrivKey(getState())
     const users = usersSelectors.users(getState())
     const publicChannel = publicChannelsSelector

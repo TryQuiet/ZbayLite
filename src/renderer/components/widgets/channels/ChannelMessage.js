@@ -247,7 +247,7 @@ export const ChannelMessage = ({
   const [imageUrl, setImageUrl] = React.useState(null)
   const [parsedMessage, setParsedMessage] = React.useState('')
   const [openModal, setOpenModal] = React.useState(false)
-  const status = message.status.broadcasted
+  const status = message.status || null
   const messageData = message.message.itemId
     ? message.message.text
     : message.message

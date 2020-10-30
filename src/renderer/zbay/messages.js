@@ -71,8 +71,16 @@ export const _displayableMessage = {
 }
 
 export const DisplayableMessage = values => {
-  const record = R.mergeDeepRight(_displayableMessage, values)
-  return record
+  if (values) {
+    const record = {
+      ..._displayableMessage,
+      ...values
+    }
+    return record
+  }
+  return {
+    ..._displayableMessage
+  }
 }
 
 const _isOwner = (identityAddress, message) =>
@@ -83,13 +91,14 @@ export const receivedToDisplayableMessage = ({
   identityAddress,
   receiver = { replyTo: '', username: 'Unnamed' }
 }) => {
-  const record = R.mergeDeepRight(DisplayableMessage, {
+  const record = {
+    ..._displayableMessage,
     fromYou: _isOwner(identityAddress, message),
     receiver: {
       ...exchangeParticipant,
       ...receiver
     }
-  })
+  }
   return record
 }
 
@@ -98,13 +107,14 @@ export const vaultToDisplayableMessage = ({
   identityAddress,
   receiver = { replyTo: '', username: 'Unnamed' }
 }) => {
-  const record = R.mergeDeepRight(DisplayableMessage, {
+  const record = {
+    ..._displayableMessage,
     fromYou: _isOwner(identityAddress, message),
     receiver: {
       ...exchangeParticipant,
       ...receiver
     }
-  })
+  }
   return record
 }
 
@@ -116,7 +126,8 @@ export const operationToDisplayableMessage = ({
   identityName,
   receiver = { replyTo: '', username: 'Unnamed' }
 }) => {
-  const record = R.mergeDeepRight(operation.meta.message, {
+  const record = {
+    ...operation.meta.message,
     tag,
     offerOwner,
     error: operation.error,
@@ -132,7 +143,7 @@ export const operationToDisplayableMessage = ({
       ...exchangeParticipant,
       ...receiver
     }
-  })
+  }
   return record
 }
 
@@ -145,7 +156,8 @@ export const queuedToDisplayableMessage = ({
   identityName,
   receiver = { replyTo: '', username: 'Unnamed' }
 }) => {
-  const record = R.mergeDeepRight(queuedMessage.message, {
+  const record = {
+    ...queuedMessage.message,
     tag,
     offerOwner,
     fromYou: true,
@@ -160,7 +172,7 @@ export const queuedToDisplayableMessage = ({
       ...exchangeParticipant,
       ...receiver
     }
-  })
+  }
   return record
 }
 
@@ -357,7 +369,7 @@ export const signMessage = ({ messageData, privKey }) => {
   )
   return {
     type: messageData.type,
-    spent: messageData.spent,
+    spent: messageData.spent || new BigNumber(0),
     signature: sigObj.signature,
     r: sigObj.recovery,
     createdAt: parseInt(DateTime.utc().toSeconds()),
@@ -479,7 +491,6 @@ export const calculateDiff = ({
   identityAddress,
   lastSeen
 }) => {
-  console.log('test diff', previousMessages, nextMessages, identityAddress, lastSeen)
   return nextMessages.filter(nextMessage => {
     const isNew =
       DateTime.fromSeconds(nextMessage.createdAt) > lastSeen ||

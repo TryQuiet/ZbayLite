@@ -181,7 +181,7 @@ export const PublishChannelModal = ({
         setSending(true)
         await publishChannel({
           channelAddress: channel.address,
-          channelName: parseChannelName(channel.name),
+          channelName: parseChannelName(values.name),
           channelDescription: values.description,
           channelIvk: electronStore.get(
             `importedChannels.${channel.address}.keys.ivk`
