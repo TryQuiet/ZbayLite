@@ -307,7 +307,6 @@ const resendMessage = messageData => async (dispatch, getState) => {
   const identityAddress = identitySelectors.address(getState())
   const channel = channelSelectors.data(getState())
   const privKey = identitySelectors.signerPrivKey(getState())
-  console.log('message data', messageData)
   const message = messages.createMessage({
     messageData: {
       type: messageData.type,
