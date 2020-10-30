@@ -11,7 +11,8 @@ import { unknownUserId } from "../../../shared/static";
 
 // import messagesSelectors from './messages'
 
-import { IDisplayableMessage } from "./../../../renderer/zbay/messages.d";
+import { DisplayableMessage } from "../../zbay/messages.types";
+import { ContactStore } from "../handlers/contacts";
 
 export const Contact = Immutable.Record({
   lastSeen: null,
@@ -48,30 +49,28 @@ interface IC {
   address: string;
 }
 
-const store = (s) => s;
-
-const contacts = createSelector(store, (state) => state.contacts);
+const contacts = (s): ContactStore => s.contacts as ContactStore;
 const contactsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
   (contacts, removedChannels) => {
     if (removedChannels.length > 0) {
       return Array.from(Object.values(contacts)).filter(
-        (c: IC) =>
+        (c) =>
           c.key.length === 66 &&
           c.offerId === null &&
           !removedChannels.includes(c.address)
       );
     }
     return Array.from(Object.values(contacts)).filter(
-      (c: IC) => c.key.length === 66 && c.offerId === null
+      (c) => c.key.length === 66 && c.offerId === null
     );
   }
 );
 
 const unknownMessages = createSelector(contacts, (contacts) => {
   return Array.from(Object.values(contacts)).filter(
-    (c: IC) => c.key === unknownUserId
+    (c) => c.key === unknownUserId
   );
 });
 
@@ -81,10 +80,10 @@ const offerList = createSelector(
   (contacts, removedChannels) => {
     if (removedChannels.length > 0) {
       return Array.from(Object.values(contacts)).filter(
-        (c: IC) => !!c.offerId && !removedChannels.includes(c.key)
+        (c) => !!c.offerId && !removedChannels.includes(c.key)
       );
     }
-    return Array.from(Object.values(contacts)).filter((c: IC) => !!c.offerId);
+    return Array.from(Object.values(contacts)).filter((c) => !!c.offerId);
   }
 );
 const channelsList = createSelector(
@@ -93,20 +92,20 @@ const channelsList = createSelector(
   (contacts, removedChannels) => {
     if (removedChannels.length > 0) {
       return Array.from(Object.values(contacts)).filter(
-        (c: IC) =>
+        (c) =>
           c.key.length === 78 &&
           c.offerId === null &&
           !removedChannels.includes(c.address)
       );
     }
     return Array.from(Object.values(contacts)).filter(
-      (c: IC) => c.key.length === 78 && c.offerId === null
+      (c) => c.key.length === 78 && c.offerId === null
     );
   }
 );
 
 const directMessagesContact = (address) =>
-  createSelector(contacts, (c: IC) =>
+  createSelector(contacts, (c) =>
     Array.from(Object.values(c)).find((el: IEl) => el.address === address)
   );
 
@@ -120,13 +119,13 @@ const contact = (address) =>
   });
 
 const messagesSorted = (address) =>
-  createSelector(contact(address), (c: IC) => {
+  createSelector(contact(address), (c) => {
     return Array.from(Object.values(c.messages)).sort(
       (a, b) => b.createdAt - a.createdAt
     );
   });
 const messagesSortedDesc = (address) =>
-  createSelector(contact(address), (c: IC) => {
+  createSelector(contact(address), (c) => {
     return Array.from(Object.values(c)).sort(
       (a, b) => a.createdAt - b.createdAt
     );
@@ -148,7 +147,7 @@ const messages = (address) =>
 const channelSettingsMessages = (address) =>
   createSelector(
     messagesSortedDesc(address),
-    (msgs: Array<IDisplayableMessage>) => {
+    (msgs: Array<DisplayableMessage>) => {
       return msgs.filter((msg) => msg.type === 6);
     }
   );
@@ -195,7 +194,7 @@ export const pendingMessages = (address) =>
 const channelOwner = (channelId) =>
   createSelector(
     channelSettingsMessages(channelId),
-    (msgs: Array<IDisplayableMessage>) => {
+    (msgs: Array<DisplayableMessage>) => {
       let channelOwner = null;
       channelOwner = msgs[0] ? msgs[0].publicKey : null;
       for (const msg of msgs) {
@@ -211,7 +210,7 @@ export const directMessages = (address) =>
   createSelector(
     messages(address),
     channelOwner(address),
-    (messages: Array<IDisplayableMessage>, channelOwner: string) => {
+    (messages: Array<DisplayableMessage>, channelOwner: string) => {
       let channelModerators = [];
       let messsagesToRemove = [];
       let blockedUsers = [];
