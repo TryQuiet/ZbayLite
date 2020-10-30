@@ -1,4 +1,4 @@
-export enum MessageType {
+export enum messageType {
   BASIC = 1,
   AD = 2,
   TRANSFER = 4,
@@ -12,3 +12,4 @@ export enum MessageType {
   CHANNEL_SETTINGS_UPDATE = 61,
   AFFILIATE = 170, // 'aa' in hex
 }
+export const unknownUserId = "c7e7c14740c3372fffe47c845a2b6720";
