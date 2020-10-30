@@ -751,7 +751,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
   }
   try {
     const toUser =
-      Array.from(Object.values).find(u => u.address === sender.replyTo) || {
+      Array.from(Object.values(users)).find(u => u.address === sender.replyTo) || {
         ...exchangeParticipant
       }
     const messageDigest = crypto.createHash('sha256')

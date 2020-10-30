@@ -207,7 +207,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       )
 
       const identityAddress = identitySelectors.address(getState())
-
       if (useTor && users[channel.id] && users[channel.id].onionAddress) {
         try {
           const memo = await packMemo(message)
