@@ -11,6 +11,7 @@ import { checkTransferCount } from '../handlers/messages'
 import { actionCreators } from './modals'
 import usersSelector from '../selectors/users'
 import identitySelector from '../selectors/identity'
+import { actions as identityActions } from '../handlers/identity'
 import appSelectors from '../selectors/app'
 import { getPublicKeysFromSignature } from '../../zbay/messages'
 import { messageType, actionTypes, unknownUserId } from '../../../shared/static'
@@ -90,10 +91,12 @@ export const initialState = {}
 
 export const setUsers = createAction(actionTypes.SET_USERS)
 export const addUnknownUser = createAction(actionTypes.ADD_UNKNOWN_USER)
+export const mockOwnUser = createAction(actionTypes.MOCK_OWN_USER)
 
 export const actions = {
   setUsers,
-  addUnknownUser
+  addUnknownUser,
+  mockOwnUser
 }
 
 export const registerAnonUsername = () => async (dispatch, getState) => {
@@ -110,6 +113,7 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     debounce = false,
     retry = 0
   } = payload
+  const publicKey = identitySelector.signerPubKey(getState())
   const address = identitySelector.address(getState())
   const privKey = identitySelector.signerPrivKey(getState())
   const fee = feesSelector.userFee(getState())
@@ -134,6 +138,15 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
   })
   dispatch(actionCreators.closeModal('accountSettingsModal')())
   try {
+    dispatch(identityActions.setRegistraionStatus({
+      nickname,
+      status: 'IN_PROGRESS'
+    }))
+    dispatch(mockOwnUser({
+      sigPubKey: publicKey,
+      address,
+      nickname
+    }))
     const txid = await client.sendTransaction(transfer)
     if (txid.error) {
       throw new Error(txid.error)
@@ -141,7 +154,7 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
         successNotification({
-          message: `Your username will be confirmed in few minutes`
+          message: `Registering username—this can take a few minutes.`
         })
       )
     )
@@ -152,7 +165,7 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
       dispatch(
         notificationsHandlers.actions.enqueueSnackbar(
           infoNotification({
-            message: `Waiting for funds from faucet`,
+            message: `Waiting for funds to register username—this can take a few minutes.`,
             key: 'username'
           })
         )
@@ -164,6 +177,10 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
       }, 75000)
       return
     }
+    dispatch(identityActions.setRegistraionStatus({
+      nickname,
+      status: 'ERROR'
+    }))
     dispatch(actionCreators.openModal('failedUsernameRegister')())
   }
 }
@@ -238,6 +255,8 @@ export const fetchUsers = (address, messages) => async (dispatch, getState) => {
     let minfee = 0
     let users = {}
     const network = nodeSelectors.network(getState())
+    const { status: registrationStatus } = identitySelector.registrationStatus(getState())
+    const signerPubKey = identitySelector.signerPubKey(getState())
     for (const msg of registrationMessages) {
       if (
         msg.type === messageType.CHANNEL_SETTINGS &&
@@ -261,6 +280,29 @@ export const fetchUsers = (address, messages) => async (dispatch, getState) => {
       }
     }
     dispatch(feesHandlers.actions.setUserFee(minfee))
+    const isRegistrationComplete = users[signerPubKey]
+    if (!isRegistrationComplete && registrationStatus === 'IN_PROGRESS') {
+      const publicKey = identitySelector.signerPubKey(getState())
+      const address = identitySelector.address(getState())
+      const { nickname } = identitySelector.registrationStatus(getState())
+      const mockedUser = {
+        [publicKey]: {
+          ..._UserData,
+          address,
+          nickname,
+          publicKey
+        }
+      }
+      users = {
+        ...users,
+        ...mockedUser
+      }
+    } else {
+      dispatch(identityActions.setRegistraionStatus({
+        nickname: '',
+        status: 'SUCCESS'
+      }))
+    }
     dispatch(setUsers({ users }))
   } catch (err) {
     throw err
@@ -343,6 +385,13 @@ export const reducer = handleActions(
         key: unknownUserId,
         nickname: 'unknown',
         address: unknownUserId
+      }
+    }),
+    [mockOwnUser]: (state, { payload: { sigPubKey, nickname, address } }) => produce(state, (draft) => {
+      draft[sigPubKey] = {
+        publicKey: sigPubKey,
+        nickname,
+        address
       }
     })
   },

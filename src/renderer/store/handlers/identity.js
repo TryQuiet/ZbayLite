@@ -72,6 +72,10 @@ export const initialState = {
     message: ''
   },
   removedChannels: [],
+  registrationStatus: {
+    nickname: '',
+    status: 'UNREGISTERED'
+  },
   errors: ''
 }
 
@@ -96,11 +100,12 @@ export const setDonationAddress = createAction(actionTypes.SET_DONATION_ADDRESS)
 export const setShieldingTax = createAction(actionTypes.SET_SHIELDING_TAX)
 export const setFreeUtxos = createAction(actionTypes.SET_FREE_UTXOS)
 export const setUserAddreses = createAction(actionTypes.SET_USER_ADDRESSES)
+export const setRegistraionStatus = createAction(actionTypes.SET_REGISTRAION_STATUS)
 export const setUserShieldedAddreses = createAction(
   actionTypes.SET_USER_SHIELDED_ADDRESES
 )
 
-const actions = {
+export const actions = {
   setIdentity,
   setRemovedChannels,
   setFetchingBalance,
@@ -114,8 +119,10 @@ const actions = {
   setDonationAddress,
   setShieldingTax,
   setFreeUtxos,
-  setOnionAddress
+  setOnionAddress,
+  setRegistraionStatus
 }
+
 export const fetchAffiliateMoney = () => async (dispatch, getState) => {
   try {
     const identityAddress = identitySelectors.address(getState())
@@ -583,6 +590,9 @@ export const reducer = handleActions(
       produce(state, (draft) => {
         draft.data.addresses = addresses
       }),
+    [setRegistraionStatus]: (state, { payload }) => produce(state, draft => {
+      draft.registrationStatus = payload
+    }),
     [setUserShieldedAddreses]: (state, { payload: shieldedAddresses }) =>
       produce(state, (draft) => {
         draft.data.shieldedAddresses = shieldedAddresses

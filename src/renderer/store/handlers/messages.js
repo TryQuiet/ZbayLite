@@ -540,17 +540,19 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
     nickname: 'unknown'
   }
   await dispatch(usersHandlers.actions.addUnknownUser())
-  dispatch(
-    contactsHandlers.actions.setMessages({
-      key: unknownUserId,
-      contactAddress: unknownUser.address,
-      username: unknownUser.nickname,
-      messages: parsedTextMessages.reduce((acc, cur) => {
-        acc[cur.id] = cur
-        return acc
-      }, {})
-    })
-  )
+  if (parsedTextMessages.length > 0) {
+    dispatch(
+      contactsHandlers.actions.setMessages({
+        key: unknownUserId,
+        contactAddress: unknownUser.address,
+        username: unknownUser.nickname,
+        messages: parsedTextMessages.reduce((acc, cur) => {
+          acc[cur.id] = cur
+          return acc
+        }, {})
+      })
+    )
+  }
   const messagesAll = await Promise.all(
     filteredZbayMessages.map(async transfer => {
       const message = await zbayMessages.transferToMessage(transfer, users)
