@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import * as R from 'ramda'
 import crypto from 'crypto'
 
-import { createAction, handleActions } from 'redux-actions'
+import { createAction } from 'redux-actions'
 // import { remote } from 'electron'
 
 import appSelectors from '../selectors/app'
@@ -244,8 +244,9 @@ export const checkTransferCount = (address, messages) => async (
       messages[messages.length - 1].memo === null &&
       messages[messages.length - 1].memohex === ''
     ) {
+      // It will not save transaction count so next run will trigger refresh.
       console.log('skip wrong state')
-      return -1
+      return 1
     }
     if (messages.length === appSelectors.transfers(getState())[address]) {
       return -1
@@ -751,7 +752,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
   }
   try {
     const toUser =
-      Array.from(Object.values).find(u => u.address === sender.replyTo) || {
+      Array.from(Object.values(users)).find(u => u.address === sender.replyTo) || {
         ...exchangeParticipant
       }
     const messageDigest = crypto.createHash('sha256')
@@ -848,24 +849,6 @@ export const epics = {
   checkMessageSize,
   handleWebsocketMessage
 }
-
-export const reducer = handleActions(
-  {
-    [setMessages]: (state, { payload: { channelId, messages } }) =>
-      state.update(channelId, {}, cm =>
-        cm.set('messages', Immutable.fromJS(messages))
-      ),
-    [cleanNewMessages]: (state, { payload: { channelId } }) =>
-      state.update(channelId, ChannelMessages(), cm =>
-        cm.set('newMessages', Immutable.List())
-      ),
-    [appendNewMessages]: (state, { payload: { channelId, messagesIds } }) =>
-      state.update(channelId, ChannelMessages(), cm =>
-        cm.update('newMessages', nm => nm.concat(messagesIds))
-      )
-  },
-  initialState
-)
 
 export default {
   epics,

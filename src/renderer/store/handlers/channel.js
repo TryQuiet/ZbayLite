@@ -207,7 +207,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       )
 
       const identityAddress = identitySelectors.address(getState())
-
       if (useTor && users[channel.id] && users[channel.id].onionAddress) {
         try {
           const memo = await packMemo(message)
@@ -307,7 +306,6 @@ const resendMessage = messageData => async (dispatch, getState) => {
   const identityAddress = identitySelectors.address(getState())
   const channel = channelSelectors.data(getState())
   const privKey = identitySelectors.signerPrivKey(getState())
-  console.log('message data', messageData)
   const message = messages.createMessage({
     messageData: {
       type: messageData.type,

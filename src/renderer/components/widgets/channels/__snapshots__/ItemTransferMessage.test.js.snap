@@ -21,7 +21,6 @@ exports[`ItemTransferMessage renders component 1`] = `
       },
       "replyTo": "test-address",
       "sender": Object {
-        "publicKey": "",
         "replyTo": "test-address",
         "username": "test",
       },
