@@ -12,7 +12,7 @@ import { unknownUserId } from "../../../shared/static";
 // import messagesSelectors from './messages'
 
 import { DisplayableMessage } from "../../zbay/messages.types";
-import { ContactStore } from "../handlers/contacts";
+import { ContactStore, IContact } from "../handlers/contacts";
 
 export const Contact = Immutable.Record({
   lastSeen: null,
@@ -25,12 +25,12 @@ export const Contact = Immutable.Record({
   offerId: null,
 });
 
-const contactBase = {
+const contactBase: IContact = {
   lastSeen: null,
   key: "",
   username: "",
   address: "",
-  messages: {},
+  messages: [],
   newMessages: [],
   vaultMessages: [],
   offerId: null,
@@ -112,13 +112,13 @@ const contact = (address) =>
 
 const messagesSorted = (address) =>
   createSelector(contact(address), (c) => {
-    return Array.from(Object.values(c.messages)).sort(
+    return Array.from<DisplayableMessage>(Object.values(c.messages)).sort(
       (a, b) => b.createdAt - a.createdAt
     );
   });
 const messagesSortedDesc = (address) =>
   createSelector(contact(address), (c) => {
-    return Array.from(Object.values(c)).sort(
+    return Array.from<DisplayableMessage>(Object.values(c)).sort(
       (a, b) => a.createdAt - b.createdAt
     );
   });
@@ -131,18 +131,15 @@ const messages = (address) =>
   createSelector(
     messagesSorted(address),
     displayableMessageLimit,
-    (msgs: Array<any>, limit): DisplayableMessage[] => {
+    (msgs, limit) => {
       return msgs.slice(0, limit);
     }
   );
 
 const channelSettingsMessages = (address) =>
-  createSelector(
-    messagesSortedDesc(address),
-    (msgs: Array<DisplayableMessage>) => {
-      return msgs.filter((msg) => msg.type === 6);
-    }
-  );
+  createSelector(messagesSortedDesc(address), (msgs) => {
+    return msgs.filter((msg) => msg.type === 6);
+  });
 
 const allMessages = createSelector(contacts, (c) => {
   return Array.from(Object.keys(c)).reduce((acc, t) => {
@@ -207,9 +204,9 @@ export const directMessages = (address) =>
     channelOwner(address),
     (messages, channelOwner: string): IDirectMessage => {
       let channelModerators = [];
-      let messsagesToRemove = [];
+      let messsagesToRemove: DisplayableMessage[] = [];
       let blockedUsers = [];
-      let visibleMessages = [];
+      let visibleMessages: DisplayableMessage[] = [];
       for (const msg of messages.reverse()) {
         switch (msg.type) {
           case MessageType.AD:
@@ -289,10 +286,10 @@ export const directMessages = (address) =>
         channelModerators,
         messsagesToRemove,
         blockedUsers,
-        visibleMessages: mergeIntoOne(visibleMessages.reverse() as DisplayableMessage[]
-        
+        visibleMessages: mergeIntoOne(
+          visibleMessages.reverse() as DisplayableMessage[]
         ),
-      };
+      } as IDirectMessage;
     }
   );
 

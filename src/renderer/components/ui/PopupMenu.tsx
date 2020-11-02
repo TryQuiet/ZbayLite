@@ -68,7 +68,7 @@ export const PopupMenu: React.FC<IPopupMenuProps> = ({
       open={open}
       anchorEl={anchorEl}
       transition
-      placement={placement || "bottom-end"}
+      placement={placement}
       disablePortal
       className={classes.popper}
       modifiers={{
@@ -116,6 +116,7 @@ export const PopupMenu: React.FC<IPopupMenuProps> = ({
 PopupMenu.defaultProps = {
   offset: 0,
   open: false,
+  placement: "bottom-end",
 };
 
 export default PopupMenu;

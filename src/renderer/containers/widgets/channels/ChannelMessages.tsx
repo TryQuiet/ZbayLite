@@ -118,24 +118,4 @@ export const ChannelMessages = ({ tab, contentRect }) => {
   );
 };
 
-/*
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  React.memo(ChannelMessages, (before, after) => {
-    return (
-      Object.is(before.messages, after.messages) &&
-      before.tab === after.tab &&
-      before.isInitialLoadFinished === after.isInitialLoadFinished &&
-      before.isOwner === after.isOwner &&
-      before.channelId === after.channelId &&
-      before.contactId === after.contactId &&
-      Object.is(before.users, after.users) &&
-      Object.is(before.publicChannels, after.publicChannels)
-    );
-  })
-);
-*/
-
 export default ChannelMessages;
