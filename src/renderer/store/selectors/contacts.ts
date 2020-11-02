@@ -39,17 +39,9 @@ const contactBase = {
 interface IEl {
   address: string;
 }
-interface IMessages {
-  createdAt: number;
-}
-interface IC {
-  messages: Array<IMessages>;
-  key: string;
-  offerId: string;
-  address: string;
-}
 
 const contacts = (s): ContactStore => s.contacts as ContactStore;
+
 const contactsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
@@ -139,7 +131,7 @@ const messages = (address) =>
   createSelector(
     messagesSorted(address),
     displayableMessageLimit,
-    (msgs: Array<any>, limit) => {
+    (msgs: Array<any>, limit): DisplayableMessage[] => {
       return msgs.slice(0, limit);
     }
   );
@@ -192,25 +184,28 @@ export const pendingMessages = (address) =>
   );
 
 const channelOwner = (channelId) =>
-  createSelector(
-    channelSettingsMessages(channelId),
-    (msgs: Array<DisplayableMessage>) => {
-      let channelOwner = null;
-      channelOwner = msgs[0] ? msgs[0].publicKey : null;
-      for (const msg of msgs) {
-        if (channelOwner === msg.publicKey) {
-          channelOwner = msg.message.owner;
-        }
+  createSelector(channelSettingsMessages(channelId), (msgs) => {
+    let channelOwner = null;
+    channelOwner = msgs[0] ? msgs[0].publicKey : null;
+    for (const msg of msgs) {
+      if (channelOwner === msg.publicKey) {
+        channelOwner = msg.message.owner;
       }
-      return channelOwner;
     }
-  );
+    return channelOwner;
+  });
+export interface IDirectMessage {
+  visibleMessages: DisplayableMessage[];
+  channelModerators: any[];
+  messsagesToRemove: DisplayableMessage[];
+  blockedUsers: any[]
+}
 
 export const directMessages = (address) =>
   createSelector(
     messages(address),
     channelOwner(address),
-    (messages: Array<DisplayableMessage>, channelOwner: string) => {
+    (messages, channelOwner: string): IDirectMessage => {
       let channelModerators = [];
       let messsagesToRemove = [];
       let blockedUsers = [];
@@ -294,7 +289,9 @@ export const directMessages = (address) =>
         channelModerators,
         messsagesToRemove,
         blockedUsers,
-        visibleMessages: mergeIntoOne(visibleMessages.reverse()),
+        visibleMessages: mergeIntoOne(visibleMessages.reverse() as DisplayableMessage[]
+        
+        ),
       };
     }
   );

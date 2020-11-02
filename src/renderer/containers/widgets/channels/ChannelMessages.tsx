@@ -12,7 +12,7 @@ import nodeSelector from "../../../store/selectors/node";
 import appSelectors from "../../../store/selectors/app";
 import ownedChannelsSelectors from "../../../store/selectors/ownedChannels";
 import publicChannelsSelector from "../../../store/selectors/publicChannels";
-import { MessageType } from "../../../../shared/static";
+import { MessageType } from "../../../../shared/static.types";
 import zcashChannels from "../../../zcash/channels";
 import channelHandlers from "../../../store/handlers/channel";
 import appHandlers from "../../../store/handlers/app";

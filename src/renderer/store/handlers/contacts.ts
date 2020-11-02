@@ -63,6 +63,7 @@ export interface IContact {
   key: string;
   address: string;
   username: string;
+  unread?: number;
 }
 
 export interface ISender {

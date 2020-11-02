@@ -16,6 +16,10 @@ export interface IMessage {
   text: string;
   tag: string;
   offerOwner: string;
+  minFee?: string;
+  updateMinFee?: string;
+  updateChannelDescription?: string;
+  updateOnlyRegistered?: number;
 }
 
 /**
@@ -50,10 +54,13 @@ export interface IMessage {
 
 export class DisplayableMessage {
   id: string;
+  keys: string[];;
+  owner: string;
+  name: string;
   type: MessageType = MessageType.BASIC;
   sender: IExchangeParticipant;
   receiver: IExchangeParticipant;
-  createdAt?: number;
+  createdAt: number;
   message: IMessage;
   spent: BigNumber = new BigNumber(0);
   fromYou: boolean = false;
@@ -68,6 +75,8 @@ export class DisplayableMessage {
   specialType: number;
   blockTime: number;
   messageId: string;
+  nickname: string;
+  address: string;
 
   constructor(values: Partial<DisplayableMessage>) {
     Object.assign(this, values);

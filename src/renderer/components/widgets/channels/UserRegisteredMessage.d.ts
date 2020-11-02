@@ -1,9 +1,5 @@
-interface IMessage {
-  nickname: string;
-  createdAt: number;
-  address: string;
-}
+import { DisplayableMessage } from "./../../../zbay/messages.types";
 
 export interface IUserRegisteredMessageProps {
-  message: IMessage;
+  message: DisplayableMessage;
 }

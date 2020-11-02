@@ -5,7 +5,7 @@ import * as R from "ramda";
 import List from "@material-ui/core/List";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { MessageType } from "../../../../shared/static";
+import { MessageType } from "../../../../shared/static.types";
 import ChannelMessage from "../../../containers/widgets/channels/ChannelMessage";
 import WelcomeMessage from "./WelcomeMessage";
 import RescanMessage from "../../../containers/widgets/channels/RescanMessage";
@@ -14,6 +14,8 @@ import ChannelAdMessage from "../../../containers/widgets/channels/ListingMessag
 import MessagesDivider from "../MessagesDivider";
 import UserRegisteredMessage from "./UserRegisteredMessage";
 import ChannelRegisteredMessage from "./ChannelRegisteredMessage";
+
+import { DisplayableMessage } from "./../../../zbay/messages.types";
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -34,8 +36,10 @@ const welcomeMessages = {
   main: `Congrats! You created a channel. You can share the channel link with others by accessing the “•••” menu at the top. Once you're registered as the channel owner (this can take a few minutes) you’ll be able to publish your channel and change its settings. Have a great time!`,
 };
 
-interface IMessage {
-  nickname: string;
+/**
+ * 
+ interface IMessage {
+   nickname: string;
   createdAt: number;
   address: string;
   type: number;
@@ -44,14 +48,14 @@ interface IMessage {
   owner: string;
   name: string;
 }
-
+*/
 interface IUser {
   nickname: string;
   address: string;
 }
 
 interface IChannelMessagesProps {
-  messages: Array<IMessage>;
+  messages: Array<DisplayableMessage>;
   isOwner: boolean;
   contactId?: string;
   usersRegistration: Array<any>;
@@ -151,16 +155,18 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   //   username = msg.sender.username
   //   username = msg.sender.username
   // }
-  let groupedMessages: { [key: string]: IMessage[] };
+  let groupedMessages: { [key: string]: DisplayableMessage[] };
   if (messages.length !== 0) {
-    groupedMessages = R.groupBy<IMessage>((msg: IMessage) => {
-      return DateTime.fromFormat(
-        DateTime.fromSeconds(msg.createdAt).toFormat("cccc, LLL d"),
-        "cccc, LLL d"
-      )
-        .toSeconds()
-        .toString();
-    })(
+    groupedMessages = R.groupBy<DisplayableMessage>(
+      (msg) => {
+        return DateTime.fromFormat(
+          DateTime.fromSeconds(msg.createdAt).toFormat("cccc, LLL d"),
+          "cccc, LLL d"
+        )
+          .toSeconds()
+          .toString();
+      }
+    )(
       messages
         .filter((msg) => messagesTypesToDisplay.includes(msg.type))
         .concat(usersRegistration)
