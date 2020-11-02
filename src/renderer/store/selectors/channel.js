@@ -3,8 +3,7 @@ import { createSelector } from 'reselect'
 import identitySelectors from './identity'
 import usersSelectors from './users'
 import messagesQueueSelectors from './messagesQueue'
-import operationsSelectors from './operations'
-import messagesSelectors from './messages'
+import operationsSelectors from "./operations";
 import zbayMessages from '../../zbay/messages'
 import contacts from './contacts'
 import { operationTypes } from '../handlers/operations'
@@ -125,34 +124,6 @@ export const queuedMessages = createSelector(
   messagesQueueSelectors.queue,
   channel,
   (queue, channel) => queue.filter(m => m.channelId === channel.id)
-)
-
-export const currentChannelMessages = createSelector(
-  channel,
-  store,
-  (ch, store) => messagesSelectors.currentChannelMessages(ch.id)(store)
-)
-
-export const channelOwner = createSelector(channel, store, (ch, store) =>
-  messagesSelectors.channelOwner(ch.id)(store)
-)
-
-export const channelModerators = createSelector(channel, store, (ch, store) =>
-  messagesSelectors.channelModerators(ch.id)(store)
-)
-
-export const channelBlockedUsers = createSelector(channel, store, (ch, store) =>
-  messagesSelectors.channelBlockedUsers(ch.id)(store)
-)
-
-export const getFilteredContext = createSelector(channel, store, (ch, store) =>
-  messagesSelectors.getFilteredContexed(ch.id)(store)
-)
-
-export const getChannelFilteredMessages = createSelector(
-  channel,
-  store,
-  (ch, store) => messagesSelectors.getChannelFilteredMessages(ch.id)(store)
 )
 
 export const loader = createSelector(channel, meta => meta.loader)
@@ -338,7 +309,6 @@ export default {
   channelModerators,
   channelBlockedUsers,
   getChannelFilteredMessages,
-  getFilteredContext,
   messages,
   channelInfo,
   advertFee,
@@ -351,5 +321,5 @@ export default {
   id,
   isOwner,
   channelDesription,
-  displayableMessageLimit
-}
+  displayableMessageLimit,
+};
