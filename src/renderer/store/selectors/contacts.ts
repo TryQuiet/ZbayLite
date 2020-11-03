@@ -150,7 +150,7 @@ const allMessages = createSelector(contacts, (c) => {
     return temp;
   }, {});
 });
-const getAdvertById = (txid) =>
+const getAdvertById = (txid: string) =>
   createSelector(allMessages, (msgs) => {
     return msgs[txid];
   });

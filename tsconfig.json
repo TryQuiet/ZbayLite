@@ -9,6 +9,10 @@
     "moduleResolution": "node",
     "lib": ["es2015", "dom"],
     "esModuleInterop": true,
-    "typeRoots": ["node_modules/@types", "src/renderer/expanded-theme.ts"]
+    "typeRoots": [
+      "node_modules/@types",
+      "src/renderer/expanded-theme.ts"
+    ],
+    "resolveJsonModule": true
   }
 }

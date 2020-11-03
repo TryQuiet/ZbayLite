@@ -87,9 +87,10 @@ const addContact = createAction<{
   username: string;
   key: string;
 }>(actionTypes.ADD_CONTACT);
-const addMessage = createAction<{ key: string; message: DisplayableMessage }>(
-  actionTypes.ADD_MESSAGE
-);
+const addMessage = createAction<{
+  key: string;
+  message: { [key: string]: DisplayableMessage };
+}>(actionTypes.ADD_MESSAGE);
 const updateMessage = createAction<{ key: string; id: string; txid: string }>(
   actionTypes.UPDATE_MESSAGE
 );

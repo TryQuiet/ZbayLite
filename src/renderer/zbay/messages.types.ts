@@ -52,9 +52,14 @@ export interface IMessage {
 //   blockHeight: number;
 // }
 
+export interface IOutgoingMetadata {
+  memo: string;
+  memohex: string;
+}
+
 export class DisplayableMessage {
   id: string;
-  keys: string[];;
+  keys: string[];
   owner: string;
   name: string;
   type: MessageType = MessageType.BASIC;
@@ -77,6 +82,13 @@ export class DisplayableMessage {
   messageId: string;
   nickname: string;
   address: string;
+  outgoing_metadata: IOutgoingMetadata[];
+  memohex: string;
+  txid: string;
+  amount: string;
+  memo: string;
+  datetime: string;
+  block_height: string;
 
   constructor(values: Partial<DisplayableMessage>) {
     Object.assign(this, values);

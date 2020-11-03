@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import identitySelectors from './identity'
 import usersSelectors from './users'
 import messagesQueueSelectors from './messagesQueue'
-import operationsSelectors from "./operations";
+import operationsSelectors from './operations'
 import zbayMessages from '../../zbay/messages'
 import contacts from './contacts'
 import { operationTypes } from '../handlers/operations'
@@ -190,11 +190,10 @@ export const mergeIntoOne = messages => {
   return concatedMessages
 }
 
-export const messages = signerPubKey =>
+export const messages = (signerPubKey) =>
   createSelector(
     identitySelectors.data,
     usersSelectors.registeredUser(signerPubKey),
-    getChannelFilteredMessages,
     pendingMessages,
     queuedMessages,
     (
@@ -207,14 +206,14 @@ export const messages = signerPubKey =>
       const userData = registeredUser || null
       const identityAddress = identity.address
       const identityName = userData ? userData.nickname : identity.name
-      const displayableBroadcasted = receivedMessages.map(message => {
+      const displayableBroadcasted = receivedMessages.map((message) => {
         return zbayMessages.receivedToDisplayableMessage({
           message,
           identityAddress
         })
       })
 
-      const displayablePending = pendingMessages.map(operation => {
+      const displayablePending = pendingMessages.map((operation) => {
         return zbayMessages.operationToDisplayableMessage({
           operation,
           identityAddress,
@@ -233,7 +232,7 @@ export const messages = signerPubKey =>
       )
       let concatedMessages = displayableBroadcasted
         .concat(displayablePending.values(), displayableQueued.values())
-        .sortBy(m => m.createdAt)
+        .sortBy((m) => m.createdAt)
       if (concatedMessages.size > 0) {
         const merged = mergeIntoOne(concatedMessages)
         concatedMessages = Immutable.fromJS(merged)
@@ -305,10 +304,6 @@ export default {
   pendingMessages,
   shareableUri,
   channelId,
-  channelOwner,
-  channelModerators,
-  channelBlockedUsers,
-  getChannelFilteredMessages,
   messages,
   channelInfo,
   advertFee,
@@ -321,5 +316,5 @@ export default {
   id,
   isOwner,
   channelDesription,
-  displayableMessageLimit,
-};
+  displayableMessageLimit
+}
