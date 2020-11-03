@@ -7,7 +7,7 @@ import feesSelector from '../selectors/fees'
 import nodeSelectors from '../selectors/node'
 import feesHandlers from '../handlers/fees'
 import appHandlers from '../handlers/app'
-import { checkTransferCount } from '../handlers/messages'
+import { checkTransferCount, fetchAllMessages } from '../handlers/messages'
 import { actionCreators } from './modals'
 import usersSelector from '../selectors/users'
 import identitySelector from '../selectors/identity'
@@ -105,6 +105,36 @@ export const registerAnonUsername = () => async (dispatch, getState) => {
     createOrUpdateUser({ nickname: `anon${publicKey.substring(0, 10)}` })
   )
 }
+
+export const checkRegistraionConfirmations = () => async (dispatch, getState) => {
+  setTimeout(async () => {
+    const txid = electronStore.get('registrationStatus.txid')
+    const txns = await fetchAllMessages()
+    const outgoingTransactions = txns['undefined']
+    console.log(txid, outgoingTransactions)
+    const registrationTransaction = outgoingTransactions.filter(el => el.txid === txid)[0]
+    if (registrationTransaction) {
+      const { block_height: blockHeight } = registrationTransaction
+      const currentHeight = await client.height()
+      if (currentHeight - blockHeight === 10) {
+        electronStore.set('registrationStatus.status', 'SUCCESS')
+        electronStore.set('registrationStatus.confirmation', 10)
+        dispatch(
+          notificationsHandlers.actions.enqueueSnackbar(
+            successNotification({
+              message: `Username registered.`
+            })
+          )
+        )
+      } else {
+        const confirmations = electronStore.get('registrationStatus.confirmation')
+        electronStore.set('registrationStatus.confirmation', confirmations + 1)
+        dispatch(checkRegistraionConfirmations())
+      }
+    }
+  }, 75000)
+}
+
 export const createOrUpdateUser = payload => async (dispatch, getState) => {
   const {
     nickname,
@@ -138,19 +168,27 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
   })
   dispatch(actionCreators.closeModal('accountSettingsModal')())
   try {
-    dispatch(identityActions.setRegistraionStatus({
-      nickname,
-      status: 'IN_PROGRESS'
-    }))
-    dispatch(mockOwnUser({
-      sigPubKey: publicKey,
-      address,
-      nickname
-    }))
+    if (retry === 0) {
+      dispatch(identityActions.setRegistraionStatus({
+        nickname,
+        status: 'IN_PROGRESS'
+      }))
+      dispatch(mockOwnUser({
+        sigPubKey: publicKey,
+        address,
+        nickname
+      }))
+      electronStore.set('registrationStatus', {
+        nickname,
+        status: 'IN_PROGRESS'
+      })
+    }
     const txid = await client.sendTransaction(transfer)
     if (txid.error) {
       throw new Error(txid.error)
     }
+    electronStore.set('registrationStatus.txid', txid.txid)
+    dispatch(checkRegistraionConfirmations())
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
         successNotification({
