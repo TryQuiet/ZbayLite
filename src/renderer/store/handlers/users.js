@@ -133,11 +133,31 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     amount: fee
   })
   dispatch(actionCreators.closeModal('accountSettingsModal')())
+  const onionAddress = identitySelector.onionAddress(getState())
+  const messageDataTor = {
+    onionAddress: onionAddress.substring(0, 56)
+  }
+  const torChannelAddress = staticChannels.tor.mainnet.address
+  const registrationMessageTor = zbayMessages.createMessage({
+    messageData: {
+      type: zbayMessages.messageType.USER_V2,
+      data: messageDataTor
+    },
+    privKey
+  })
+  const transferTor = await zbayMessages.messageToTransfer({
+    message: registrationMessageTor,
+    address: torChannelAddress
+  })
   try {
-    const txid = await client.sendTransaction(transfer)
+    const txid = await client.sendTransaction([transferTor, transfer])
     if (txid.error) {
       throw new Error(txid.error)
     }
+    ipcRenderer.send('spawnTor')
+    electronStore.set('useTor', true)
+    dispatch(appHandlers.actions.setUseTor(true))
+
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
         successNotification({
@@ -330,7 +350,7 @@ export const epics = {
 export const reducer = handleActions(
   {
     [setUsers]: (state, { payload: { users } }) => {
-      return produce(state, (draft) => {
+      return produce(state, draft => {
         const usersObj = {
           ...draft,
           ...users
@@ -338,13 +358,14 @@ export const reducer = handleActions(
         return usersObj
       })
     },
-    [addUnknownUser]: (state) => produce(state, (draft) => {
-      draft[unknownUserId] = {
-        key: unknownUserId,
-        nickname: 'unknown',
-        address: unknownUserId
-      }
-    })
+    [addUnknownUser]: state =>
+      produce(state, draft => {
+        draft[unknownUserId] = {
+          key: unknownUserId,
+          nickname: 'unknown',
+          address: unknownUserId
+        }
+      })
   },
   initialState
 )
