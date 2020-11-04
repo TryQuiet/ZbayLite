@@ -5,7 +5,7 @@ import { ActionsType, PayloadType} from "./types";
 import {IInfoNotification, ISuccessNotification} from './utils'
 
 export type NotificationStore = IInfoNotification[]
-export const initialState:NotificationStore = [];
+export const initialState: NotificationStore = []
 
 const enqueueSnackbar = createAction<IInfoNotification, ISuccessNotification>(
   actionTypes.ENQUEUE_SNACKBAR,
