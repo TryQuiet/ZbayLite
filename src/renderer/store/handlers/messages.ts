@@ -127,6 +127,8 @@ export const ChannelMessages = {
 
 export const initialState = Immutable.Map();
 
+export type MessageStore = { [key: string]: DisplayableMessage }
+
 const setMessages = createAction(actionTypes.SET_MESSAGES);
 const cleanNewMessages = createAction(actionTypes.CLEAN_NEW_MESSAGESS);
 const appendNewMessages = createAction(actionTypes.APPEND_NEW_MESSAGES);

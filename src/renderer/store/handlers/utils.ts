@@ -16,15 +16,15 @@ export const errorNotification = ({ message, options }) => ({
   },
 });
 
-type ISuccessNotification = (object: {
+export interface ISuccessNotification  {
   message: string;
   options?: object;
-}) => { message: string; options: object };
+} 
 
-export const successNotification: ISuccessNotification = ({
+export const successNotification = ({
   message,
   options,
-}) => ({
+}: ISuccessNotification): ISuccessNotification => ({
   message,
   options: {
     variant: "success",
@@ -32,17 +32,15 @@ export const successNotification: ISuccessNotification = ({
   },
 });
 
-type IInfoNotification = (object: {
-  message: string;
+export interface IInfoNotification extends ISuccessNotification {
   key: string;
-  options?: object;
-}) => { message: string; key: string; options: object };
+}
 
-export const infoNotification: IInfoNotification = ({
+export const infoNotification = ({
   message,
   options,
   key,
-}) => ({
+} : IInfoNotification): IInfoNotification => ({
   message,
   key,
   options: {

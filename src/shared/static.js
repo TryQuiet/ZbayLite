@@ -169,8 +169,9 @@ export const actionTypes = mirrorKey({
   IS_SIZE_CHECKING_IN_PROGRESS: undefined,
   MESSAGE_SIZE_STATUS: undefined,
   SET_INITIAL_LOAD_FLAG: undefined,
-  SET_REMOVED_CHANNELS: undefined
-})
+  SET_REMOVED_CHANNELS: undefined,
+  ADD_UNKNOWN_USER: undefined,
+});
 
 export const moderationActionsType = {
   REMOVE_MESSAGE: 'REMOVE_MESSAGE',

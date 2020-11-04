@@ -94,9 +94,11 @@ export const ReceivedUser = (values) => {
   return null;
 };
 
-export const initialState = {};
+interface IUser { }
 
-interface IUser {}
+export type UserStore = { [key: string]: IUser }
+
+export const initialState = {};
 
 export const setUsers = createAction<{ users: IUser }>(actionTypes.SET_USERS);
 export const addUnknownUser = createAction(actionTypes.ADD_UNKNOWN_USER);
