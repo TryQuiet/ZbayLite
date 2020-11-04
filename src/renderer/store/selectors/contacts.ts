@@ -141,6 +141,12 @@ const channelSettingsMessages = (address) =>
     return msgs.filter((msg) => msg.type === 6);
   });
 
+const channelModerators = (address) =>
+  createSelector(directMessages(address), (msgs) => {
+    return msgs.channelModerators;
+  });
+
+
 const allMessages = createSelector(contacts, (c) => {
   return Array.from(Object.keys(c)).reduce((acc, t) => {
     const temp = (acc[t] = {
@@ -297,6 +303,7 @@ export default {
   contacts,
   directMessagesContact,
   queuedMessages,
+  channelModerators,
   pendingMessages,
   contact,
   messages,
