@@ -94,13 +94,23 @@ export const ReceivedUser = (values) => {
   return null;
 };
 
-interface IUser { }
+export interface IUser {
+  firstName: string;
+  publicKey: string;
+  lastName: string;
+  nickname: string;
+  address: string;
+  onionAddress: string;
+  createdAt: number;
+}
 
-export type UserStore = { [key: string]: IUser }
+export type UserStore = { users: { [key: string]: IUser } };
 
 export const initialState = {};
 
-export const setUsers = createAction<{ users: IUser }>(actionTypes.SET_USERS);
+export const setUsers = createAction<{ users: { [key: string]: IUser } }>(
+  actionTypes.SET_USERS
+);
 export const addUnknownUser = createAction(actionTypes.ADD_UNKNOWN_USER);
 
 export const actions = {
