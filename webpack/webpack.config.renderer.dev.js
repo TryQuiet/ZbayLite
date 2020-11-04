@@ -22,7 +22,8 @@ module.exports = {
         test: /\.(t|j)sx?$/,
         loader: ['awesome-typescript-loader?module=es6'],
         exclude: [/node_modules/]
-      }, {
+      },
+      {
         test: /\.js$/,
         loader: 'source-map-loader',
         enforce: 'pre'

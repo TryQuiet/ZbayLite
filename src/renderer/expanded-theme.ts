@@ -1,37 +1,20 @@
+
 import {
-  Theme as MUITheme,
-  ThemeOptions as MUIThemeOptions,
-} from "@material-ui/core/styles/createMuiTheme";
-import {
-  Typography as MUITypography,
-  TypographyOptions as MUITypographyOptions,
+  Typography,
+  TypographyOptions,
 } from "@material-ui/core/styles/createTypography";
 import {
-  Palette as MUIPalette,
-  PaletteOptions as MUIPaletteOptions,
+  Palette,
+  PaletteOptions,
 } from "@material-ui/core/styles/createPalette";
-/**
- * 
- declare module "@material-ui/core/styles/createMuiTheme" {
-     interface Theme extends MUITheme {
-         typography: {
-             fontStyle: string;
-            };
-        }
-        interface ThemeOptions extends MUIThemeOptions {
-            typography?: {
-                fontStyle?: string;
-            };
-        }
-    }
-       */
+
 declare module "@material-ui/core/styles/createTypography" {
-  interface Typography extends MUITypography {
+  interface Typography {
     fontStyle: string;
     fontWeight: string;
     useNextVariants: boolean;
   }
-  interface TypographyOptions extends MUITypographyOptions {
+  interface TypographyOptions {
     fontStyle?: string;
     fontWeight?: string;
     useNextVariants?: boolean;
@@ -39,10 +22,10 @@ declare module "@material-ui/core/styles/createTypography" {
 }
 
 declare module "@material-ui/core/styles/createPalette" {
-  interface Palette extends MUIPalette {
+  interface Palette {
     colors: { [key: string]: string };
   }
-  interface PaletteOptions extends MUIPaletteOptions {
+  interface PaletteOptions {
     colors?: { [key: string]: string };
   }
 }

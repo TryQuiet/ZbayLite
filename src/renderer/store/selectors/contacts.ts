@@ -118,7 +118,7 @@ const messagesSorted = (address) =>
   });
 const messagesSortedDesc = (address) =>
   createSelector(contact(address), (c) => {
-    return Array.from<DisplayableMessage>(Object.values(c)).sort(
+    return Array.from<DisplayableMessage>(Object.values(c.messages)).sort(
       (a, b) => a.createdAt - b.createdAt
     );
   });
@@ -145,7 +145,6 @@ const channelModerators = (address) =>
   createSelector(directMessages(address), (msgs) => {
     return msgs.channelModerators;
   });
-
 
 const allMessages = createSelector(contacts, (c) => {
   return Array.from(Object.keys(c)).reduce((acc, t) => {
@@ -201,7 +200,7 @@ export interface IDirectMessage {
   visibleMessages: DisplayableMessage[];
   channelModerators: any[];
   messsagesToRemove: DisplayableMessage[];
-  blockedUsers: any[]
+  blockedUsers: any[];
 }
 
 export const directMessages = (address) =>
