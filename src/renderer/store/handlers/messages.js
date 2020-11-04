@@ -570,7 +570,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       return DisplayableMessage(message)
     })
   )
-  const itemMessages = messagesAll.filter(msg => msg.message ? msg.message.itemId : null)
+  const itemMessages = messagesAll.filter(msg => msg.message.itemId)
   const contacts = contactsSelectors.contacts(getState())
   const groupedItemMesssages = R.groupBy(
     msg => msg.message.itemId + msg.sender.username
@@ -627,7 +627,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       )
     }
   }
-  const normalMessages = messagesAll.filter(msg => msg.message ? !msg.message.itemId : null)
+  const normalMessages = messagesAll.filter(msg => !msg.message.itemId)
   const groupedMesssages = R.groupBy(msg => msg.publicKey)(normalMessages)
   for (const key in groupedMesssages) {
     if (groupedMesssages.hasOwnProperty(key)) {
