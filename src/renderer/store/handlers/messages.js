@@ -537,20 +537,22 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
 
   const unknownUser = {
     address: unknownUserId,
-    nickname: 'unknown'
+    nickname: 'Unknown'
   }
-  await dispatch(usersHandlers.actions.addUnknownUser())
-  dispatch(
-    contactsHandlers.actions.setMessages({
-      key: unknownUserId,
-      contactAddress: unknownUser.address,
-      username: unknownUser.nickname,
-      messages: parsedTextMessages.reduce((acc, cur) => {
-        acc[cur.id] = cur
-        return acc
-      }, {})
-    })
-  )
+  if (parsedTextMessages.length > 0) {
+    await dispatch(usersHandlers.actions.addUnknownUser())
+    dispatch(
+      contactsHandlers.actions.setMessages({
+        key: unknownUserId,
+        contactAddress: unknownUser.address,
+        username: unknownUser.nickname,
+        messages: parsedTextMessages.reduce((acc, cur) => {
+          acc[cur.id] = cur
+          return acc
+        }, {})
+      })
+    )
+  }
   const messagesAll = await Promise.all(
     filteredZbayMessages.map(async transfer => {
       const message = await zbayMessages.transferToMessage(transfer, users)
@@ -568,7 +570,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       return DisplayableMessage(message)
     })
   )
-  const itemMessages = messagesAll.filter(msg => msg.message.itemId)
+  const itemMessages = messagesAll.filter(msg => msg.message ? msg.message.itemId : null)
   const contacts = contactsSelectors.contacts(getState())
   const groupedItemMesssages = R.groupBy(
     msg => msg.message.itemId + msg.sender.username
@@ -625,7 +627,7 @@ const setUsersMessages = (address, messages) => async (dispatch, getState) => {
       )
     }
   }
-  const normalMessages = messagesAll.filter(msg => !msg.message.itemId)
+  const normalMessages = messagesAll.filter(msg => msg.message ? !msg.message.itemId : null)
   const groupedMesssages = R.groupBy(msg => msg.publicKey)(normalMessages)
   for (const key in groupedMesssages) {
     if (groupedMesssages.hasOwnProperty(key)) {

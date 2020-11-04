@@ -358,14 +358,13 @@ export const reducer = handleActions(
         return usersObj
       })
     },
-    [addUnknownUser]: state =>
-      produce(state, draft => {
-        draft[unknownUserId] = {
-          key: unknownUserId,
-          nickname: 'unknown',
-          address: unknownUserId
-        }
-      })
+    [addUnknownUser]: (state) => produce(state, (draft) => {
+      draft[unknownUserId] = {
+        key: unknownUserId,
+        nickname: 'Unknown',
+        address: unknownUserId
+      }
+    })
   },
   initialState
 )
