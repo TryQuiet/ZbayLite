@@ -33,11 +33,13 @@ import {
 import client from "../../zcash";
 import {
   getPublicKeysFromSignature,
-  exchangeParticipant,
   usernameSchema,
   messageSchema,
 } from "../../zbay/messages";
-import { DisplayableMessage } from "../../zbay/messages.types";
+import {
+  DisplayableMessage,
+  ExchangeParticipant,
+} from "../../zbay/messages.types";
 import channels from "../../zcash/channels";
 import {
   displayDirectMessageNotification,
@@ -726,17 +728,8 @@ export const _checkMessageSize = (mergedMessage) => async (
 //   return thunk;
 // };
 
-// TODO: remove
-interface IUsers {
-  firstName: string;
-  lastName: string;
-  nickname: string;
-  address: string;
-  createdAt: number;
-}
-
 export const handleWebsocketMessage = (data) => async (dispatch, getState) => {
-  const users: IUsers = usersSelectors.users(getState());
+  const users = usersSelectors.users(getState());
   let publicKey = null;
   let message = null;
   let sender = { replyTo: "", username: "Unnamed" };
@@ -758,19 +751,17 @@ export const handleWebsocketMessage = (data) => async (dispatch, getState) => {
       const fromUser = users[publicKey];
       if (fromUser !== undefined) {
         const isUsernameValid = usernameSchema.isValidSync(fromUser);
-        sender = {
-          ...exchangeParticipant,
+        sender = new ExchangeParticipant({
           replyTo: fromUser.address,
           username: isUsernameValid
             ? fromUser.nickname
             : `anon${publicKey.substring(0, 10)}`,
-        };
+        });
       } else {
-        sender = {
-          ...exchangeParticipant,
+        sender = new ExchangeParticipant({
           replyTo: "",
           username: `anon${publicKey}`,
-        };
+        });
         isUnregistered = true;
       }
     }
@@ -779,11 +770,10 @@ export const handleWebsocketMessage = (data) => async (dispatch, getState) => {
     return null;
   }
   try {
-    const toUser = Array.from(Object.values(users)).find(
-      (u) => u.address === sender.replyTo
-    ) || {
-      ...exchangeParticipant,
-    };
+    const toUser =
+      Array.from(Object.values(users)).find(
+        (u) => u.address === sender.replyTo
+      ) || new ExchangeParticipant({});
     const messageDigest = crypto.createHash("sha256");
     const messageEssentials = R.pick(["createdAt", "message"])(message);
     const key = messageDigest

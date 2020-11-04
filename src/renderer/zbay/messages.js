@@ -26,7 +26,9 @@ export const ExchangeParticipant = Immutable.Record(
 export const exchangeParticipant = {
   replyTo: '',
   username: 'Unnamed',
-  publicKey: ''
+  publicKey: '',
+  address: '',
+  nickname: ''
 }
 
 // export const _DisplayableMessage = Immutable.Record(

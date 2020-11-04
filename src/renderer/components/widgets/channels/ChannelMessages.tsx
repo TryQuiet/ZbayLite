@@ -15,6 +15,8 @@ import MessagesDivider from "../MessagesDivider";
 import UserRegisteredMessage from "./UserRegisteredMessage";
 import ChannelRegisteredMessage from "./ChannelRegisteredMessage";
 
+import { IUser } from "./../../../store/handlers/users";
+
 import { DisplayableMessage } from "./../../../zbay/messages.types";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,10 +51,6 @@ const welcomeMessages = {
   name: string;
 }
 */
-interface IUser {
-  nickname: string;
-  address: string;
-}
 
 interface IChannelMessagesProps {
   messages: Array<DisplayableMessage>;
@@ -65,7 +63,7 @@ interface IChannelMessagesProps {
   isNewUser: boolean; //required?
   setScrollPosition: (arg0?: any) => void;
   scrollPosition: number;
-  users: Array<IUser>;
+  users: { [key: string]: IUser };
   onLinkedChannel: (arg0: any) => void;
   publicChannels: any;
   onRescan: () => void;

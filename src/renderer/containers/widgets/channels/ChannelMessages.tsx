@@ -78,7 +78,7 @@ export const ChannelMessages = ({ tab, contentRect }) => {
   if (channelId === zcashChannels.general[network].address) {
     if (oldestMessage) {
       usersRegistration = Array.from(Object.values(users)).filter(
-        (msg: IMsg) => msg.createdAt >= oldestMessage.createdAt
+        (msg) => msg.createdAt >= oldestMessage.createdAt
       );
       _publicChannelsRegistration = Array.from(
         Object.values(publicChannels)
