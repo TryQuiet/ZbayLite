@@ -1,7 +1,7 @@
-import { IDisplayableMessage } from "../../../zbay/messages";
+import { DisplayableMessage } from "../../../zbay/messages.types";
 
 export interface IBasicMessageProps {
-  message: IDisplayableMessage;
+  message: DisplayableMessage;
   setActionsOpen: (open: boolean) => void;
   actionsOpen: boolean;
   allowModeration: boolean;
