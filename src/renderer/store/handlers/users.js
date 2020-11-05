@@ -106,17 +106,33 @@ export const registerAnonUsername = () => async (dispatch, getState) => {
   )
 }
 
-export const checkRegistraionConfirmations = () => async (dispatch, getState) => {
+export const checkRegistraionConfirmations = ({ firstRun }) => async (dispatch, getState) => {
+  if (firstRun) {
+    console.log('setting first run')
+    const publicKey = identitySelector.signerPubKey(getState())
+    const address = identitySelector.address(getState())
+    const nickname = electronStore.get('registrationStatus.nickname')
+    dispatch(identityActions.setRegistraionStatus({
+      nickname,
+      status: 'IN_PROGRESS'
+    }))
+    dispatch(mockOwnUser({
+      sigPubKey: publicKey,
+      address,
+      nickname
+    }))
+  }
   setTimeout(async () => {
     const txid = electronStore.get('registrationStatus.txid')
     const txns = await fetchAllMessages()
     const outgoingTransactions = txns['undefined']
-    console.log(txid, outgoingTransactions)
     const registrationTransaction = outgoingTransactions.filter(el => el.txid === txid)[0]
     if (registrationTransaction) {
+      console.log('checking confirmation')
       const { block_height: blockHeight } = registrationTransaction
       const currentHeight = await client.height()
-      if (currentHeight - blockHeight === 10) {
+      console.log('checking confirmation', currentHeight - blockHeight === 10)
+      if (currentHeight - blockHeight > 9) {
         electronStore.set('registrationStatus.status', 'SUCCESS')
         electronStore.set('registrationStatus.confirmation', 10)
         dispatch(
@@ -127,9 +143,9 @@ export const checkRegistraionConfirmations = () => async (dispatch, getState) =>
           )
         )
       } else {
-        const confirmations = electronStore.get('registrationStatus.confirmation')
-        electronStore.set('registrationStatus.confirmation', confirmations + 1)
-        dispatch(checkRegistraionConfirmations())
+        console.log('setting confirmation number', currentHeight - blockHeight)
+        electronStore.set('registrationStatus.confirmation', currentHeight - blockHeight)
+        dispatch(checkRegistraionConfirmations({ firstRun: false }))
       }
     }
   }, 75000)
@@ -188,7 +204,8 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
       throw new Error(txid.error)
     }
     electronStore.set('registrationStatus.txid', txid.txid)
-    dispatch(checkRegistraionConfirmations())
+    electronStore.set('registrationStatus.confirmation', 0)
+    dispatch(checkRegistraionConfirmations({ firstRun: true }))
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
         successNotification({
@@ -404,7 +421,8 @@ export const epics = {
   createOrUpdateUser,
   registerAnonUsername,
   fetchOnionAddresses,
-  registerOnionAddress
+  registerOnionAddress,
+  checkRegistraionConfirmations
 }
 
 export const reducer = handleActions(

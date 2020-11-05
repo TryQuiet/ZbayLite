@@ -13,10 +13,10 @@ import txnTimestampsSelector from '../selectors/txnTimestamps'
 // import channelsSelectors from '../selectors/channels'
 // import channelsHandlers from './channels'
 // import removedChannelsHandlers from './removedChannels'
-// import usersHandlers from './users'
 // import contactsHandlers from './contacts'
 // import messagesHandlers from './messages'
 // import publicChannelsHandlers from './publicChannels'
+import usersHandlers from './users'
 import coordinatorHandlers from './coordinator'
 import whitelistHandlers from './whitelist'
 import ownedChannelsHandlers from './ownedChannels'
@@ -412,8 +412,20 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
     await dispatch(appHandlers.epics.initializeUseTor())
+    const usernameStatus = electronStore.get('registrationStatus.status')
+    const usernameRegistrationTxid = electronStore.get('registrationStatus.txid')
+    const nickname = electronStore.get('registrationStatus.nickname')
+    if (nickname && usernameStatus !== 'SUCCESS') {
+      console.log('wooooorrrrrrrkkkkkkkiiiinnnnngggggg132131312')
+      if (!usernameRegistrationTxid) {
+        console.log('not have txid starting registration')
+        await dispatch(usersHandlers.epics.createOrUpdateUser(nickname))
+      } else {
+        console.log('have tx but no confirmations')
+        dispatch(usersHandlers.epics.checkRegistraionConfirmations({ firstRun: true }))
+      }
+    }
     setTimeout(() => dispatch(coordinatorHandlers.epics.coordinator()), 5000)
-
     dispatch(setLoadingMessage('Loading users and messages'))
   } catch (err) {}
   if (isNewUser === true) {
