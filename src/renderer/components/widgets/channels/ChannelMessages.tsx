@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Scrollbars } from "react-custom-scrollbars";
 import { DateTime } from "luxon";
 import * as R from "ramda";
@@ -16,6 +16,7 @@ import UserRegisteredMessage from "./UserRegisteredMessage";
 import ChannelRegisteredMessage from "./ChannelRegisteredMessage";
 
 import { DisplayableMessage } from "./../../../zbay/messages.types";
+import { RecentActors } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   list: {
@@ -71,7 +72,13 @@ interface IChannelMessagesProps {
   onRescan: () => void;
   contentRect: string;
   isInitialLoadFinished: boolean;
+  channelId: string
 }
+
+// const RefScrollbars = React.forwardRef((props, ref) => {
+  // return <Scrollbars {...props} ref={ref}></Scrollbars>;
+// });
+
 
 // TODO: scrollbar smart pagination
 export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
@@ -83,6 +90,7 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   usersRegistration,
   publicChannelsRegistration,
   users,
+  channelId,
   onLinkedChannel,
   publicChannels,
   isRescanned,
@@ -90,28 +98,33 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   onRescan,
   isNewUser,
 }) => {
-  console.log('usersregistration', usersRegistration)
   const classes = useStyles({});
-  const scrollbarRef = React.useRef<Scrollbars>();
   // const [lastScrollHeight, setLastScrollHeight] = React.useState(0)
   // if (scrollbarRef.current) {
   //   console.log(scrollbarRef.current.getValues())
   // }
-  const getScrollbarRef = React.useCallback((ref) => {
-    if (ref !== null) {
-      scrollbarRef.current = ref;
-      if (scrollPosition === -1 || scrollPosition === 1) {
-        ref.scrollToBottom();
-      }
-    }
-  }, []);
+
+
+  // const getScrollbarRef = React.useCallback((ref) => {
+    // if (ref !== null) {
+      // scrollbarRef.current = ref;
+      // if ((scrollPosition === -1 || scrollPosition === 1)) {
+        // ref.scrollToBottom()
+      // }
+    // }
+  // }, []);
+
+
   const onScrollFrame = React.useCallback(
     (e) => {
       setScrollPosition(e.top);
     },
     [setScrollPosition]
   );
+
+
   const msgRef = React.useRef<HTMLUListElement>();
+  const scrollbarRef = React.useRef<Scrollbars>();
   const [offset, setOffset] = React.useState(0);
   const updateSize = () => {
     setOffset(0);
@@ -139,6 +152,31 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   //     scrollbarRef.current.scrollTop(currentHeight - lastScrollHeight)
   //   }
   // }, [messages.size])
+  let groupedMessages: { [key: string]: DisplayableMessage[] };
+  if (messages.length !== 0) {
+    groupedMessages = R.groupBy<DisplayableMessage>((msg) => {
+      return DateTime.fromFormat(
+        DateTime.fromSeconds(msg.createdAt).toFormat("cccc, LLL d"),
+        "cccc, LLL d"
+      )
+        .toSeconds()
+        .toString();
+    })(
+      messages
+        .filter((msg) => messagesTypesToDisplay.includes(msg.type))
+        .concat(usersRegistration)
+        .concat(publicChannelsRegistration)
+        .sort((a, b) => a.createdAt - b.createdAt)
+    );
+  }
+
+  React.useEffect(() => {
+    if (scrollbarRef.current && (scrollPosition === -1 || scrollPosition === 1)) {
+      console.log(scrollPosition)
+      scrollbarRef.current.scrollToBottom();
+    }},[channelId, groupedMessages, scrollbarRef, offset]
+  )
+
   React.useEffect(() => {
     if (msgRef.current && scrollbarRef.current) {
       const margin =
@@ -148,6 +186,7 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
       setOffset(margin);
     }
   }, [msgRef, scrollbarRef]);
+
   // let username
   // let tag
   // if (isOffer) {
@@ -155,31 +194,25 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   //   tag = msg.message.tag
   //   username = msg.sender.username
   //   username = msg.sender.username
-  // }
-  let groupedMessages: { [key: string]: DisplayableMessage[] };
-  if (messages.length !== 0) {
-    groupedMessages = R.groupBy<DisplayableMessage>(
-      (msg) => {
-        return DateTime.fromFormat(
-          DateTime.fromSeconds(msg.createdAt).toFormat("cccc, LLL d"),
-          "cccc, LLL d"
-        )
-          .toSeconds()
-          .toString();
-      }
-    )(
-      messages
-        .filter((msg) => messagesTypesToDisplay.includes(msg.type))
-        .concat(usersRegistration)
-        .concat(publicChannelsRegistration)
-        .sort((a, b) => a.createdAt - b.createdAt)
-    );
-  }
+  // }fdgf
+
+ 
+
+  
+   
+  // const getScrollbarRef = React.useCallback((ref) => {
+  // if (ref !== null) {
+    // scrollbarRef.current = ref;
+      // if ((scrollPosition === -1 || scrollPosition === 1)) {
+        // ref.scrollToBottom()
+      // }
+    // }
+  // }, []);
+
   return (
     <Scrollbars
-      ref={getScrollbarRef}
+      ref={scrollbarRef}
       autoHideTimeout={500}
-      onScrollFrame={onScrollFrame}
     >
       <List
         disablePadding
