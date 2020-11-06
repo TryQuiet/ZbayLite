@@ -416,12 +416,9 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     const usernameRegistrationTxid = electronStore.get('registrationStatus.txid')
     const nickname = electronStore.get('registrationStatus.nickname')
     if (nickname && usernameStatus !== 'SUCCESS') {
-      console.log('wooooorrrrrrrkkkkkkkiiiinnnnngggggg132131312')
       if (!usernameRegistrationTxid) {
-        console.log('not have txid starting registration')
-        await dispatch(usersHandlers.epics.createOrUpdateUser(nickname))
+        await dispatch(usersHandlers.epics.createOrUpdateUser({ nickname }))
       } else {
-        console.log('have tx but no confirmations')
         dispatch(usersHandlers.epics.checkRegistraionConfirmations({ firstRun: true }))
       }
     }

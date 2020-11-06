@@ -108,7 +108,6 @@ export const registerAnonUsername = () => async (dispatch, getState) => {
 
 export const checkRegistraionConfirmations = ({ firstRun }) => async (dispatch, getState) => {
   if (firstRun) {
-    console.log('setting first run')
     const publicKey = identitySelector.signerPubKey(getState())
     const address = identitySelector.address(getState())
     const nickname = electronStore.get('registrationStatus.nickname')
@@ -128,10 +127,8 @@ export const checkRegistraionConfirmations = ({ firstRun }) => async (dispatch, 
     const outgoingTransactions = txns['undefined']
     const registrationTransaction = outgoingTransactions.filter(el => el.txid === txid)[0]
     if (registrationTransaction) {
-      console.log('checking confirmation')
       const { block_height: blockHeight } = registrationTransaction
       const currentHeight = await client.height()
-      console.log('checking confirmation', currentHeight - blockHeight === 10)
       if (currentHeight - blockHeight > 9) {
         electronStore.set('registrationStatus.status', 'SUCCESS')
         electronStore.set('registrationStatus.confirmation', 10)
@@ -143,7 +140,6 @@ export const checkRegistraionConfirmations = ({ firstRun }) => async (dispatch, 
           )
         )
       } else {
-        console.log('setting confirmation number', currentHeight - blockHeight)
         electronStore.set('registrationStatus.confirmation', currentHeight - blockHeight)
         dispatch(checkRegistraionConfirmations({ firstRun: false }))
       }
