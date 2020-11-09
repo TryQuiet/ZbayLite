@@ -7,19 +7,7 @@ import BigNumber from "bignumber.js";
 
 export interface IShippingData {}
 
-export interface IMessage {
-  moderationType: string;
-  moderationTarget: string;
-  owner: string;
-  itemId: string;
-  text: string;
-  tag: string;
-  offerOwner: string;
-  minFee?: string;
-  updateMinFee?: string;
-  updateChannelDescription?: string;
-  updateOnlyRegistered?: number;
-}
+
 
 /**
  * 
@@ -78,6 +66,19 @@ export class ExchangeParticipant {
 
 //let a = new ExchangeParticipant({'replyTo': 'fd', 'publicKey': 'sdf', 'address': 'sdfsd', nickname: 'sdf'})
 
+export interface IMessage {
+  moderationType: string;
+  moderationTarget: string;
+  owner: string;
+  itemId: string;
+  text: string;
+  tag: string;
+  offerOwner: string;
+  minFee?: string;
+  updateMinFee?: string;
+  updateChannelDescription?: string;
+  updateOnlyRegistered?: number;
+}
 export class DisplayableMessage {
   id: string;
   keys: string[];

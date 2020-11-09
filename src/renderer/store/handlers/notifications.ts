@@ -2,18 +2,22 @@ import { produce } from "immer";
 import { createAction, handleActions } from "redux-actions";
 import { actionTypes } from "../../../shared/static";
 import { ActionsType, PayloadType} from "./types";
-import {IInfoNotification, ISuccessNotification} from './utils'
+import {
+  IInfoNotification,
+  ISuccessNotification,
+  IErrorNotification,
+} from "./utils";
 
 export type NotificationStore = IInfoNotification[]
 export const initialState: NotificationStore = []
 
-const enqueueSnackbar = createAction<IInfoNotification, ISuccessNotification>(
-  actionTypes.ENQUEUE_SNACKBAR,
-  (n: ISuccessNotification) => ({
-    key: new Date().getTime().toString() + Math.random(),
-    ...n,
-  })
-);
+const enqueueSnackbar = createAction<
+  IInfoNotification,
+  ISuccessNotification | IErrorNotification
+>(actionTypes.ENQUEUE_SNACKBAR, (n: ISuccessNotification) => ({
+  key: new Date().getTime().toString() + Math.random(),
+  ...n,
+}));
 
 const removeSnackbar = createAction<string>(actionTypes.REMOVE_SNACKBAR);
 
