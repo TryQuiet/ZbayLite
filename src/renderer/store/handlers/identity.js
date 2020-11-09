@@ -413,6 +413,7 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
     dispatch(modalsHandlers.actionCreators.openModal('createUsernameModal')())
   }
   // dispatch(fetchAffiliateMoney())
+  dispatch(setLoadingMessage(''))
   dispatch(setLoading(false))
   dispatch(
     logsHandlers.epics.saveLogs({
