@@ -70,7 +70,7 @@ export const _displayableMessage = {
   blockHeight: Number.MAX_SAFE_INTEGER
 }
 
-export const DisplayableMessage = values => {
+export const DisplayableMessage = (values) => {
   if (values) {
     const record = {
       ..._displayableMessage,
@@ -202,9 +202,7 @@ const _validateMessage = Yup.object().shape({
   address: Yup.string()
 })
 export const messageSchema = Yup.object().shape({
-  type: Yup.number()
-    .oneOf(R.values(messageType))
-    .required(),
+  type: Yup.number().oneOf(R.values(messageType)).required(),
   signature: Yup.Buffer,
   r: Yup.number().required(),
   createdAt: Yup.number().required(),
@@ -326,11 +324,11 @@ export const outgoingTransferToMessage = async (props, users) => {
     return null
   }
   try {
-    const toUser =
-      Array.from(Object.values(users)).find(u => u.address === transactionData.address) ||
-      {
-        ...exchangeParticipant
-      }
+    const toUser = Array.from(Object.values(users)).find(
+      (u) => u.address === transactionData.address
+    ) || {
+      ...exchangeParticipant
+    }
     return {
       ...(await messageSchema.validate(message)),
       id: txid,
@@ -355,10 +353,8 @@ export const outgoingTransferToMessage = async (props, users) => {
   }
 }
 
-export const hash = data => {
-  return createKeccakHash('keccak256')
-    .update(data)
-    .digest()
+export const hash = (data) => {
+  return createKeccakHash('keccak256').update(data).digest()
 }
 
 export const signMessage = ({ messageData, privKey }) => {
@@ -376,7 +372,7 @@ export const signMessage = ({ messageData, privKey }) => {
     message: messageData.data
   }
 }
-export const getPublicKeysFromSignature = message => {
+export const getPublicKeysFromSignature = (message) => {
   return secp256k1.recover(
     hash(JSON.stringify(message.message)),
     message.signature,
@@ -387,7 +383,7 @@ export const createMessage = ({ messageData, privKey }) => {
   return signMessage({ messageData, privKey })
 }
 
-export const createTransfer = values => {
+export const createTransfer = (values) => {
   let memo = values.memo
   if (values.shippingInfo) {
     memo += `\n\n Ship to: \n${values.shippingData.firstName} ${values.shippingData.lastName}\n${values.shippingData.country} ${values.shippingData.region} \n ${values.shippingData.city} ${values.shippingData.street} ${values.shippingData.postalCode}`
@@ -397,7 +393,7 @@ export const createTransfer = values => {
     sender: values.sender,
     receiver: values.receiver,
     createdAt: DateTime.utc().toSeconds(),
-    memo: memo,
+    memo: memo || '',
     spent: values.amountZec
   }
 }
@@ -414,12 +410,12 @@ export const _buildUtxo = ({
 
   if (
     utxos.unspent_notes.filter(
-      utxo =>
+      (utxo) =>
         utxo.value / satoshiMultiplier >= networkFee && utxo.spendable === true
     ).length <= targetUtxoCount
   ) {
     const utxo = utxos.unspent_notes.find(
-      utxo =>
+      (utxo) =>
         utxo.value / satoshiMultiplier >
         parseFloat(transfer.amount) +
           2 * splitTreshhold +
@@ -439,7 +435,7 @@ export const _buildUtxo = ({
   return transfers
 }
 
-export const trimMemo = a => {
+export const trimMemo = (a) => {
   return a.replace(/0+$/g, '')
 }
 export const messageToTransfer = async ({
@@ -480,9 +476,9 @@ export const createEmptyTransfer = ({ address, amount = 0, memo = '' }) => {
   }
 }
 export const transfersToMessages = async (transfers, owner) => {
-  const msgs = await Promise.all(transfers.map(t => transferToMessage(t)))
+  const msgs = await Promise.all(transfers.map((t) => transferToMessage(t)))
 
-  return msgs.filter(x => x)
+  return msgs.filter((x) => x)
 }
 
 export const calculateDiff = ({
@@ -491,7 +487,7 @@ export const calculateDiff = ({
   identityAddress,
   lastSeen
 }) => {
-  return nextMessages.filter(nextMessage => {
+  return nextMessages.filter((nextMessage) => {
     const isNew =
       DateTime.fromSeconds(nextMessage.createdAt) > lastSeen ||
       lastSeen === null ||
