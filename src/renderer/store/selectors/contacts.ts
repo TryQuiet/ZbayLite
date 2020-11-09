@@ -112,13 +112,13 @@ const contact = (address) =>
 
 const messagesSorted = (address) =>
   createSelector(contact(address), (c) => {
-    return Array.from<DisplayableMessage>(Object.values(c.messages)).sort(
+    return Array.from(Object.values(c.messages)).sort(
       (a, b) => b.createdAt - a.createdAt
     );
   });
 const messagesSortedDesc = (address) =>
   createSelector(contact(address), (c) => {
-    return Array.from<DisplayableMessage>(Object.values(c.messages)).sort(
+    return Array.from(Object.values(c.messages)).sort(
       (a, b) => a.createdAt - b.createdAt
     );
   });
@@ -196,6 +196,8 @@ const channelOwner = (channelId) =>
     }
     return channelOwner;
   });
+
+ // TODO: TO be removed 
 export interface IDirectMessage {
   visibleMessages: DisplayableMessage[];
   channelModerators: any[];

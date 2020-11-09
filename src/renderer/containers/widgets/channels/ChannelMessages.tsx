@@ -17,16 +17,6 @@ import zcashChannels from "../../../zcash/channels";
 import channelHandlers from "../../../store/handlers/channel";
 import appHandlers from "../../../store/handlers/app";
 import electronStore from "../../../../shared/electronStore";
-
-// TODO: This will be removed
-interface IMsg {
-  firstName: string;
-  publicKey: string;
-  lastName: string;
-  nickname: string;
-  address: string;
-  createdAt: number;
-}
 interface IMessages {
   createdAt: number;
   timestamp: number;

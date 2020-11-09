@@ -57,7 +57,7 @@ const sendDirectMessage = (payload, redirect = true) => async (
 export interface IContact {
   lastSeen?: DateTime;
   messages: DisplayableMessage[];
-  newMessages: string[];
+  newMessages: DisplayableMessage[];
   vaultMessages: DisplayableMessage[];
   offerId?: string;
   key: string;

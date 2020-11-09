@@ -104,7 +104,7 @@ export interface IUser {
   createdAt: number;
 }
 
-export type UserStore = { users: { [key: string]: IUser } };
+export type UserStore = { [key: string]: IUser };
 
 export const initialState = {};
 

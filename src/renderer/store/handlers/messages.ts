@@ -865,7 +865,6 @@ export const handleWebsocketMessage = (data) => async (dispatch, getState) => {
 };
 export const epics = {
   fetchMessages,
-
   handleWebsocketMessage,
 };
 

@@ -3,11 +3,11 @@ import identitySelectors from "./identity";
 
 import { UserStore, IUser } from "../handlers/users";
 
-const store = (s): UserStore => s.users as UserStore;
+const users = (s): UserStore => s.users as UserStore;
 
-const users = createSelector(store, (state) => {
-  return state.users;
-});
+// const users = createSelector(store, (state) => {
+  // return state.users;
+// });
 
 const isRegisteredUsername = (nickname) =>
   createSelector(users, (users) => {
@@ -15,9 +15,11 @@ const isRegisteredUsername = (nickname) =>
       .map((user) => user.nickname)
       .includes(nickname);
   });
-
+  
 const registeredUser = (signerPubKey) =>
-  createSelector(users, (users) => users[signerPubKey]);
+  createSelector(users, (users) => {
+    users[signerPubKey];
+  });
 
 const myUser = createSelector(
   users,
