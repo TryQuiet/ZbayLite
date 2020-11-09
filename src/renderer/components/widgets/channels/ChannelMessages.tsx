@@ -135,7 +135,6 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
       scrollbarRef.current &&
       (scrollPosition === -1 || scrollPosition === 1)
     ) {
-      console.log(scrollPosition);
       scrollbarRef.current.scrollToBottom();
     }
     const eventListener = () => {
