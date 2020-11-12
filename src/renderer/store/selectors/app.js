@@ -11,6 +11,9 @@ const currentModalTab = createSelector(app, a => a.modalTabToOpen)
 const allTransfersCount = createSelector(app, a => a.allTransfersCount)
 const newTransfersCounter = createSelector(app, a => a.newTransfersCounter)
 const isInitialLoadFinished = createSelector(app, a => a.isInitialLoadFinished)
+const allTransactionsId = createSelector(app, a => {
+  return new Set(a.allTransactionsId)
+})
 const directMessageQueueLock = createSelector(
   app,
   a => a.directMessageQueueLock
@@ -26,5 +29,6 @@ export default {
   messageQueueLock,
   directMessageQueueLock,
   isInitialLoadFinished,
-  useTor
+  useTor,
+  allTransactionsId
 }

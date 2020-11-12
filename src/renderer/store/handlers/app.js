@@ -13,6 +13,7 @@ export const AppState = {
   version: null,
   transfers: {},
   newUser: false,
+  allTransactionsId: [],
   modalTabToOpen: null,
   allTransfersCount: 0,
   newTransfersCounter: 0,
@@ -40,6 +41,7 @@ const unlockDmQueue = createAction(actionTypes.UNLOCK_DM_QUEUE)
 const lockMessageQueue = createAction(actionTypes.LOCK_MESSAGE_QUEUE)
 const unlockMessageQueue = createAction(actionTypes.UNLOCK_MESSAGE_QUEUE)
 const setInitialLoadFlag = createAction(actionTypes.SET_INITIAL_LOAD_FLAG)
+const setAllTransactionsId = createAction(actionTypes.SET_ALL_TRANSACTIONS_IDS)
 const reduceNewTransfersCount = createAction(
   actionTypes.REDUCE_NEW_TRANSFERS_COUNT
 )
@@ -57,7 +59,8 @@ export const actions = {
   lockMessageQueue,
   unlockMessageQueue,
   setInitialLoadFlag,
-  setUseTor
+  setUseTor,
+  setAllTransactionsId
 }
 
 export const askForBlockchainLocation = () => async (dispatch, getState) => {
@@ -97,49 +100,59 @@ export const restartAndRescan = () => async (dispatch, getState) => {
 export const reducer = handleActions(
   {
     [setNewTransfersCount]: (state, { payload: setNewTransfersCount }) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.newTransfersCounter = setNewTransfersCount
       }),
     [setInitialLoadFlag]: (state, { payload: flag }) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.isInitialLoadFinished = flag
       }),
-    [setUseTor]: (state, { payload: flag }) => produce(state, (draft) => {
-      draft.useTor = flag
-    }),
+    [setUseTor]: (state, { payload: flag }) =>
+      produce(state, draft => {
+        draft.useTor = flag
+      }),
+    [setAllTransactionsId]: (state, { payload: allTransactionsId }) =>
+      produce(state, draft => {
+        draft.allTransactionsId = Array.from(allTransactionsId.values())
+      }),
     [reduceNewTransfersCount]: (state, { payload: amount }) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.newTransfersCounter = draft.newTransfersCounter - amount
       }),
     [loadVersion]: (state, { payload: version }) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.version = version
       }),
     [setModalTab]: (state, { payload: tabName }) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.modalTabToOpen = tabName
       }),
     [setAllTransfersCount]: (state, { payload: transfersCount }) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.allTransfersCount = transfersCount
       }),
-    [clearModalTab]: state => produce(state, (draft) => {
-      draft.modalTabToOpen = null
-    }),
-    [lockDmQueue]: state => produce(state, (draft) => {
-      draft.directMessageQueueLock = true
-    }),
-    [unlockDmQueue]: state => produce(state, (draft) => {
-      draft.directMessageQueueLock = false
-    }),
-    [lockMessageQueue]: state => produce(state, (draft) => {
-      draft.messageQueueLock = true
-    }),
-    [unlockMessageQueue]: state => produce(state, (draft) => {
-      draft.messageQueueLock = false
-    }),
+    [clearModalTab]: state =>
+      produce(state, draft => {
+        draft.modalTabToOpen = null
+      }),
+    [lockDmQueue]: state =>
+      produce(state, draft => {
+        draft.directMessageQueueLock = true
+      }),
+    [unlockDmQueue]: state =>
+      produce(state, draft => {
+        draft.directMessageQueueLock = false
+      }),
+    [lockMessageQueue]: state =>
+      produce(state, draft => {
+        draft.messageQueueLock = true
+      }),
+    [unlockMessageQueue]: state =>
+      produce(state, draft => {
+        draft.messageQueueLock = false
+      }),
     [setTransfers]: (state, { payload: { id, value } }) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.transfers[id] = value
       })
   },

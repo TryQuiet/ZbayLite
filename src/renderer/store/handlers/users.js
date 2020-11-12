@@ -7,7 +7,6 @@ import feesSelector from '../selectors/fees'
 import nodeSelectors from '../selectors/node'
 import feesHandlers from '../handlers/fees'
 import appHandlers from '../handlers/app'
-import { checkTransferCount } from '../handlers/messages'
 import { actionCreators } from './modals'
 import usersSelector from '../selectors/users'
 import identitySelector from '../selectors/identity'
@@ -220,12 +219,6 @@ export const registerOnionAddress = torStatus => async (dispatch, getState) => {
 
 export const fetchUsers = (address, messages) => async (dispatch, getState) => {
   try {
-    const transferCountFlag = await dispatch(
-      checkTransferCount(address, messages)
-    )
-    if (transferCountFlag === -1 || !messages) {
-      return
-    }
     const filteredZbayMessages = messages.filter(msg =>
       msg.memohex.startsWith('ff')
     )
@@ -271,12 +264,6 @@ export const fetchOnionAddresses = (address, messages) => async (
   getState
 ) => {
   try {
-    const transferCountFlag = await dispatch(
-      checkTransferCount(address, messages)
-    )
-    if (transferCountFlag === -1 || !messages) {
-      return
-    }
     const filteredZbayMessages = messages.filter(msg =>
       msg.memohex.startsWith('ff')
     )
