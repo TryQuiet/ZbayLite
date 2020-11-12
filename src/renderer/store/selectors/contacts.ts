@@ -1,31 +1,12 @@
 import { createSelector } from "reselect";
-//import Immutable from "immutable";
 import identitySelectors from "./identity";
 import directMssagesQueueSelectors from "./directMessagesQueue";
-//import operationsSelectors from "./operations";
-//import { OperationType } from "../handlers/operations";
-// import usersSelectors from './users'
 import { mergeIntoOne, displayableMessageLimit } from "./channel";
 import { MessageType } from "../../../shared/static.types";
 import { unknownUserId } from "../../../shared/static";
 
-// import messagesSelectors from './messages'
-
 import { DisplayableMessage } from "../../zbay/messages.types";
 import { ContactsStore, Contacts } from "../handlers/contacts";
-
-
-
-// export const Contact = Immutable.Record({
-  // lastSeen: null,
-  // key: "",
-  // username: "",
-  // address: "",
-  // messages: Immutable.Map(),
-  // newMessages: Immutable.List(),
-  // vaultMessages: Immutable.List(),
-  // offerId: null,
-// });
 
 const contacts = (s): ContactsStore => s.contacts as ContactsStore;
 

@@ -41,20 +41,7 @@ export const _UserData = {
   createdAt: 0,
 };
 
-export class User {
-  key?: string;
-  firstName: string = "";
-  publicKey: string = "";
-  lastName: string = "";
-  nickname: string = "";
-  address: string = "";
-  onionAddress: string = "";
-  createdAt: number = 0;
 
-  constructor(values?: Partial<User>) {
-    Object.assign(this, values);
-  }
-}
 
 const _ReceivedUser = (publicKey) => ({
   [publicKey]: {
@@ -113,23 +100,26 @@ export const ReceivedUser = (values) => {
   }
   return null;
 };
+export class User {
+  key?: string;
+  firstName: string = "";
+  publicKey: string = "";
+  lastName: string = "";
+  nickname: string = "";
+  address: string = "";
+  onionAddress: string = "";
+  createdAt: number = 0;
 
-export interface IUser {
-  key: string;
-  firstName?: string;
-  publicKey?: string;
-  lastName?: string;
-  nickname: string;
-  address: string;
-  onionAddress?: string;
-  createdAt?: number;
+  constructor(values?: Partial<User>) {
+    Object.assign(this, values);
+  }
 }
 
-export type UsersStore = { [key: string]: IUser };
+export type UsersStore = { [key: string]: User };
 
 export const initialState: UsersStore = {};
 
-export const setUsers = createAction<{ users: { [key: string]: IUser } }>(
+export const setUsers = createAction<{ users: { [key: string]: User } }>(
   actionTypes.SET_USERS
 );
 export const addUnknownUser = createAction(actionTypes.ADD_UNKNOWN_USER);
@@ -385,11 +375,11 @@ export const reducer = handleActions<UsersStore, PayloadType<UserActions>>(
     },
     [addUnknownUser.toString()]: (state) =>
       produce(state, (draft) => {
-        draft[unknownUserId] = {
+        draft[unknownUserId] = new User({
           key: unknownUserId,
           nickname: "Unknown",
           address: unknownUserId,
-        };
+        });
       }),
   },
   initialState

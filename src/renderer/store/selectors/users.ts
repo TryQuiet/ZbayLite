@@ -1,13 +1,13 @@
 import { createSelector } from "reselect";
 import identitySelectors from "./identity";
 
-import { UsersStore, IUser } from "../handlers/users";
+import { UsersStore } from "../handlers/users";
 
 const users = (s): UsersStore => s.users as UsersStore;
 
 const isRegisteredUsername = (nickname) =>
   createSelector(users, (users) => {
-    return Array.from<IUser>(Object.values(users))
+    return Array.from(Object.values(users))
       .map((user) => user.nickname)
       .includes(nickname);
   });
