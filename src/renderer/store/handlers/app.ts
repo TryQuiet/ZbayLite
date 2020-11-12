@@ -30,7 +30,7 @@ export class App {
 
 export type AppStore = App;
 
-export const initialState = {
+export const initialState: App = {
   ...new App(),
 };
 

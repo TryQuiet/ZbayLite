@@ -15,7 +15,7 @@ import MessagesDivider from "../MessagesDivider";
 import UserRegisteredMessage from "./UserRegisteredMessage";
 import ChannelRegisteredMessage from "./ChannelRegisteredMessage";
 
-import { IUser } from "./../../../store/handlers/users";
+import { IUser, UsersStore } from "./../../../store/handlers/users";
 
 import { DisplayableMessage } from "./../../../zbay/messages.types";
 
@@ -48,7 +48,7 @@ interface IChannelMessagesProps {
   isNewUser: boolean; //required?
   scrollPosition: number;
   setScrollPosition: (arg?: any) => void;
-  users: Array<IUser>;
+  users: UsersStore;
   onLinkedChannel: (arg0: any) => void;
   publicChannels: any;
   onRescan: () => void;
