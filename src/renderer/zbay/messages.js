@@ -395,7 +395,7 @@ export const createTransfer = (values) => {
     sender: values.sender,
     receiver: values.receiver,
     createdAt: DateTime.utc().toSeconds(),
-    memo: memo || '',
+    memo: memo || 'TRASNFER',
     spent: values.amountZec
   }
 }
