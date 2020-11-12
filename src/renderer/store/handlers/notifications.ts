@@ -30,18 +30,22 @@ export type NotificationActions = ActionsType<typeof actions>;
 
 // TODO: [refactoring] rewrite rest of the notifications to use Notifier
 export const reducer = handleActions<
-NotificationStore,
-PayloadType<NotificationActions>
+  NotificationStore,
+  PayloadType<NotificationActions>
 >(
   {
-    [enqueueSnackbar.toString()]: (state, { payload: notification }: NotificationActions['enqueueSnackbar']) => {
-      console.log("test", notification);
+    [enqueueSnackbar.toString()]: (
+      state,
+      { payload: notification }: NotificationActions["enqueueSnackbar"]
+    ) => {
       return produce(state, (draft) => {
         draft.push(notification);
       });
     },
-    [removeSnackbar.toString()]: (state, { payload: key }: NotificationActions['removeSnackbar']) =>
-      produce(state, (draft) => draft.filter((n) => n.key !== key)),
+    [removeSnackbar.toString()]: (
+      state,
+      { payload: key }: NotificationActions["removeSnackbar"]
+    ) => produce(state, (draft) => draft.filter((n) => n.key !== key)),
   },
   initialState
 );

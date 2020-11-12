@@ -1,18 +1,12 @@
 import { createSelector } from "reselect";
 import identitySelectors from "./identity";
 import messagesQueueSelectors from "./messagesQueue";
-//import operationsSelectors from "./operations";
 import contacts from "./contacts";
-//import { operationTypes } from "../handlers/operations";
 import { networkFee, messageType } from "../../../shared/static";
 
 import { ChannelStore } from "../handlers/channel";
 
 const channel = (s): ChannelStore => s.channel as ChannelStore;
-
-//export const channel = createSelector(store, (state) => {
-//  return state.channel;
-//});
 
 export const channelInfo = createSelector(channel, (ch) => {
   const channel = {
@@ -111,17 +105,6 @@ export const onlyRegistered = createSelector(
   }
 );
 export const unread = createSelector(data, (data) => (data ? data.unread : 0));
-
-// export const pendingMessages = createSelector(
-  // operationsSelectors.operations,
-  // channel,
-  // (operations, channel) =>
-    // operations.filter(
-      // (o) =>
-        // o.type === operationTypes.pendingMessage &&
-        // o.meta.channelId === channel.id
-    // )
-// );
 
 export const queuedMessages = createSelector(
   messagesQueueSelectors.queue,
@@ -253,7 +236,6 @@ export default {
   channel,
   spentFilterValue,
   message,
-  //pendingMessages,
   shareableUri,
   channelId,
   channelInfo,
