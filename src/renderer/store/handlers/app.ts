@@ -13,7 +13,7 @@ import { ActionsType, PayloadType } from "./types";
 
 export class App {
   version: string = null;
-  transfers: { [key: string]: number } = {};
+  transfers: { [key: string]: string } = {};
   newUser: boolean = false;
   modalTabToOpen: boolean = false;
   allTransfersCount: number = 0;
@@ -37,7 +37,7 @@ export const initialState: App = {
 const loadVersion = createAction(actionTypes.SET_APP_VERSION, () =>
   remote.app.getVersion()
 );
-const setTransfers = createAction<{ [key: string]: number }>(
+const setTransfers = createAction<{ [id: string]: string }>(
   actionTypes.SET_TRANSFERS
 );
 const setUseTor = createAction<boolean>(actionTypes.SET_USE_TOR);
@@ -49,12 +49,10 @@ const setAllTransfersCount = createAction<number>(
 const setNewTransfersCount = createAction<number>(
   actionTypes.SET_NEW_TRANSFERS_COUNT
 );
-const lockDmQueue = createAction<boolean>(actionTypes.LOCK_DM_QUEUE);
-const unlockDmQueue = createAction<boolean>(actionTypes.UNLOCK_DM_QUEUE);
-const lockMessageQueue = createAction<boolean>(actionTypes.LOCK_MESSAGE_QUEUE);
-const unlockMessageQueue = createAction<boolean>(
-  actionTypes.UNLOCK_MESSAGE_QUEUE
-);
+const lockDmQueue = createAction(actionTypes.LOCK_DM_QUEUE);
+const unlockDmQueue = createAction(actionTypes.UNLOCK_DM_QUEUE);
+const lockMessageQueue = createAction(actionTypes.LOCK_MESSAGE_QUEUE);
+const unlockMessageQueue = createAction(actionTypes.UNLOCK_MESSAGE_QUEUE);
 const setInitialLoadFlag = createAction<boolean>(
   actionTypes.SET_INITIAL_LOAD_FLAG
 );

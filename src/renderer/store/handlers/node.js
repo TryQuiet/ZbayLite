@@ -43,6 +43,9 @@ export const initialState = {
   isRescanning: false
 }
 
+// TODO: Replace with class interface
+export const NodeState = initialState
+
 const setStatus = createAction(actionTypes.SET_STATUS, null, {
   ignoreError: true
 })

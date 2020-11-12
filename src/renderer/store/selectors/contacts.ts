@@ -273,7 +273,6 @@ export default {
   directMessagesContact,
   queuedMessages,
   channelModerators,
-  //pendingMessages,
   contact,
   messages,
   directMessages,
