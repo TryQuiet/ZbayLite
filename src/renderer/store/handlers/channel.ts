@@ -21,7 +21,7 @@ import client from "../../zcash";
 import { messages } from "../../zbay";
 import { errorNotification } from "./utils";
 import { messageType, actionTypes } from "../../../shared/static";
-import { DisplayableMessage, IMessage } from "../../zbay/messages.types";
+import { DisplayableMessage } from "../../zbay/messages.types";
 import usersSelectors from "../selectors/users";
 import contactsHandlers from "./contacts";
 import electronStore from "../../../shared/electronStore";
@@ -29,8 +29,9 @@ import { channelToUri } from "../../zbay/channels";
 import { sendMessage } from "../../zcash/websocketClient";
 import { packMemo } from "../../zbay/transit";
 
-import { ActionsType } from "./types";
+import { ActionsType, PayloadType } from "./types";
 
+// TODO: to remove, but must be replaced in all the tests
 export const ChannelState = {
   spentFilterValue: new BigNumber(0),
   id: null,
@@ -47,31 +48,35 @@ export const ChannelState = {
   messageSizeStatus: null,
   displayableMessageLimit: 50,
 };
-
-export const initialState = {
-  ...ChannelState,
-};
-
 interface ILoader {
   loading: boolean;
   message?: string;
 }
 
-export interface IChannel {
-  spentFilterValue: string;
-  id: string;
-  message: string;
-  shareableUri: string;
-  address: string;
-  loader: ILoader;
-  members?: any;
-  showInfoMsg: boolean;
-  isSizeCheckingInProgress: boolean;
+// TODO: find type of message and members
+export class Channel {
+  spentFilterValue: BigNumber = new BigNumber(0);
+  id?: string;
+  message: object = {};
+  shareableUri: string = "";
+  address: string = "";
+  loader: ILoader = { loading: false, message: "" };
+  members?: object = {};
+  showInfoMsg: boolean = true;
+  isSizeCheckingInProgress: boolean = false;
   messageSizeStatus?: boolean;
-  displayableMessageLimit: number;
+  displayableMessageLimit: number = 50;
+
+  constructor(values?: Partial<Channel>) {
+    Object.assign(this, values);
+  }
 }
 
-export type ChannelStore = IChannel;
+export type ChannelStore = Channel;
+
+export const initialState: ChannelStore = {
+  ...new Channel(),
+};
 
 const setLoading = createAction<boolean>(actionTypes.SET_CHANNEL_LOADING);
 //const setLoadingMessage = createAction(actionTypes.SET_CHANNEL_LOADING_MESSAGE);
@@ -407,19 +412,10 @@ const clearNewMessages = () => async (dispatch, getState) => {
   dispatch(messagesHandlers.actions.cleanNewMessages({ channelId }));
 };
 
-export const epics = {
-  sendOnEnter,
-  loadChannel,
-  resendMessage,
-  clearNewMessages,
-  updateLastSeen,
-  loadOffer,
-  sendChannelSettingsMessage,
-  linkChannelRedirect,
-};
+
 
 // TODO: we should have a global loader map
-export const reducer = handleActions(
+export const reducer = handleActions<ChannelStore, PayloadType<ChannelActions>>(
   {
     [setLoading.toString()]: (
       state,
@@ -495,6 +491,17 @@ export const reducer = handleActions(
   },
   initialState
 );
+
+export const epics = {
+  sendOnEnter,
+  loadChannel,
+  resendMessage,
+  clearNewMessages,
+  updateLastSeen,
+  loadOffer,
+  sendChannelSettingsMessage,
+  linkChannelRedirect,
+};
 
 export default {
   reducer,

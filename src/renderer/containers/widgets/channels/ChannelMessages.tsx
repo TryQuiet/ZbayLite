@@ -17,6 +17,8 @@ import zcashChannels from "../../../zcash/channels";
 import channelHandlers from "../../../store/handlers/channel";
 import appHandlers from "../../../store/handlers/app";
 import electronStore from "../../../../shared/electronStore";
+
+// TODO: It will be removed
 interface IMessages {
   createdAt: number;
   timestamp: number;

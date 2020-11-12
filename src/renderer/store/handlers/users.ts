@@ -27,8 +27,10 @@ import electronStore from "../../../shared/electronStore";
 
 import { DisplayableMessage } from "../../zbay/messages.types";
 
-import { ActionsType } from "./types";
+import { ActionsType, PayloadType } from "./types";
 
+
+// TODO: to remove, but first replace in tests
 export const _UserData = {
   firstName: "",
   publicKey: "",
@@ -39,9 +41,24 @@ export const _UserData = {
   createdAt: 0,
 };
 
+export class User {
+  key?: string;
+  firstName: string = "";
+  publicKey: string = "";
+  lastName: string = "";
+  nickname: string = "";
+  address: string = "";
+  onionAddress: string = "";
+  createdAt: number = 0;
+
+  constructor(values?: Partial<User>) {
+    Object.assign(this, values);
+  }
+}
+
 const _ReceivedUser = (publicKey) => ({
   [publicKey]: {
-    ..._UserData,
+    ...new User(),
   },
 });
 
@@ -69,11 +86,12 @@ export const ReceivedUser = (values) => {
       record0 = {
         ...record0,
         [publicKey0]: {
-          ..._UserData,
-          ...values.message,
-          nickname: `${values.message.nickname} #${i}`,
-          createdAt: values.createdAt,
-          publicKey: values.publicKey,
+          ...new User({
+            ...values.message,
+            nickname: `${values.message.nickname} #${i}`,
+            createdAt: values.createdAt,
+            publicKey: values.publicKey,
+          }),
         },
       };
       return record0;
@@ -83,10 +101,12 @@ export const ReceivedUser = (values) => {
     record0 = {
       ...record0,
       [publicKey0]: {
-        ..._UserData,
-        ...values.message,
-        createdAt: values.createdAt,
-        publicKey: values.publicKey,
+        ...new User({
+          ...values.message,
+          createdAt: values.createdAt,
+          publicKey: values.publicKey,
+        
+        }),
       },
     };
     return record0;
@@ -95,18 +115,19 @@ export const ReceivedUser = (values) => {
 };
 
 export interface IUser {
-  firstName: string;
-  publicKey: string;
-  lastName: string;
+  key: string;
+  firstName?: string;
+  publicKey?: string;
+  lastName?: string;
   nickname: string;
   address: string;
-  onionAddress: string;
-  createdAt: number;
+  onionAddress?: string;
+  createdAt?: number;
 }
 
-export type UserStore = { [key: string]: IUser };
+export type UsersStore = { [key: string]: IUser };
 
-export const initialState = {};
+export const initialState: UsersStore = {};
 
 export const setUsers = createAction<{ users: { [key: string]: IUser } }>(
   actionTypes.SET_USERS
@@ -348,16 +369,7 @@ export const isNicknameTaken = (username) => (dispatch, getState) => {
   return R.includes(username, uniqUsernames);
 };
 
-export const epics = {
-  fetchUsers,
-  isNicknameTaken,
-  createOrUpdateUser,
-  registerAnonUsername,
-  fetchOnionAddresses,
-  registerOnionAddress,
-};
-
-export const reducer = handleActions(
+export const reducer = handleActions<UsersStore, PayloadType<UserActions>>(
   {
     [setUsers.toString()]: (
       state,
@@ -382,6 +394,15 @@ export const reducer = handleActions(
   },
   initialState
 );
+
+export const epics = {
+  fetchUsers,
+  isNicknameTaken,
+  createOrUpdateUser,
+  registerAnonUsername,
+  fetchOnionAddresses,
+  registerOnionAddress,
+};
 
 export default {
   reducer,

@@ -1,13 +1,9 @@
 import { createSelector } from "reselect";
 import identitySelectors from "./identity";
 
-import { UserStore, IUser } from "../handlers/users";
+import { UsersStore, IUser } from "../handlers/users";
 
-const users = (s): UserStore => s.users as UserStore;
-
-// const users = createSelector(store, (state) => {
-  // return state.users;
-// });
+const users = (s): UsersStore => s.users as UsersStore;
 
 const isRegisteredUsername = (nickname) =>
   createSelector(users, (users) => {
