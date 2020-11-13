@@ -43,6 +43,10 @@ export class DirectMessagesQueue {
   offerId: string = "";
   message: DisplayableMessage
   type: messageType
+
+  constructor(values?: Partial<DirectMessagesQueue>) {
+    Object.assign(this, values);
+  }
 }
 
 export type DirectMessagesQueueStore = DirectMessagesQueue[]
