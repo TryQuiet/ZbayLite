@@ -49,7 +49,7 @@ export type DirectMessagesQueueStore = DirectMessagesQueue[]
 
 export const initialState: DirectMessagesQueueStore = [];
 
-const addDirectMessage = createAction(
+const addDirectMessage = createAction<{ message: DisplayableMessage; recipientAddress: string; recipientUsername: string, key: string }, { message: DisplayableMessage; recipientAddress: string; recipientUsername: string }>(
   actionTypes.ADD_PENDING_DIRECT_MESSAGE,
   ({ message, recipientAddress, recipientUsername }) => {
     const messageDigest = crypto.createHash("sha256");
@@ -298,7 +298,7 @@ export const epics = {
   sendPlainTransfer,
 };
 
-export const reducer = handleActions(
+export const reducer = handleActions<DirectMessagesQueueStore, PayloadType<DirectMessagesQueueActions>>(
   {
     [addDirectMessage.toString()]: (
       state,
