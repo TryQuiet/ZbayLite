@@ -58,7 +58,7 @@ export class ExchangeParticipant {
   nickname: string='';
   
   constructor(
-    values: Partial<ExchangeParticipant>
+    values?: Partial<ExchangeParticipant>
   ) {
     Object.assign(this, values);
   }

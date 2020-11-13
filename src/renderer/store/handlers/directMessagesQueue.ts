@@ -2,6 +2,7 @@ import { produce } from "immer";
 import * as R from "ramda";
 import crypto from "crypto";
 import { createAction, handleActions } from "redux-actions";
+import BigNumber from 'bignumber.js'
 
 import selectors from "../selectors/directMessagesQueue";
 import identitySelectors from "../selectors/identity";
@@ -24,6 +25,8 @@ import history from "../../../shared/history";
 import { ActionsType, PayloadType } from "./types";
 
 import { DisplayableMessage } from '../../zbay/messages.types'
+import { ThunkAction } from "redux-thunk";
+import { Action } from "redux";
 
 export const DEFAULT_DEBOUNCE_INTERVAL = 2000;
 
@@ -181,7 +184,19 @@ const sendMessage = (payload, redirect = true) => async (
   );
 };
 
-const _sendPendingDirectMessages = (redirect) => async (dispatch, getState) => {
+class Store { }
+interface IThunkActionWithMeta<R, S, E, A extends Action> extends ThunkAction<R, S, E, A> {
+  meta?: {
+    debounce: {
+      time: number,
+      key: string,
+    }
+  }
+}
+
+type ZbayThunkAction<ReturnType> = IThunkActionWithMeta<ReturnType, Store, unknown, Action<string>>
+
+const _sendPendingDirectMessages = (redirect): ZbayThunkAction<void> => async (dispatch, getState) => {
   const lock = appSelectors.directMessageQueueLock(getState());
   const messages = selectors.queue(getState());
   if (lock === false) {
@@ -204,7 +219,7 @@ const _sendPendingDirectMessages = (redirect) => async (dispatch, getState) => {
           amount:
             message.type === messageType.TRANSFER || messageType.ITEM_TRANSFER
               ? message.spent
-              : "0",
+              : new BigNumber(0),
           identityAddress,
           donation,
         });
