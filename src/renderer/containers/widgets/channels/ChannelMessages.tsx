@@ -33,7 +33,7 @@ export const ChannelMessages = ({ tab, contentRect }) => {
   const qDmMessages = useSelector(dmQueueMessages.queue);
   const contactId = useSelector(channelSelectors.id);
 
-  const triggerScroll = qDmMessages.size + qMessages.size > 0;
+  const triggerScroll = qDmMessages.length + qMessages.length > 0;
 
   const onLinkedChannel = (props) =>
     dispatch(channelHandlers.epics.linkChannelRedirect(props));
