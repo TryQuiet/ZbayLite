@@ -12,7 +12,6 @@ import operationsHandlers from "./operations";
 import {
   messageToTransfer,
   createEmptyTransfer,
-  DisplayableMessage,
   createMessage,
 } from "../../zbay/messages";
 import { messageType, actionTypes } from "../../../shared/static";
@@ -23,6 +22,8 @@ import client from "../../zcash";
 import contactsHandlers from "./contacts";
 import history from "../../../shared/history";
 import { ActionsType, PayloadType } from "./types";
+
+import { DisplayableMessage } from '../../zbay/messages.types'
 
 export const DEFAULT_DEBOUNCE_INTERVAL = 2000;
 
@@ -37,12 +38,13 @@ export class DirectMessagesQueue {
   recipientAddress: string = "";
   recipientUsername: string = "";
   offerId: string = "";
-  message?: object;
+  message: DisplayableMessage
+  type: messageType
 }
 
-export type DirectMessagesQueueStore = { [key: string]: DirectMessagesQueue };
+export type DirectMessagesQueueStore = DirectMessagesQueue[]
 
-export const initialState: DirectMessagesQueueStore = {};
+export const initialState: DirectMessagesQueueStore = [];
 
 const addDirectMessage = createAction(
   actionTypes.ADD_PENDING_DIRECT_MESSAGE,
@@ -97,7 +99,7 @@ const sendMessage = (payload, redirect = true) => async (
   const key = messageDigest
     .update(JSON.stringify(messageEssentials))
     .digest("hex");
-  const message = DisplayableMessage({
+  const message = new DisplayableMessage({
     ...payload,
     id: key,
     sender: {
@@ -153,7 +155,12 @@ const sendMessage = (payload, redirect = true) => async (
     dispatch(
       contactsHandlers.actions.addMessage({
         key: payload.receiver.publicKey,
-        message: { [key]: message.set("status", "failed") },
+        message: {
+          [key]: new DisplayableMessage({
+            ...payload,
+            status: 'failed'
+          })
+        },
       })
     );
     dispatch(
