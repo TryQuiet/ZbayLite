@@ -536,7 +536,6 @@ const setUsersMessages = (address, messages: DisplayableMessage[]) => async (
   const filteredZbayMessages = messages.filter((msg) =>
     msg.memohex.startsWith("ff")
   );
-  console.log(filteredTextMessages);
   const users = usersSelectors.users(getState());
 
   const parsedTextMessages = filteredTextMessages.map((msg) => {
