@@ -21,12 +21,6 @@ import { Action } from "redux";
 import { ActionsType, PayloadType } from './types'
 
 export const DEFAULT_DEBOUNCE_INTERVAL = 2000
-
-//export const PendingMessage = {
-//  channelId: '',
-//  message: null
-//}
-
 export class MessagesQueue {
   channelId: string = ''
   message?: DisplayableMessage

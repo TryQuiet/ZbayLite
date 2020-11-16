@@ -41,8 +41,8 @@ export const NodeState = initialState
 
 const setStatus = createAction<{ status?: string; errors?: string, latestBlock?: BigNumber; currentBlock?: BigNumber }>(
   actionTypes.SET_STATUS
-  //null,
-  // It didn't work anyway, because there should be a function 
+  // TODO: REMOVE - probably dead code, because null points to default value and third parameter must be function, either default as well.
+  //null, 
   //  {
   //  ignoreError: true
   //}
