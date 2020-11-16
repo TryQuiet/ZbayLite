@@ -211,7 +211,7 @@ export const deleteChannel = ({ address, timestamp, history }) => async (
 };
 export const checkConfirmationOfTransfers = async (dispatch, getState) => {
   try {
-    const latestBlock = parseInt(nodeSelectors.latestBlock(getState()));
+    const latestBlock = parseInt(nodeSelectors.latestBlock(getState()).toString());
     const contacts = selectors.contacts(getState());
     const offers = offersSelectors.offers(getState());
     const getKeys = (obj: ContactsStore) => Object.keys(obj);

@@ -442,7 +442,7 @@ export const trimMemo = (a) => {
 }
 export const messageToTransfer = async ({
   message,
-  amount = new BigNumber(0),
+  amount = 0,
   address,
   identityAddress = false,
   splitTreshhold = networkFee * 20,
