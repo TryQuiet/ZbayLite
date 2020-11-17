@@ -1,4 +1,4 @@
-import { produce } from "immer";
+import { produce, immerable } from 'immer'
 import { DateTime } from "luxon";
 import { createAction, handleActions } from "redux-actions";
 import BigNumber from "bignumber.js";
@@ -20,7 +20,7 @@ import { _checkMessageSize } from "./messages";
 import directMessagesQueueHandlers from "./directMessagesQueue";
 import removedChannelsHandlers from "./removedChannels";
 import offersHandlers from "./offers";
-import { ActionsType } from "./types";
+import { ActionsType, PayloadType } from "./types";
 
 const sendDirectMessage = (payload, redirect = true) => async (
   dispatch,
@@ -53,27 +53,30 @@ const sendDirectMessage = (payload, redirect = true) => async (
     )
   );
 };
-
-export interface IContact {
+export class Contacts {
   lastSeen?: DateTime;
-  messages: DisplayableMessage[];
-  newMessages: string[];
-  vaultMessages: DisplayableMessage[];
+  key: string = "";
+  username: string = "";
+  address: string = "";
+  newMessages: number[] = [];
+  vaultMessages: DisplayableMessage[] = [];
+  messages: DisplayableMessage[] = [];
   offerId?: string;
-  key: string;
-  address: string;
-  username: string;
   unread?: number;
-}
 
+  constructor(values?: Partial<Contacts>) {
+    Object.assign(this, values);
+    this[immerable] = true
+  }
+}
 export interface ISender {
   replyTo: string;
   username: string;
 }
 
-export type ContactStore = { [key: string]: IContact };
+export type ContactsStore = { [key: string]: Contacts };
 
-const initialState = {};
+const initialState: ContactsStore = {};
 
 const setMessages = createAction<{
   messages: DisplayableMessage[];
@@ -104,9 +107,9 @@ const cleanNewMessages = createAction<{ contactAddress: string }>(
 );
 const appendNewMessages = createAction<{
   contactAddress: string;
-  messagesIds: string[];
+  messagesIds: number[];
 }>(actionTypes.APPEND_NEW_DIRECT_MESSAGES);
-const setLastSeen = createAction<{ lastSeen: DateTime; contact: IContact }>(
+const setLastSeen = createAction<{ lastSeen: DateTime; contact: Contacts }>(
   actionTypes.SET_CONTACTS_LAST_SEEN
 );
 const removeContact = createAction<{ address: string }>(
@@ -209,10 +212,10 @@ export const deleteChannel = ({ address, timestamp, history }) => async (
 };
 export const checkConfirmationOfTransfers = async (dispatch, getState) => {
   try {
-    const latestBlock = parseInt(nodeSelectors.latestBlock(getState()));
+    const latestBlock = parseInt(nodeSelectors.latestBlock(getState()).toString());
     const contacts = selectors.contacts(getState());
     const offers = offersSelectors.offers(getState());
-    const getKeys = (obj: ContactStore) => Object.keys(obj);
+    const getKeys = (obj: ContactsStore) => Object.keys(obj);
     for (const key of getKeys(contacts)) {
       for (const msg of contacts[key].messages) {
         if (
@@ -279,7 +282,7 @@ export const epics = {
   checkConfirmationOfTransfers,
 };
 
-export const reducer = handleActions(
+export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>(
   {
     [setMessages.toString()]: (
       state,
@@ -291,7 +294,7 @@ export const reducer = handleActions(
         if (!draft[key]) {
           draft[key] = {
             lastSeen: null,
-            messages: {},
+            messages: [],
             newMessages: [],
             vaultMessages: [],
             offerId: null,
@@ -314,7 +317,7 @@ export const reducer = handleActions(
       produce(state, (draft) => {
         draft[key] = {
           lastSeen: null,
-          messages: {},
+          messages: [],
           newMessages: [],
           vaultMessages: [],
           offerId: offerId,

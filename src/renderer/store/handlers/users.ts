@@ -1,110 +1,146 @@
-import { produce } from 'immer'
-import { createAction, handleActions } from 'redux-actions'
-import * as R from 'ramda'
-import { ipcRenderer } from 'electron'
+import { produce, immerable } from 'immer'
+import { createAction, handleActions } from "redux-actions";
+import * as R from "ramda";
+import { ipcRenderer } from "electron";
 
-import feesSelector from '../selectors/fees'
-import nodeSelectors from '../selectors/node'
-import feesHandlers from '../handlers/fees'
-import appHandlers from '../handlers/app'
+import feesSelector from "../selectors/fees";
+import nodeSelectors from "../selectors/node";
+import feesHandlers from "./fees";
+import appHandlers from "./app";
 import { checkTransferCount, fetchAllMessages } from '../handlers/messages'
-import { actionCreators } from './modals'
-import usersSelector from '../selectors/users'
-import identitySelector from '../selectors/identity'
-import { actions as identityActions } from '../handlers/identity'
-import appSelectors from '../selectors/app'
-import { getPublicKeysFromSignature } from '../../zbay/messages'
-import { messageType, actionTypes, unknownUserId } from '../../../shared/static'
-import { messages as zbayMessages } from '../../zbay'
-import client from '../../zcash'
-import staticChannels from '../../zcash/channels'
-import notificationsHandlers from './notifications'
-import { infoNotification, successNotification } from './utils'
-import electronStore from '../../../shared/electronStore'
+import { actionCreators } from "./modals";
+import usersSelector from "../selectors/users";
+import identitySelector from "../selectors/identity";
+import { actions as identityActions } from '../handlers/identity';
+import appSelectors from "../selectors/app";
+import { getPublicKeysFromSignature } from "../../zbay/messages";
+import {
+  messageType,
+  actionTypes,
+  unknownUserId,
+} from "../../../shared/static";
+import { messages as zbayMessages } from "../../zbay";
+import client from "../../zcash";
+import staticChannels from "../../zcash/channels";
+import notificationsHandlers from "./notifications";
+import { infoNotification, successNotification } from "./utils";
+import electronStore from "../../../shared/electronStore";
 
+import { DisplayableMessage } from "../../zbay/messages.types";
+
+import { ActionsType, PayloadType } from "./types";
+
+
+// TODO: to remove, but first replace in tests
 export const _UserData = {
-  firstName: '',
-  publicKey: '',
-  lastName: '',
-  nickname: '',
-  address: '',
-  onionAddress: '',
-  createdAt: 0
-}
+  firstName: "",
+  publicKey: "",
+  lastName: "",
+  nickname: "",
+  address: "",
+  onionAddress: "",
+  createdAt: 0,
+};
 
-const _ReceivedUser = publicKey => ({
+
+
+const _ReceivedUser = (publicKey) => ({
   [publicKey]: {
-    ..._UserData
-  }
-})
+    ...new User(),
+  },
+});
 
-const usersNicknames = new Map()
+const usersNicknames = new Map();
 
-export const ReceivedUser = values => {
+export const ReceivedUser = (values) => {
   if (values === null || ![0, 1].includes(values.r)) {
-    return null
+    return null;
   }
   if (values.type === messageType.USER) {
-    const publicKey0 = getPublicKeysFromSignature(values).toString('hex')
+    const publicKey0 = getPublicKeysFromSignature(values).toString("hex");
     for (let i of usersNicknames.keys()) {
-      if (usersNicknames.get(i) === publicKey0) usersNicknames.delete(i)
+      if (usersNicknames.get(i) === publicKey0) usersNicknames.delete(i);
     }
-    let record0 = _ReceivedUser(publicKey0)
+    let record0 = _ReceivedUser(publicKey0);
     if (
       usersNicknames.get(values.message.nickname) &&
       usersNicknames.get(values.message.nickname) !== publicKey0
     ) {
-      let i = 2
+      let i = 2;
       while (usersNicknames.get(`${values.message.nickname} #${i}`)) {
-        i++
+        i++;
       }
-      usersNicknames.set(`${values.message.nickname} #${i}`, publicKey0)
+      usersNicknames.set(`${values.message.nickname} #${i}`, publicKey0);
       record0 = {
         ...record0,
         [publicKey0]: {
-          ..._UserData,
-          ...values.message,
-          nickname: `${values.message.nickname} #${i}`,
-          createdAt: values.createdAt,
-          publicKey: values.publicKey
-        }
-      }
-      return record0
+          ...new User({
+            ...values.message,
+            nickname: `${values.message.nickname} #${i}`,
+            createdAt: values.createdAt,
+            publicKey: values.publicKey,
+          }),
+        },
+      };
+      return record0;
     } else {
-      usersNicknames.set(values.message.nickname, publicKey0)
+      usersNicknames.set(values.message.nickname, publicKey0);
     }
     record0 = {
       ...record0,
       [publicKey0]: {
-        ..._UserData,
-        ...values.message,
-        createdAt: values.createdAt,
-        publicKey: values.publicKey
-      }
-    }
-    return record0
+        ...new User({
+          ...values.message,
+          createdAt: values.createdAt,
+          publicKey: values.publicKey,
+        
+        }),
+      },
+    };
+    return record0;
   }
-  return null
+  return null;
+};
+export class User {
+  key?: string;
+  firstName: string = "";
+  publicKey: string = "";
+  lastName: string = "";
+  nickname: string = "";
+  address: string = "";
+  onionAddress: string = "";
+  createdAt: number = 0;
+
+  constructor(values?: Partial<User>) {
+    Object.assign(this, values);
+    this[immerable] = true
+  }
 }
 
-export const initialState = {}
+export type UsersStore = { [key: string]: User };
 
-export const setUsers = createAction(actionTypes.SET_USERS)
-export const addUnknownUser = createAction(actionTypes.ADD_UNKNOWN_USER)
-export const mockOwnUser = createAction(actionTypes.MOCK_OWN_USER)
+export const initialState: UsersStore = {};
+
+export const setUsers = createAction<{ users: { [key: string]: User } }>(
+  actionTypes.SET_USERS
+);
+export const addUnknownUser = createAction(actionTypes.ADD_UNKNOWN_USER);
+export const mockOwnUser = createAction<{ sigPubKey: string; nickname: string; address: string }>(actionTypes.MOCK_OWN_USER)
 
 export const actions = {
   setUsers,
   addUnknownUser,
   mockOwnUser
-}
+};
+
+export type UserActions = ActionsType<typeof actions>;
 
 export const registerAnonUsername = () => async (dispatch, getState) => {
-  const publicKey = identitySelector.signerPubKey(getState())
+  const publicKey = identitySelector.signerPubKey(getState());
   await dispatch(
     createOrUpdateUser({ nickname: `anon${publicKey.substring(0, 10)}` })
-  )
-}
+  );
+};
 
 export const checkRegistraionConfirmations = ({ firstRun }) => async (dispatch, getState) => {
   if (firstRun) {
@@ -176,10 +212,27 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
   const transfer = await zbayMessages.messageToTransfer({
     message: registrationMessage,
     address: usersChannelAddress,
-    amount: fee
+    amount: fee,
+  });
+  dispatch(actionCreators.closeModal("accountSettingsModal")());
+  const onionAddress = identitySelector.onionAddress(getState())
+  const messageDataTor = {
+    onionAddress: onionAddress.substring(0, 56)
+  }
+  const torChannelAddress = staticChannels.tor.mainnet.address
+  const registrationMessageTor = zbayMessages.createMessage({
+    messageData: {
+      type: zbayMessages.messageType.USER_V2,
+      data: messageDataTor
+    },
+    privKey
   })
-  dispatch(actionCreators.closeModal('accountSettingsModal')())
+  const transferTor = await zbayMessages.messageToTransfer({
+    message: registrationMessageTor,
+    address: torChannelAddress
+  })
   try {
+    const txid = await client.sendTransaction([transferTor, transfer]);
     if (retry === 0) {
       dispatch(identityActions.setRegistraionStatus({
         nickname,
@@ -195,10 +248,12 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
         status: 'IN_PROGRESS'
       })
     }
-    const txid = await client.sendTransaction(transfer)
     if (txid.error) {
       throw new Error(txid.error)
     }
+    ipcRenderer.send('spawnTor')
+    electronStore.set('useTor', true)
+    dispatch(appHandlers.actions.setUseTor(true))
     electronStore.set('registrationStatus.txid', txid.txid)
     electronStore.set('registrationStatus.confirmation', 0)
     dispatch(checkRegistraionConfirmations({ firstRun: true }))
@@ -235,58 +290,61 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     dispatch(actionCreators.openModal('failedUsernameRegister')())
   }
 }
-export const registerOnionAddress = torStatus => async (dispatch, getState) => {
-  const useTor = appSelectors.useTor(getState())
+export const registerOnionAddress = (torStatus) => async (
+  dispatch,
+  getState
+) => {
+  const useTor = appSelectors.useTor(getState());
   if (useTor === torStatus) {
-    return
+    return;
   }
-  const savedUseTor = electronStore.get(`useTor`)
+  const savedUseTor = electronStore.get(`useTor`);
   if (savedUseTor !== undefined) {
     if (torStatus === true) {
-      ipcRenderer.send('spawnTor')
+      ipcRenderer.send("spawnTor");
     } else {
-      ipcRenderer.send('killTor')
+      ipcRenderer.send("killTor");
     }
-    electronStore.set('useTor', torStatus)
-    dispatch(appHandlers.actions.setUseTor(torStatus))
-    return
+    electronStore.set("useTor", torStatus);
+    dispatch(appHandlers.actions.setUseTor(torStatus));
+    return;
   }
-  ipcRenderer.send('spawnTor')
-  dispatch(appHandlers.actions.setUseTor(torStatus))
-  electronStore.set('useTor', true)
-  const privKey = identitySelector.signerPrivKey(getState())
-  const onionAddress = identitySelector.onionAddress(getState())
+  ipcRenderer.send("spawnTor");
+  dispatch(appHandlers.actions.setUseTor(torStatus));
+  electronStore.set("useTor", true);
+  const privKey = identitySelector.signerPrivKey(getState());
+  const onionAddress = identitySelector.onionAddress(getState());
   const messageData = {
-    onionAddress: onionAddress.substring(0, 56)
-  }
-  const torChannelAddress = staticChannels.tor.mainnet.address
+    onionAddress: onionAddress.substring(0, 56),
+  };
+  const torChannelAddress = staticChannels.tor.mainnet.address;
   const registrationMessage = zbayMessages.createMessage({
     messageData: {
       type: zbayMessages.messageType.USER_V2,
-      data: messageData
+      data: messageData,
     },
-    privKey
-  })
+    privKey,
+  });
   const transfer = await zbayMessages.messageToTransfer({
     message: registrationMessage,
-    address: torChannelAddress
-  })
+    address: torChannelAddress,
+  });
   // dispatch(actionCreators.closeModal('accountSettingsModal')())
-  const txid = await client.sendTransaction(transfer)
+  const txid = await client.sendTransaction(transfer);
   if (txid.error) {
-    throw new Error(txid.error)
+    throw new Error(txid.error);
   }
   dispatch(
     notificationsHandlers.actions.enqueueSnackbar(
       successNotification({
-        message: `Your onion address will be public in few minutes`
+        message: `Your onion address will be public in few minutes`,
       })
     )
-  )
-  dispatch(notificationsHandlers.actions.removeSnackbar('username'))
-}
+  );
+  dispatch(notificationsHandlers.actions.removeSnackbar("username"));
+};
 
-export const fetchUsers = (address, messages) => async (dispatch, getState) => {
+export const fetchUsers = (address, messages: DisplayableMessage[]) => async (dispatch, getState) => {
   try {
     const transferCountFlag = await dispatch(
       checkTransferCount(address, messages)
@@ -359,57 +417,84 @@ export const fetchUsers = (address, messages) => async (dispatch, getState) => {
     throw err
   }
 }
-export const fetchOnionAddresses = (address, messages) => async (
-  dispatch,
-  getState
-) => {
+export const fetchOnionAddresses = (
+  address,
+  messages: DisplayableMessage[]
+) => async (dispatch, getState) => {
   try {
-    const transferCountFlag = await dispatch(
-      checkTransferCount(address, messages)
-    )
-    if (transferCountFlag === -1 || !messages) {
-      return
-    }
-    const filteredZbayMessages = messages.filter(msg =>
-      msg.memohex.startsWith('ff')
-    )
-    let users = usersSelector.users(getState())
+    const filteredZbayMessages = messages.filter((msg) =>
+      msg.memohex.startsWith("ff")
+    );
+    let users = usersSelector.users(getState());
     const registrationMessages = await Promise.all(
-      filteredZbayMessages.map(transfer => {
-        const message = zbayMessages.transferToMessage(transfer)
-        return message
+      filteredZbayMessages.map((transfer) => {
+        const message = zbayMessages.transferToMessage(transfer);
+        return message;
       })
-    )
+    );
     const filteredRegistrationMessages = registrationMessages.filter(
-      msg => msg.type === messageType.USER_V2
-    )
+      (msg) => msg.type === messageType.USER_V2
+    );
     for (const msg of filteredRegistrationMessages) {
       if (users[msg.publicKey]) {
         users = {
           ...users,
           [msg.publicKey]: {
             ...users[msg.publicKey],
-            onionAddress: msg.message.onionAddress
-          }
-        }
+            onionAddress: msg.message.onionAddress,
+          },
+        };
       }
     }
-    dispatch(setUsers({ users }))
+    dispatch(setUsers({ users }));
   } catch (err) {
-    console.warn(err)
+    console.warn(err);
   }
-}
+};
 
-export const isNicknameTaken = username => (dispatch, getState) => {
-  const users = usersSelector.users(getState())
+export const isNicknameTaken = (username) => (dispatch, getState) => {
+  const users = usersSelector.users(getState());
   const userNames = Object.keys(users)
     .map((key, index) => {
-      return users[key].nickname
+      return users[key].nickname;
     })
-    .filter(name => !name.startsWith('anon'))
-  const uniqUsernames = R.uniq(userNames)
-  return R.includes(username, uniqUsernames)
-}
+    .filter((name) => !name.startsWith("anon"));
+  const uniqUsernames = R.uniq(userNames);
+  return R.includes(username, uniqUsernames);
+};
+
+export const reducer = handleActions<UsersStore, PayloadType<UserActions>>(
+  {
+    [setUsers.toString()]: (
+      state,
+      { payload: { users } }: UserActions["setUsers"]
+    ) => {
+      return produce(state, (draft) => {
+        const usersObj = {
+          ...draft,
+          ...users,
+        };
+        return usersObj;
+      });
+    },
+    [addUnknownUser.toString()]: (state) =>
+      produce(state, (draft) => {
+        draft[unknownUserId] = new User({
+          key: unknownUserId,
+          nickname: "Unknown",
+          address: unknownUserId,
+        });
+      }),
+    [mockOwnUser.toString()]: (state, { payload: { sigPubKey, nickname, address } }: UserActions['mockOwnUser']) => produce(state, (draft) => {
+      draft[sigPubKey] = new User({
+        publicKey: sigPubKey,
+        nickname,
+        address
+      })
+    })
+  },
+  initialState
+);
 
 export const epics = {
   fetchUsers,
@@ -418,40 +503,10 @@ export const epics = {
   registerAnonUsername,
   fetchOnionAddresses,
   registerOnionAddress,
-  checkRegistraionConfirmations
-}
-
-export const reducer = handleActions(
-  {
-    [setUsers]: (state, { payload: { users } }) => {
-      return produce(state, (draft) => {
-        const usersObj = {
-          ...draft,
-          ...users
-        }
-        return usersObj
-      })
-    },
-    [addUnknownUser]: (state) => produce(state, (draft) => {
-      draft[unknownUserId] = {
-        key: unknownUserId,
-        nickname: 'Unknown',
-        address: unknownUserId
-      }
-    }),
-    [mockOwnUser]: (state, { payload: { sigPubKey, nickname, address } }) => produce(state, (draft) => {
-      draft[sigPubKey] = {
-        publicKey: sigPubKey,
-        nickname,
-        address
-      }
-    })
-  },
-  initialState
-)
+};
 
 export default {
   reducer,
   epics,
-  actions
-}
+  actions,
+};

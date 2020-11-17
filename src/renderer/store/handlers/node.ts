@@ -1,78 +1,73 @@
 // import Immutable from 'immutable'
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import BigNumber from 'bignumber.js'
 import { ipcRenderer } from 'electron'
 import { createAction, handleActions } from 'redux-actions'
 
-import { typeRejected, FetchingStateStd } from './utils'
+import { typeRejected, FetchingState } from './utils'
 import client from '../../zcash'
 import { actionTypes } from '../../../shared/static'
 import nodeSelectors from '../selectors/node'
 
+import { ActionsType, PayloadType } from './types'
+
 const DEFAULT_ADDRESS_TYPE = 'sapling'
 
-// export const NodeState = Immutable.Record(
-//   {
-//     latestBlock: new BigNumber(999999),
-//     currentBlock: new BigNumber(0),
-//     connections: new BigNumber(0),
-//     isTestnet: null,
-//     status: 'healthy',
-//     errors: '',
-//     bootstrapLoader: LoaderState(),
-//     fetchingStatus: FetchingState(),
-//     startedAt: null,
-//     isRescanning: false
-//   },
-//   'NodeState'
-// )
+export class Node {
+  latestBlock: BigNumber = new BigNumber(999999)
+  currentBlock: BigNumber = new BigNumber(0)
+  connections: BigNumber = new BigNumber(0)
+  isTestnet?: boolean
+  status: string = 'healthy'
+  errors: string = ''
+  loading: boolean = false
+  bootstrappingMessage: string = ''
+  fetchingStatus: FetchingState = {
+    ...new FetchingState()
+  }
+  startedAt?: string
+  isRescanning: boolean = false
 
-export const initialState = {
-  latestBlock: new BigNumber(999999),
-  currentBlock: new BigNumber(0),
-  connections: new BigNumber(0),
-  isTestnet: null,
-  status: 'healthy',
-  errors: '',
-  loading: false,
-  bootstrappingMessage: '',
-  fetchingStatus: {
-    ...FetchingStateStd
-  },
-  startedAt: null,
-  isRescanning: false
+  constructor(values?: Partial<Node>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-const setStatus = createAction(actionTypes.SET_STATUS, null, {
-  ignoreError: true
-})
+export type NodeStore = Node
 
+const initialState: Node = new Node()
+
+export const NodeState = initialState
+
+const setStatus = createAction<{ status?: string; errors?: string, latestBlock?: BigNumber; currentBlock?: BigNumber }>(
+  actionTypes.SET_STATUS
+  // TODO: REMOVE - probably dead code, because null points to default value and third parameter must be function, either default as well.
+  //null, 
+  //  {
+  //  ignoreError: true
+  //}
+)
 const createAddress = createAction(
   actionTypes.CREATE_ADDRESS,
   async (type = DEFAULT_ADDRESS_TYPE) => {
     return client.addresses.create(type)
   }
 )
-
-const setBootstrapping = createAction(actionTypes.SET_BOOTSTRAPPING)
-const setBootstrappingMessage = createAction(
-  actionTypes.SET_BOOTSTRAPPING_MESSAGE
-)
+const setBootstrapping = createAction<boolean>(actionTypes.SET_BOOTSTRAPPING)
+const setBootstrappingMessage = createAction<string>(actionTypes.SET_BOOTSTRAPPING_MESSAGE)
 
 const setFetchingPart = createAction(actionTypes.SET_FETCHING_PART)
-const setIsRescanning = createAction(actionTypes.SET_IS_RESCANNING)
+const setIsRescanning = createAction<boolean>(actionTypes.SET_IS_RESCANNING)
 const setFetchingSizeLeft = createAction(actionTypes.SET_FETCHING_SIZE_LEFT)
 const setFetchingStatus = createAction(actionTypes.SET_FETCHING_STATUS)
 const setFetchingSpeed = createAction(actionTypes.SET_FETCHING_SPEED)
 const setFetchingEndTime = createAction(actionTypes.SET_FETCHING_END_TIME)
 const setConnectionStatus = createAction(actionTypes.SET_CONNECTION_STATUS)
-
 const setRescanningProgress = createAction(actionTypes.SET_RESCANNING_PROGRESS)
-const setRescanningMonitorStatus = createAction(
-  actionTypes.SET_RESCANNING_MONITOR_STATUS
-)
+const setRescanningMonitorStatus = createAction(actionTypes.SET_RESCANNING_MONITOR_STATUS)
 const setRescanningStatus = createAction(actionTypes.SET_RESCANNING_STATUS)
-const setGuideStatus = createAction(actionTypes.SET_GUIDE_STATUS)
+const setGuideStatus = createAction<boolean>(actionTypes.SET_GUIDE_STATUS)
 const setNextSlide = createAction(actionTypes.SET_NEXT_SLIDE)
 const setPrevSlide = createAction(actionTypes.SET_PREV_SLIDE)
 
@@ -96,6 +91,8 @@ const actions = {
   setIsRescanning
 }
 
+export type NodeActions = ActionsType<typeof actions>
+
 export const startRescanningMonitor = () => async (dispatch, getState) => {
   ipcRenderer.send('toggle-rescanning-progress-monitor')
   dispatch(setRescanningMonitorStatus(true))
@@ -109,19 +106,15 @@ export const disablePowerSaveMode = () => async (dispatch, getState) => {
   ipcRenderer.send('disable-sleep-prevention')
 }
 
-export const checkNodeStatus = nodeProcessStatus => async (
-  dispatch,
-  getState
-) => {
+export const checkNodeStatus = nodeProcessStatus => async (dispatch, getState) => {
   const nodeResponseStatus = nodeSelectors.status(getState())
   if (nodeProcessStatus === 'up' && nodeResponseStatus === 'down') {
     ipcRenderer.send('restart-node-proc')
   }
 }
-
+let lastSavedBlock = 0
 const getStatus = () => async (dispatch, getState) => {
   try {
-    console.log('status')
     const info = await client.info()
     const height = await client.height()
     if (info.latest_block_height > height) {
@@ -133,9 +126,9 @@ const getStatus = () => async (dispatch, getState) => {
 
     setTimeout(async () => {
       const syncStatus = await client.syncStatus()
-      if (syncStatus.syncing === 'false') {
+      if (syncStatus.syncing === 'false' && lastSavedBlock + 25 < height) {
         client.save()
-
+        lastSavedBlock = height
         if (nodeSelectors.isRescanning(getState())) {
           setTimeout(async () => {
             console.log('saving')
@@ -176,41 +169,49 @@ const epics = {
   checkNodeStatus
 }
 
-export const reducer = handleActions(
+export const reducer = handleActions<NodeStore, PayloadType<NodeActions>>(
   {
-    [actionTypes.SET_STATUS]: (state, { payload: status }) => {
-      return produce(state, (draft) => {
-        return Object.assign({}, draft, status)
-      })
-    },
+    [setStatus.toString()]: (state, { payload: status }: NodeActions['setStatus']) =>
+      produce(state, draft => {
+        return Object.assign({}, state, status)
+      }),
     [typeRejected(actionTypes.CREATE_ADDRESS)]: (state, { payload: errors }) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.errors = errors
       }),
-    [setBootstrapping]: (state, { payload: bootstrapping }) =>
-      produce(state, (draft) => {
+    [setBootstrapping.toString()]: (
+      state,
+      { payload: bootstrapping }: NodeActions['setBootstrapping']
+    ) =>
+      produce(state, draft => {
         draft.loading = bootstrapping
       }),
-    [setIsRescanning]: (state, { payload: isRescanning }) =>
-      produce(state, (draft) => {
+    [setIsRescanning.toString()]: (
+      state,
+      { payload: isRescanning }: NodeActions['setIsRescanning']
+    ) =>
+      produce(state, draft => {
         draft.isRescanning = isRescanning
       }),
-    [setBootstrappingMessage]: (state, { payload: message }) =>
-      produce(state, (draft) => {
-        draft.bootstrapMessage = message
+    [setBootstrappingMessage.toString()]: (
+      state,
+      { payload: message }: NodeActions['setBootstrappingMessage']
+    ) =>
+      produce(state, draft => {
+        draft.bootstrappingMessage = message
       }),
-    [setGuideStatus]: (state, { payload: guideStatus }) =>
-      produce(state, (draft) => {
+    [setGuideStatus.toString()]: (state, { payload: guideStatus }: NodeActions['setGuideStatus']) =>
+      produce(state, draft => {
         draft.fetchingStatus.guideStatus = guideStatus
       }),
-    [setNextSlide]: state =>
-      produce(state, (draft) => {
+    [setNextSlide.toString()]: state =>
+      produce(state, draft => {
         const currentSlide = draft.fetchingStatus.currentSlide
         const slideToSet = currentSlide === 10 ? currentSlide : currentSlide + 1
         draft.fetchingStatus.currentSlide = slideToSet
       }),
-    [setPrevSlide]: state =>
-      produce(state, (draft) => {
+    [setPrevSlide.toString()]: state =>
+      produce(state, draft => {
         const currentSlide = draft.fetchingStatus.currentSlide
         const slideToSet = currentSlide === 0 ? currentSlide : currentSlide - 1
         draft.fetchingStatus.currentSlide = slideToSet

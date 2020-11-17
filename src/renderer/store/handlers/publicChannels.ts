@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import * as R from 'ramda'
 import feesSelectors from '../selectors/fees'
@@ -9,11 +9,15 @@ import identitySelectors from '../selectors/identity'
 import notificationsHandlers from './notifications'
 import messagesOperators from '../../zbay/messages'
 import { ADDRESS_TYPE } from '../../zbay/transit'
-import feesHandlers from '../handlers/fees'
+import feesHandlers from './fees'
 import staticChannels from '../../zcash/channels'
 import { messageType, actionTypes } from '../../../shared/static'
-import { checkTransferCount } from '../handlers/messages'
 
+import { ActionsType, PayloadType } from './types'
+
+import { DisplayableMessage } from '../../zbay/messages.types'
+
+// Used only in some tests
 export const _PublicChannelData = {
   address: '',
   name: '',
@@ -22,33 +26,49 @@ export const _PublicChannelData = {
   timestamp: 0,
   keys: {}
 }
-export const initialState = {}
 
-export const setPublicChannels = createAction(actionTypes.SET_PUBLIC_CHANNELS)
+export class PublicChannel {
+  address: string
+  name: string
+  description: string
+  owner: string
+  keys: { ivk: string }
+  timestamp: number
+
+  constructor(values: Partial<PublicChannel>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
+}
+
+export type PublicChannelsStore = { [name: string]: PublicChannel }
+
+export const initialState: PublicChannelsStore = {}
+
+export const setPublicChannels = createAction<{ [name: string]: PublicChannel }>(
+  actionTypes.SET_PUBLIC_CHANNELS
+)
 
 export const actions = {
   setPublicChannels
 }
-export const fetchPublicChannels = (address, messages) => async (dispatch, getState) => {
-  try {
-    const transferCountFlag = await dispatch(
-      checkTransferCount(address, messages)
-    )
-    if (transferCountFlag === -1 || !messages) {
-      return
-    }
-    const filteredZbayMessages = messages.filter(msg =>
-      msg.memohex.startsWith('ff')
-    )
 
-    const registrationMessages = await Promise.all(
+export type PublicChannelsActions = ActionsType<typeof actions>
+
+export const fetchPublicChannels = (address, messages: DisplayableMessage[]) => async (
+  dispatch,
+  getState
+) => {
+  try {
+    const filteredZbayMessages = messages.filter(msg => msg.memohex.startsWith('ff'))
+
+    const registrationMessages: DisplayableMessage[] = await Promise.all(
       filteredZbayMessages.map(transfer => {
         const message = messagesOperators.transferToMessage(transfer)
         return message
       })
     )
-    const sortedMessages = registrationMessages
-      .filter(msg => msg !== null)
+    const sortedMessages = registrationMessages.filter(msg => msg !== null)
     let minfee = 0
     let publicChannelsMap = {}
     const network = nodeSelectors.network(getState())
@@ -63,13 +83,12 @@ export const fetchPublicChannels = (address, messages) => async (dispatch, getSt
         continue
       }
       const updateChannelSettings = R.findLast(
-        settingsMsg =>
+        (settingsMsg: DisplayableMessage) =>
           settingsMsg.type === messageType.CHANNEL_SETTINGS_UPDATE &&
           settingsMsg.publicKey === msg.publicKey &&
-          settingsMsg.message.updateChannelAddress ===
-            msg.message.channelAddress
+          settingsMsg.message.updateChannelAddress === msg.message.channelAddress
       )(sortedMessages)
-      const channel = {
+      const channel = new PublicChannel({
         address: msg.message.channelAddress,
         name: msg.message.channelName,
         description: updateChannelSettings
@@ -78,7 +97,7 @@ export const fetchPublicChannels = (address, messages) => async (dispatch, getSt
         owner: msg.publicKey,
         keys: { ivk: msg.message.channelIvk },
         timestamp: msg.createdAt
-      }
+      })
       if (channel !== null && !publicChannelsMap[channel.name]) {
         publicChannelsMap = {
           ...publicChannelsMap,
@@ -114,9 +133,7 @@ export const publishChannel = ({
         channelIvk,
         channelDescription,
         networkType:
-          network === 'testnet'
-            ? ADDRESS_TYPE.SHIELDED_TESTNET
-            : ADDRESS_TYPE.SHIELDED_MAINNET
+          network === 'testnet' ? ADDRESS_TYPE.SHIELDED_TESTNET : ADDRESS_TYPE.SHIELDED_MAINNET
       }
     },
     privKey: privKey
@@ -154,14 +171,18 @@ export const epics = {
   publishChannel
 }
 
-export const reducer = handleActions(
+export const reducer = handleActions<PublicChannelsStore, PayloadType<PublicChannelsActions>>(
   {
-    [setPublicChannels]: (state, { payload: publicChannels }) => produce(state, (draft) => {
-      return {
-        ...draft,
-        ...publicChannels
-      }
-    })
+    [setPublicChannels.toString()]: (
+      state,
+      { payload: publicChannels }: PublicChannelsActions['setPublicChannels']
+    ) =>
+      produce(state, draft => {
+        return {
+          ...draft,
+          ...publicChannels
+        }
+      })
   },
   initialState
 )
