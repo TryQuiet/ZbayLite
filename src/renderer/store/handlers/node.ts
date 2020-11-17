@@ -1,5 +1,5 @@
 // import Immutable from 'immutable'
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import BigNumber from 'bignumber.js'
 import { ipcRenderer } from 'electron'
 import { createAction, handleActions } from 'redux-actions'
@@ -30,6 +30,7 @@ export class Node {
 
   constructor(values?: Partial<Node>) {
     Object.assign(this, values)
+    this[immerable] = true
   }
 }
 
@@ -170,9 +171,9 @@ const epics = {
 
 export const reducer = handleActions<NodeStore, PayloadType<NodeActions>>(
   {
-    [setStatus.toString()]: (state, { payload: { status } }: NodeActions['setStatus']) =>
+    [setStatus.toString()]: (state, { payload: status }: NodeActions['setStatus']) =>
       produce(state, draft => {
-        draft = Object.assign({}, draft, status)
+        return Object.assign({}, state, status)
       }),
     [typeRejected(actionTypes.CREATE_ADDRESS)]: (state, { payload: errors }) =>
       produce(state, draft => {

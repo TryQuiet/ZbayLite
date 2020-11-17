@@ -1,4 +1,4 @@
-import { produce } from "immer";
+import { produce, immerable } from 'immer'
 import * as R from "ramda";
 import crypto from "crypto";
 import { createAction, handleActions } from "redux-actions";
@@ -46,6 +46,7 @@ export class DirectMessagesQueue {
 
   constructor(values?: Partial<DirectMessagesQueue>) {
     Object.assign(this, values);
+    this[immerable] = true
   }
 }
 
@@ -221,8 +222,8 @@ const _sendPendingDirectMessages = (redirect): ZbayThunkAction<void> => async (d
           address: recipientAddress,
           amount:
             message.type === messageType.TRANSFER || messageType.ITEM_TRANSFER
-              ? message.spent
-              : new BigNumber(0),
+              ? message.spent.toNumber()
+              : 0,
           identityAddress,
           donation,
         });
