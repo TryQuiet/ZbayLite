@@ -1,5 +1,4 @@
 import Immutable from "immutable";
-import { partial } from 'ramda'
 
 import { notifierAction } from "../../components/ui/DismissSnackbarAction";
 

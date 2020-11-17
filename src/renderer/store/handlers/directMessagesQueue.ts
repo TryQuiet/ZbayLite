@@ -98,7 +98,6 @@ const sendMessage = (payload, redirect = true) => async (
   getState
 ) => {
   const myUser = usersSelectors.myUser(getState());
-  console.log("my user", myUser);
   const messageDigest = crypto.createHash("sha256");
   // Generate unique id for txn until we get response from blockchain
   const messageEssentials = R.pick(["createdAt", "message"])(payload);
