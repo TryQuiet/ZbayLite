@@ -10,14 +10,10 @@ const identity = createSelector(store, state => state.identity)
 const data = createSelector(identity, i => i.data)
 
 const balance = currency =>
-  createSelector(data, rate(currency), (d, rate) =>
-    rate.times(new BigNumber(d.balance || 0))
-  )
+  createSelector(data, rate(currency), (d, rate) => rate.times(new BigNumber(d.balance || 0)))
 
 const lockedBalance = currency =>
-  createSelector(data, rate(currency), (d, rate) =>
-    rate.times(new BigNumber(d.lockedBalance || 0))
-  )
+  createSelector(data, rate(currency), (d, rate) => rate.times(new BigNumber(d.lockedBalance || 0)))
 
 const id = createSelector(data, d => d.id)
 const name = createSelector(data, d => d.name)
@@ -37,15 +33,9 @@ export const signerPubKey = createSelector(data, d => d.signerPubKey)
 const address = createSelector(data, d => d.address)
 const onionAddress = createSelector(data, d => d.onionAddress)
 const transparentAddress = createSelector(data, d => d.transparentAddress)
-const topAddress = createSelector(
-  data,
-  d => d.addresses[0] || d.transparentAddress
-)
+const topAddress = createSelector(data, d => d.addresses[0] || d.transparentAddress)
 const addresses = createSelector(data, d => d.addresses)
-const topShieldedAddress = createSelector(
-  data,
-  d => d.shieldedAddresses[0] || d.address
-)
+const topShieldedAddress = createSelector(data, d => d.shieldedAddresses[0] || d.address)
 const shieldedAddresses = createSelector(data, d => d.shieldedAddresses)
 
 const loader = createSelector(identity, i => i.loader)

@@ -142,20 +142,24 @@ export const registerAnonUsername = () => async (dispatch, getState) => {
   );
 };
 
-export const checkRegistraionConfirmations = ({ firstRun }) => async (dispatch, getState) => {
+export const checkRegistrationConfirmations = ({ firstRun }) => async (dispatch, getState) => {
   if (firstRun) {
     const publicKey = identitySelector.signerPubKey(getState())
     const address = identitySelector.address(getState())
     const nickname = electronStore.get('registrationStatus.nickname')
-    dispatch(identityActions.setRegistraionStatus({
-      nickname,
-      status: 'IN_PROGRESS'
-    }))
-    dispatch(mockOwnUser({
-      sigPubKey: publicKey,
-      address,
-      nickname
-    }))
+    dispatch(
+      identityActions.setRegistraionStatus({
+        nickname,
+        status: 'IN_PROGRESS'
+      })
+    )
+    dispatch(
+      mockOwnUser({
+        sigPubKey: publicKey,
+        address,
+        nickname
+      })
+    )
   }
   setTimeout(async () => {
     const txid = electronStore.get('registrationStatus.txid')
@@ -177,7 +181,7 @@ export const checkRegistraionConfirmations = ({ firstRun }) => async (dispatch, 
         )
       } else {
         electronStore.set('registrationStatus.confirmation', currentHeight - blockHeight)
-        dispatch(checkRegistraionConfirmations({ firstRun: false }))
+        dispatch(checkRegistrationConfirmations({ firstRun: false }))
       }
     }
   }, 75000)
@@ -256,7 +260,7 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     dispatch(appHandlers.actions.setUseTor(true))
     electronStore.set('registrationStatus.txid', txid.txid)
     electronStore.set('registrationStatus.confirmation', 0)
-    dispatch(checkRegistraionConfirmations({ firstRun: true }))
+    dispatch(checkRegistrationConfirmations({ firstRun: true }))
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
         successNotification({
@@ -503,7 +507,8 @@ export const epics = {
   registerAnonUsername,
   fetchOnionAddresses,
   registerOnionAddress,
-};
+  checkRegistrationConfirmations
+}
 
 export default {
   reducer,

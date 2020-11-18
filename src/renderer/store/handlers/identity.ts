@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import BigNumber from 'bignumber.js'
 import { createAction, handleActions } from 'redux-actions'
 import secp256k1 from 'secp256k1'
@@ -21,7 +21,7 @@ import coordinatorHandlers from './coordinator'
 import whitelistHandlers from './whitelist'
 import ownedChannelsHandlers from './ownedChannels'
 import txnTimestampsHandlers from './txnTimestamps'
-import logsHandlers from '../../store/handlers/logs'
+import logsHandlers from './logs'
 import ratesHandlers from './rates'
 import nodeHandlers from './node'
 import appHandlers from './app'
@@ -39,7 +39,58 @@ import {
 import electronStore, { migrationStore } from '../../../shared/electronStore'
 import staticChannelsSyncHeight from '../../static/staticChannelsSyncHeight.json'
 
-export const initialState = {
+import { PublicChannel } from './publicChannels'
+
+import { ActionsType, PayloadType } from './types'
+
+export class Identity {
+  data: {
+    id?: string
+    address: string
+    transparentAddress: string
+    signerPrivKey: string
+    signerPubKey: string
+    name: string
+    shippingData: {
+      firstName: string
+      lastName: string
+      street: string
+      country: string
+      region: string
+      city: string
+      postalCode: string
+    }
+    balance?: number
+    lockedBalance?: number
+    donationAllow: boolean
+    shieldingTax: boolean
+    donationAddress: string
+    onionAddress: string
+    freeUtxos: number
+    addresses: string[]
+    shieldedAddresses: string[]
+  }
+  fetchingBalance: boolean
+  loader: {
+    loading: boolean
+    message: string
+  }
+  removedChannels: string[]
+  registrationStatus: {
+    nickname: string
+    status: string
+  }
+  errors: string
+
+  constructor(values?: Partial<Identity>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
+}
+
+export type IdentityStore = Identity
+
+const initialState: Identity = new Identity({
   data: {
     id: null,
     address: '',
@@ -77,33 +128,25 @@ export const initialState = {
     status: 'UNREGISTERED'
   },
   errors: ''
-}
+})
 
+export const setLoading = createAction<boolean>(actionTypes.SET_IDENTITY_LOADING)
+export const setRemovedChannels = createAction<any[]>(actionTypes.SET_REMOVED_CHANNELS)
+export const setLoadingMessage = createAction<string>(actionTypes.SET_IDENTITY_LOADING_MESSAGE)
 export const setIdentity = createAction(actionTypes.SET_IDENTITY)
-export const setOnionAddress = createAction(actionTypes.SET_ONION_ADDRESS)
-export const setRemovedChannels = createAction(actionTypes.SET_REMOVED_CHANNELS)
 export const setBalance = createAction(actionTypes.SET_IDENTITY_BALANCE)
-export const setLockedBalance = createAction(
-  actionTypes.SET_IDENTITY_LOCKED_BALANCE
-)
-export const setErrors = createAction(actionTypes.SET_IDENTITY_ERROR)
+export const setOnionAddress = createAction(actionTypes.SET_ONION_ADDRESS)
+export const setLockedBalance = createAction(actionTypes.SET_IDENTITY_LOCKED_BALANCE)
 export const setFetchingBalance = createAction(actionTypes.SET_FETCHING_BALANCE)
-export const setLoading = createAction(actionTypes.SET_IDENTITY_LOADING)
-export const setLoadingMessage = createAction(
-  actionTypes.SET_IDENTITY_LOADING_MESSAGE
-)
-export const setShippingData = createAction(
-  actionTypes.SET_IDENTITY_SHIPPING_DATA
-)
+export const setErrors = createAction(actionTypes.SET_IDENTITY_ERROR)
+export const setShippingData = createAction(actionTypes.SET_IDENTITY_SHIPPING_DATA)
 export const setDonationAllow = createAction(actionTypes.SET_DONATION_ALLOW)
 export const setDonationAddress = createAction(actionTypes.SET_DONATION_ADDRESS)
 export const setShieldingTax = createAction(actionTypes.SET_SHIELDING_TAX)
 export const setFreeUtxos = createAction(actionTypes.SET_FREE_UTXOS)
 export const setUserAddreses = createAction(actionTypes.SET_USER_ADDRESSES)
 export const setRegistraionStatus = createAction(actionTypes.SET_REGISTRAION_STATUS)
-export const setUserShieldedAddreses = createAction(
-  actionTypes.SET_USER_SHIELDED_ADDRESES
-)
+export const setUserShieldedAddreses = createAction(actionTypes.SET_USER_SHIELDED_ADDRESES)
 
 export const actions = {
   setIdentity,
@@ -123,13 +166,13 @@ export const actions = {
   setRegistraionStatus
 }
 
+export type IdentityActions = ActionsType<typeof actions>
+
 export const fetchAffiliateMoney = () => async (dispatch, getState) => {
   try {
     const identityAddress = identitySelectors.address(getState())
     const transfers = await client().payment.received(identityAddress)
-    const affiliatesTransfers = transfers.filter(msg =>
-      msg.memo.startsWith('aa')
-    )
+    const affiliatesTransfers = transfers.filter(msg => msg.memo.startsWith('aa'))
     let amount = 0
     let txnTimestamps = txnTimestampsSelector.tnxTimestamps(getState())
     for (const key in affiliatesTransfers) {
@@ -153,7 +196,7 @@ export const fetchAffiliateMoney = () => async (dispatch, getState) => {
         )
       )
     }
-  } catch (err) {}
+  } catch (err) { }
 }
 export const fetchBalance = () => async (dispatch, getState) => {
   try {
@@ -174,23 +217,15 @@ export const fetchBalance = () => async (dispatch, getState) => {
     const pending = notes.pending_notes.reduce((acc, cur) => acc + cur.value, 0)
     dispatch(
       setLockedBalance(
-        new BigNumber(
-          (balanceObj.unverified_zbalance + pending) / satoshiMultiplier
-        )
+        new BigNumber((balanceObj.unverified_zbalance + pending) / satoshiMultiplier)
       )
     )
-    dispatch(
-      setBalance(
-        new BigNumber(balanceObj.spendable_zbalance / satoshiMultiplier)
-      )
-    )
+    dispatch(setBalance(new BigNumber(balanceObj.spendable_zbalance / satoshiMultiplier)))
     dispatch(
       logsHandlers.epics.saveLogs({
         type: 'APPLICATION_LOGS',
-        payload: `Fetching balance: locked balance: ${(balanceObj.unverified_zbalance +
-          pending) /
-          satoshiMultiplier}, balance: ${balanceObj.spendable_zbalance /
-          satoshiMultiplier}`
+        payload: `Fetching balance: locked balance: ${(balanceObj.unverified_zbalance + pending) / satoshiMultiplier
+          }, balance: ${balanceObj.spendable_zbalance / satoshiMultiplier}`
       })
     )
   } catch (err) {
@@ -246,10 +281,7 @@ export const shieldBalance = ({ to, amount }) => async (dispatch, getState) => {
   }, 300000)
 }
 
-export const createIdentity = ({ name, fromMigrationFile }) => async (
-  dispatch,
-  getState
-) => {
+export const createIdentity = ({ name, fromMigrationFile }) => async (dispatch, getState) => {
   let zAddress
   let tAddress
   let tpk
@@ -296,7 +328,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async (
     const network = 'mainnet'
 
     if (fromMigrationFile) {
-      const migrationChannels = Object.values(migrationStore.get('channels'))
+      const migrationChannels: PublicChannel[] = Object.values(migrationStore.get('channels'))
       for (const channel of migrationChannels) {
         electronStore.set(`importedChannels.${channel.address}`, {
           address: channel.address,
@@ -305,9 +337,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async (
           owner: channel.keys.sk ? signerPubKey : '',
           keys: channel.keys
         })
-        await client.importKey(
-          channel.keys.sk ? channel.keys.sk : channel.keys.ivk
-        )
+        await client.importKey(channel.keys.sk ? channel.keys.sk : channel.keys.ivk)
       }
       migrationStore.clear()
     }
@@ -372,10 +402,7 @@ export const loadIdentity = () => async (dispatch, getState) => {
   }
 }
 
-export const setIdentityEpic = (identityToSet, isNewUser) => async (
-  dispatch,
-  getState
-) => {
+export const setIdentityEpic = (identityToSet, isNewUser) => async (dispatch, getState) => {
   // let identity = await migrateTo_0_2_0.ensureIdentityHasKeys(identityToSet)
   let identity = identityToSet
   dispatch(setLoading(true))
@@ -419,12 +446,12 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
       if (!usernameRegistrationTxid) {
         await dispatch(usersHandlers.epics.createOrUpdateUser({ nickname, debounce: true }))
       } else {
-        dispatch(usersHandlers.epics.checkRegistraionConfirmations({ firstRun: true }))
+        dispatch(usersHandlers.epics.checkRegistrationConfirmations({ firstRun: true }))
       }
     }
     setTimeout(() => dispatch(coordinatorHandlers.epics.coordinator()), 5000)
     dispatch(setLoadingMessage('Loading users and messages'))
-  } catch (err) {}
+  } catch (err) { }
   if (isNewUser === true) {
     dispatch(modalsHandlers.actionCreators.openModal('createUsernameModal')())
   }
@@ -452,10 +479,7 @@ export const setIdentityEpic = (identityToSet, isNewUser) => async (
   // }
 }
 
-export const updateShippingData = (values, formActions) => async (
-  dispatch,
-  getState
-) => {
+export const updateShippingData = (values, formActions) => async (dispatch, getState) => {
   electronStore.set('identity.shippingData', values)
   await dispatch(setShippingData(values))
   dispatch(
@@ -486,8 +510,8 @@ export const updateDonation = allow => async (dispatch, getState) => {
   )
 }
 
-export const updateDonationAddress = address => async (dispatch, getState) => {}
-export const updateShieldingTax = allow => async (dispatch, getState) => {}
+export const updateDonationAddress = address => async (dispatch, getState) => { }
+export const updateShieldingTax = allow => async (dispatch, getState) => { }
 export const generateNewAddress = () => async (dispatch, getState) => {
   if (!electronStore.get('addresses')) {
     electronStore.set('addresses', JSON.stringify([]))
@@ -539,72 +563,74 @@ const exportFunctions = {
   createSignerKeys
 }
 
-export const reducer = handleActions(
+export const reducer = handleActions<IdentityStore, PayloadType<IdentityActions>>(
   {
-    [setLoading]: (state, { payload: loading }) =>
-      produce(state, (draft) => {
+    [setLoading.toString()]: (state, { payload: loading }: IdentityActions['setLoading']) =>
+      produce(state, draft => {
         draft.loader.loading = loading
       }),
-    [setRemovedChannels]: (state, { payload: removedChannels }) =>
-      produce(state, (draft) => {
+    [setRemovedChannels.toString()]: (state, { payload: removedChannels }: IdentityActions['setRemovedChannels']) =>
+      produce(state, draft => {
         draft.removedChannels = removedChannels
       }),
-    [setLoadingMessage]: (state, { payload: message }) =>
-      produce(state, (draft) => {
+    [setLoadingMessage.toString()]: (state, { payload: message }: IdentityActions['setLoadingMessage']) =>
+      produce(state, draft => {
         draft.loader.message = message
       }),
-    [setIdentity]: (state, { payload: identity }) =>
-      produce(state, (draft) => {
+    [setIdentity.toString()]: (state, { payload: identity }: IdentityActions['setIdentity']) =>
+      produce(state, draft => {
         draft.data = Object.assign({}, draft.data, identity)
       }),
-    [setBalance]: (state, { payload: balance }) =>
-      produce(state, (draft) => {
+    [setBalance.toString()]: (state, { payload: balance }: IdentityActions['setBalance']) =>
+      produce(state, draft => {
         draft.data.balance = balance
       }),
-    [setOnionAddress]: (state, { payload: address }) =>
-      produce(state, (draft) => {
+    [setOnionAddress.toString()]: (state, { payload: address }: IdentityActions['setOnionAddress']) =>
+      produce(state, draft => {
         draft.data.onionAddress = address
       }),
-    [setLockedBalance]: (state, { payload: balance }) =>
-      produce(state, (draft) => {
+    [setLockedBalance.toString()]: (state, { payload: balance }: IdentityActions['setLockedBalance']) =>
+      produce(state, draft => {
         draft.data.lockedBalance = balance
       }),
-    [setFetchingBalance]: (state, { payload: fetching }) =>
-      produce(state, (draft) => {
+    [setFetchingBalance.toString()]: (state, { payload: fetching }: IdentityActions['setFetchingBalance']) =>
+      produce(state, draft => {
         draft.fetchingBalance = fetching
       }),
-    [setErrors]: (state, { payload: errors }) => produce(state, draft => {
-      draft.errors = errors
-    }),
-    [setShippingData]: (state, { payload: shippingData }) =>
-      produce(state, (draft) => {
+    [setErrors.toString()]: (state, { payload: errors }: IdentityActions['setErrors']) =>
+      produce(state, draft => {
+        draft.errors = errors
+      }),
+    [setShippingData.toString()]: (state, { payload: shippingData }: IdentityActions['setShippingData']) =>
+      produce(state, draft => {
         draft.data.shippingData = shippingData
       }),
-    [setDonationAllow]: (state, { payload: allow }) =>
-      produce(state, (draft) => {
+    [setDonationAllow.toString()]: (state, { payload: allow }: IdentityActions['setDonationAllow']) =>
+      produce(state, draft => {
         draft.data.donationAllow = allow
       }),
-    [setDonationAddress]: (state, { payload: address }) =>
-      produce(state, (draft) => {
+    [setDonationAddress.toString()]: (state, { payload: address }: IdentityActions['setDonationAddress']) =>
+      produce(state, draft => {
         draft.data.donationAddress = address
       }),
-    [setShieldingTax]: (state, { payload: allow }) =>
-      produce(state, (draft) => {
+    [setShieldingTax.toString()]: (state, { payload: allow }: IdentityActions['setShieldingTax']) =>
+      produce(state, draft => {
         draft.data.shieldingTax = allow
       }),
-    [setFreeUtxos]: (state, { payload: freeUtxos }) =>
-      produce(state, (draft) => {
+    [setFreeUtxos.toString()]: (state, { payload: freeUtxos }) =>
+      produce(state, draft => {
         draft.data.freeUtxos = freeUtxos
       }),
-    [setUserAddreses]: (state, { payload: addresses }) =>
-      produce(state, (draft) => {
+    [setUserAddreses.toString()]: (state, { payload: addresses }) =>
+      produce(state, draft => {
         draft.data.addresses = addresses
       }),
-    [setRegistraionStatus]: (state, { payload }) => produce(state, draft => {
-      draft.registrationStatus = payload
-    }),
-    [setUserShieldedAddreses]: (state, { payload: shieldedAddresses }) =>
-      produce(state, (draft) => {
+    [setRegistraionStatus.toString()]: (state, { payload }) =>
+      produce(state, draft => {
+        draft.registrationStatus = payload
+      }),
+    [setUserShieldedAddreses.toString()]: (state, { payload: shieldedAddresses }) =>
+      produce(state, draft => {
         draft.data.shieldedAddresses = shieldedAddresses
       })
   },
