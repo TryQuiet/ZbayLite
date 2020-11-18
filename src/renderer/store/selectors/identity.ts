@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { createSelector } from 'reselect'
 
+import { IdentityStore } from '../handlers/identity'
+
 import { rate } from './rates'
 
-const store = s => s
-
-const identity = createSelector(store, state => state.identity)
+const identity = (s): IdentityStore => s.identity as IdentityStore
 
 const data = createSelector(identity, i => i.data)
 

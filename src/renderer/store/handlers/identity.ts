@@ -43,6 +43,15 @@ import { PublicChannel } from './publicChannels'
 
 import { ActionsType, PayloadType } from './types'
 
+interface IShippingData {
+  firstName: string
+  lastName: string
+  street: string
+  country: string
+  region: string
+  city: string
+  postalCode: string
+}
 export class Identity {
   data: {
     id?: string
@@ -51,17 +60,9 @@ export class Identity {
     signerPrivKey: string
     signerPubKey: string
     name: string
-    shippingData: {
-      firstName: string
-      lastName: string
-      street: string
-      country: string
-      region: string
-      city: string
-      postalCode: string
-    }
-    balance?: number
-    lockedBalance?: number
+    shippingData: IShippingData
+    balance?: BigNumber
+    lockedBalance?: BigNumber
     donationAllow: boolean
     shieldingTax: boolean
     donationAddress: string
@@ -133,20 +134,20 @@ const initialState: Identity = new Identity({
 export const setLoading = createAction<boolean>(actionTypes.SET_IDENTITY_LOADING)
 export const setRemovedChannels = createAction<any[]>(actionTypes.SET_REMOVED_CHANNELS)
 export const setLoadingMessage = createAction<string>(actionTypes.SET_IDENTITY_LOADING_MESSAGE)
-export const setIdentity = createAction(actionTypes.SET_IDENTITY)
-export const setBalance = createAction(actionTypes.SET_IDENTITY_BALANCE)
-export const setOnionAddress = createAction(actionTypes.SET_ONION_ADDRESS)
-export const setLockedBalance = createAction(actionTypes.SET_IDENTITY_LOCKED_BALANCE)
-export const setFetchingBalance = createAction(actionTypes.SET_FETCHING_BALANCE)
-export const setErrors = createAction(actionTypes.SET_IDENTITY_ERROR)
-export const setShippingData = createAction(actionTypes.SET_IDENTITY_SHIPPING_DATA)
-export const setDonationAllow = createAction(actionTypes.SET_DONATION_ALLOW)
-export const setDonationAddress = createAction(actionTypes.SET_DONATION_ADDRESS)
-export const setShieldingTax = createAction(actionTypes.SET_SHIELDING_TAX)
-export const setFreeUtxos = createAction(actionTypes.SET_FREE_UTXOS)
-export const setUserAddreses = createAction(actionTypes.SET_USER_ADDRESSES)
-export const setRegistraionStatus = createAction(actionTypes.SET_REGISTRAION_STATUS)
-export const setUserShieldedAddreses = createAction(actionTypes.SET_USER_SHIELDED_ADDRESES)
+export const setIdentity = createAction(actionTypes.SET_IDENTITY) // TODO: find identity type
+export const setBalance = createAction<BigNumber>(actionTypes.SET_IDENTITY_BALANCE)
+export const setOnionAddress = createAction<string>(actionTypes.SET_ONION_ADDRESS)
+export const setLockedBalance = createAction<BigNumber>(actionTypes.SET_IDENTITY_LOCKED_BALANCE)
+export const setFetchingBalance = createAction<boolean>(actionTypes.SET_FETCHING_BALANCE)
+export const setErrors = createAction<string>(actionTypes.SET_IDENTITY_ERROR)
+export const setShippingData = createAction<IShippingData>(actionTypes.SET_IDENTITY_SHIPPING_DATA)
+export const setDonationAllow = createAction<boolean>(actionTypes.SET_DONATION_ALLOW)
+export const setDonationAddress = createAction<string>(actionTypes.SET_DONATION_ADDRESS)
+export const setShieldingTax = createAction<boolean>(actionTypes.SET_SHIELDING_TAX)
+export const setFreeUtxos = createAction<number>(actionTypes.SET_FREE_UTXOS)
+export const setUserAddreses = createAction<string[]>(actionTypes.SET_USER_ADDRESSES)
+export const setRegistraionStatus = createAction<{nickname: string; status: string}>(actionTypes.SET_REGISTRAION_STATUS)
+export const setUserShieldedAddreses = createAction<any[]>(actionTypes.SET_USER_SHIELDED_ADDRESES)
 
 export const actions = {
   setIdentity,
@@ -163,7 +164,9 @@ export const actions = {
   setShieldingTax,
   setFreeUtxos,
   setOnionAddress,
-  setRegistraionStatus
+  setRegistraionStatus,
+  setUserAddreses,
+  setUserShieldedAddreses
 }
 
 export type IdentityActions = ActionsType<typeof actions>
@@ -569,11 +572,17 @@ export const reducer = handleActions<IdentityStore, PayloadType<IdentityActions>
       produce(state, draft => {
         draft.loader.loading = loading
       }),
-    [setRemovedChannels.toString()]: (state, { payload: removedChannels }: IdentityActions['setRemovedChannels']) =>
+    [setRemovedChannels.toString()]: (
+      state,
+      { payload: removedChannels }: IdentityActions['setRemovedChannels']
+    ) =>
       produce(state, draft => {
         draft.removedChannels = removedChannels
       }),
-    [setLoadingMessage.toString()]: (state, { payload: message }: IdentityActions['setLoadingMessage']) =>
+    [setLoadingMessage.toString()]: (
+      state,
+      { payload: message }: IdentityActions['setLoadingMessage']
+    ) =>
       produce(state, draft => {
         draft.loader.message = message
       }),
@@ -585,15 +594,24 @@ export const reducer = handleActions<IdentityStore, PayloadType<IdentityActions>
       produce(state, draft => {
         draft.data.balance = balance
       }),
-    [setOnionAddress.toString()]: (state, { payload: address }: IdentityActions['setOnionAddress']) =>
+    [setOnionAddress.toString()]: (
+      state,
+      { payload: address }: IdentityActions['setOnionAddress']
+    ) =>
       produce(state, draft => {
         draft.data.onionAddress = address
       }),
-    [setLockedBalance.toString()]: (state, { payload: balance }: IdentityActions['setLockedBalance']) =>
+    [setLockedBalance.toString()]: (
+      state,
+      { payload: balance }: IdentityActions['setLockedBalance']
+    ) =>
       produce(state, draft => {
         draft.data.lockedBalance = balance
       }),
-    [setFetchingBalance.toString()]: (state, { payload: fetching }: IdentityActions['setFetchingBalance']) =>
+    [setFetchingBalance.toString()]: (
+      state,
+      { payload: fetching }: IdentityActions['setFetchingBalance']
+    ) =>
       produce(state, draft => {
         draft.fetchingBalance = fetching
       }),
@@ -601,15 +619,24 @@ export const reducer = handleActions<IdentityStore, PayloadType<IdentityActions>
       produce(state, draft => {
         draft.errors = errors
       }),
-    [setShippingData.toString()]: (state, { payload: shippingData }: IdentityActions['setShippingData']) =>
+    [setShippingData.toString()]: (
+      state,
+      { payload: shippingData }: IdentityActions['setShippingData']
+    ) =>
       produce(state, draft => {
         draft.data.shippingData = shippingData
       }),
-    [setDonationAllow.toString()]: (state, { payload: allow }: IdentityActions['setDonationAllow']) =>
+    [setDonationAllow.toString()]: (
+      state,
+      { payload: allow }: IdentityActions['setDonationAllow']
+    ) =>
       produce(state, draft => {
         draft.data.donationAllow = allow
       }),
-    [setDonationAddress.toString()]: (state, { payload: address }: IdentityActions['setDonationAddress']) =>
+    [setDonationAddress.toString()]: (
+      state,
+      { payload: address }: IdentityActions['setDonationAddress']
+    ) =>
       produce(state, draft => {
         draft.data.donationAddress = address
       }),
@@ -617,19 +644,21 @@ export const reducer = handleActions<IdentityStore, PayloadType<IdentityActions>
       produce(state, draft => {
         draft.data.shieldingTax = allow
       }),
-    [setFreeUtxos.toString()]: (state, { payload: freeUtxos }) =>
+    [setFreeUtxos.toString()]: (state, { payload: freeUtxos }: IdentityActions['setFreeUtxos']) =>
       produce(state, draft => {
         draft.data.freeUtxos = freeUtxos
       }),
-    [setUserAddreses.toString()]: (state, { payload: addresses }) =>
+    [setUserAddreses.toString()]: (
+      state, { payload: addresses }: IdentityActions['setUserAddreses']
+    ) =>
       produce(state, draft => {
         draft.data.addresses = addresses
       }),
-    [setRegistraionStatus.toString()]: (state, { payload }) =>
+    [setRegistraionStatus.toString()]: (state, { payload }: IdentityActions['setRegistraionStatus']) =>
       produce(state, draft => {
         draft.registrationStatus = payload
       }),
-    [setUserShieldedAddreses.toString()]: (state, { payload: shieldedAddresses }) =>
+    [setUserShieldedAddreses.toString()]: (state, { payload: shieldedAddresses }: IdentityActions['setUserShieldedAddreses']) =>
       produce(state, draft => {
         draft.data.shieldedAddresses = shieldedAddresses
       })
