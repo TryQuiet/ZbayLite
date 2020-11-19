@@ -444,7 +444,7 @@ export const messageToTransfer = async ({
   message,
   amount = 0,
   address,
-  identityAddress = false,
+  identityAddress = '',
   splitTreshhold = networkFee * 20,
   fee = networkFee,
   donation = { allow: false }
