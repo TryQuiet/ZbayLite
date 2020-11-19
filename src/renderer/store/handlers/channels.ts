@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { DateTime } from 'luxon'
 import { createAction, handleActions } from 'redux-actions'
 import BigNumber from 'bignumber.js'
@@ -19,12 +19,16 @@ import channelSelectors from '../selectors/channel'
 import modalsHandlers from './modals'
 import { messages } from '../../zbay'
 import client from '../../zcash'
-import logsHandlers from '../../store/handlers/logs'
+import logsHandlers from './logs'
 import { networkFee, actionTypes } from '../../../shared/static'
 import history from '../../../shared/history'
 import electronStore from '../../../shared/electronStore'
 import contactsHandlers from './contacts'
 import ownedChannelsHandlers from './ownedChannels'
+
+import { ActionsType, PayloadType } from './types'
+
+import { PublicChannel } from './publicChannels'
 
 const toBigNumber = x => new BigNumber(x)
 
@@ -36,22 +40,34 @@ export const ChannelsState = {
   }
 }
 
-export const initialState = {
-  ...ChannelsState
+class Channels {
+  data: PublicChannel[]
+  loader: {
+    loading: boolean
+    message: string
+  }
+
+  constructor(values?: Partial<Channels>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-const loadChannels = createAction(
-  actionTypes.LOAD_IDENTITY_CHANNELS,
-  async id => {
-    return ''
-  }
-)
+export const initialState: Channels = {
+  ...new Channels(ChannelsState)
+}
+
+const loadChannels = createAction(actionTypes.LOAD_IDENTITY_CHANNELS, async id => {
+  return ''
+})
 const loadChannelsToNode = createAction(
   actionTypes.LOAD_IDENTITY_CHANNELS,
   async (id, isNewUser) => {
     return ''
   }
 )
+
+export type ChannelsStore = Channels
 
 const setLastSeen = createAction(actionTypes.SET_CHANNELS_LAST_SEEN)
 const setDescription = createAction(actionTypes.SET_CHANNEL_DESCRIPTION)
@@ -67,18 +83,18 @@ export const actions = {
   loadChannelsToNode,
   setDescription,
   setAdvertFee,
-  setOnlyRegistered
+  setOnlyRegistered,
+  setShowInfoMsg
 }
+
+export type ChannelsActions = ActionsType<typeof actions>
 
 const _createChannel = async values => {
   const address = await client.getNewShieldedAdress()
   return address
 }
 
-const createChannel = (values, formActions, setStep) => async (
-  dispatch,
-  getState
-) => {
+const createChannel = (values, formActions, setStep) => async (dispatch, getState) => {
   const closeModal = modalsHandlers.actionCreators.closeModal('createChannel')
   const balance = identitySelectors.balance('zec')(getState())
   const signerPubKey = identitySelectors.signerPubKey(getState())
@@ -208,18 +224,13 @@ const updateLastSeen = ({ channelId }) => async (dispatch, getState) => {
     })
   )
 }
-const updateSettings = ({ channelId, time, data }) => async (
-  dispatch,
-  getState
-) => {
+const updateSettings = ({ channelId, time, data }) => async (dispatch, getState) => {
   const lastSeen = channelsSelectors.lastSeen(channelId)(getState())
   const timeOfTransaction = DateTime.fromSeconds(time)
   if (timeOfTransaction.plus({ minutes: 2 }) > lastSeen) {
     dispatch(updateShowInfoMsg(true))
   }
-  dispatch(
-    setDescription({ channelId, description: data.updateChannelDescription })
-  )
+  dispatch(setDescription({ channelId, description: data.updateChannelDescription }))
   dispatch(
     setOnlyRegistered({
       channelId,
@@ -252,67 +263,47 @@ export const epics = {
 export const reducer = handleActions(
   {
     [typePending(actionTypes.LOAD_IDENTITY_CHANNELS)]: state =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.loader.loading = true
         draft.loader.message = 'Loading channel'
       }),
-    [typeFulfilled(actionTypes.LOAD_IDENTITY_CHANNELS)]: (
-      state,
-      { payload: data }
-    ) =>
-      produce(state, (draft) => {
+    [typeFulfilled(actionTypes.LOAD_IDENTITY_CHANNELS)]: (state, { payload: data }) =>
+      produce(state, draft => {
         draft.data = data
         draft.loader.loading = false
       }),
-    [typeRejected(actionTypes.LOAD_IDENTITY_CHANNELS)]: (
-      state,
-      { payload: error }
-    ) => produce(state, (draft) => {
-      draft.loader.loading = false
-    }),
-    [setDescription]: (state, { payload: { channelId, description } }) =>
-      produce(state, (draft) => {
-        const index = state.data.findIndex(
-          channel => channel.id === channelId
-        )
+    [typeRejected(actionTypes.LOAD_IDENTITY_CHANNELS)]: (state, { payload: error }) =>
+      produce(state, draft => {
+        draft.loader.loading = false
+      }),
+    [setDescription.toString()]: (state, { payload: { channelId, description } }) =>
+      produce(state, draft => {
+        const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].description = description
       }),
-    [setLastSeen]: (state, { payload: { channelId, lastSeen } }) =>
-      produce(state, (draft) => {
-        const index = state.data.findIndex(
-          channel => channel.id === channelId
-        )
+    [setLastSeen.toString()]: (state, { payload: { channelId, lastSeen } }) =>
+      produce(state, draft => {
+        const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].lastSeen = lastSeen
       }),
-    [setOnlyRegistered]: (
-      state,
-      { payload: { channelId, onlyRegistered } }
-    ) =>
-      produce(state, (draft) => {
-        const index = state.data.findIndex(
-          channel => channel.id === channelId
-        )
+    [setOnlyRegistered.toString()]: (state, { payload: { channelId, onlyRegistered } }) =>
+      produce(state, draft => {
+        const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].onlyRegistered = onlyRegistered
       }),
-    [setAdvertFee]: (state, { payload: { channelId, advertFee } }) =>
-      produce(state, (draft) => {
-        const index = state.data.findIndex(
-          channel => channel.id === channelId
-        )
+    [setAdvertFee.toString()]: (state, { payload: { channelId, advertFee } }) =>
+      produce(state, draft => {
+        const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].advertFee = parseFloat(advertFee)
       }),
-    [setShowInfoMsg]: (state, { payload: { channelId, showInfoMsg } }) =>
-      produce(state, (draft) => {
-        const index = state.data.findIndex(
-          channel => channel.id === channelId
-        )
+    [setShowInfoMsg.toString()]: (state, { payload: { channelId, showInfoMsg } }) =>
+      produce(state, draft => {
+        const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].showInfoMsg = showInfoMsg
       }),
-    [setUnread]: (state, { payload: { channelId, unread } }) =>
-      produce(state, (draft) => {
-        const index = state.data.findIndex(
-          channel => channel.id === channelId
-        )
+    [setUnread.toString()]: (state, { payload: { channelId, unread } }) =>
+      produce(state, draft => {
+        const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].unread = unread
       })
   },
