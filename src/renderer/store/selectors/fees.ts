@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
-const store = s => s
+import { FeesStore } from '../handlers/fees'
 
-export const fees = createSelector(store, state => state.fees)
+const fees = (s): FeesStore => s.fees as FeesStore
 
 const userFee = createSelector(fees, a => a.user)
 const publicChannelfee = createSelector(fees, a => a.publicChannel)
