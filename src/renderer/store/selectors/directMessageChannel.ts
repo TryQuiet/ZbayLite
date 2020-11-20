@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
-const store = s => s
+import { DirectMessageChannelStore } from '../handlers/directMessageChannel'
 
-export const directMessageChannel = createSelector(store, state => state.directMessageChannel)
+const directMessageChannel= (s): DirectMessageChannelStore => s.directMessageChannel as DirectMessageChannelStore
 
 export const targetRecipientAddress = createSelector(directMessageChannel, d => d.targetRecipientAddress)
 
