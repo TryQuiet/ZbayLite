@@ -12,7 +12,7 @@ import {
   successNotification
 } from './utils'
 import notificationsHandlers from './notifications'
-import channelHandlers from './channel'
+import channelHandlers, { ChannelActions } from './channel'
 import identitySelectors from '../selectors/identity'
 import channelsSelectors from '../selectors/channels'
 import channelSelectors from '../selectors/channel'
@@ -26,9 +26,9 @@ import electronStore from '../../../shared/electronStore'
 import contactsHandlers from './contacts'
 import ownedChannelsHandlers from './ownedChannels'
 
-import { ActionsType, PayloadType } from './types'
+import {Action} from 'redux-actions'
 
-import { PublicChannel } from './publicChannels'
+import { ActionsType, PayloadType } from './types'
 
 const toBigNumber = x => new BigNumber(x)
 
@@ -39,9 +39,17 @@ export const ChannelsState = {
     message: ''
   }
 }
-
+interface Channel {
+  id: string
+  description: string
+  lastSeen: DateTime
+  onlyRegistered: boolean
+  advertFee: number
+  showInfoMsg: boolean
+  unread: number
+}
 class Channels {
-  data: PublicChannel[]
+  data: Channel[]
   loader: {
     loading: boolean
     message: string
@@ -60,6 +68,7 @@ export const initialState: Channels = {
 const loadChannels = createAction(actionTypes.LOAD_IDENTITY_CHANNELS, async id => {
   return ''
 })
+
 const loadChannelsToNode = createAction(
   actionTypes.LOAD_IDENTITY_CHANNELS,
   async (id, isNewUser) => {
@@ -69,12 +78,14 @@ const loadChannelsToNode = createAction(
 
 export type ChannelsStore = Channels
 
-const setLastSeen = createAction(actionTypes.SET_CHANNELS_LAST_SEEN)
-const setDescription = createAction(actionTypes.SET_CHANNEL_DESCRIPTION)
-const setUnread = createAction(actionTypes.SET_CHANNEL_UNREAD)
-const setShowInfoMsg = createAction(actionTypes.SET_SHOW_INFO_MSG)
-const setAdvertFee = createAction(actionTypes.SET_ADVERT_FEE)
-const setOnlyRegistered = createAction(actionTypes.SET_ONLY_REGISTERED)
+const setLastSeen = createAction<{channelId: string; lastSeen: DateTime}>(actionTypes.SET_CHANNELS_LAST_SEEN)
+const setDescription = createAction<{ channelId: string; description: string }>(
+  actionTypes.SET_CHANNEL_DESCRIPTION
+)
+const setUnread = createAction<{unread: number; channelId: string}>(actionTypes.SET_CHANNEL_UNREAD)
+const setShowInfoMsg = createAction<{channelId: string; showInfoMsg: boolean}>(actionTypes.SET_SHOW_INFO_MSG)
+const setAdvertFee = createAction<{channelId: string; advertFee: string}>(actionTypes.SET_ADVERT_FEE)
+const setOnlyRegistered = createAction<{channelId: string; onlyRegistered: boolean}>(actionTypes.SET_ONLY_REGISTERED)
 
 export const actions = {
   loadChannels,
@@ -260,14 +271,14 @@ export const epics = {
   updateSettings
 }
 
-export const reducer = handleActions(
+export const reducer = handleActions<ChannelsStore, PayloadType<ChannelsActions>>(
   {
     [typePending(actionTypes.LOAD_IDENTITY_CHANNELS)]: state =>
       produce(state, draft => {
         draft.loader.loading = true
         draft.loader.message = 'Loading channel'
       }),
-    [typeFulfilled(actionTypes.LOAD_IDENTITY_CHANNELS)]: (state, { payload: data }) =>
+    [typeFulfilled(actionTypes.LOAD_IDENTITY_CHANNELS)]: (state, { payload: data }: Action<any>) =>
       produce(state, draft => {
         draft.data = data
         draft.loader.loading = false
@@ -276,32 +287,35 @@ export const reducer = handleActions(
       produce(state, draft => {
         draft.loader.loading = false
       }),
-    [setDescription.toString()]: (state, { payload: { channelId, description } }) =>
+    [setDescription.toString()]: (
+      state,
+      { payload: { channelId, description } }: ChannelsActions['setDescription']
+    ) =>
       produce(state, draft => {
         const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].description = description
       }),
-    [setLastSeen.toString()]: (state, { payload: { channelId, lastSeen } }) =>
+    [setLastSeen.toString()]: (state, { payload: { channelId, lastSeen } }: ChannelsActions['setLastSeen']) =>
       produce(state, draft => {
         const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].lastSeen = lastSeen
       }),
-    [setOnlyRegistered.toString()]: (state, { payload: { channelId, onlyRegistered } }) =>
+    [setOnlyRegistered.toString()]: (state, { payload: { channelId, onlyRegistered } }: ChannelsActions['setOnlyRegistered']) =>
       produce(state, draft => {
         const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].onlyRegistered = onlyRegistered
       }),
-    [setAdvertFee.toString()]: (state, { payload: { channelId, advertFee } }) =>
+    [setAdvertFee.toString()]: (state, { payload: { channelId, advertFee } }: ChannelsActions['setAdvertFee']) =>
       produce(state, draft => {
         const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].advertFee = parseFloat(advertFee)
       }),
-    [setShowInfoMsg.toString()]: (state, { payload: { channelId, showInfoMsg } }) =>
+    [setShowInfoMsg.toString()]: (state, { payload: { channelId, showInfoMsg } }: ChannelsActions['setShowInfoMsg']) =>
       produce(state, draft => {
         const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].showInfoMsg = showInfoMsg
       }),
-    [setUnread.toString()]: (state, { payload: { channelId, unread } }) =>
+    [setUnread.toString()]: (state, { payload: { channelId, unread } }: ChannelsActions['setUnread']) =>
       produce(state, draft => {
         const index = state.data.findIndex(channel => channel.id === channelId)
         draft.data[index].unread = unread
