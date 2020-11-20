@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import messagesHandlers from './messages'
 import appHandlers from './app'
@@ -7,9 +7,20 @@ import identityHandlers from './identity'
 import { actionTypes } from '../../../shared/static'
 import nodeSelectors from '../selectors/node'
 
-export const initialState = {
-  running: true
+class Coordinator {
+  running: boolean
+
+  constructor(values?: Partial<Coordinator>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
+
+export type CoordinatorStore = Coordinator
+
+export const initialState: Coordinator = new Coordinator({
+  running: true
+})
 
 export const stopCoordinator = createAction(actionTypes.STOP_COORDINATOR)
 export const startCoordinator = createAction(actionTypes.START_COORDINATOR)
@@ -45,10 +56,10 @@ const epics = {
 
 export const reducer = handleActions(
   {
-    [startCoordinator]: state => produce(state, (draft) => {
+    [startCoordinator.toString()]: state => produce(state, (draft) => {
       draft.running = true
     }),
-    [stopCoordinator]: state => produce(state, (draft) => {
+    [stopCoordinator.toString()]: state => produce(state, (draft) => {
       draft.running = false
     })
   },
