@@ -90,13 +90,13 @@ const sendInvitation = nickname => async (dispatch, getState) => {
     const channelAddress = channelSelectors.data(getState()).address
     const privKey = identitySelectors.signerPrivKey(getState())
     const users = usersSelectors.users(getState())
-    const publicChannel = publicChannelsSelector
-      .publicChannels(getState())
-      .find(ch => ch.address === channelAddress)
+    const publicChannel = Array.from(
+      Object.values(publicChannelsSelector.publicChannels(getState()))
+    ).find(ch => ch.address === channelAddress)
     if (!publicChannel) {
       dispatch(modalsHandlers.actionCreators.openModal('channelInfo')())
       dispatch(removeMentionMiss({ channelId, nickname }))
-
+      
       return
     }
     const targetUser = Array.from(Object.values(users)).find(user => user.nickname === nickname)
