@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect'
+import { LogsStore } from '../handlers/logs'
 
-const store = s => s
-
-export const logs = createSelector(store, state => state.logsData)
+const logs = (s): LogsStore => s.logsData as LogsStore
 
 const applicationLogs = createSelector(logs, a => a.applicationLogs)
 const transactionsLogs = createSelector(logs, a => a.transactionLogs)
