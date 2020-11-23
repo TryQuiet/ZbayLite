@@ -1,11 +1,11 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import * as Yup from 'yup'
 import { createAction, handleActions } from 'redux-actions'
 import BigNumber from 'bignumber.js'
 
 import invitationSelector from '../selectors/invitation'
 import identitySelectors from '../selectors/identity'
-import logsHandlers from '../handlers/logs'
+import logsHandlers from './logs'
 import ratesSelectors from '../selectors/rates'
 import { getClient } from '../../zcash'
 import nodeHandlers from './node'
@@ -17,25 +17,39 @@ import { actionCreators } from './modals'
 import { DOMAIN, networkFee, actionTypes } from '../../../shared/static'
 import nodeSelectors from '../selectors/node'
 
+import { ActionsType, PayloadType } from './types'
+
 export const getInvitationUrl = invitation =>
   `https://${DOMAIN}/invitation=${encodeURIComponent(invitation)}`
 
-export const Invitation = {
-  amount: 0,
-  amountZec: 0,
-  affiliateCode: true,
-  generatedInvitation: ''
+class Invitation {
+  amount: number
+  amountZec: number
+  affiliateCode: boolean
+  generatedInvitation: string
+
+  constructor(values?: Partial<Invitation>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-export const initialState = {
-  ...Invitation
+const initialState: Invitation = {
+  ...new Invitation({
+    amount: 0,
+    amountZec: 0,
+    affiliateCode: true,
+    generatedInvitation: ''
+  })
 }
 
-const setInvitationAmount = createAction(actionTypes.SET_INVITATION_AMOUNT)
-const setInvitationAmountZec = createAction(actionTypes.SET_INVITATION_AMOUNT_ZEC)
-const setAffiliateCode = createAction(actionTypes.SET_AFFILIATE_CODE)
+export type InvitationStore = Invitation
+
+const setInvitationAmount = createAction<number>(actionTypes.SET_INVITATION_AMOUNT)
+const setInvitationAmountZec = createAction<number>(actionTypes.SET_INVITATION_AMOUNT_ZEC)
+const setAffiliateCode = createAction<boolean>(actionTypes.SET_AFFILIATE_CODE)
 const resetInvitation = createAction(actionTypes.RESET_INVITATION)
-const setGeneratedInvitation = createAction(actionTypes.SET_GENERATED_INVITATION)
+const setGeneratedInvitation = createAction<string>(actionTypes.SET_GENERATED_INVITATION)
 
 export const actions = {
   setInvitationAmount,
@@ -45,25 +59,26 @@ export const actions = {
   setInvitationAmountZec
 }
 
+export type InvitationActions = ActionsType<typeof actions>
+
 export const generateInvitation = () => async (dispatch, getState) => {
-  dispatch(logsHandlers.epics.saveLogs({ type: 'APPLICATION_LOGS', payload: `Creating new invitation` }))
+  dispatch(
+    logsHandlers.epics.saveLogs({ type: 'APPLICATION_LOGS', payload: `Creating new invitation` })
+  )
   const amountUsd = invitationSelector.amount(getState())
   const amountZec = invitationSelector.amountZec(getState())
   const includeAffiliate = invitationSelector.affiliateCode(getState())
   const identityAddress = identitySelectors.address(getState())
-  const zecRate = ratesSelectors.rate('usd')(getState())
-  const amount =
-    amountZec || new BigNumber(amountUsd / zecRate).toFixed(8).toString()
+  const zecRate = ratesSelectors.rate('usd')(getState()).toNumber()
+  const amount = amountZec || Number(new BigNumber(amountUsd / zecRate).toNumber().toFixed(8))
   let donationAddress
   if (includeAffiliate) {
     donationAddress = identityAddress
   } else {
     donationAddress = donationTarget
   }
-  if (parseFloat(amount) > 0) {
-    const { value: address } = await dispatch(
-      nodeHandlers.actions.createAddress()
-    )
+  if (amount > 0) {
+    const { value: address } = await dispatch(nodeHandlers.actions.createAddress())
     const sk = await getClient().keys.exportSK(address)
     const transfer = messages.createEmptyTransfer({
       address,
@@ -79,7 +94,7 @@ export const generateInvitation = () => async (dispatch, getState) => {
     const invitationUrl = getInvitationUrl(invitation)
     await dispatch(setGeneratedInvitation(invitationUrl))
   }
-  await dispatch(setInvitationAmount((amount * zecRate).toFixed(2)))
+  await dispatch(setInvitationAmount(Number((amount * zecRate).toFixed(2))))
 }
 
 const invitationSchema = Yup.object().shape({
@@ -88,21 +103,24 @@ const invitationSchema = Yup.object().shape({
   sk: Yup.string()
 })
 
-export const handleInvitation = invitationPacked => async (
-  dispatch,
-  getState
-) => {
+export const handleInvitation = invitationPacked => async (dispatch, getState) => {
   try {
-    dispatch(logsHandlers.epics.saveLogs({ type: 'APPLICATION_LOGS', payload: `Processing new invitation` }))
+    dispatch(
+      logsHandlers.epics.saveLogs({
+        type: 'APPLICATION_LOGS',
+        payload: `Processing new invitation`
+      })
+    )
     const identityAddress = identitySelectors.address(getState())
     const invitation = await inflate(invitationPacked)
-    const lastblock = nodeSelectors.latestBlock(getState())
+    const lastblock = nodeSelectors.latestBlock(getState()).toNumber()
     const fetchTreshold = lastblock - 2000
     await invitationSchema.validate(invitation)
     if (invitation.sk) {
       await getClient().keys.importSK({
         sk: invitation.sk,
-        startHeight: fetchTreshold })
+        startHeight: fetchTreshold
+      })
       const amount = await getClient().accounting.balance(invitation.address)
       if (amount.gt(networkFee)) {
         const transfer = messages.createEmptyTransfer({
@@ -113,9 +131,7 @@ export const handleInvitation = invitationPacked => async (
         await getClient().payment.send(transfer)
       }
     }
-    await dispatch(
-      identityHandlers.epics.updateDonationAddress(invitation.donationAddress)
-    )
+    await dispatch(identityHandlers.epics.updateDonationAddress(invitation.donationAddress))
     dispatch(actionCreators.openModal('receivedInvitationModal')())
   } catch (err) {
     dispatch(
@@ -129,28 +145,41 @@ export const epics = {
   generateInvitation,
   handleInvitation
 }
-export const reducer = handleActions(
+export const reducer = handleActions<InvitationStore, PayloadType<InvitationActions>>(
   {
-    [setInvitationAmount]: (state, { payload: amount }) =>
-      produce(state, (draft) => {
+    [setInvitationAmount.toString()]: (
+      state,
+      { payload: amount }: InvitationActions['setInvitationAmount']
+    ) =>
+      produce(state, draft => {
         draft.amount = amount
       }),
-    [setInvitationAmountZec]: (state, { payload: amount }) =>
-      produce(state, (draft) => {
+    [setInvitationAmountZec.toString()]: (
+      state,
+      { payload: amount }: InvitationActions['setInvitationAmountZec']
+    ) =>
+      produce(state, draft => {
         draft.amountZec = amount
       }),
-    [setGeneratedInvitation]: (state, { payload: invitation }) =>
-      produce(state, (draft) => {
+    [setGeneratedInvitation.toString()]: (
+      state,
+      { payload: invitation }: InvitationActions['setGeneratedInvitation']
+    ) =>
+      produce(state, draft => {
         draft.generatedInvitation = invitation
       }),
-    [resetInvitation]: state => produce(state, (draft) => {
-      draft.affiliateCode = true
-      draft.amount = 0
-      draft.amountZec = 0
-      draft.generatedInvitation = ''
-    }),
-    [setAffiliateCode]: (state, { payload: affiliateCode }) =>
-      produce(state, (draft) => {
+    [resetInvitation.toString()]: state =>
+      produce(state, draft => {
+        draft.affiliateCode = true
+        draft.amount = 0
+        draft.amountZec = 0
+        draft.generatedInvitation = ''
+      }),
+    [setAffiliateCode.toString()]: (
+      state,
+      { payload: affiliateCode }: InvitationActions['setAffiliateCode']
+    ) =>
+      produce(state, draft => {
         draft.affiliateCode = affiliateCode
       })
   },

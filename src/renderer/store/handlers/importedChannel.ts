@@ -23,7 +23,7 @@ import { PublicChannel } from './publicChannels'
 import { ActionsType, PayloadType } from './types'
 
 class ImportedChannel {
-  data?: {}
+  data?: PublicChannel
   decoding: boolean
   errors: string
 
@@ -233,7 +233,7 @@ const reducer = handleActions<ImportedChannelStore, PayloadType<ImportedChannelA
     [setData.toString()]: (state, { payload: channel }) =>
       produce(state, draft => {
         draft.data = {
-          channel
+          ...channel
         }
       }),
     [setDecoding.toString()]: (state, { payload: decoding }) =>
