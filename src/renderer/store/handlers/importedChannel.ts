@@ -1,12 +1,12 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 
 import { uriToChannel } from '../../zbay/channels'
 import { errorNotification } from './utils'
 import channelSelectors from '../selectors/channel'
 import channelsSelectors from '../selectors/channels'
-import identityHandlers from '../handlers/identity'
-import logsHandlers from '../handlers/logs'
+import identityHandlers from './identity'
+import logsHandlers from './logs'
 import importedChannelSelectors from '../selectors/importedChannel'
 import notificationsHandlers from './notifications'
 import client from '../../zcash'
@@ -18,19 +18,34 @@ import { actionTypes } from '../../../shared/static'
 import history from '../../../shared/history'
 import electronStore from '../../../shared/electronStore'
 
-export const ImportedChannelState = {
-  data: null,
-  decoding: false,
-  errors: ''
+import { PublicChannel } from './publicChannels'
+
+import { ActionsType, PayloadType } from './types'
+
+class ImportedChannel {
+  data?: {}
+  decoding: boolean
+  errors: string
+
+  constructor(values?: Partial<ImportedChannel>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-const initialState = {
-  ...ImportedChannelState
+const initialState: ImportedChannel = {
+  ...new ImportedChannel({
+    data: null,
+    decoding: false,
+    errors: ''
+  })
 }
 
-const setData = createAction(actionTypes.SET_DECODED_CHANNEL)
-const setDecoding = createAction(actionTypes.SET_DECODING_CHANNEL)
-const setDecodingError = createAction(actionTypes.SET_DECODING_ERROR)
+export type ImportedChannelStore = ImportedChannel
+
+const setData = createAction<any>(actionTypes.SET_DECODED_CHANNEL)
+const setDecoding = createAction<boolean>(actionTypes.SET_DECODING_CHANNEL)
+const setDecodingError = createAction<string>(actionTypes.SET_DECODING_ERROR)
 const clear = createAction(actionTypes.CLEAR_CHANNEL)
 
 const actions = {
@@ -40,10 +55,9 @@ const actions = {
   setDecodingError
 }
 
-const removeChannel = (history, isOffer = false) => async (
-  dispatch,
-  getState
-) => {
+export type ImportedChannelActions = ActionsType<typeof actions>
+
+const removeChannel = (history, isOffer = false) => async (dispatch, getState) => {
   const state = getState()
   const channel = channelSelectors.channel(state)
   try {
@@ -57,11 +71,7 @@ const removeChannel = (history, isOffer = false) => async (
         electronStore.set(`removedChannels.${channel.address}`, channel)
       }
       const removedChannels = electronStore.get('removedChannels')
-      dispatch(
-        identityHandlers.actions.setRemovedChannels(
-          Object.keys(removedChannels)
-        )
-      )
+      dispatch(identityHandlers.actions.setRemovedChannels(Object.keys(removedChannels)))
       history.push(`/main/channel/${channelsSelectors.generalChannelId(state)}`)
       dispatch(
         notificationsHandlers.actions.enqueueSnackbar({
@@ -160,7 +170,7 @@ const decodeChannelEpic = uri => async (dispatch, getState) => {
     const importedChannels = electronStore.get(`importedChannels`)
     let importAddress
     let checkImported = false
-    const checkExisting = Object.values(importedChannels).filter(
+    const checkExisting = Object.values<PublicChannel>(importedChannels).filter(
       x => x.keys.ivk === channel.keys.ivk
     )
     if (checkExisting.length === 0) {
@@ -191,9 +201,7 @@ const decodeChannelEpic = uri => async (dispatch, getState) => {
       history.push(`/main/channel/${importAddress}`)
     } else {
       dispatch(setData({ ...channel, address: importAddress }))
-      const openModal = modalsHandlers.actionCreators.openModal(
-        'importChannelModal'
-      )
+      const openModal = modalsHandlers.actionCreators.openModal('importChannelModal')
       dispatch(openModal())
     }
   } catch (err) {
@@ -220,27 +228,28 @@ const epics = {
   decodeChannel: decodeChannelEpic
 }
 
-const reducer = handleActions(
+const reducer = handleActions<ImportedChannelStore, PayloadType<ImportedChannelActions>>(
   {
-    [actionTypes.SET_DECODED_CHANNEL]: (state, { payload: channel }) =>
-      produce(state, (draft) => {
+    [setData.toString()]: (state, { payload: channel }) =>
+      produce(state, draft => {
         draft.data = {
           channel
         }
       }),
-    [actionTypes.SET_DECODING_CHANNEL]: (state, { payload: decoding }) =>
-      produce(state, (draft) => {
+    [setDecoding.toString()]: (state, { payload: decoding }) =>
+      produce(state, draft => {
         draft.decoding = decoding
       }),
-    [actionTypes.SET_DECODING_ERROR]: (state, { payload: error }) =>
-      produce(state, (draft) => {
+    [setDecodingError.toString()]: (state, { payload: error }) =>
+      produce(state, draft => {
         draft.errors = error
       }),
-    [clear]: (state) => produce(state, draft => {
-      draft.data = null
-      draft.decoding = false
-      draft.errors = ''
-    })
+    [clear.toString()]: state =>
+      produce(state, draft => {
+        draft.data = null
+        draft.decoding = false
+        draft.errors = ''
+      })
   },
   initialState
 )
