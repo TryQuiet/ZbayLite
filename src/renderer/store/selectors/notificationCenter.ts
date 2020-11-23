@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect'
 import { notificationFilterType, soundType } from '../../../shared/static'
-const store = s => s
 
-export const notificationCenter = createSelector(store, state =>
-  state.notificationCenter
-)
+import { NotificationCenterStore } from '../handlers/notificationCenter'
+
+export const notificationCenter = (s): NotificationCenterStore =>
+  s.notificationCenter as NotificationCenterStore
 
 const channels = createSelector(notificationCenter, a => a.channels)
 const user = createSelector(notificationCenter, a => a.user)
@@ -15,18 +15,12 @@ const userFilterType = createSelector(
 )
 const userSound = createSelector(user, a => a.sound || soundType.NONE)
 const channelFilterById = channelId =>
-  createSelector(
-    channels,
-    channels => channels[channelId] || notificationFilterType.ALL_MESSAGES
-  )
+  createSelector(channels, channels => channels[channelId] || notificationFilterType.ALL_MESSAGES)
 const blockedUsers = createSelector(contacts, contacts =>
   Array.from(Object.values(contacts)).filter(type => type === notificationFilterType.MUTE)
 )
 const contactFilterByAddress = address =>
-  createSelector(
-    contacts,
-    contacts => contacts[address] || notificationFilterType.ALL_MESSAGES
-  )
+  createSelector(contacts, contacts => contacts[address] || notificationFilterType.ALL_MESSAGES)
 export default {
   channels,
   user,
