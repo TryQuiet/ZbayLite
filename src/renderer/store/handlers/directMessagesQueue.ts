@@ -272,27 +272,24 @@ const _sendPendingDirectMessages = (redirect): ZbayThunkAction<void> => async (d
   await dispatch(appHandlers.actions.unlockDmQueue());
 };
 
-export const sendPendingDirectMessages = (debounce = null, redirect) => {
-  const thunk = _sendPendingDirectMessages(redirect);
+export const sendPendingDirectMessages = (debounce, redirect) => {
+  const thunk = _sendPendingDirectMessages(redirect)
   thunk.meta = {
     debounce: {
       time:
         debounce !== null
           ? debounce
-          : process.env.ZBAY_DEBOUNCE_MESSAGE_INTERVAL ||
-            DEFAULT_DEBOUNCE_INTERVAL,
-      key: "SEND_PENDING_DRIRECT_MESSAGES",
-    },
-  };
-  return thunk;
-};
+          : process.env.ZBAY_DEBOUNCE_MESSAGE_INTERVAL || DEFAULT_DEBOUNCE_INTERVAL,
+      key: 'SEND_PENDING_DRIRECT_MESSAGES'
+    }
+  }
+  return thunk
+}
 
-const addDirectMessageEpic = (payload, debounce, redirect = true) => async (
-  dispatch
-) => {
-  await dispatch(addDirectMessage(payload));
-  await dispatch(sendPendingDirectMessages(debounce, redirect));
-};
+const addDirectMessageEpic = (payload, debounce = null, redirect = true) => async dispatch => {
+  await dispatch(addDirectMessage(payload))
+  await dispatch(sendPendingDirectMessages(debounce, redirect))
+}
 
 export const epics = {
   sendPendingDirectMessages,

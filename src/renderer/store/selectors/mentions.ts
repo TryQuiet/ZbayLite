@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect'
+import { MentionsStore } from '../handlers/mentions'
 
-const store = s => s
-
-export const mentions = createSelector(store, state => state.mentions)
+export const mentions = (s): MentionsStore => s.mentions as MentionsStore
 
 export const mentionForChannel = channelId =>
   createSelector(mentions, state => state[channelId] || [])

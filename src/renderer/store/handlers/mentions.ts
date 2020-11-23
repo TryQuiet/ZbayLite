@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { DateTime } from 'luxon'
 import { createAction, handleActions } from 'redux-actions'
 
@@ -14,12 +14,26 @@ import notificationsHandlers from './notifications'
 import modalsHandlers from './modals'
 import { errorNotification, successNotification } from './utils'
 
-export const ChannelMentions = {
-  nickname: '',
-  timeStamp: 0
+import { ActionsType, PayloadType } from './types'
+
+//export const ChannelMentions = {
+//  nickname: '',
+//  timeStamp: 0
+//}
+
+class Mentions {
+  nickname?: string
+  timeStamp?: number
+
+  constructor(values?: Partial<Mentions>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-export const initialState = {}
+export type MentionsStore = Mentions
+
+export const initialState: MentionsStore = {}
 
 const addMentionMiss = createAction(actionTypes.ADD_MENTION_MISS)
 const clearMentionMiss = createAction(actionTypes.CLEAR_MENTION_MISS)
@@ -30,17 +44,17 @@ export const actions = {
   clearMentionMiss,
   removeMentionMiss
 }
+
+export type MentionsActions = ActionsType<typeof actions>
+
 const checkMentions = () => async (dispatch, getState) => {
   const channelId = channelSelectors.channelId(getState())
   const message = channelSelectors.message(getState())
   const members = channelSelectors.members(getState())
   const users = usersSelectors.users(getState())
-  const currentMentions = mentionsSelectors.mentionForChannel(channelId)(
-    getState()
-  )
+  const currentMentions = mentionsSelectors.mentionForChannel(channelId)(getState())
 
-  const usersOnChannel = Array.from(Object.values(users))
-    .filter(user => members.has(user.address))
+  const usersOnChannel = Array.from(Object.values(users)).filter(user => members.has(user.address))
   const splitMessage = message
     .split(String.fromCharCode(160))
     .filter(part => part.startsWith('@'))
@@ -50,16 +64,10 @@ const checkMentions = () => async (dispatch, getState) => {
 
   const foundMentions = []
   for (const mention of splitMessage) {
-    if (
-      !usersOnChannel.find(
-        user => user.nickname === mention.substring(1).trim()
-      )
-    ) {
-      if (
-        !currentMentions.find(c => c.nickname === mention.substring(1).trim())
-      ) {
+    if (!usersOnChannel.find(user => user.nickname === mention.substring(1).trim())) {
+      if (!currentMentions.find(c => c.nickname === mention.substring(1).trim())) {
         foundMentions.push(
-          ChannelMentions({
+          new Mentions({
             nickname: mention.substring(1).trim(),
             timeStamp: DateTime.utc().toSeconds()
           })
@@ -68,9 +76,7 @@ const checkMentions = () => async (dispatch, getState) => {
     }
   }
   if (foundMentions.length > 0) {
-    dispatch(
-      addMentionMiss({ mentions: foundMentions.concat(currentMentions), channelId })
-    )
+    dispatch(addMentionMiss({ mentions: foundMentions.concat(currentMentions), channelId }))
   }
 }
 const removeMention = nickname => async (dispatch, getState) => {
@@ -128,19 +134,20 @@ export const epics = {
   removeMention,
   sendInvitation
 }
-export const reducer = handleActions(
+export const reducer = handleActions<MentionsStore, PayloadType<MentionsActions>>(
   {
-    [clearMentionMiss]: (state) => produce(state, (draft) => {
-      return {
-        ...initialState
-      }
-    }),
-    [removeMentionMiss]: (state, { payload: { channelId, nickname } }) =>
-      produce(state, (draft) => {
+    [clearMentionMiss.toString()]: state =>
+      produce(state, draft => {
+        return {
+          ...initialState
+        }
+      }),
+    [removeMentionMiss.toString()]: (state, { payload: { channelId, nickname } }) =>
+      produce(state, draft => {
         draft[channelId] = draft[channelId].filter(mention => mention.nickname !== nickname)
       }),
-    [addMentionMiss]: (state, { payload: { mentions, channelId } }) =>
-      produce(state, (draft) => {
+    [addMentionMiss.toString()]: (state, { payload: { mentions, channelId } }) =>
+      produce(state, draft => {
         draft[channelId] = {
           ...draft[channelId],
           ...mentions
