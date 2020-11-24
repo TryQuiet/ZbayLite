@@ -1,29 +1,46 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 
 import { actionTypes } from '../../../shared/static'
 import electronStore from '../../../shared/electronStore'
-import logsHandlers from '../../../renderer/store/handlers/logs'
+import logsHandlers from './logs'
 
-const Whitelist = {
-  allowAll: false,
-  whitelisted: [],
-  autoload: []
+import { ActionsType, PayloadType } from './types'
+
+class Whitelist {
+  allowAll: boolean
+  whitelisted: any[]
+  autoload: any[]
+
+  constructor(values?: Partial<Whitelist>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-export const initialState = {
-  ...Whitelist
+export const initialState: Whitelist = {
+  ...new Whitelist({
+    allowAll: false,
+    whitelisted: [],
+    autoload: []
+  })
 }
 
-const setWhitelist = createAction(actionTypes.SET_WHITELIST)
-const setWhitelistAllFlag = createAction(actionTypes.SET_WHITELIST_ALL_FLAG)
-const setAutoLoadList = createAction(actionTypes.SET_AUTO_LOAD_LIST)
+export type WhitelistStore = Whitelist
+
+const setWhitelist = createAction<any[]>(actionTypes.SET_WHITELIST)
+const setWhitelistAllFlag = createAction<boolean>(actionTypes.SET_WHITELIST_ALL_FLAG)
+const setAutoLoadList = createAction<any[]>(actionTypes.SET_AUTO_LOAD_LIST)
 
 export const actions = {
   setWhitelist,
   setWhitelistAllFlag,
   setAutoLoadList
 }
+
+export type WhitelistActions = ActionsType<typeof actions>
+
+
 const ensureStore = () => {
   if (!electronStore.get('whitelist')) {
     electronStore.set('whitelist', {
@@ -97,17 +114,17 @@ export const epics = {
   removeImageHost,
   removeSiteHost
 }
-export const reducer = handleActions(
+export const reducer = handleActions<WhitelistStore, PayloadType<WhitelistActions>>(
   {
-    [setWhitelist]: (state, { payload: list }) =>
+    [setWhitelist.toString()]: (state, { payload: list }: WhitelistActions['setWhitelist']) =>
       produce(state, (draft) => {
         draft.whitelisted = list
       }),
-    [setAutoLoadList]: (state, { payload: list }) =>
+    [setAutoLoadList.toString()]: (state, { payload: list }: WhitelistActions['setAutoLoadList']) =>
       produce(state, (draft) => {
         draft.autoload = list
       }),
-    [setWhitelistAllFlag]: (state, { payload: flag }) =>
+    [setWhitelistAllFlag.toString()]: (state, { payload: flag }: WhitelistActions['setWhitelistAllFlag']) =>
       produce(state, (draft) => {
         draft.allowAll = flag
       })

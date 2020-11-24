@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
-const store = s => s
+import { WhitelistStore } from '../handlers/whitelist'
 
-export const whitelist = createSelector(store, state => state.whitelist)
+const whitelist = (s): WhitelistStore => s.whitelist as WhitelistStore
 
 const whitelisted = createSelector(whitelist, a => a.whitelisted)
 const allowAll = createSelector(whitelist, a => a.allowAll)
