@@ -406,7 +406,7 @@ export const loadIdentity = () => async (dispatch, getState) => {
   }
 }
 
-export const setIdentityEpic = (identityToSet, isNewUser) => async (dispatch, getState) => {
+export const setIdentityEpic = (identityToSet) => async (dispatch, getState) => {
   // let identity = await migrateTo_0_2_0.ensureIdentityHasKeys(identityToSet)
   let identity = identityToSet
   dispatch(setLoading(true))

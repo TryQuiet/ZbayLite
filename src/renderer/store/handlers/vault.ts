@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import crypto from 'crypto'
 import { ipcRenderer } from 'electron'
@@ -12,11 +12,13 @@ import {
 } from './utils'
 import identityHandlers from './identity'
 import notificationsHandlers from './notifications'
-import logsHandlers from '../handlers/logs'
-import nodeHandlers from '../handlers/node'
-import { actionCreators } from '../handlers/modals'
+import logsHandlers from './logs'
+import nodeHandlers from './node'
+import { actionCreators } from './modals'
 import { REQUEST_MONEY_ENDPOINT, actionTypes } from '../../../shared/static'
 import electronStore, { migrationStore } from '../../../shared/electronStore'
+
+import { ActionsType, PayloadType } from './types'
 
 export const VaultState = {
   exists: null,
@@ -28,22 +30,48 @@ export const VaultState = {
   error: ''
 }
 
-export const initialState = {
-  ...VaultState
+class Vault {
+  exists?: boolean;
+  creating: boolean;
+  unlocking: boolean;
+  creatingIdentity: boolean;
+  locked: boolean;
+  isLogIn: boolean;
+  error: string
+
+  constructor(values?: Partial<Vault>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-const createVault = createAction(actionTypes.CREATE_VAULT)
-const unlockVault = createAction(
+export const initialState = {
+  ...new Vault({
+    exists: null,
+    creating: false,
+    unlocking: false,
+    creatingIdentity: false,
+    locked: true,
+    isLogIn: false,
+    error: ''
+  })
+}
+
+export type VaultStore = Vault
+
+const createVault = createAction<{ message: string }>(actionTypes.CREATE_VAULT)
+const unlockVault = createAction<{ message: string }, { ignoreError: boolean }>(
   actionTypes.UNLOCK_VAULT,
+  null,
   ({ ignoreError = false }) => ({ ignoreError })
 )
-const createIdentity = createAction(actionTypes.CREATE_VAULT_IDENTITY)
+const createIdentity = createAction<{ error: string }>(actionTypes.CREATE_VAULT_IDENTITY)
 const updateIdentitySignerKeys = createAction(
   actionTypes.UPDATE_IDENTITY_SIGNER_KEYS
 )
 const clearError = createAction(actionTypes.CLEAR_VAULT_ERROR)
-const setVaultStatus = createAction(actionTypes.SET_VAULT_STATUS)
-const setLoginSuccessfull = createAction(actionTypes.SET_LOGIN_SUCCESSFULL)
+const setVaultStatus = createAction<boolean>(actionTypes.SET_VAULT_STATUS)
+const setLoginSuccessfull = createAction<boolean>(actionTypes.SET_LOGIN_SUCCESSFULL)
 
 export const actions = {
   createIdentity,
@@ -54,6 +82,8 @@ export const actions = {
   clearError,
   setLoginSuccessfull
 }
+
+export type VaultActions = ActionsType<typeof actions>
 
 const loadVaultStatus = () => async (dispatch, getState) => {
   await dispatch(setVaultStatus(true))
@@ -82,7 +112,7 @@ const createVaultEpic = (fromMigrationFile = false) => async (
     await dispatch(nodeHandlers.actions.setIsRescanning(true))
 
     await dispatch(identityHandlers.epics.setIdentity(identity))
-    await dispatch(identityHandlers.epics.loadIdentity(identity))
+    await dispatch(identityHandlers.epics.loadIdentity())
     await dispatch(setVaultStatus(true))
     ipcRenderer.send('vault-created')
     try {
@@ -154,7 +184,7 @@ export const epics = {
   unlockVault: unlockVaultEpic
 }
 
-export const reducer = handleActions(
+export const reducer = handleActions<VaultStore, PayloadType<VaultActions>>(
   {
     [typePending(actionTypes.CREATE_VAULT)]: state =>
       produce(state, (draft) => {
@@ -165,7 +195,7 @@ export const reducer = handleActions(
         draft.creating = false
         draft.exists = true
       }),
-    [typeRejected(actionTypes.CREATE_VAULT)]: (state, { payload: error }) =>
+    [typeRejected(actionTypes.CREATE_VAULT)]: (state, { payload: error }: VaultActions['createVault']) =>
       produce(state, (draft) => {
         draft.creating = false
         draft.error = error.message
@@ -174,12 +204,12 @@ export const reducer = handleActions(
       produce(state, (draft) => {
         draft.unlocking = true
       }),
-    [typeFulfilled(actionTypes.UNLOCK_VAULT)]: (state, payload) =>
+    [typeFulfilled(actionTypes.UNLOCK_VAULT)]: state =>
       produce(state, (draft) => {
         draft.unlocking = false
         draft.locked = false
       }),
-    [typeRejected(actionTypes.UNLOCK_VAULT)]: (state, { payload: error }) =>
+    [typeRejected(actionTypes.UNLOCK_VAULT)]: (state, { payload: error }: VaultActions['unlockVault']) =>
       produce(state, (draft) => {
         draft.unlocking = false
         draft.locked = true
@@ -191,25 +221,25 @@ export const reducer = handleActions(
       }),
     [typeFulfilled(actionTypes.CREATE_VAULT_IDENTITY)]: state =>
       produce(state, (draft) => {
-        draft.createIdentity = false
+        draft.creatingIdentity = false
       }),
     [typeRejected(actionTypes.CREATE_VAULT_IDENTITY)]: (
       state,
-      { payload: error }
+      { payload: error }: VaultActions['createVault']
     ) =>
       produce(state, (draft) => {
         draft.creatingIdentity = false
         draft.error = error.message
       }),
-    [setLoginSuccessfull]: (state, { payload: isLogIn }) =>
+    [setLoginSuccessfull.toString()]: (state, { payload: isLogIn }: VaultActions['setLoginSuccessfull']) =>
       produce(state, (draft) => {
         draft.isLogIn = isLogIn
       }),
-    [setVaultStatus]: (state, { payload: exists }) =>
+    [setVaultStatus.toString()]: (state, { payload: exists }: VaultActions['setVaultStatus']) =>
       produce(state, (draft) => {
         draft.exists = exists
       }),
-    [clearError]: state => produce(state, (draft) => {
+    [clearError.toString()]: state => produce(state, (draft) => {
       draft.error = ''
     })
   },

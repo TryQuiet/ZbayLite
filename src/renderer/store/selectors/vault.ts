@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
-const store = s => s
+import { VaultStore } from '../handlers/vault'
 
-const vault = createSelector(store, state => state.vault)
+const vault = (s): VaultStore => s.vault as VaultStore
 
 const exists = createSelector(vault, v => v.exists)
 const isLogIn = createSelector(vault, v => v.isLogIn)
