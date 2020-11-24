@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import net from 'net'
 import { ipcRenderer } from 'electron'
 
@@ -8,25 +8,40 @@ import { successNotification } from './utils'
 import notificationsHandlers from './notifications'
 import electronStore from '../../../shared/electronStore'
 import { actionTypes } from '../../../shared/static'
-import logsHandlers from '../handlers/logs'
+import logsHandlers from './logs'
+
+import { ActionsType, PayloadType } from './types'
 
 export const client = new net.Socket()
 export const defaultTorUrlProxy = 'localhost:9050'
 
-export const Tor = {
-  url: '',
-  enabled: false,
-  error: null,
-  status: ''
-}
-export const initialState = {
-  ...Tor
+class Tor {
+  url: string;
+  enabled: boolean;
+  error?: string;
+  status: string;
+
+  constructor(values?: Partial<Tor>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-const setEnabled = createAction(actionTypes.SET_TOR_ENABLED)
-const setUrl = createAction(actionTypes.SET_TOR_URL)
-const setError = createAction(actionTypes.SET_TOR_ERROR)
-const setStatus = createAction(actionTypes.SET_TOR_STATUS)
+export const initialState: Tor = {
+  ...new Tor({
+    url: '',
+    enabled: false,
+    error: null,
+    status: ''
+  })
+}
+
+export type TorStore = Tor
+
+const setEnabled = createAction<{ enabled: boolean }>(actionTypes.SET_TOR_ENABLED)
+const setUrl = createAction<{ url: string }>(actionTypes.SET_TOR_URL)
+const setError = createAction<{ error: string }>(actionTypes.SET_TOR_ERROR)
+const setStatus = createAction<{ status: string }>(actionTypes.SET_TOR_STATUS)
 
 export const actions = {
   setUrl,
@@ -34,6 +49,9 @@ export const actions = {
   setError,
   setStatus
 }
+
+export type TorActions = ActionsType<typeof actions>
+
 let init = false
 const initEvents = () => async (dispatch, getState) => {
   client.on('error', data => {
@@ -58,7 +76,7 @@ const checkDeafult = () => async (dispatch, getState) => {
 
   let checkedUrl = defaultTorUrlProxy
   dispatch(setUrl({ url: checkedUrl }))
-  client.connect(url[1], url[0], () => {
+  client.connect(Number(url[1]), url[0], () => {
     const msg = Buffer.from('050100', 'hex')
     client.write(msg)
   })
@@ -75,7 +93,7 @@ const checkTor = () => async (dispatch, getState) => {
     }
   }, 5000)
 
-  client.connect(url[1], url[0], () => {
+  client.connect(Number(url[1]), url[0], () => {
     const msg = Buffer.from('050100', 'hex')
     client.write(msg)
   })
@@ -106,9 +124,9 @@ export const epics = {
   checkDeafult
 }
 
-export const reducer = handleActions(
+export const reducer = handleActions<TorStore, PayloadType<TorActions>>(
   {
-    [setEnabled]: (state, { payload: { enabled } }) => produce(state, (draft) => {
+    [setEnabled.toString()]: (state, { payload: { enabled } }: TorActions['setEnabled']) => produce(state, (draft) => {
       if (enabled) {
         draft.enabled = enabled
         draft.status = 'down'
@@ -119,14 +137,14 @@ export const reducer = handleActions(
         draft.url = ''
       }
     }),
-    [setUrl]: (state, { payload: { url } }) => produce(state, (draft) => {
+    [setUrl.toString()]: (state, { payload: { url } }: TorActions['setUrl']) => produce(state, (draft) => {
       draft.url = url
       draft.status = 'down'
     }),
-    [setError]: (state, { payload: { error } }) => produce(state, (draft) => {
+    [setError.toString()]: (state, { payload: { error } }: TorActions['setError']) => produce(state, (draft) => {
       draft.error = error
     }),
-    [setStatus]: (state, { payload: { status } }) => produce(state, (draft) => {
+    [setStatus.toString()]: (state, { payload: { status } }: TorActions['setStatus']) => produce(state, (draft) => {
       draft.status = status
     })
   },

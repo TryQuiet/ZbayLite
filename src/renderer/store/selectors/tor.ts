@@ -1,10 +1,9 @@
 import { createSelector } from 'reselect'
-const store = s => s
 
-const tor = createSelector(
-  store,
-  state => state.tor
-)
+import { TorStore } from '../handlers/tor'
+
+const tor = (s): TorStore => s.tor as TorStore
+
 const torEnabled = createSelector(
   tor,
   tor => tor.enabled
