@@ -112,7 +112,7 @@ export const reducer = handleActions<
       produce(state, (draft) => {
         delete draft[channelId][id];
         draft[channelId][txid] = {
-          ...Operation,
+          ...new Operation({}),
           id,
           txid,
         };

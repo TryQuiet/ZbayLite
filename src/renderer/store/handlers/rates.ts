@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { handleActions, createAction } from 'redux-actions'
 
 import { actionTypes, PRICE_ORACLE_PUB_KEY } from '../../../shared/static'
@@ -7,24 +7,56 @@ import { getPublicKeysFromSignature } from '../../zbay/messages'
 import { trimNull } from '../../zbay/transit'
 import electronStore from '../../../shared/electronStore'
 
+import { ActionsType, PayloadType } from './types'
+
+//TODO remove after changing in tests
 export const RatesState = {
   usd: '0',
   zec: '1',
   history: {}
 }
 
-export const initialState = {
-  ...RatesState,
+class Rates {
+  usd: string;
+  zec: string;
+  history: {
+    [key: string]: {
+      datetime: number;
+      price: string;
+    }
+  }
+
+  constructor(values?: Partial<Rates>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
+}
+
+export const initialState: Rates = new Rates({
   usd: '70.45230379033394',
   zec: '1',
   history: {}
+})
+
+export type RatesStore = Rates
+
+export const setPriceUsd = createAction<{ priceUsd: string }>(actionTypes.SET_PRICE_USD)
+export const addPriceMessage = createAction<{
+  messages: {
+    [key: string]: {
+      datetime: number;
+      price: string;
+    }
+  }
+}>(actionTypes.ADD_PRICE_MESSAGE)
+
+export const actions = {
+  setPriceUsd,
+  addPriceMessage
 }
 
-export const setPriceUsd = createAction(actionTypes.SET_PRICE_USD)
-export const addPriceMessage = createAction(actionTypes.ADD_PRICE_MESSAGE)
-export const actions = {
-  setPriceUsd
-}
+export type RatesActions = ActionsType<typeof actions>
+
 export const setInitialPrice = () => async (dispatch, getState) => {
   try {
     const price = electronStore.get('rates.usd')
@@ -35,6 +67,7 @@ export const setInitialPrice = () => async (dispatch, getState) => {
     console.log(err)
   }
 }
+
 export const fetchPrices = (address, messages) => async (
   dispatch,
   getState
@@ -68,6 +101,7 @@ export const fetchPrices = (address, messages) => async (
     console.warn(err)
   }
 }
+
 export const fetchPriceForTime = time => async (dispatch, getState) => {
   try {
     return ratesSelectors.priceByTime(time)(getState())
@@ -75,19 +109,20 @@ export const fetchPriceForTime = time => async (dispatch, getState) => {
     console.warn(err)
   }
 }
+
 export const epics = {
   fetchPrices,
   fetchPriceForTime,
   setInitialPrice
 }
 
-export const reducer = handleActions(
+export const reducer = handleActions<RatesStore, PayloadType<RatesActions>>(
   {
-    [setPriceUsd]: (state, { payload: { priceUsd } }) =>
+    [setPriceUsd.toString()]: (state, { payload: { priceUsd } }: RatesActions['setPriceUsd']) =>
       produce(state, (draft) => {
         draft.usd = priceUsd
       }),
-    [addPriceMessage]: (state, { payload: { messages } }) =>
+    [addPriceMessage.toString()]: (state, { payload: { messages } }: RatesActions['addPriceMessage']) =>
       produce(state, (draft) => {
         draft.history = {
           ...draft.history,
