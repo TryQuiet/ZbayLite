@@ -1,29 +1,44 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { createAction, handleActions } from 'redux-actions'
 import { actionTypes } from '../../../shared/static'
 
+import { ActionsCreatorsTypes, PayloadType } from './types'
+
 import modalsSelectors from '../selectors/modals'
 
-export const initialState = {
+class Modals {
   payloads: {}
+
+  constructor(values?: Partial<Modals>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-const openModal = (modalName, data) => createAction(actionTypes.OPEN_MODAL, () => ({
+export const initialState: Modals = new Modals({
+  payloads: {}
+})
+
+export type ModalsStore = Modals
+
+const openModal = (modalName: string, data?: any) => createAction(actionTypes.OPEN_MODAL, () => ({
   modalName,
   data
 }))
 
-const closeModal = (modalName) => createAction(actionTypes.CLOSE_MODAL, () => modalName)
+const closeModal = (modalName: string) => createAction(actionTypes.CLOSE_MODAL, () => modalName)
 
 export const actionCreators = {
   openModal,
   closeModal
 }
 
-export const reducer = handleActions({
-  [actionTypes.OPEN_MODAL]: (state, { payload }) =>
+export type ModalsActions = ActionsCreatorsTypes<typeof actionCreators>
+
+export const reducer = handleActions<ModalsStore, PayloadType<ModalsActions>>({
+  [actionTypes.OPEN_MODAL]: (state, { payload }: ModalsActions['openModal']) =>
     produce(state, (draft) => {
       draft[payload.modalName] = true
       draft.payloads = {
@@ -31,7 +46,7 @@ export const reducer = handleActions({
         [payload.modalName]: payload.data
       }
     }),
-  [actionTypes.CLOSE_MODAL]: (state, { payload: modalName }) =>
+  [actionTypes.CLOSE_MODAL]: (state, { payload: modalName }: ModalsActions['closeModal']) =>
     produce(state, (draft) => {
       draft[modalName] = false
     })

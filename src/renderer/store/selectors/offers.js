@@ -2,7 +2,6 @@ import { createSelector } from 'reselect'
 import * as R from 'ramda'
 import directMssagesQueueSelectors from './directMessagesQueue'
 import operationsSelectors from './operations'
-import removedChannelsSelectors from './removedChannels'
 import zbayMessages from '../../zbay/messages'
 import identitySelectors from './identity'
 import usersSelectors from './users'
@@ -17,25 +16,25 @@ const offers = createSelector(
 
 const filteredOffers = createSelector(
   store,
-  removedChannelsSelectors.removedChannels,
-  (s, removedChannels) => {
+  //removedChannelsSelectors.removedChannels,
+  (s) => {
     const filteredOffers = s
-    Array.from(Object.values(s.offers))
-      .map((offer, i) => {
-        const messages = offer.messages
-        const [newestMsg] = messages.sort((a, b) => parseInt(b.createdAt) - parseInt(a.createdAt))
-        const removedChannelTimestamp = removedChannels[offer.itemId]
-        if (!newestMsg) {
-          return
-        }
-        const { createdAt: contactMsgTimestamp } = newestMsg
-        if (
-          removedChannelTimestamp &&
-          parseInt(removedChannelTimestamp) > parseInt(contactMsgTimestamp)
-        ) {
-          return null
-        } else return offer
-      })
+    //Array.from(Object.values(s.offers))
+    //  .map((offer, i) => {
+    //    const messages = offer.messages
+    //    const [newestMsg] = messages.sort((a, b) => parseInt(b.createdAt) - parseInt(a.createdAt))
+    //    const removedChannelTimestamp = removedChannels[offer.itemId]
+    //    if (!newestMsg) {
+    //      return
+    //    }
+    //    const { createdAt: contactMsgTimestamp } = newestMsg
+    //    if (
+    //      removedChannelTimestamp &&
+    //      parseInt(removedChannelTimestamp) > parseInt(contactMsgTimestamp)
+    //    ) {
+    //      return null
+    //    } else return offer
+    //  })
     return filteredOffers.filter(offer => !R.isNil(offer))
   }
 )

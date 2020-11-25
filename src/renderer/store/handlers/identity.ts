@@ -181,7 +181,7 @@ export const fetchAffiliateMoney = () => async (dispatch, getState) => {
     let txnTimestamps = txnTimestampsSelector.tnxTimestamps(getState())
     for (const key in affiliatesTransfers) {
       const transfer = transfers[key]
-      if (!txnTimestamps.get(transfer.txid)) {
+      if (!txnTimestamps.hasOwnProperty(transfer.txid)) {
         amount += transfer.amount
         const result = await client().confirmations.getResult(transfer.txid)
         await dispatch(

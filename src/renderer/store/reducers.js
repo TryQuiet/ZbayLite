@@ -23,7 +23,6 @@ import coordinatorHandlers from './handlers/coordinator'
 import offersHandlers from './handlers/offers'
 import txnTimestampsHandlers from './handlers/txnTimestamps'
 import torHandlers from './handlers/tor'
-import removedChannelsHandlers from './handlers/removedChannels'
 import publicChannelsHandlers from './handlers/publicChannels'
 import feesHandlers from './handlers/fees'
 import mentionsHandlers from './handlers/mentions'
@@ -81,7 +80,6 @@ export default persistReducer(
     offers: offersHandlers.reducer,
     txnTimestamps: txnTimestampsHandlers.reducer,
     tor: torHandlers.reducer,
-    removedChannels: removedChannelsHandlers.reducer,
     publicChannels: publicChannelsHandlers.reducer,
     fees: feesHandlers.reducer,
     mentions: mentionsHandlers.reducer,

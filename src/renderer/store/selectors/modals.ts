@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
-const store = s => s
+import { ModalsStore } from '../handlers/modals'
 
-const modals = createSelector(store, s => s.modals)
+const modals = (s): ModalsStore => s.modals as ModalsStore
 
 const open = name => createSelector(modals, m => m[name] || false)
 

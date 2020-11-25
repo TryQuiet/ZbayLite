@@ -18,7 +18,6 @@ import { getClient } from '../../zcash'
 
 import { _checkMessageSize } from './messages'
 import directMessagesQueueHandlers from './directMessagesQueue'
-import removedChannelsHandlers from './removedChannels'
 import offersHandlers from './offers'
 import { ActionsType, PayloadType } from './types'
 import usersSelector from '../selectors/users'
@@ -228,7 +227,6 @@ export const connectWsContacts = () => async (dispatch, getState) => {
 
 export const deleteChannel = ({ address, timestamp, history }) => async (dispatch, getState) => {
   history.push(`/main/channel/general`)
-  await dispatch(removedChannelsHandlers.epics.getRemovedChannelsTimestamp())
   dispatch(removeContact(address))
 }
 export const checkConfirmationOfTransfers = async (dispatch, getState) => {
