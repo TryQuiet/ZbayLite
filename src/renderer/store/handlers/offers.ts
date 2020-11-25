@@ -1,4 +1,4 @@
-import { produce } from 'immer'
+import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import { DateTime } from 'luxon'
 import { remote } from 'electron'
@@ -13,7 +13,7 @@ import appSelectors from '../selectors/app'
 import contactsHandlers from './contacts'
 import channelHandlers from './channel'
 import { messageType, actionTypes } from '../../../shared/static'
-import { DisplayableMessage } from '../../zbay/messages'
+import { DisplayableMessage } from '../../zbay/messages.types'
 import { messages } from '../../zbay'
 import { _checkMessageSize } from './messages'
 import usersSelectors from '../selectors/users'
@@ -22,38 +22,55 @@ import client from '../../zcash'
 import { packMemo } from '../../zbay/transit'
 import { sendMessage } from '../../zcash/websocketClient'
 
-export const Offer = {
-  address: '',
-  itemId: '',
-  name: '',
-  lastSeen: '',
-  messages: [],
-  newMessages: []
+import { ActionsType } from './types'
+
+class Offers {
+  address: string;
+  itemId: string;
+  name: string;
+  lastSeen: string;
+  messages: DisplayableMessage[];
+  newMessages: DisplayableMessage[]
+
+  constructor(values?: Partial<Offers>) {
+    Object.assign(this, values)
+    this[immerable] = true
+  }
 }
 
-const initialState = {
-  ...Offer
+export type OffersStore = Offers
+
+const initialState: OffersStore = {
+  ...new Offers({
+    address: '',
+    itemId: '',
+    name: '',
+    lastSeen: '',
+    messages: [],
+    newMessages: []
+  })
 }
 
-const setMessages = createAction(actionTypes.SET_OFFER_MESSAGES)
-const addOffer = createAction(actionTypes.ADD_OFFER)
+//const setMessages = createAction<{ itemId: string; messages: DisplayableMessage[] }>(actionTypes.SET_OFFER_MESSAGES)
+//const addOffer = createAction(actionTypes.ADD_OFFER)
 const cleanNewMessages = createAction(actionTypes.CLEAN_OFFER_NEW_MESSAGESS)
 const setLastSeen = createAction(actionTypes.SET_OFFER_LAST_SEEN)
-const appendMessages = createAction(actionTypes.APPEND_OFFER_MESSAGES)
-const appendNewMessages = createAction(actionTypes.APPEND_NEW_OFFER_MESSAGES)
-const setOfferMessageBlockTime = createAction(
-  actionTypes.SET_OFFER_MESSAGE_BLOCKTIME
-)
+//const appendMessages = createAction(actionTypes.APPEND_OFFER_MESSAGES)
+//const appendNewMessages = createAction(actionTypes.APPEND_NEW_OFFER_MESSAGES)
+//const setOfferMessageBlockTime = createAction(actionTypes.SET_OFFER_MESSAGE_BLOCKTIME)
 
 export const actions = {
-  setMessages,
-  addOffer,
+  //setMessages,
+  //addOffer,
   cleanNewMessages,
   setLastSeen,
-  appendMessages,
-  appendNewMessages,
-  setOfferMessageBlockTime
+  //appendMessages,
+  //appendNewMessages,
+  //setOfferMessageBlockTime
 }
+
+export type OffersActions = ActionsType<typeof actions>
+
 const createOfferAdvert = ({ payload, history }) => async (
   dispatch,
   getState
@@ -85,10 +102,6 @@ const createOffer = ({ payload }) => async (dispatch, getState) => {
     }
   }
 }
-export const loadVaultContacts = () => async (dispatch, getState) => {}
-
-export const initMessage = () => async (dispatch, getState) => {}
-const refreshMessages = id => async (dispatch, getState) => {}
 
 const sendItemMessageOnEnter = event => async (dispatch, getState) => {
   const enterPressed = event.nativeEvent.keyCode === 13
@@ -126,7 +139,7 @@ const sendItemMessageOnEnter = event => async (dispatch, getState) => {
         .update(JSON.stringify(messageEssentials))
         .digest('hex')
 
-      const messagePlaceholder = DisplayableMessage({
+      const messagePlaceholder = new DisplayableMessage({
         ...message,
         id: key,
         sender: {
@@ -192,83 +205,78 @@ const updateLastSeen = ({ itemId }) => async (dispatch, getState) => {
 }
 export const epics = {
   createOfferAdvert,
-  loadVaultContacts,
-  initMessage,
   sendItemMessageOnEnter,
-  // sendItemTransferMessage,
-  refreshMessages,
   createOffer,
   updateLastSeen
 }
 
 export const reducer = handleActions(
   {
-    [setMessages]: (state, { payload: { itemId, messages } }) =>
-      produce(state, (draft) => {
-        if (!draft[itemId]) {
-          draft[itemId] = {
-            ...Offer,
-            messages
-          }
-        } else {
-          draft[itemId].messages = draft[itemId].messages.concat(messages)
-        }
-      }),
-    [addOffer]: (state, { payload: { newOffer } }) =>
-      produce(state, (draft) => {
-        draft[newOffer.itemId] = newOffer
-      }),
-    [cleanNewMessages]: (state, { payload: { itemId } }) =>
+    // [setMessages.toString()]: (state, { payload: { itemId, messages } }: OffersActions['setMessages']) =>
+    //   produce(state, (draft) => {
+    //     if (!draft[itemId]) {
+    //       draft[itemId] = {
+    //         ...new Offers(),
+    //         messages
+    //       }
+    //     } else {
+    //       draft[itemId].messages = draft[itemId].messages.concat(messages)
+    //     }
+    //   }),
+    // [addOffer.toString()]: (state, { payload: { newOffer } }: OffersActions['addOffer']) =>
+    //   produce(state, (draft) => {
+    //     draft[newOffer.itemId] = newOffer
+    //   }),
+    [cleanNewMessages.toString()]: (state, { payload: { itemId } }: OffersActions['cleanNewMessages']) =>
       produce(state, (draft) => {
         draft[itemId].newMessages = []
       }),
-    [appendMessages]: (state, { payload: { itemId, message } }) =>
+    // [appendMessages.toString()]: (state, { payload: { itemId, message } }: OffersActions['appendMessages']) =>
+    //   produce(state, (draft) => {
+    //     if (!draft[itemId]) {
+    //       draft[itemId] = {
+    //         ...new Offers(),
+    //         messages: [message]
+    //       }
+    //     } else {
+    //       draft[itemId].messages.push(message)
+    //     }
+    //   }),
+    // [appendNewMessages.toString()]: (state, { payload: { itemId, message } }: OffersActions['appendNewMessages']) =>
+    //   produce(state, (draft) => {
+    //     if (!draft[itemId]) {
+    //       draft[itemId] = {
+    //         ...new Offers(),
+    //         newMessages: [message]
+    //       }
+    //     } else {
+    //       draft[itemId].newMessages.push(message)
+    //     }
+    //   }),
+    [setLastSeen.toString()]: (state, { payload: { itemId, lastSeen } }: OffersActions['setLastSeen']) =>
       produce(state, (draft) => {
         if (!draft[itemId]) {
           draft[itemId] = {
-            ...Offer,
-            messages: [message]
-          }
-        } else {
-          draft[itemId].messages.push(message)
-        }
-      }),
-    [appendNewMessages]: (state, { payload: { itemId, message } }) =>
-      produce(state, (draft) => {
-        if (!draft[itemId]) {
-          draft[itemId] = {
-            ...Offer,
-            newMessages: [message]
-          }
-        } else {
-          draft[itemId].newMessages.push(message)
-        }
-      }),
-    [setLastSeen]: (state, { payload: { itemId, lastSeen } }) =>
-      produce(state, (draft) => {
-        if (!draft[itemId]) {
-          draft[itemId] = {
-            ...Offer,
+            ...new Offers(),
             lastSeen: lastSeen
           }
         } else {
           draft[itemId].lastSeen = lastSeen
         }
       }),
-    [setOfferMessageBlockTime]: (
-      state,
-      { payload: { itemId, messageId, blockTime } }
-    ) =>
-      produce(state, (draft) => {
-        const index = messages.findIndex(msg => msg.id === messageId)
-        draft[itemId].messages[index].blockTime = blockTime
-      })
+    // [setOfferMessageBlockTime.toString()]: (
+    //   state,
+    //   { payload: { itemId, messageId, blockTime } }: OffersActions['setOfferMessageBlockTime']
+    // ) =>
+    //   produce(state, (draft) => {
+    //     const index = messages.findIndex(msg => msg.id === messageId)
+    //     draft[itemId].messages[index].blockTime = blockTime
+    //   })
   },
   initialState
 )
 export default {
   actions,
   epics,
-  reducer,
-  loadVaultContacts
+  reducer
 }
