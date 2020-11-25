@@ -24,7 +24,7 @@ import { sendMessage } from '../../zcash/websocketClient'
 
 import { ActionsType } from './types'
 
-class Offers {
+class Offer {
   address: string;
   itemId: string;
   name: string;
@@ -32,24 +32,15 @@ class Offers {
   messages: DisplayableMessage[];
   newMessages: DisplayableMessage[]
 
-  constructor(values?: Partial<Offers>) {
+  constructor(values?: Partial<Offer>) {
     Object.assign(this, values)
     this[immerable] = true
   }
 }
 
-export type OffersStore = Offers
+export type OffersStore = { [id: string]: Offer }
 
-const initialState: OffersStore = {
-  ...new Offers({
-    address: '',
-    itemId: '',
-    name: '',
-    lastSeen: '',
-    messages: [],
-    newMessages: []
-  })
-}
+const initialState: OffersStore = {}
 
 //const setMessages = createAction<{ itemId: string; messages: DisplayableMessage[] }>(actionTypes.SET_OFFER_MESSAGES)
 //const addOffer = createAction(actionTypes.ADD_OFFER)
@@ -257,7 +248,14 @@ export const reducer = handleActions(
       produce(state, (draft) => {
         if (!draft[itemId]) {
           draft[itemId] = {
-            ...new Offers(),
+            ...new Offer({
+              address: '',
+              itemId: '',
+              name: '',
+              lastSeen: '',
+              messages: [],
+              newMessages: []
+            }),
             lastSeen: lastSeen
           }
         } else {

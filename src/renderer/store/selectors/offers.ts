@@ -7,15 +7,13 @@ import identitySelectors from './identity'
 import usersSelectors from './users'
 import { mergeIntoOne } from './channel'
 
-const store = s => s
+import { OffersStore } from '../handlers/offers'
 
-const offers = createSelector(
-  store,
-  s => s.offers
-)
+const offers = (s): OffersStore => s.offers as OffersStore
+
 
 const filteredOffers = createSelector(
-  store,
+  offers,
   (s) => {
     const filteredOffers = s
     return filteredOffers.filter(offer => !R.isNil(offer))
