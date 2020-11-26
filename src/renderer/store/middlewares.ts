@@ -2,8 +2,8 @@ import criticalErrorHandlers from './handlers/criticalError'
 import modalsHandlers from './handlers/modals'
 
 const isPromise = value => value !== null &&
-      typeof value === 'object' &&
-      typeof value.then === 'function'
+  typeof value === 'object' &&
+  typeof value.then === 'function'
 
 const _dispatchError = (store, err) => {
   const criticalError = {

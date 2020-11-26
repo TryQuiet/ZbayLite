@@ -12,17 +12,17 @@ import electronStore from '../../../shared/electronStore'
 import { ActionsType, PayloadType } from './types'
 
 export class App {
-  version: string = null
-  transfers: { [key: string]: string } = {}
-  newUser: boolean = false
-  modalTabToOpen: boolean = false
-  allTransfersCount: number = 0
-  newTransfersCounter: number = 0
-  directMessageQueueLock: boolean = false
-  messageQueueLock: boolean = false
-  isInitialLoadFinished: boolean = false
-  useTor: boolean = false
-  allTransactionsId: string[] = []
+  version: string
+  transfers: { [key: string]: string }
+  newUser: boolean
+  modalTabToOpen: boolean
+  allTransfersCount: number
+  newTransfersCounter: number
+  directMessageQueueLock: boolean
+  messageQueueLock: boolean
+  isInitialLoadFinished: boolean
+  useTor: boolean
+  allTransactionsId: string[]
 
   constructor(values?: Partial<App>) {
     Object.assign(this, values)
@@ -32,8 +32,20 @@ export class App {
 
 export type AppStore = App
 
-export const initialState: App = {
-  ...new App()
+export const initialState: AppStore = {
+  ...new App({
+    version: null,
+    transfers: {},
+    newUser: false,
+    modalTabToOpen: false,
+    allTransfersCount: 0,
+    newTransfersCounter: 0,
+    directMessageQueueLock: false,
+    messageQueueLock: false,
+    isInitialLoadFinished: false,
+    useTor: false,
+    allTransactionsId: []
+  })
 }
 
 const loadVersion = createAction(actionTypes.SET_APP_VERSION, () => remote.app.getVersion())

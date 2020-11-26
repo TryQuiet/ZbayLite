@@ -32,7 +32,7 @@ import operationsHandlers from './handlers/operations'
 import logsHandlers from './handlers/logs'
 import ownedChannels from './handlers/ownedChannels'
 
-const reduxStorage = createElectronStorage({ name: 'redux-storage' })
+const reduxStorage = createElectronStorage()
 const persistConfig = {
   key: 'root',
   storage: reduxStorage,

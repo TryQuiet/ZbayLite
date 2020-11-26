@@ -7,17 +7,17 @@ import reducers from './reducers'
 import { errorsMiddleware } from './middlewares'
 
 const composer = (enhancers) => {
-  if (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
-      process.env.NODE_ENV === 'development') {
-    return window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(enhancers)
+  if (window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] &&
+    process.env.NODE_ENV === 'development') {
+    return window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'](enhancers)
   }
   return compose(enhancers)
 }
 
-export default ({
+export default (
   initialState
-} = {}) => createStore(
-  reducers,
-  initialState,
-  composer(applyMiddleware(...[errorsMiddleware, createDebounce(), thunk, promise()]))
-)
+    = {}) => createStore(
+      reducers,
+      initialState,
+      composer(applyMiddleware(...[errorsMiddleware, createDebounce(), thunk, promise()]))
+    )
