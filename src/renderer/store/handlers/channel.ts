@@ -54,17 +54,17 @@ interface ILoader {
 
 // TODO: find type of message and members
 export class Channel {
-  spentFilterValue: BigNumber = new BigNumber(0)
+  spentFilterValue: BigNumber
   id?: string
-  message: object = {}
-  shareableUri: string = ''
-  address: string = ''
-  loader: ILoader = { loading: false, message: '' }
-  members?: object = {}
-  showInfoMsg: boolean = true
-  isSizeCheckingInProgress: boolean = false
+  message: object
+  shareableUri: string
+  address: string
+  loader: ILoader
+  members?: object
+  showInfoMsg: boolean
+  isSizeCheckingInProgress: boolean
   messageSizeStatus?: boolean
-  displayableMessageLimit: number = 50
+  displayableMessageLimit: number
 
   constructor(values?: Partial<Channel>) {
     Object.assign(this, values)
@@ -74,9 +74,18 @@ export class Channel {
 
 export type ChannelStore = Channel
 
-export const initialState: ChannelStore = {
-  ...new Channel()
-}
+export const initialState: ChannelStore = new Channel({
+  spentFilterValue: new BigNumber(0),
+  message: {},
+  shareableUri: '',
+  address: '',
+  loader: { loading: false, message: '' },
+  members: {},
+  showInfoMsg: true,
+  isSizeCheckingInProgress: false,
+  displayableMessageLimit: 50
+})
+
 
 const setLoading = createAction<boolean>(actionTypes.SET_CHANNEL_LOADING)
 const setSpentFilterValue = createAction(actionTypes.SET_SPENT_FILTER_VALUE, (_, value) => value)

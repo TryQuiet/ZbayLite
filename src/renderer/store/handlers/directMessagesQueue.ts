@@ -1,8 +1,7 @@
 import { produce, immerable } from 'immer'
 import * as R from "ramda";
 import crypto from "crypto";
-import { createAction, handleActions } from "redux-actions";
-import BigNumber from 'bignumber.js'
+import { createAction, handleActions } from 'redux-actions'
 
 import selectors from "../selectors/directMessagesQueue";
 import identitySelectors from "../selectors/identity";
@@ -38,14 +37,14 @@ export const PendingMessage = {
 };
 
 export class DirectMessagesQueue {
-  recipientAddress: string = "";
-  recipientUsername: string = "";
-  offerId: string = "";
-  message: DisplayableMessage
+  recipientAddress: string = ''
+  recipientUsername: string = ''
+  offerId: string = ''
+  message?: DisplayableMessage
   type: messageType
 
   constructor(values?: Partial<DirectMessagesQueue>) {
-    Object.assign(this, values);
+    Object.assign(this, values)
     this[immerable] = true
   }
 }

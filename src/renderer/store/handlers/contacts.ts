@@ -46,7 +46,7 @@ const sendDirectMessage = (payload, redirect = true) => async (dispatch, getStat
     )
   )
 }
-export class Contacts {
+export class Contact {
   lastSeen?: DateTime
   key: string = ''
   username: string = ''
@@ -57,7 +57,7 @@ export class Contacts {
   offerId?: string
   unread?: number
   connected?: boolean
-  constructor(values?: Partial<Contacts>) {
+  constructor(values?: Partial<Contact>) {
     Object.assign(this, values)
     this[immerable] = true
   }
@@ -67,7 +67,7 @@ export interface ISender {
   username: string
 }
 
-export type ContactsStore = { [key: string]: Contacts }
+export type ContactsStore = { [key: string]: Contact }
 
 const initialState: ContactsStore = {}
 
@@ -102,7 +102,7 @@ const appendNewMessages = createAction<{
   contactAddress: string
   messagesIds: number[]
 }>(actionTypes.APPEND_NEW_DIRECT_MESSAGES)
-const setLastSeen = createAction<{ lastSeen: DateTime; contact: Contacts }>(
+const setLastSeen = createAction<{ lastSeen: DateTime; contact: Contact }>(
   actionTypes.SET_CONTACTS_LAST_SEEN
 )
 const removeContact = createAction<{ address: string }>(actionTypes.REMOVE_CONTACT)

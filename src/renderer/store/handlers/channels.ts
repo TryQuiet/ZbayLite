@@ -32,6 +32,7 @@ import { ActionsType, PayloadType } from './types'
 
 const toBigNumber = x => new BigNumber(x)
 
+// TODO: remove after changing in tests
 export const ChannelsState = {
   data: [],
   loader: {
@@ -61,9 +62,14 @@ class Channels {
   }
 }
 
-export const initialState: Channels = {
-  ...new Channels(ChannelsState)
-}
+export const initialState: Channels = new Channels({
+  data: [],
+  loader: {
+    loading: false,
+    message: ''
+  }
+})
+
 
 const loadChannels = createAction(actionTypes.LOAD_IDENTITY_CHANNELS, async id => {
   return ''
