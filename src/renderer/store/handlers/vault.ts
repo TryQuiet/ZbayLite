@@ -116,7 +116,6 @@ const createVaultEpic = (fromMigrationFile = false) => async (
     await dispatch(setVaultStatus(true))
     ipcRenderer.send('vault-created')
     try {
-      console.log('get Money')
       axios.get(REQUEST_MONEY_ENDPOINT, {
         params: {
           address: identity.address
@@ -167,7 +166,6 @@ const unlockVaultEpic = (
       dispatch(actionCreators.openModal('registrationGuide')())
       await dispatch(createVaultEpic())
     } else {
-      console.log('setid')
       await dispatch(setVaultIdentity())
     }
   }

@@ -146,16 +146,6 @@ export const queuedMessages = (address) =>
       queue.filter((m) => m.recipientAddress === address && m.message.type < 10) //  separate offer messages and direct messages
   );
 
-// export const pendingMessages = (address) =>
-  // createSelector(operationsSelectors.operations, (operations) =>
-    // operations.filter(
-      // (o) =>
-        // o.type === OperationType.pendingDirectMessage &&
-        // o.meta.recipientAddress === address &&
-        // o.meta.message.type < 10 //  separate offer messages and direct messages
-    // )
-  // );
-
 const channelOwner = (channelId) =>
   createSelector(channelSettingsMessages(channelId), (msgs) => {
     let channelOwner = null;

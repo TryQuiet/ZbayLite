@@ -1,44 +1,7 @@
 import { MessageType } from "../../shared/static.types";
 import BigNumber from "bignumber.js";
 
-
-
-
-
-export interface IShippingData {}
-
-
-
-/**
- * 
- export interface IModerationActionsType {
-   REMOVE_MESSAGE: string;
-   BLOCK_USER: string;
-   UNBLOCK_USER: string;
-   ADD_MOD: string;
-   REMOVE_MOD: string;
-   REMOVE_CHANNEL: string;
-  }
-  */
-// export interface IDisplayableMessage {
-//   id?: string;
-//   type: MessageType;
-//   sender: IExchangeParticipant;
-//   receiver: IExchangeParticipant;
-//   createdAt?: number;
-//   message: IMessage;
-//   spent: BigNumber;
-//   fromYou: boolean;
-//   status: string;
-//   error?: any;
-//   shippingData?: IShippingData;
-//   tag: string;
-//   offerOwner?: string;
-//   isUnregistered: boolean;
-//   publicKey?: string;
-//   blockHeight: number;
-// }
-
+export interface IShippingData { }
 export interface IOutgoingMetadata {
   memo: string;
   memohex: string;
@@ -46,9 +9,9 @@ export interface IOutgoingMetadata {
 export interface IExchangeParticipant {
   replyTo: string;
   username: string;
-  publicKey: string;
-  address: string;
-  nickname: string;
+  publicKey?: string;
+  address?: string;
+  nickname?: string;
 }
 export class ExchangeParticipant {
   replyTo: string ='';
@@ -63,9 +26,6 @@ export class ExchangeParticipant {
     Object.assign(this, values);
   }
 }
-
-//let a = new ExchangeParticipant({'replyTo': 'fd', 'publicKey': 'sdf', 'address': 'sdfsd', nickname: 'sdf'})
-
 export interface IMessage {
   moderationType: string;
   moderationTarget: string;
@@ -83,7 +43,6 @@ export interface IMessage {
   channelName?:string;
   channelDescription?: string;
   channelIvk?: string;
-
 }
 export class DisplayableMessage {
   id: string;

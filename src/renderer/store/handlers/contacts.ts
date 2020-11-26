@@ -208,7 +208,6 @@ export const connectWsContacts = () => async (dispatch, getState) => {
 
   ipcRenderer.on('initWsConnection', (e, d) => {
     const data = JSON.parse(d)
-    console.log(data)
     dispatch(setContactConnected({ key: data.id, connected: data.connected }))
     mapping.get(data.id)?.resolve(data.response)
     mapping.delete(data.id)
@@ -229,65 +228,7 @@ export const deleteChannel = ({ address, timestamp, history }) => async (dispatc
   history.push(`/main/channel/general`)
   dispatch(removeContact(address))
 }
-// export const checkConfirmationOfTransfers = async (dispatch, getState) => {
-//   try {
-//     const latestBlock = parseInt(nodeSelectors.latestBlock(getState()).toString())
-//     const contacts = selectors.contacts(getState())
-//     const offers = offersSelectors.offers(getState())
-//     const getKeys = (obj: ContactsStore) => Object.keys(obj)
-//     for (const key of getKeys(contacts)) {
-//       for (const msg of contacts[key].messages) {
-//         if (
-//           (msg.type === messageType.ITEM_TRANSFER || msg.type === messageType.TRANSFER) &&
-//           msg.blockTime === Number.MAX_SAFE_INTEGER
-//         ) {
-//           const tx = await getClient().confirmations.getResult(msg.id)
-//           dispatch(
-//             setMessageBlockTime({
-//               contactAddress: key,
-//               messageId: msg[0].messageId,
-//               blockTime: latestBlock - tx.confirmations
-//             })
-//           )
-//         }
-//       }
-//       for (const msg of contacts[key].vaultMessages) {
-//         if (
-//           (msg.type === messageType.ITEM_TRANSFER || msg.type === messageType.TRANSFER) &&
-//           msg.blockTime === Number.MAX_SAFE_INTEGER
-//         ) {
-//           const tx = await getClient().confirmations.getResult(msg.id)
-//           dispatch(
-//             setVaultMessageBlockTime({
-//               contactAddress: key,
-//               messageId: msg.id,
-//               blockTime: latestBlock - tx.confirmations
-//             })
-//           )
-//         }
-//       }
-//     }
-//     for (const key of Array.from(offers.keys())) {
-//       for (const msg of offers.get(key).messages) {
-//         if (
-//           (msg.type === messageType.ITEM_TRANSFER || msg.type === messageType.TRANSFER) &&
-//           msg.blockTime === Number.MAX_SAFE_INTEGER
-//         ) {
-//           const tx = await getClient().confirmations.getResult(msg.id)
-//           dispatch(
-//             offersHandlers.actions.setOfferMessageBlockTime({
-//               itemId: key,
-//               messageId: msg.id,
-//               blockTime: latestBlock - tx.confirmations
-//             })
-//           )
-//         }
-//       }
-//     }
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
+
 export const epics = {
   updateLastSeen,
   sendDirectMessage,
@@ -295,7 +236,6 @@ export const epics = {
   createVaultContact,
   deleteChannel,
   linkUserRedirect,
-  //checkConfirmationOfTransfers,
   connectWsContacts
 }
 
@@ -392,8 +332,6 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { connected, key } }: ContactActions['setContactConnected']
     ) =>
       produce(state, draft => {
-        console.log(connected)
-        console.log(key)
         draft[key].connected = connected
       }),
     [removeContact.toString()]: (

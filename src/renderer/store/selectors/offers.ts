@@ -1,11 +1,6 @@
 import { createSelector } from 'reselect'
 import * as R from 'ramda'
 import directMssagesQueueSelectors from './directMessagesQueue'
-import operationsSelectors from './operations'
-import zbayMessages from '../../zbay/messages'
-import identitySelectors from './identity'
-import usersSelectors from './users'
-import { mergeIntoOne } from './channel'
 
 import { OffersStore } from '../handlers/offers'
 
@@ -16,7 +11,7 @@ const filteredOffers = createSelector(
   offers,
   (s) => {
     const filteredOffers = s
-    return filteredOffers.filter(offer => !R.isNil(offer))
+    return Array.from(Object.values(filteredOffers)).filter(offer => !R.isNil(offer))
   }
 )
 
@@ -34,91 +29,29 @@ export const queuedMessages = id =>
         m => m.offerId === id.substring(0, 64) && m.recipientUsername === id.substring(64)
       )
   )
+
 export const advertMessage = id =>
   createSelector(
     offer(id),
     offer => offer.messages.find(msg => msg.type === 2)
   )
 
-// export const pendingMessages = id =>
-//   createSelector(
-//     operationsSelectors.operations,
-//     operations =>
-//       Array.from(Object.values(operations)).filter(
-//         o => o.meta.offerId === id.substring(0, 64) && o.meta.recipientUsername === id.substring(64)
-//       )
-//   )
-// const offerMessages = (id, signerPubKey) =>
-//   createSelector(
-//     identitySelectors.data,
-//     usersSelectors.registeredUser(signerPubKey),
-//     offers,
-//     pendingMessages(id),
-//     queuedMessages(id),
-//     (identity, registeredUser, a, pendingMessages, queuedMessages) => {
-//       const userData = registeredUser || null
-//       const identityAddress = identity.address
-//       const identityName = userData ? userData.nickname : identity.name
-//       const displayablePending = pendingMessages.map(operation => {
-//         const textMsg = operation.operation.meta.message.message.text
-//         let tempMsg = {
-//           ...operation.operation
-//         }
-//         tempMsg.meta.message.message = textMsg
-//         return zbayMessages.operationToDisplayableMessage({
-//           operation: tempMsg,
-//           tag: operation.meta.message.message.tag,
-//           offerOwner: operation.meta.message.message.offerOwner,
-//           identityAddress,
-//           identityName,
-//           receiver: {
-//             replyTo: operation.meta.recipientAddress,
-//             username: operation.meta.recipientUsername
-//           }
-//         })
-//       })
-//       const displayableQueued = queuedMessages.map((queuedMessage, messageKey) => {
-//         const textMsg = queuedMessage.message.message.text
-//         let tempMsg = {
-//           ...queuedMessage
-//         }
-//         tempMsg.message.message = textMsg
-//         return zbayMessages.queuedToDisplayableMessage({
-//           queuedMessage: tempMsg,
-//           tag: queuedMessage.message.message.tag,
-//           offerOwner: queuedMessage.message.message.offerOwner,
-//           messageKey,
-//           identityAddress,
-//           identityName,
-//           receiver: {
-//             replyTo: queuedMessage.recipientAddress,
-//             username: queuedMessage.recipientUsername
-//           }
-//         })
-//       })
-//       const vaultMessages = a[id].messages
-//       const concatedMessages = vaultMessages
-//         .concat(displayableQueued.values(), displayablePending.values())
-//         .sortBy(m => m.createdAt)
-//       const merged = mergeIntoOne(concatedMessages)
-//       return merged
-//     }
-//   )
 const lastSeen = id =>
   createSelector(
     offer(id),
     ch => ch.lastSeen
   )
+
 const newMessages = id =>
   createSelector(
     offer(id),
     ch => ch.newMessages
   )
+
 export default {
   offers,
   offer,
   filteredOffers,
-  //offerMessages,
   lastSeen,
   advertMessage,
   newMessages

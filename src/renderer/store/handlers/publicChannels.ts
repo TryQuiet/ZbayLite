@@ -108,7 +108,6 @@ export const fetchPublicChannels = (address, messages: DisplayableMessage[]) => 
       }
     }
     await dispatch(feesHandlers.actions.setPublicChannelFee(minfee))
-    console.log('tes public channelst', publicChannelsMap)
     await dispatch(setPublicChannels(publicChannelsMap))
   } catch (err) {
     console.warn(err)

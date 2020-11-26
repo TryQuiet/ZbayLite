@@ -9,7 +9,6 @@ import { DateTime } from 'luxon'
 import history from '../../../shared/history'
 import operationsHandlers from './operations'
 import notificationsHandlers from './notifications'
-// import messagesQueueHandlers from './messagesQueue'
 import messagesHandlers, { _checkMessageSize } from './messages'
 import channelsHandlers from './channels'
 import offersHandlers from './offers'
@@ -80,7 +79,6 @@ export const initialState: ChannelStore = {
 }
 
 const setLoading = createAction<boolean>(actionTypes.SET_CHANNEL_LOADING)
-//const setLoadingMessage = createAction(actionTypes.SET_CHANNEL_LOADING_MESSAGE);
 const setSpentFilterValue = createAction(actionTypes.SET_SPENT_FILTER_VALUE, (_, value) => value)
 const setMessage = createAction<string>(actionTypes.SET_CHANNEL_MESSAGE)
 const setChannelId = createAction<string>(actionTypes.SET_CHANNEL_ID)
@@ -93,7 +91,6 @@ const resetChannel = createAction(actionTypes.SET_CHANNEL)
 
 export const actions = {
   setLoading,
-  //setLoadingMessage,
   setSpentFilterValue,
   setMessage,
   setShareableUri,
@@ -401,13 +398,6 @@ export const reducer = handleActions<ChannelStore, PayloadType<ChannelActions>>(
       produce(state, draft => {
         draft.loader.loading = loading
       }),
-    // [setLoadingMessage.toString()]: (
-    // state,
-    // { payload: message }: ChannelActions["setLoadingMessage"]
-    // ) =>
-    // produce(state, (draft) => {
-    // draft.loader.message = message;
-    // }),
     [setSpentFilterValue.toString()]: (
       state,
       { payload: value }: ChannelActions['setSpentFilterValue']

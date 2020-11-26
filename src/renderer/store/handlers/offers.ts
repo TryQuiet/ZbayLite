@@ -42,22 +42,12 @@ export type OffersStore = { [id: string]: Offer }
 
 const initialState: OffersStore = {}
 
-//const setMessages = createAction<{ itemId: string; messages: DisplayableMessage[] }>(actionTypes.SET_OFFER_MESSAGES)
-//const addOffer = createAction(actionTypes.ADD_OFFER)
 const cleanNewMessages = createAction(actionTypes.CLEAN_OFFER_NEW_MESSAGESS)
 const setLastSeen = createAction(actionTypes.SET_OFFER_LAST_SEEN)
-//const appendMessages = createAction(actionTypes.APPEND_OFFER_MESSAGES)
-//const appendNewMessages = createAction(actionTypes.APPEND_NEW_OFFER_MESSAGES)
-//const setOfferMessageBlockTime = createAction(actionTypes.SET_OFFER_MESSAGE_BLOCKTIME)
 
 export const actions = {
-  //setMessages,
-  //addOffer,
   cleanNewMessages,
   setLastSeen,
-  //appendMessages,
-  //appendNewMessages,
-  //setOfferMessageBlockTime
 }
 
 export type OffersActions = ActionsType<typeof actions>
@@ -190,7 +180,7 @@ const sendItemMessageOnEnter = event => async (dispatch, getState) => {
 const updateLastSeen = ({ itemId }) => async (dispatch, getState) => {
   const lastSeen = DateTime.utc()
   const unread = offersSelectors.newMessages(itemId)(getState())
-  remote.app.badgeCount = remote.app.badgeCount - unread
+  remote.app.badgeCount = remote.app.badgeCount - unread.length
   dispatch(setLastSeen({ itemId, lastSeen }))
   dispatch(cleanNewMessages({ itemId }))
 }
@@ -203,47 +193,10 @@ export const epics = {
 
 export const reducer = handleActions(
   {
-    // [setMessages.toString()]: (state, { payload: { itemId, messages } }: OffersActions['setMessages']) =>
-    //   produce(state, (draft) => {
-    //     if (!draft[itemId]) {
-    //       draft[itemId] = {
-    //         ...new Offers(),
-    //         messages
-    //       }
-    //     } else {
-    //       draft[itemId].messages = draft[itemId].messages.concat(messages)
-    //     }
-    //   }),
-    // [addOffer.toString()]: (state, { payload: { newOffer } }: OffersActions['addOffer']) =>
-    //   produce(state, (draft) => {
-    //     draft[newOffer.itemId] = newOffer
-    //   }),
     [cleanNewMessages.toString()]: (state, { payload: { itemId } }: OffersActions['cleanNewMessages']) =>
       produce(state, (draft) => {
         draft[itemId].newMessages = []
       }),
-    // [appendMessages.toString()]: (state, { payload: { itemId, message } }: OffersActions['appendMessages']) =>
-    //   produce(state, (draft) => {
-    //     if (!draft[itemId]) {
-    //       draft[itemId] = {
-    //         ...new Offers(),
-    //         messages: [message]
-    //       }
-    //     } else {
-    //       draft[itemId].messages.push(message)
-    //     }
-    //   }),
-    // [appendNewMessages.toString()]: (state, { payload: { itemId, message } }: OffersActions['appendNewMessages']) =>
-    //   produce(state, (draft) => {
-    //     if (!draft[itemId]) {
-    //       draft[itemId] = {
-    //         ...new Offers(),
-    //         newMessages: [message]
-    //       }
-    //     } else {
-    //       draft[itemId].newMessages.push(message)
-    //     }
-    //   }),
     [setLastSeen.toString()]: (state, { payload: { itemId, lastSeen } }: OffersActions['setLastSeen']) =>
       produce(state, (draft) => {
         if (!draft[itemId]) {
@@ -262,14 +215,6 @@ export const reducer = handleActions(
           draft[itemId].lastSeen = lastSeen
         }
       }),
-    // [setOfferMessageBlockTime.toString()]: (
-    //   state,
-    //   { payload: { itemId, messageId, blockTime } }: OffersActions['setOfferMessageBlockTime']
-    // ) =>
-    //   produce(state, (draft) => {
-    //     const index = messages.findIndex(msg => msg.id === messageId)
-    //     draft[itemId].messages[index].blockTime = blockTime
-    //   })
   },
   initialState
 )
