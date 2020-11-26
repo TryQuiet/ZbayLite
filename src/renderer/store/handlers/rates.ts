@@ -15,7 +15,6 @@ export const RatesState = {
   zec: '1',
   history: {}
 }
-
 class Rates {
   usd: string;
   zec: string;

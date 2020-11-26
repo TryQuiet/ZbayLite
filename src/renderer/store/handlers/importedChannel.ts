@@ -6,7 +6,6 @@ import { errorNotification } from './utils'
 import channelSelectors from '../selectors/channel'
 import channelsSelectors from '../selectors/channels'
 import identityHandlers from './identity'
-import logsHandlers from './logs'
 import importedChannelSelectors from '../selectors/importedChannel'
 import notificationsHandlers from './notifications'
 import client from '../../zcash'
@@ -81,12 +80,6 @@ const removeChannel = (history, isOffer = false) => async (dispatch, getState) =
           }
         })
       )
-      dispatch(
-        logsHandlers.epics.saveLogs({
-          type: 'APPLICATION_LOGS',
-          payload: `Removing channel ${channel.address}`
-        })
-      )
     } else {
       dispatch(
         notificationsHandlers.actions.enqueueSnackbar({
@@ -140,12 +133,6 @@ const importChannel = () => async (dispatch, getState) => {
         }
       })
     )
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Successfully imported channel ${channel.name}`
-      })
-    )
     dispatch(modalsHandlers.actionCreators.closeModal('importChannelModal')())
 
     history.push(`/main/channel/${channel.address}`)
@@ -192,12 +179,6 @@ const decodeChannelEpic = uri => async (dispatch, getState) => {
           errorNotification({ message: `You already imported this channel` })
         )
       )
-      dispatch(
-        logsHandlers.epics.saveLogs({
-          type: 'APPLICATION_LOGS',
-          payload: `Channel already imported ${importAddress}`
-        })
-      )
       history.push(`/main/channel/${importAddress}`)
     } else {
       dispatch(setData({ ...channel, address: importAddress }))
@@ -211,12 +192,6 @@ const decodeChannelEpic = uri => async (dispatch, getState) => {
       notificationsHandlers.actions.enqueueSnackbar(
         errorNotification({ message: `Invalid channel URI: ${err.message}` })
       )
-    )
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Invalid channel URI`
-      })
     )
   }
   dispatch(setDecoding(false))

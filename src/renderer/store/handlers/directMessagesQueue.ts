@@ -24,8 +24,8 @@ import history from "../../../shared/history";
 import { ActionsType, PayloadType } from "./types";
 
 import { DisplayableMessage } from '../../zbay/messages.types'
-import { ThunkAction } from "redux-thunk";
-import { Action } from "redux";
+
+import { ZbayThunkAction } from './helpers'
 
 export const DEFAULT_DEBOUNCE_INTERVAL = 2000;
 
@@ -187,17 +187,6 @@ const sendMessage = (payload, redirect = true) => async (
   );
 };
 
-class Store { }
-interface IThunkActionWithMeta<R, S, E, A extends Action> extends ThunkAction<R, S, E, A> {
-  meta?: {
-    debounce: {
-      time: number,
-      key: string,
-    }
-  }
-}
-
-type ZbayThunkAction<ReturnType> = IThunkActionWithMeta<ReturnType, Store, unknown, Action<string>>
 
 const _sendPendingDirectMessages = (redirect): ZbayThunkAction<void> => async (dispatch, getState) => {
   const lock = appSelectors.directMessageQueueLock(getState());

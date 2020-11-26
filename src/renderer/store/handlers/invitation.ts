@@ -5,7 +5,6 @@ import BigNumber from 'bignumber.js'
 
 import invitationSelector from '../selectors/invitation'
 import identitySelectors from '../selectors/identity'
-import logsHandlers from './logs'
 import ratesSelectors from '../selectors/rates'
 import { getClient } from '../../zcash'
 import nodeHandlers from './node'
@@ -62,9 +61,6 @@ export const actions = {
 export type InvitationActions = ActionsType<typeof actions>
 
 export const generateInvitation = () => async (dispatch, getState) => {
-  dispatch(
-    logsHandlers.epics.saveLogs({ type: 'APPLICATION_LOGS', payload: `Creating new invitation` })
-  )
   const amountUsd = invitationSelector.amount(getState())
   const amountZec = invitationSelector.amountZec(getState())
   const includeAffiliate = invitationSelector.affiliateCode(getState())
@@ -105,12 +101,6 @@ const invitationSchema = Yup.object().shape({
 
 export const handleInvitation = invitationPacked => async (dispatch, getState) => {
   try {
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Processing new invitation`
-      })
-    )
     const identityAddress = identitySelectors.address(getState())
     const invitation = await inflate(invitationPacked)
     const lastblock = nodeSelectors.latestBlock(getState()).toNumber()

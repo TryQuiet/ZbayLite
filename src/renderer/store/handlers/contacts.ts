@@ -5,20 +5,15 @@ import BigNumber from 'bignumber.js'
 import { remote, ipcRenderer } from 'electron'
 
 import history from '../../../shared/history'
-import { messageType, actionTypes } from '../../../shared/static'
-
+import { actionTypes } from '../../../shared/static'
 import identitySelectors from '../selectors/identity'
-import offersSelectors from '../selectors/offers'
 import selectors from '../selectors/contacts'
-import nodeSelectors from '../selectors/node'
 
 import { DisplayableMessage } from '../../zbay/messages.types'
 import { messages as zbayMessages } from '../../zbay'
-import { getClient } from '../../zcash'
 
 import { _checkMessageSize } from './messages'
 import directMessagesQueueHandlers from './directMessagesQueue'
-import offersHandlers from './offers'
 import { ActionsType, PayloadType } from './types'
 import usersSelector from '../selectors/users'
 

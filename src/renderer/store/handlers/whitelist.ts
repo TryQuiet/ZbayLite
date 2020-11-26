@@ -3,7 +3,6 @@ import { createAction, handleActions } from 'redux-actions'
 
 import { actionTypes } from '../../../shared/static'
 import electronStore from '../../../shared/electronStore'
-import logsHandlers from './logs'
 
 import { ActionsType, PayloadType } from './types'
 
@@ -72,12 +71,10 @@ export const addToWhitelist = (url, dontAutoload) => async (
     dispatch(setAutoLoad(uri.hostname))
   }
   dispatch(setWhitelist(whitelistArray))
-  dispatch(logsHandlers.epics.saveLogs({ type: 'APPLICATION_LOGS', payload: `Setting new privder: ${url}` }))
 }
 export const setWhitelistAll = allowAll => async (dispatch, getState) => {
   ensureStore()
   electronStore.set('whitelist.allowAll', allowAll)
-  dispatch(logsHandlers.epics.saveLogs({ type: 'APPLICATION_LOGS', payload: `Setting auto loading for all links` }))
   dispatch(setWhitelistAllFlag(allowAll))
 }
 export const setAutoLoad = newLink => async (dispatch, getState) => {
@@ -87,7 +84,6 @@ export const setAutoLoad = newLink => async (dispatch, getState) => {
     autoloadArray.push(newLink)
   }
   electronStore.set('whitelist.autoload', autoloadArray)
-  dispatch(logsHandlers.epics.saveLogs({ type: 'APPLICATION_LOGS', payload: `Setting new auto load link  ${newLink}` }))
   dispatch(setAutoLoadList(autoloadArray))
 }
 export const removeImageHost = hostname => async (dispatch, getState) => {
@@ -95,7 +91,6 @@ export const removeImageHost = hostname => async (dispatch, getState) => {
   const autoloadArray = electronStore.get('whitelist.autoload')
   const filteredArray = autoloadArray.filter(name => name !== hostname)
   electronStore.set('whitelist.autoload', filteredArray)
-  dispatch(logsHandlers.epics.saveLogs({ type: 'APPLICATION_LOGS', payload: `Removing image host host ${hostname}` }))
   dispatch(setAutoLoadList(filteredArray))
 }
 export const removeSiteHost = hostname => async (dispatch, getState) => {
@@ -103,7 +98,6 @@ export const removeSiteHost = hostname => async (dispatch, getState) => {
   const whitelistedArray = electronStore.get('whitelist.whitelisted')
   const filteredArray = whitelistedArray.filter(name => name !== hostname)
   electronStore.set('whitelist.whitelisted', filteredArray)
-  dispatch(logsHandlers.epics.saveLogs({ type: 'APPLICATION_LOGS', payload: `Removing site host ${hostname}` }))
   dispatch(setWhitelist(filteredArray))
 }
 export const epics = {

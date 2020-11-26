@@ -29,7 +29,6 @@ import mentionsHandlers from './handlers/mentions'
 import whitelistHandlers from './handlers/whitelist'
 import notificationCenterHandlers from './handlers/notificationCenter'
 import operationsHandlers from './handlers/operations'
-import logsHandlers from './handlers/logs'
 import ownedChannels from './handlers/ownedChannels'
 
 const reduxStorage = createElectronStorage()
@@ -85,7 +84,6 @@ export default persistReducer(
     mentions: mentionsHandlers.reducer,
     whitelist: whitelistHandlers.reducer,
     notificationCenter: notificationCenterHandlers.reducer,
-    logsData: logsHandlers.reducer,
     ownedChannels: ownedChannels.reducer
   })
 )

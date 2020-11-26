@@ -5,7 +5,6 @@ import electronStore from '../../../shared/electronStore'
 import notificationCenterSelector from '../selectors/notificationCenter'
 import directMessageChannelSelector from '../selectors/directMessageChannel'
 import channelSelector from '../selectors/channel'
-import logsHandlers from './logs'
 
 import { ActionsType, PayloadType } from './types'
 
@@ -109,12 +108,6 @@ export const setChannelsNotification = filterType => async (dispatch, getState) 
       filterType: filterType
     })
   )
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Setting notification filter type for channel: ${filterType}`
-    })
-  )
 }
 export const setContactNotification = filterType => async (dispatch, getState) => {
   const address = directMessageChannelSelector.targetRecipientAddress(getState())
@@ -123,12 +116,6 @@ export const setContactNotification = filterType => async (dispatch, getState) =
     setContactNotificationFilter({
       contact: address,
       filterType: filterType
-    })
-  )
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Setting notification for contact: ${address}`
     })
   )
 }
@@ -140,21 +127,9 @@ export const unblockUserNotification = address => async (dispatch, getState) => 
       filterType: notificationFilterType.ALL_MESSAGES
     })
   )
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Unblocking notification for user: ${address}`
-    })
-  )
 }
 export const setUserNotification = filterType => async (dispatch, getState) => {
   electronStore.set(`notificationCenter.user.filterType`, filterType)
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Setting notification filter type: ${filterType}`
-    })
-  )
   dispatch(
     setUserNotificationFilter({
       filterType: filterType
@@ -163,12 +138,6 @@ export const setUserNotification = filterType => async (dispatch, getState) => {
 }
 export const setUserNotificationsSound = sound => async (dispatch, getState) => {
   electronStore.set(`notificationCenter.user.sound`, sound)
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Setting notifiaction sound: ${sound}`
-    })
-  )
   dispatch(
     setUserNotificationSound({
       sound: sound

@@ -12,7 +12,6 @@ import {
 } from './utils'
 import identityHandlers from './identity'
 import notificationsHandlers from './notifications'
-import logsHandlers from './logs'
 import nodeHandlers from './node'
 import { actionCreators } from './modals'
 import { REQUEST_MONEY_ENDPOINT, actionTypes } from '../../../shared/static'
@@ -96,12 +95,6 @@ const createVaultEpic = (fromMigrationFile = false) => async (
   const randomBytes = crypto.randomBytes(32).toString('hex')
   try {
     electronStore.set('isNewUser', true)
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Setting user status: 'new'`
-      })
-    )
     electronStore.set('vaultPassword', randomBytes)
     const identity = await dispatch(
       identityHandlers.epics.createIdentity({

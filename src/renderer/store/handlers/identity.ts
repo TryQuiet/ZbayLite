@@ -15,7 +15,6 @@ import coordinatorHandlers from './coordinator'
 import whitelistHandlers from './whitelist'
 import ownedChannelsHandlers from './ownedChannels'
 import txnTimestampsHandlers from './txnTimestamps'
-import logsHandlers from './logs'
 import ratesHandlers from './rates'
 import nodeHandlers from './node'
 import appHandlers from './app'
@@ -219,13 +218,6 @@ export const fetchBalance = () => async (dispatch, getState) => {
       )
     )
     dispatch(setBalance(new BigNumber(balanceObj.spendable_zbalance / satoshiMultiplier)))
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Fetching balance: locked balance: ${(balanceObj.unverified_zbalance + pending) / satoshiMultiplier
-          }, balance: ${balanceObj.spendable_zbalance / satoshiMultiplier}`
-      })
-    )
   } catch (err) {
     dispatch(setErrors(err.message))
   } finally {
@@ -239,12 +231,6 @@ export const fetchFreeUtxos = () => async (dispatch, getState) => {
       utxo => utxo.value > networkFeeSatoshi && utxo.spendable === true
     )
     dispatch(setFreeUtxos(freeUtxos.length))
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Setting free UTXOs: ${freeUtxos.length}`
-      })
-    )
   } catch (err) {
     console.warn(err)
   }
@@ -361,12 +347,6 @@ export const createIdentity = ({ name, fromMigrationFile }) => async (dispatch, 
       return { ...o, [preparedChannel.address]: preparedChannel }
     }, {})
     electronStore.set('defaultChannels', channelsWithDetails)
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Creating identity / importing default channels`
-      })
-    )
     const channelsToLoad = Object.keys(channelsWithDetails)
     for (const channel of channelsToLoad) {
       await client.importKey(
@@ -391,26 +371,12 @@ export const loadIdentity = () => async (dispatch, getState) => {
   const identity = electronStore.get('identity')
   if (identity) {
     await dispatch(setIdentity(identity))
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Loading identity`
-      })
-    )
   }
 }
 
-export const setIdentityEpic = (identityToSet) => async (dispatch, getState) => {
-  // let identity = await migrateTo_0_2_0.ensureIdentityHasKeys(identityToSet)
+export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   let identity = identityToSet
   dispatch(setLoading(true))
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Start loading identity`
-    })
-  )
-  // const isRescanned = electronStore.get('AppStatus.blockchain.isRescanned')
   const isNewUser = electronStore.get('isNewUser')
   try {
     const removedChannels = electronStore.get('removedChannels')
@@ -449,33 +415,16 @@ export const setIdentityEpic = (identityToSet) => async (dispatch, getState) => 
     }
     setTimeout(() => dispatch(coordinatorHandlers.epics.coordinator()), 5000)
     dispatch(setLoadingMessage('Loading users and messages'))
-  } catch (err) { }
+  } catch (err) {}
   if (isNewUser === true) {
     dispatch(modalsHandlers.actionCreators.openModal('createUsernameModal')())
   }
-  // dispatch(fetchAffiliateMoney())
   dispatch(setLoadingMessage(''))
   dispatch(setLoading(false))
   dispatch(contactsHandlers.epics.connectWsContacts())
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: ` Loading identity finished`
-    })
-  )
   if (electronStore.get('isMigrating')) {
     dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
   }
-  // dispatch(app.actions.setInitialLoadFlag(true))
-  // Don't show deposit modal if we use faucet 12.02.2020
-  // const balance = identitySelectors.balance('zec')(getState())
-  // const lockedBalance = identitySelectors.lockedBalance('zec')(getState())
-  // if (lockedBalance.plus(balance).lt(0.0001) && newUser === false) {
-  //   setTimeout(
-  //     () => dispatch(modalsHandlers.actionCreators.openModal('depositMoney')()),
-  //     500
-  //   )
-  // }
 }
 
 export const updateShippingData = (values, formActions) => async (dispatch, getState) => {
@@ -486,12 +435,6 @@ export const updateShippingData = (values, formActions) => async (dispatch, getS
       successNotification({ message: 'Shipping Address Updated' })
     )
   )
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Updating shipping data`
-    })
-  )
   formActions.setSubmitting(false)
 }
 
@@ -500,12 +443,6 @@ export const updateDonation = allow => async (dispatch, getState) => {
     notificationsHandlers.actions.enqueueSnackbar(
       successNotification({ message: 'Donation information updated' })
     )
-  )
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Updating donation status`
-    })
   )
 }
 

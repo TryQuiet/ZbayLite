@@ -12,14 +12,13 @@ import {
   successNotification
 } from './utils'
 import notificationsHandlers from './notifications'
-import channelHandlers, { ChannelActions } from './channel'
+import channelHandlers from './channel'
 import identitySelectors from '../selectors/identity'
 import channelsSelectors from '../selectors/channels'
 import channelSelectors from '../selectors/channel'
 import modalsHandlers from './modals'
 import { messages } from '../../zbay'
 import client from '../../zcash'
-import logsHandlers from './logs'
 import { networkFee, actionTypes } from '../../../shared/static'
 import history from '../../../shared/history'
 import electronStore from '../../../shared/electronStore'
@@ -129,12 +128,6 @@ const createChannel = (values, formActions, setStep) => async (dispatch, getStat
     }
     setStep(1)
     const address = await _createChannel(values)
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Creating channel ${address}`
-      })
-    )
     const result = await dispatch(
       channelHandlers.epics.sendChannelSettingsMessage({ address: address })
     )
@@ -204,12 +197,6 @@ const withdrawMoneyFromChannels = () => async (dispatch, getState) => {
         })
       )
     )
-    dispatch(
-      logsHandlers.epics.saveLogs({
-        type: 'APPLICATION_LOGS',
-        payload: `Creating new transfer with received money from channels`
-      })
-    )
   }
 }
 
@@ -234,12 +221,6 @@ const updateLastSeen = ({ channelId }) => async (dispatch, getState) => {
   remote.app.badgeCount = remote.app.badgeCount - unread
   dispatch(setLastSeen({ channelId, lastSeen }))
   dispatch(setUnread({ channelId, unread: 0 }))
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Updating last seen ${channelId}`
-    })
-  )
 }
 const updateSettings = ({ channelId, time, data }) => async (dispatch, getState) => {
   const lastSeen = channelsSelectors.lastSeen(channelId)(getState())
@@ -255,12 +236,6 @@ const updateSettings = ({ channelId, time, data }) => async (dispatch, getState)
     })
   )
   dispatch(setAdvertFee({ channelId, advertFee: data.updateMinFee }))
-  dispatch(
-    logsHandlers.epics.saveLogs({
-      type: 'APPLICATION_LOGS',
-      payload: `Updating channel settings`
-    })
-  )
 }
 
 const updateShowInfoMsg = showInfoMsg => async (dispatch, getState) => {

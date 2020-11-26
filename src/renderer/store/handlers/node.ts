@@ -36,7 +36,7 @@ export class Node {
 
 export type NodeStore = Node
 
-const initialState: Node = new Node()
+const initialState: Node = new Node({})
 
 export const NodeState = initialState
 

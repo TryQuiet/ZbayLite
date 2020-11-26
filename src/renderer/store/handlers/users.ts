@@ -449,6 +449,16 @@ export const isNicknameTaken = username => (dispatch, getState) => {
   return R.includes(username, uniqUsernames)
 }
 
+export const epics = {
+  fetchUsers,
+  isNicknameTaken,
+  createOrUpdateUser,
+  registerAnonUsername,
+  fetchOnionAddresses,
+  registerOnionAddress,
+  checkRegistrationConfirmations
+}
+
 export const reducer = handleActions<UsersStore, PayloadType<UserActions>>(
   {
     [setUsers.toString()]: (state, { payload: { users } }: UserActions['setUsers']) => {
@@ -482,16 +492,6 @@ export const reducer = handleActions<UsersStore, PayloadType<UserActions>>(
   },
   initialState
 )
-
-export const epics = {
-  fetchUsers,
-  isNicknameTaken,
-  createOrUpdateUser,
-  registerAnonUsername,
-  fetchOnionAddresses,
-  registerOnionAddress,
-  checkRegistrationConfirmations
-}
 
 export default {
   reducer,

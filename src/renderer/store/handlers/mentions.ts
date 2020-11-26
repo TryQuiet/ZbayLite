@@ -16,10 +16,12 @@ import { errorNotification, successNotification } from './utils'
 
 import { ActionsType, PayloadType } from './types'
 
-//export const ChannelMentions = {
-//  nickname: '',
-//  timeStamp: 0
-//}
+
+//TODO: remove after changing in tests
+export const ChannelMentions = {
+ nickname: '',
+ timeStamp: 0
+}
 
 class Mentions {
   nickname?: string
