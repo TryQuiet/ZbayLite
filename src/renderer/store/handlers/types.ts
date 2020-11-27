@@ -1,6 +1,5 @@
 import { AnyAction, ActionCreator } from "redux";
-import { ActionFunction0, Action } from "redux-actions";
-import { ReduxCompatibleReducer } from 'redux-actions'
+import { ActionFunction0, Action, ReduxCompatibleReducer } from 'redux-actions'
 
 export type ActionsBasicType = {
   [k: string]: ActionCreator<AnyAction>

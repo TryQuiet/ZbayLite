@@ -110,22 +110,6 @@ ipcRenderer.on('toggleCoordinator', () => {
   }
 })
 
-// ipcRenderer.on('openLogs', () => {
-//   if (logsSelctors.isLogWindowOpened(store.getState()) === false) {
-//     store.dispatch(logsHandlers.actions.setLogWindowOpened(true))
-//     ipcRenderer.send('load-logs')
-//   } else {
-//     store.dispatch(logsHandlers.actions.setLogWindowOpened(false))
-//     ipcRenderer.send('disable-load-logs')
-//   }
-// })
-
-// ipcRenderer.on('load-logs-to-store', (event, { transactions, debug, applicationLogs }) => {
-//   store.dispatch(logsHandlers.actions.setNodeLogs(debug))
-//   store.dispatch(logsHandlers.actions.setTransactionLogs(transactions))
-//   store.dispatch(logsHandlers.actions.setApplicationLogs(applicationLogs))
-// })
-
 ipcRenderer.on('checkNodeStatus', (event, { status }) => {
   store.dispatch(nodeHandlers.epics.checkNodeStatus(status))
 })

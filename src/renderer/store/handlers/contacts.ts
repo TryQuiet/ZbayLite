@@ -103,7 +103,6 @@ const setLastSeen = createAction<{ lastSeen: DateTime; contact: Contact }>(
 const removeContact = createAction<{ address: string }>(actionTypes.REMOVE_CONTACT)
 const setUsernames = createAction<{ sender: ISender }>(actionTypes.SET_CONTACTS_USERNAMES)
 const setVaultMessages = createAction(actionTypes.SET_VAULT_DIRECT_MESSAGES)
-//const setVaultMessageBlockTime = createAction(actionTypes.SET_VAULT_MESSAGE_BLOCKTIME)
 const setContactConnected = createAction(actionTypes.SET_CONTACT_CONNECTED)
 
 export const actions = {
