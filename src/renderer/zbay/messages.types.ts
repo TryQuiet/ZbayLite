@@ -45,39 +45,66 @@ export interface IMessage {
   channelIvk?: string;
 }
 export class DisplayableMessage {
-  id: string;
-  keys: string[];
-  owner: string;
-  name: string;
-  type: MessageType = MessageType.BASIC;
-  sender: IExchangeParticipant;
-  receiver: IExchangeParticipant;
-  createdAt: number;
-  message: IMessage;
-  spent: BigNumber = new BigNumber(0);
-  fromYou: boolean = false;
-  status: string = "broadcasted";
-  error?: any;
-  shippingData?: IShippingData;
-  tag: string;
-  offerOwner?: string;
-  isUnregistered: boolean;
-  publicKey?: string;
-  blockHeight: number = Number.MAX_SAFE_INTEGER;
-  block_height: string;
-  specialType: number;
-  blockTime: number;
-  messageId: string;
-  nickname: string;
-  address: string;
-  outgoing_metadata: IOutgoingMetadata[];
-  memohex: string;
-  txid: string;
-  amount: string;
-  memo: string;
-  datetime: string;
-  
-  constructor(values: Partial<DisplayableMessage> & Pick<DisplayableMessage, 'id' | 'keys' | 'owner' | 'name' | 'sender' | 'receiver'| 'createdAt' | 'message' | 'tag' | 'isUnregistered' | 'specialType' | 'blockTime' | 'block_height' |'messageId' | 'nickname'| 'address'| 'outgoing_metadata' | 'memohex' |"txid"| 'amount' | 'memo' | 'datetime'>) {
-    Object.assign(this, values);
+  id: string
+  keys: string[]
+  owner: string
+  name: string
+  type: MessageType = MessageType.BASIC
+  sender: IExchangeParticipant
+  receiver: IExchangeParticipant
+  createdAt: number
+  message: IMessage
+  spent: BigNumber = new BigNumber(0)
+  fromYou: boolean = false
+  status: string = 'broadcasted'
+  error?: string
+  shippingData?: IShippingData
+  tag: string
+  offerOwner?: string
+  isUnregistered: boolean
+  publicKey?: string
+  blockHeight: number = Number.MAX_SAFE_INTEGER
+  block_height: string
+  specialType: number
+  blockTime: number
+  messageId: string
+  nickname: string
+  address: string
+  outgoing_metadata: IOutgoingMetadata[]
+  memohex: string
+  txid: string
+  amount: string
+  memo: string
+  datetime: string
+
+  constructor(
+    values: Partial<DisplayableMessage> &
+      Pick<
+        DisplayableMessage,
+        | 'id'
+        | 'keys'
+        | 'owner'
+        | 'name'
+        | 'sender'
+        | 'receiver'
+        | 'createdAt'
+        | 'message'
+        | 'tag'
+        | 'isUnregistered'
+        | 'specialType'
+        | 'blockTime'
+        | 'block_height'
+        | 'messageId'
+        | 'nickname'
+        | 'address'
+        | 'outgoing_metadata'
+        | 'memohex'
+        | 'txid'
+        | 'amount'
+        | 'memo'
+        | 'datetime'
+      >
+  ) {
+    Object.assign(this, values)
   }
 }

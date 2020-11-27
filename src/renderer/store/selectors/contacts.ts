@@ -163,9 +163,9 @@ const channelOwner = (channelId) =>
  // TODO: TO be removed 
 export interface IDirectMessage {
   visibleMessages: DisplayableMessage[];
-  channelModerators: any[];
+  channelModerators: string[];
   messsagesToRemove: DisplayableMessage[];
-  blockedUsers: any[];
+  blockedUsers: string[];
 }
 
 export const directMessages = (address) =>
