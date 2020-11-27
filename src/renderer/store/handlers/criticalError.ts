@@ -21,7 +21,6 @@ export const initialState: CriticalError = {
   })
 }
 
-export type CriticalErrorStore = CriticalError
 
 const setCriticalError = createAction<{message: string; traceback: string}>(actionTypes.SET_CRITICAL_ERROR)
 
@@ -31,14 +30,21 @@ export const actions = {
 
 export type CriticalErrorActions = ActionsType<typeof actions>
 
-export const reducer = handleActions<CriticalErrorStore, PayloadType<CriticalErrorActions>>({
-  [setCriticalError.toString()]: (state, { payload: error }: CriticalErrorActions['setCriticalError']) => produce(state, (draft) => {
-    return {
-      ...draft,
-      ...error
-    }
-  })
-}, initialState)
+export const reducer = handleActions<CriticalError, PayloadType<CriticalErrorActions>>(
+  {
+    [setCriticalError.toString()]: (
+      state,
+      { payload: error }: CriticalErrorActions['setCriticalError']
+    ) =>
+      produce(state, draft => {
+        return {
+          ...draft,
+          ...error
+        }
+      })
+  },
+  initialState
+)
 
 export default {
   actions,

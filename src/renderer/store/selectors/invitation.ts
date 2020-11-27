@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
-import { InvitationStore } from '../handlers/invitation'
+import { Store } from '../reducers'
 
-const invitation = (s): InvitationStore => s.invitation as InvitationStore
+const invitation = (s: Store) => s.invitation
 
 const amount = createSelector(invitation, state => state.amount)
 const amountZec = createSelector(invitation, state => state.amountZec)

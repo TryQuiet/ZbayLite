@@ -33,9 +33,7 @@ class Mentions {
   }
 }
 
-export type MentionsStore = Mentions
-
-export const initialState: MentionsStore = {}
+export const initialState: Mentions = {}
 
 const addMentionMiss = createAction(actionTypes.ADD_MENTION_MISS)
 const clearMentionMiss = createAction(actionTypes.CLEAR_MENTION_MISS)
@@ -136,7 +134,7 @@ export const epics = {
   removeMention,
   sendInvitation
 }
-export const reducer = handleActions<MentionsStore, PayloadType<MentionsActions>>(
+export const reducer = handleActions<Mentions, PayloadType<MentionsActions>>(
   {
     [clearMentionMiss.toString()]: state =>
       produce(state, draft => {

@@ -40,8 +40,6 @@ const initialState: ImportedChannel = {
   })
 }
 
-export type ImportedChannelStore = ImportedChannel
-
 const setData = createAction<any>(actionTypes.SET_DECODED_CHANNEL)
 const setDecoding = createAction<boolean>(actionTypes.SET_DECODING_CHANNEL)
 const setDecodingError = createAction<string>(actionTypes.SET_DECODING_ERROR)
@@ -203,7 +201,7 @@ const epics = {
   decodeChannel: decodeChannelEpic
 }
 
-const reducer = handleActions<ImportedChannelStore, PayloadType<ImportedChannelActions>>(
+const reducer = handleActions<ImportedChannel, PayloadType<ImportedChannelActions>>(
   {
     [setData.toString()]: (state, { payload: channel }) =>
       produce(state, draft => {

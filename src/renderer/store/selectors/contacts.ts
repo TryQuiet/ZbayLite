@@ -6,9 +6,11 @@ import { MessageType } from "../../../shared/static.types";
 import { unknownUserId } from "../../../shared/static";
 
 import { DisplayableMessage } from "../../zbay/messages.types";
-import { ContactsStore, Contact } from '../handlers/contacts'
 
-const contacts = (s): ContactsStore => s.contacts as ContactsStore;
+import { Contact } from '../handlers/contacts'
+import { Store } from '../reducers'
+
+const contacts = (s: Store) => s.contacts
 
 const contactsList = createSelector(
   contacts,

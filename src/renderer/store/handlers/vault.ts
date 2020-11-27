@@ -56,8 +56,6 @@ export const initialState = {
   })
 }
 
-export type VaultStore = Vault
-
 const createVault = createAction<{ message: string }>(actionTypes.CREATE_VAULT)
 const unlockVault = createAction<{ message: string }, { ignoreError: boolean }>(
   actionTypes.UNLOCK_VAULT,
@@ -175,64 +173,74 @@ export const epics = {
   unlockVault: unlockVaultEpic
 }
 
-export const reducer = handleActions<VaultStore, PayloadType<VaultActions>>(
+export const reducer = handleActions<Vault, PayloadType<VaultActions>>(
   {
     [typePending(actionTypes.CREATE_VAULT)]: state =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.creating = true
       }),
     [typeFulfilled(actionTypes.CREATE_VAULT)]: state =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.creating = false
         draft.exists = true
       }),
-    [typeRejected(actionTypes.CREATE_VAULT)]: (state, { payload: error }: VaultActions['createVault']) =>
-      produce(state, (draft) => {
+    [typeRejected(actionTypes.CREATE_VAULT)]: (
+      state,
+      { payload: error }: VaultActions['createVault']
+    ) =>
+      produce(state, draft => {
         draft.creating = false
         draft.error = error.message
       }),
     [typePending(actionTypes.UNLOCK_VAULT)]: state =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.unlocking = true
       }),
     [typeFulfilled(actionTypes.UNLOCK_VAULT)]: state =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.unlocking = false
         draft.locked = false
       }),
-    [typeRejected(actionTypes.UNLOCK_VAULT)]: (state, { payload: error }: VaultActions['unlockVault']) =>
-      produce(state, (draft) => {
+    [typeRejected(actionTypes.UNLOCK_VAULT)]: (
+      state,
+      { payload: error }: VaultActions['unlockVault']
+    ) =>
+      produce(state, draft => {
         draft.unlocking = false
         draft.locked = true
         draft.error = error.message
       }),
     [typePending(actionTypes.CREATE_VAULT_IDENTITY)]: state =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.creatingIdentity = true
       }),
     [typeFulfilled(actionTypes.CREATE_VAULT_IDENTITY)]: state =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.creatingIdentity = false
       }),
     [typeRejected(actionTypes.CREATE_VAULT_IDENTITY)]: (
       state,
       { payload: error }: VaultActions['createVault']
     ) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.creatingIdentity = false
         draft.error = error.message
       }),
-    [setLoginSuccessfull.toString()]: (state, { payload: isLogIn }: VaultActions['setLoginSuccessfull']) =>
-      produce(state, (draft) => {
+    [setLoginSuccessfull.toString()]: (
+      state,
+      { payload: isLogIn }: VaultActions['setLoginSuccessfull']
+    ) =>
+      produce(state, draft => {
         draft.isLogIn = isLogIn
       }),
     [setVaultStatus.toString()]: (state, { payload: exists }: VaultActions['setVaultStatus']) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.exists = exists
       }),
-    [clearError.toString()]: state => produce(state, (draft) => {
-      draft.error = ''
-    })
+    [clearError.toString()]: state =>
+      produce(state, draft => {
+        draft.error = ''
+      })
   },
   initialState
 )

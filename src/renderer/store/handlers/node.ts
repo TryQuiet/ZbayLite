@@ -34,8 +34,6 @@ export class Node {
   }
 }
 
-export type NodeStore = Node
-
 const initialState: Node = new Node({})
 
 export const NodeState = initialState
@@ -162,7 +160,7 @@ const epics = {
   checkNodeStatus
 }
 
-export const reducer = handleActions<NodeStore, PayloadType<NodeActions>>(
+export const reducer = handleActions<Node, PayloadType<NodeActions>>(
   {
     [setStatus.toString()]: (state, { payload: status }: NodeActions['setStatus']) =>
       produce(state, draft => {

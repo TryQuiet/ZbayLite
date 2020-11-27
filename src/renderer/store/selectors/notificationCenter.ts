@@ -1,10 +1,9 @@
 import { createSelector } from 'reselect'
 import { notificationFilterType, soundType } from '../../../shared/static'
 
-import { NotificationCenterStore } from '../handlers/notificationCenter'
+import { Store } from '../reducers'
 
-export const notificationCenter = (s): NotificationCenterStore =>
-  s.notificationCenter as NotificationCenterStore
+const notificationCenter = (s: Store) => s.notificationCenter
 
 const channels = createSelector(notificationCenter, a => a.channels)
 const user = createSelector(notificationCenter, a => a.user)

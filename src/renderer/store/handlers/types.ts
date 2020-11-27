@@ -1,5 +1,6 @@
 import { AnyAction, ActionCreator } from "redux";
 import { ActionFunction0, Action } from "redux-actions";
+import { ReduxCompatibleReducer } from 'redux-actions'
 
 export type ActionsBasicType = {
   [k: string]: ActionCreator<AnyAction>
@@ -15,6 +16,14 @@ export type ActionsCreatorsBasicType = {
 
 export type ActionsCreatorsTypes<actionCreators extends ActionsCreatorsBasicType> = {
   [k in keyof actionCreators]: ReturnType<ReturnType<actionCreators[k]>>
+}
+
+export type StoreBasicType = {
+  [key: string]: ReduxCompatibleReducer<any, any>
+}
+
+export type StoreType<reducers extends StoreBasicType> = {
+  [k in keyof reducers]: ReturnType<reducers[k]>
 }
 
 export type PayloadType<

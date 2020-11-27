@@ -25,8 +25,6 @@ export const initialState: Whitelist = {
   })
 }
 
-export type WhitelistStore = Whitelist
-
 const setWhitelist = createAction<any[]>(actionTypes.SET_WHITELIST)
 const setWhitelistAllFlag = createAction<boolean>(actionTypes.SET_WHITELIST_ALL_FLAG)
 const setAutoLoadList = createAction<any[]>(actionTypes.SET_AUTO_LOAD_LIST)
@@ -108,18 +106,21 @@ export const epics = {
   removeImageHost,
   removeSiteHost
 }
-export const reducer = handleActions<WhitelistStore, PayloadType<WhitelistActions>>(
+export const reducer = handleActions<Whitelist, PayloadType<WhitelistActions>>(
   {
     [setWhitelist.toString()]: (state, { payload: list }: WhitelistActions['setWhitelist']) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.whitelisted = list
       }),
     [setAutoLoadList.toString()]: (state, { payload: list }: WhitelistActions['setAutoLoadList']) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.autoload = list
       }),
-    [setWhitelistAllFlag.toString()]: (state, { payload: flag }: WhitelistActions['setWhitelistAllFlag']) =>
-      produce(state, (draft) => {
+    [setWhitelistAllFlag.toString()]: (
+      state,
+      { payload: flag }: WhitelistActions['setWhitelistAllFlag']
+    ) =>
+      produce(state, draft => {
         draft.allowAll = flag
       })
   },

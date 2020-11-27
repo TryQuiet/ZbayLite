@@ -35,8 +35,6 @@ export const initialState: Tor = {
   })
 }
 
-export type TorStore = Tor
-
 const setEnabled = createAction<{ enabled: boolean }>(actionTypes.SET_TOR_ENABLED)
 const setUrl = createAction<{ url: string }>(actionTypes.SET_TOR_URL)
 const setError = createAction<{ error: string }>(actionTypes.SET_TOR_ERROR)
@@ -120,29 +118,33 @@ export const epics = {
   checkDeafult
 }
 
-export const reducer = handleActions<TorStore, PayloadType<TorActions>>(
+export const reducer = handleActions<Tor, PayloadType<TorActions>>(
   {
-    [setEnabled.toString()]: (state, { payload: { enabled } }: TorActions['setEnabled']) => produce(state, (draft) => {
-      if (enabled) {
-        draft.enabled = enabled
+    [setEnabled.toString()]: (state, { payload: { enabled } }: TorActions['setEnabled']) =>
+      produce(state, draft => {
+        if (enabled) {
+          draft.enabled = enabled
+          draft.status = 'down'
+        } else {
+          draft.enabled = enabled
+          draft.status = 'down'
+          draft.error = ''
+          draft.url = ''
+        }
+      }),
+    [setUrl.toString()]: (state, { payload: { url } }: TorActions['setUrl']) =>
+      produce(state, draft => {
+        draft.url = url
         draft.status = 'down'
-      } else {
-        draft.enabled = enabled
-        draft.status = 'down'
-        draft.error = ''
-        draft.url = ''
-      }
-    }),
-    [setUrl.toString()]: (state, { payload: { url } }: TorActions['setUrl']) => produce(state, (draft) => {
-      draft.url = url
-      draft.status = 'down'
-    }),
-    [setError.toString()]: (state, { payload: { error } }: TorActions['setError']) => produce(state, (draft) => {
-      draft.error = error
-    }),
-    [setStatus.toString()]: (state, { payload: { status } }: TorActions['setStatus']) => produce(state, (draft) => {
-      draft.status = status
-    })
+      }),
+    [setError.toString()]: (state, { payload: { error } }: TorActions['setError']) =>
+      produce(state, draft => {
+        draft.error = error
+      }),
+    [setStatus.toString()]: (state, { payload: { status } }: TorActions['setStatus']) =>
+      produce(state, draft => {
+        draft.status = status
+      })
   },
   initialState
 )

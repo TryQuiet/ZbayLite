@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
-import { ImportedChannelStore } from '../handlers/importedChannel'
+import { Store } from '../reducers'
 
-const channel = (s): ImportedChannelStore => s.importedChannel as ImportedChannelStore
+const channel = (s: Store) => s.importedChannel
 
 const data = createSelector(channel, c => c.data)
 const decoding = createSelector(channel, c => c.decoding)

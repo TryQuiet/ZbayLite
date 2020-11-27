@@ -1,7 +1,8 @@
 import { createSelector } from 'reselect'
-import {CoordinatorStore} from '../handlers/coordinator'
 
-const coordinator = (s): CoordinatorStore => s.coordinator as CoordinatorStore
+import { Store } from '../reducers'
+
+const coordinator = (s: Store) => s.coordinator
 
 const running = createSelector(coordinator, a => a.running)
 

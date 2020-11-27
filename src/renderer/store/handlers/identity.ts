@@ -83,8 +83,6 @@ export class Identity {
   }
 }
 
-export type IdentityStore = Identity
-
 const initialState: Identity = new Identity({
   data: {
     id: null,
@@ -499,7 +497,7 @@ const exportFunctions = {
   createSignerKeys
 }
 
-export const reducer = handleActions<IdentityStore, PayloadType<IdentityActions>>(
+export const reducer = handleActions<Identity, PayloadType<IdentityActions>>(
   {
     [setLoading.toString()]: (state, { payload: loading }: IdentityActions['setLoading']) =>
       produce(state, draft => {
@@ -582,16 +580,23 @@ export const reducer = handleActions<IdentityStore, PayloadType<IdentityActions>
         draft.data.freeUtxos = freeUtxos
       }),
     [setUserAddreses.toString()]: (
-      state, { payload: addresses }: IdentityActions['setUserAddreses']
+      state,
+      { payload: addresses }: IdentityActions['setUserAddreses']
     ) =>
       produce(state, draft => {
         draft.data.addresses = addresses
       }),
-    [setRegistraionStatus.toString()]: (state, { payload }: IdentityActions['setRegistraionStatus']) =>
+    [setRegistraionStatus.toString()]: (
+      state,
+      { payload }: IdentityActions['setRegistraionStatus']
+    ) =>
       produce(state, draft => {
         draft.registrationStatus = payload
       }),
-    [setUserShieldedAddreses.toString()]: (state, { payload: shieldedAddresses }: IdentityActions['setUserShieldedAddreses']) =>
+    [setUserShieldedAddreses.toString()]: (
+      state,
+      { payload: shieldedAddresses }: IdentityActions['setUserShieldedAddreses']
+    ) =>
       produce(state, draft => {
         draft.data.shieldedAddresses = shieldedAddresses
       })

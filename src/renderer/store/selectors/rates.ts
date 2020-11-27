@@ -2,9 +2,9 @@ import BigNumber from 'bignumber.js'
 import { createSelector } from 'reselect'
 import { networkFee } from '../../../shared/static'
 
-import { RatesStore } from '../handlers/rates'
+import { Store } from '../reducers'
 
-const rates = (s): RatesStore => s.rates as RatesStore
+const rates = (s: Store) => s.rates
 
 export const rate = currency =>
   createSelector(rates, r => new BigNumber(r[currency] || 0))

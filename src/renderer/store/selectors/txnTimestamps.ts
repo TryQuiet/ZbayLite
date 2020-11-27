@@ -1,6 +1,6 @@
-import { TxnTimestampsStore } from '../handlers/txnTimestamps'
+import { Store } from '../reducers'
 
-const tnxTimestamps = (s): TxnTimestampsStore => s.txnTimestamps as TxnTimestampsStore
+const tnxTimestamps = (s: Store) => s.txnTimestamps
 
 export default {
   tnxTimestamps

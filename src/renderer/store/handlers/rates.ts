@@ -37,8 +37,6 @@ export const initialState: Rates = new Rates({
   history: {}
 })
 
-export type RatesStore = Rates
-
 export const setPriceUsd = createAction<{ priceUsd: string }>(actionTypes.SET_PRICE_USD)
 export const addPriceMessage = createAction<{
   messages: {
@@ -115,14 +113,17 @@ export const epics = {
   setInitialPrice
 }
 
-export const reducer = handleActions<RatesStore, PayloadType<RatesActions>>(
+export const reducer = handleActions<Rates, PayloadType<RatesActions>>(
   {
     [setPriceUsd.toString()]: (state, { payload: { priceUsd } }: RatesActions['setPriceUsd']) =>
-      produce(state, (draft) => {
+      produce(state, draft => {
         draft.usd = priceUsd
       }),
-    [addPriceMessage.toString()]: (state, { payload: { messages } }: RatesActions['addPriceMessage']) =>
-      produce(state, (draft) => {
+    [addPriceMessage.toString()]: (
+      state,
+      { payload: { messages } }: RatesActions['addPriceMessage']
+    ) =>
+      produce(state, draft => {
         draft.history = {
           ...draft.history,
           ...messages

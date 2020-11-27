@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
-import { TorStore } from '../handlers/tor'
+import { Store } from '../reducers'
 
-const tor = (s): TorStore => s.tor as TorStore
+const tor = (s: Store) => s.tor
 
 const torEnabled = createSelector(
   tor,

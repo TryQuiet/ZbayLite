@@ -2,10 +2,9 @@ import { createSelector } from 'reselect'
 import * as R from 'ramda'
 import directMssagesQueueSelectors from './directMessagesQueue'
 
-import { OffersStore } from '../handlers/offers'
+import { Store } from '../reducers'
 
-const offers = (s): OffersStore => s.offers as OffersStore
-
+const offers = (s: Store) => s.offers
 
 const filteredOffers = createSelector(
   offers,

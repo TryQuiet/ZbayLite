@@ -1,7 +1,8 @@
 import { ThunkAction } from 'redux-thunk'
 import { Action } from 'redux'
 
-class Store {}
+import { Store } from '../reducers'
+
 interface IThunkActionWithMeta<R, S, E, A extends Action> extends ThunkAction<R, S, E, A> {
   meta?: {
     debounce: {

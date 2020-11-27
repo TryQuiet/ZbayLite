@@ -42,8 +42,6 @@ const initialState: Invitation = {
   })
 }
 
-export type InvitationStore = Invitation
-
 const setInvitationAmount = createAction<number>(actionTypes.SET_INVITATION_AMOUNT)
 const setInvitationAmountZec = createAction<number>(actionTypes.SET_INVITATION_AMOUNT_ZEC)
 const setAffiliateCode = createAction<boolean>(actionTypes.SET_AFFILIATE_CODE)
@@ -135,7 +133,7 @@ export const epics = {
   generateInvitation,
   handleInvitation
 }
-export const reducer = handleActions<InvitationStore, PayloadType<InvitationActions>>(
+export const reducer = handleActions<Invitation, PayloadType<InvitationActions>>(
   {
     [setInvitationAmount.toString()]: (
       state,

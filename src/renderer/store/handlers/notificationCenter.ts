@@ -31,8 +31,6 @@ class NotificationCenter {
   }
 }
 
-export type NotificationCenterStore = NotificationCenter
-
 export const initialState: NotificationCenter = {
   ...new NotificationCenter({
     channels: {},

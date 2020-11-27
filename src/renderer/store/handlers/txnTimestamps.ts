@@ -9,8 +9,6 @@ interface ITxnTimestamps {
   [id: number]: string
 }
 
-export type TxnTimestampsStore = ITxnTimestamps
-
 export const initialState: ITxnTimestamps = {}
 export const addTxnTimestamp = createAction<{
   tnxs: {
@@ -24,14 +22,18 @@ export const actions = {
 
 export type TxnTimestampsActions = ActionsType<typeof actions>
 
-export const reducer = handleActions<TxnTimestampsStore, PayloadType<TxnTimestampsActions>>(
+export const reducer = handleActions<ITxnTimestamps, PayloadType<TxnTimestampsActions>>(
   {
-    [addTxnTimestamp.toString()]: (state, { payload: { tnxs } }: TxnTimestampsActions['addTxnTimestamp']) => produce(state, (draft) => {
-      return {
-        ...draft,
-        ...tnxs
-      }
-    })
+    [addTxnTimestamp.toString()]: (
+      state,
+      { payload: { tnxs } }: TxnTimestampsActions['addTxnTimestamp']
+    ) =>
+      produce(state, draft => {
+        return {
+          ...draft,
+          ...tnxs
+        }
+      })
   },
   initialState
 )

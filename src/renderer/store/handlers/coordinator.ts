@@ -16,8 +16,6 @@ class Coordinator {
   }
 }
 
-export type CoordinatorStore = Coordinator
-
 export const initialState: Coordinator = new Coordinator({
   running: true
 })

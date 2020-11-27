@@ -72,9 +72,7 @@ export class Channel {
   }
 }
 
-export type ChannelStore = Channel
-
-export const initialState: ChannelStore = new Channel({
+export const initialState: Channel = new Channel({
   spentFilterValue: new BigNumber(0),
   message: {},
   shareableUri: '',
@@ -401,7 +399,7 @@ const clearNewMessages = () => async (dispatch, getState) => {
 }
 
 // TODO: we should have a global loader map
-export const reducer = handleActions<ChannelStore, PayloadType<ChannelActions>>(
+export const reducer = handleActions<Channel, PayloadType<ChannelActions>>(
   {
     [setLoading.toString()]: (state, { payload: loading }: ChannelActions['setLoading']) =>
       produce(state, draft => {

@@ -14,11 +14,8 @@ class Fees {
   }
 }
 
-export const initialState: Fees = {
-  ...new Fees({ user: 0.0001, publicChannel: 0.0001 })
-}
+export const initialState: Fees = new Fees({ user: 0.0001, publicChannel: 0.0001 })
 
-export type FeesStore = Fees
 
 const setUserFee = createAction<number>(actionTypes.SET_USER_FEE)
 const setPublicChannelFee = createAction<number>(actionTypes.SET_PUBLIC_CHANNEL_FEE)
@@ -30,7 +27,7 @@ export const actions = {
 
 export type FeesActions = ActionsType<typeof actions>
 
-export const reducer = handleActions<FeesStore, PayloadType<FeesActions>>(
+export const reducer = handleActions<Fees, PayloadType<FeesActions>>(
   {
     [setUserFee.toString()]: (state, { payload: fee }: FeesActions['setUserFee']) =>
       produce(state, draft => {

@@ -30,9 +30,7 @@ export class App {
   }
 }
 
-export type AppStore = App
-
-export const initialState: AppStore = {
+export const initialState: App = {
   ...new App({
     version: null,
     transfers: {},
@@ -116,7 +114,7 @@ export const restartAndRescan = () => async (dispatch, getState) => {
   }, 500)
 }
 
-export const reducer = handleActions<AppStore, PayloadType<AppActions>>(
+export const reducer = handleActions<App, PayloadType<AppActions>>(
   {
     [setNewTransfersCount.toString()]: (
       state,

@@ -21,8 +21,6 @@ export const initialState: Modals = new Modals({
   payloads: {}
 })
 
-export type ModalsStore = Modals
-
 const openModal = (modalName: string, data?: any) => createAction(actionTypes.OPEN_MODAL, () => ({
   modalName,
   data
@@ -37,20 +35,23 @@ export const actionCreators = {
 
 export type ModalsActions = ActionsCreatorsTypes<typeof actionCreators>
 
-export const reducer = handleActions<ModalsStore, PayloadType<ModalsActions>>({
-  [actionTypes.OPEN_MODAL]: (state, { payload }: ModalsActions['openModal']) =>
-    produce(state, (draft) => {
-      draft[payload.modalName] = true
-      draft.payloads = {
-        ...draft.payloads,
-        [payload.modalName]: payload.data
-      }
-    }),
-  [actionTypes.CLOSE_MODAL]: (state, { payload: modalName }: ModalsActions['closeModal']) =>
-    produce(state, (draft) => {
-      draft[modalName] = false
-    })
-}, initialState)
+export const reducer = handleActions<Modals, PayloadType<ModalsActions>>(
+  {
+    [actionTypes.OPEN_MODAL]: (state, { payload }: ModalsActions['openModal']) =>
+      produce(state, draft => {
+        draft[payload.modalName] = true
+        draft.payloads = {
+          ...draft.payloads,
+          [payload.modalName]: payload.data
+        }
+      }),
+    [actionTypes.CLOSE_MODAL]: (state, { payload: modalName }: ModalsActions['closeModal']) =>
+      produce(state, draft => {
+        draft[modalName] = false
+      })
+  },
+  initialState
+)
 
 export const withModal = (name) => (Component) => {
   const mapStateToProps = state => ({

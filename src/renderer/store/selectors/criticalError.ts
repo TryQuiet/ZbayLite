@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
-import { CriticalErrorStore} from '../handlers/criticalError'
+import { Store } from '../reducers'
 
-const criticalError = (s): CriticalErrorStore => s.criticalError as CriticalErrorStore
+const criticalError = (s: Store) => s.criticalError
 
 const message = createSelector(criticalError, error => error.message)
 const traceback = createSelector(criticalError, error => error.traceback)
