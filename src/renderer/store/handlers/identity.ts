@@ -4,6 +4,7 @@ import { createAction, handleActions } from 'redux-actions'
 import secp256k1 from 'secp256k1'
 import { randomBytes } from 'crypto'
 import { DateTime } from 'luxon'
+import { remote } from 'electron'
 
 import client from '../../zcash'
 import channels from '../../zcash/channels'
@@ -138,7 +139,9 @@ export const setDonationAddress = createAction<string>(actionTypes.SET_DONATION_
 export const setShieldingTax = createAction<boolean>(actionTypes.SET_SHIELDING_TAX)
 export const setFreeUtxos = createAction<number>(actionTypes.SET_FREE_UTXOS)
 export const setUserAddreses = createAction<string[]>(actionTypes.SET_USER_ADDRESSES)
-export const setRegistraionStatus = createAction<{nickname: string; status: string}>(actionTypes.SET_REGISTRAION_STATUS)
+export const setRegistraionStatus = createAction<{ nickname: string; status: string }>(
+  actionTypes.SET_REGISTRAION_STATUS
+)
 export const setUserShieldedAddreses = createAction<any[]>(actionTypes.SET_USER_SHIELDED_ADDRESES)
 
 export const actions = {
@@ -191,7 +194,7 @@ export const fetchAffiliateMoney = () => async (dispatch, getState) => {
         )
       )
     }
-  } catch (err) { }
+  } catch (err) {}
 }
 export const fetchBalance = () => async (dispatch, getState) => {
   try {
@@ -373,6 +376,7 @@ export const loadIdentity = () => async (dispatch, getState) => {
 }
 
 export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
+  // let identity = await migrateTo_0_2_0.ensureIdentityHasKeys(identityToSet)
   let identity = identityToSet
   dispatch(setLoading(true))
   const isNewUser = electronStore.get('isNewUser')
@@ -382,6 +386,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
       const removedChannelsList = Object.keys(removedChannels)
       dispatch(setRemovedChannels(removedChannelsList))
     }
+    remote.app.setBadgeCount(0)
     dispatch(setLoadingMessage('Ensuring identity integrity'))
     await dispatch(setLoadingMessage('Ensuring node contains identity keys'))
     await dispatch(whitelistHandlers.epics.initWhitelist())
@@ -444,8 +449,8 @@ export const updateDonation = allow => async (dispatch, getState) => {
   )
 }
 
-export const updateDonationAddress = address => async (dispatch, getState) => { }
-export const updateShieldingTax = allow => async (dispatch, getState) => { }
+export const updateDonationAddress = address => async (dispatch, getState) => {}
+export const updateShieldingTax = allow => async (dispatch, getState) => {}
 export const generateNewAddress = () => async (dispatch, getState) => {
   if (!electronStore.get('addresses')) {
     electronStore.set('addresses', JSON.stringify([]))
