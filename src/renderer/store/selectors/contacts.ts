@@ -96,12 +96,24 @@ const contact = address =>
     }
   })
 
-const messagesSorted = (address) =>
-  createSelector(contact(address), (c) => {
-    return Array.from(Object.values(c.messages)).sort(
-      (a, b) => b.createdAt - a.createdAt
-    );
-  });
+const messagesSorted = address =>
+  createSelector(contact(address), usersSelectors.users, (c, u) => {
+    return Array.from(Object.values(c.messages))
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .map(message => {
+        if (message.isUnregistered) {
+          return {
+            ...message,
+            sender: {
+              ...message.sender,
+              username: u[message.publicKey]?.nickname || message.sender.username
+            }
+          }
+        } else {
+          return message
+        }
+      })
+  })
 const messagesSortedDesc = (address) =>
   createSelector(contact(address), (c) => {
     return Array.from(Object.values(c.messages)).sort(
