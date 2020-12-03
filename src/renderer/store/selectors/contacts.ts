@@ -80,14 +80,21 @@ const directMessagesContact = (address) =>
     Array.from(Object.values(c)).find((el) => el.address === address)
   );
 
-const contact = (address) =>
-  createSelector(contacts, (c) => {
+const contact = address =>
+  createSelector(contacts, usersSelectors.users, (c, u) => {
     if (!c[address]) {
       return new Contact()
     } else {
-      return c[address];
+      if (!c[address].address) {
+        return {
+          ...c[address],
+          username: u[address]?.nickname || c[address].username
+        }
+      } else {
+        return c[address]
+      }
     }
-  });
+  })
 
 const messagesSorted = (address) =>
   createSelector(contact(address), (c) => {
