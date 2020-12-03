@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import identitySelectors from "./identity";
+import usersSelectors from "./users";
 import directMssagesQueueSelectors from "./directMessagesQueue";
 import { mergeIntoOne, displayableMessageLimit } from "./channel";
 import { MessageType } from "../../../shared/static.types";
@@ -15,18 +16,29 @@ const contacts = (s: Store) => s.contacts
 const contactsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
-  (contacts, removedChannels) => {
-    if (removedChannels.length > 0) {
-      return Array.from(Object.values(contacts)).filter(
+  usersSelectors.users,
+  (contacts, removedChannels, users) => {
+    console.log('yo')
+      return Array.from(Object.values(contacts))
+      .map(contact => {
+        if (!contact.address) { 
+          const user = users[contact.key]
+          return {
+            ...contact,
+            messages: messages,
+            address: user.address || contact.address,
+            username: user.nickname || contact.username
+          }
+        } else {
+          return contact
+        }
+      })
+      .filter(
         (c) =>
           c.key.length === 66 &&
           c.offerId === null &&
           !removedChannels.includes(c.address)
       );
-    }
-    return Array.from(Object.values(contacts)).filter(
-      (c) => c.key.length === 66 && c.offerId === null
-    );
   }
 );
 
@@ -51,17 +63,14 @@ const offerList = createSelector(
 const channelsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
-  (contacts, removedChannels) => {
-    if (removedChannels.length > 0) {
-      return Array.from(Object.values(contacts)).filter(
-        (c) =>
-          c.key.length === 78 &&
-          c.offerId === null &&
-          !removedChannels.includes(c.address)
-      );
-    }
-    return Array.from(Object.values(contacts)).filter(
-      (c) => c.key.length === 78 && c.offerId === null
+  usersSelectors.users,  
+  (contacts, removedChannels, users) => {
+    return Array.from(Object.values(contacts))
+    .filter(
+      (c) =>
+        c.key.length === 78 &&
+        c.offerId === null &&
+        !removedChannels.includes(c.address)
     );
   }
 );
