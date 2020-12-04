@@ -20,7 +20,6 @@ import Icon from '../../ui/Icon'
 import silenced from '../../../static/images/silenced.svg'
 import silencedBlack from '../../../static/images/silencedBlack.svg'
 import Tooltip from '../../ui/Tooltip'
-// import { unknownUserId } from '../../../../shared/static'
 
 const styles = theme => ({
   root: {
@@ -175,7 +174,11 @@ export const ChannelHeader = ({
                   [classes.title]: true,
                   [classes.bold]: true
                 })}>
-                {`${prefix[channelType]}${channel.name || channel.address}`}
+                {isRegisteredUsername || !isFromZbay
+                  ? isFromZbay
+                    ? `${prefix[channelType]}${channel.name}`
+                    : 'unknown'
+                  : `${prefix[channelType]}${channel.address}`}
               </Typography>
             </Grid>
             {mutedFlag && (

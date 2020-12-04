@@ -18,10 +18,9 @@ const contactsList = createSelector(
   identitySelectors.removedChannels,
   usersSelectors.users,
   (contacts, removedChannels, users) => {
-    console.log('yo')
-      return Array.from(Object.values(contacts))
+    return Array.from(Object.values(contacts))
       .map(contact => {
-        if (!contact.address) { 
+        if (!contact.address) {
           const user = users[contact.key]
           return {
             ...contact,
@@ -34,13 +33,10 @@ const contactsList = createSelector(
         }
       })
       .filter(
-        (c) =>
-          c.key.length === 66 &&
-          c.offerId === null &&
-          !removedChannels.includes(c.address)
-      );
+        c => c.key.length === 66 && c.offerId === null && !removedChannels.includes(c.address)
+      )
   }
-);
+)
 
 const unknownMessages = createSelector(contacts, (contacts) => {
   return Array.from(Object.values(contacts)).filter(
