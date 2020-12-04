@@ -2,7 +2,6 @@ import React from 'react'
 import QRCode from 'qrcode.react'
 import PropTypes from 'prop-types'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-// import classNames from 'classnames'
 
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -11,18 +10,11 @@ import { withStyles } from '@material-ui/core/styles'
 import { shell } from 'electron'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
-import ExpandLessIcon from '@material-ui/icons/ExpandLess'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import CloseIcon from '@material-ui/icons/Close'
 import Dialog from '@material-ui/core/Dialog'
-// import Checkbox from '@material-ui/core/Checkbox'
-// import FormControlLabel from '@material-ui/core/FormControlLabel'
-// import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
-// import CheckBoxIcon from '@material-ui/icons/CheckBox'
 
 import Icon from '../../ui/Icon'
 import qrIcon from '../../../../renderer/static/images/qr.svg'
-import buyIcon from '../../../../renderer/static/images/buy-zcash.svg'
 import Tooltip from '../../ui/Tooltip'
 
 const styles = theme => ({
@@ -68,36 +60,6 @@ const styles = theme => ({
     fontSize: '0.9rem',
     backgroundColor: theme.palette.colors.zbayBlue
   },
-  infoDiv: {
-    border: `1px solid ${theme.palette.colors.veryLightGray}`,
-    borderRadius: 4,
-    cursor: 'pointer',
-    marginTop: 32,
-    marginBottom: 32,
-    paddingTop: 16,
-    paddingBottom: 16,
-    '&:hover': {
-      backgroundColor: theme.palette.colors.veryLightGray
-    }
-  },
-  iconDiv: {
-    marginRight: 16,
-    marginTop: 4
-  },
-  privateTitle: {
-    color: theme.palette.colors.lushSky
-  },
-  privateDiv: {
-    minHeight: 56,
-    border: `1px solid ${theme.palette.colors.veryLightGray}`,
-    borderRadius: 4,
-    cursor: 'pointer',
-    marginTop: 32,
-    padding: 16
-  },
-  icon: {
-    color: theme.palette.colors.lushSky
-  },
   tooltip: {
     zIndex: 1500
   },
@@ -123,24 +85,16 @@ const styles = theme => ({
     '&:hover': {
       backgroundColor: theme.palette.colors.buttonGray
     }
-  },
-  checkbox: {
-    height: 10
   }
 })
 
 export const AddFunds = ({
   classes,
   variant,
-  setCurrentTab,
-  clearCurrentOpenTab,
-  donationAllow,
-  updateDonation,
   generateNewAddress,
   generateNewShieldedAddress,
   topAddress,
   topShieldedAddress,
-  scrollbarRef
 }) => {
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const [isCopied, setIsCopied] = React.useState(false)
