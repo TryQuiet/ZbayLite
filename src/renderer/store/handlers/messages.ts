@@ -596,7 +596,11 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
   const currentChannel = channelSelectors.channel(getState())
   const userFilter = notificationCenterSelectors.userFilterType(getState())
   try {
+    console.log('unpacking')
+    console.log(`this is data ${data}`)
     message = await unpackMemo(data)
+    console.log(`this is unpacked message ${message}`)
+    console.log(message)
     const { type } = message
     if (type === 'UNKNOWN') {
       return {
