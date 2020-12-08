@@ -127,7 +127,7 @@ export const checkMessageSizeAfterComporession = async message => {
 //   return allocatedMessage.toString()
 // }
 
-export const packMemo = async (message, typingIndicator) => {
+export const packMemo = async (message, typingIndicato) => {
   const formatFlag = Buffer.alloc(MEMO_FORMAT_FLAG_SIZE)
   formatFlag.writeUInt8(MEMO_FORMAT_FLAG_VALUE)
   const type = Buffer.alloc(TYPE_SIZE)
@@ -139,7 +139,7 @@ export const packMemo = async (message, typingIndicator) => {
   ts.writeUInt32BE(message.createdAt)
 
   const typingIndicator = Buffer.alloc(TYPING_INDICATOR)
-  typingIndicator.write(typingIndicator)
+  typingIndicator.writeUInt8(typingIndicato)
 
   let msgData
   switch (message.type) {

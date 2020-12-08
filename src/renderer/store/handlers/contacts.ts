@@ -56,6 +56,7 @@ export class Contact {
     Object.assign(this, values)
     this[immerable] = true
   }
+  typingIndicator: boolean = false
 }
 export interface ISender {
   replyTo: string
@@ -100,6 +101,9 @@ const appendNewMessages = createAction<{
 const setLastSeen = createAction<{ lastSeen: DateTime; contact: Contact }>(
   actionTypes.SET_CONTACTS_LAST_SEEN
 )
+const setTypingIndicator = createAction<{ contactAddress: string; typingIndicator: boolean }>(
+  actionTypes.SET_TYPING_INDICATOR
+)
 const removeContact = createAction<{ address: string }>(actionTypes.REMOVE_CONTACT)
 const setUsernames = createAction<{ sender: ISender }>(actionTypes.SET_CONTACTS_USERNAMES)
 const setVaultMessages = createAction(actionTypes.SET_VAULT_DIRECT_MESSAGES)
@@ -117,7 +121,8 @@ export const actions = {
   setUsernames,
   removeContact,
   setMessageBlockTime,
-  setContactConnected
+  setContactConnected,
+  setTypingIndicator
 }
 export type ContactActions = ActionsType<typeof actions>
 
@@ -249,7 +254,8 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
             offerId: null,
             key,
             address: contactAddress,
-            username
+            username,
+            typingIndicator: false
           }
         }
         draft[key].messages = {
@@ -270,7 +276,8 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
           offerId: offerId,
           key,
           address: contactAddress,
-          username
+          username,
+          typingIndicator: false
         }
       }),
     [addMessage.toString()]: (state, { payload: { key, message } }: ContactActions['addMessage']) =>
@@ -309,9 +316,7 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
     ) =>
       produce(state, draft => {
         draft[contactAddress].newMessages = draft[contactAddress].newMessages.concat(messagesIds)
-        remote.app.setBadgeCount(
-          remote.app.getBadgeCount() + messagesIds.length
-        )
+        remote.app.setBadgeCount(remote.app.getBadgeCount() + messagesIds.length)
       }),
     [setLastSeen.toString()]: (
       state,
@@ -326,6 +331,13 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
     ) =>
       produce(state, draft => {
         draft[key].connected = connected
+      }),
+    [setTypingIndicator.toString()]: (
+      state,
+      { payload: { typingIndicator, contactAddress } }: ContactActions['setTypingIndicator']
+    ) =>
+      produce(state, draft => {
+        draft[contactAddress].typingIndicator = typingIndicator
       }),
     [removeContact.toString()]: (
       state,
