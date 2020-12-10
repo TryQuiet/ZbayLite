@@ -3,6 +3,8 @@ var url = require('url')
 var HttpsProxyAgent = require('https-proxy-agent')
 var proxy = 'http://localhost:9082'
 
+var messages = require('../../renderer/zbay/index').messages
+
 const connections = new Map()
 
 export const connect = address =>
@@ -19,8 +21,15 @@ export const connect = address =>
         console.log(err)
       })
       socket.on('open', function (a) {
+        let message = messages.createMessage({
+          messageData: {
+            type: 'CONNECTION_ESTABLISHED',
+            data: null
+          },
+          privKey: privKey
+        })
         console.log('connected')
-        socket.send('brabrbabrabr')
+        socket.send(message)
         socket.on('close', function (a) {
           console.log('disconnected')
           socket.close()
