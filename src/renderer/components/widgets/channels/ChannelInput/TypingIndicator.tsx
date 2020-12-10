@@ -7,7 +7,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.colors.trueBlack,
     letterSpacing: '0.4px'
   },
-  item: {},
   bold: {
     fontWeight: 'bold'
   },
@@ -23,7 +22,7 @@ const TypingIndicator = ({ contactUsername, showTypingIndicator }) => {
 
   return (
     <Grid container className={classes.boot}>
-      <Grid item xs className={classes.item}>
+      <Grid item xs>
         {showTypingIndicator && (
           <Typography variant='caption' className={classes.info}>
             <span className={classes.bold}>{contactUsername}</span> is typing...
