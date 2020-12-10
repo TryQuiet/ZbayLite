@@ -20,6 +20,7 @@ export const connect = address =>
       })
       socket.on('open', function (a) {
         console.log('connected')
+        socket.send('brabrbabrabr')
         socket.on('close', function (a) {
           console.log('disconnected')
           socket.close()
