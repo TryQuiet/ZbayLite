@@ -3,9 +3,13 @@ var url = require('url')
 var HttpsProxyAgent = require('https-proxy-agent')
 var proxy = 'http://localhost:9082'
 
-//var identitySelectors = require('../../renderer/store/selectors/identity').default
+import { packMemo } from '../../renderer/zbay/transit'
 
-//var messages = require('../../renderer/zbay/index').messages
+import electronStore from '../../shared/electronStore'
+
+var identity = electronStore.get('identity')
+
+var messages = require('../../renderer/zbay/index').messages
 
 const connections = new Map()
 
@@ -22,17 +26,18 @@ export const connect = address =>
       socket.on('unexpected-response', err => {
         console.log(err)
       })
-      socket.on('open', function (a) {
-        // const privKey = identitySelectors.signerPrivKey(getState())
-        // let message = messages.createMessage({
-        //   messageData: {
-        //     type: 'CONNECTION_ESTABLISHED',
-        //     data: null
-        //   },
-        //   privKey: privKey
-        // })
-        // console.log('connected')
-        // socket.send(message)
+      socket.on('open', async function (a) {
+        const privKey = identity.signerPrivKey
+        let message = messages.createMessage({
+          messageData: {
+            type: 'CONNECTION_ESTABLISHED',
+            data: null
+          },
+          privKey: privKey
+        })
+        const memo = await packMemo(message, false)
+        console.log('connected')
+        socket.send(memo)
         socket.on('close', function (a) {
           console.log('disconnected')
           socket.close()
