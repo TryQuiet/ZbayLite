@@ -606,6 +606,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
         id: '1'
       }
     }
+    console.log(message)
     console.log('HANDLING WEBSOCKET MESSAGE')
     console.log(type)
     publicKey = getPublicKeysFromSignature(message).toString('hex')

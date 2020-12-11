@@ -3,6 +3,8 @@ var url = require('url')
 var HttpsProxyAgent = require('https-proxy-agent')
 var proxy = 'http://localhost:9082'
 
+import { messageType } from '../../shared/static'
+
 import { packMemo } from '../../renderer/zbay/transit'
 
 import electronStore from '../../shared/electronStore'
@@ -30,7 +32,7 @@ export const connect = address =>
         const privKey = identity.signerPrivKey
         let message = messages.createMessage({
           messageData: {
-            type: 'CONNECTION_ESTABLISHED',
+            type: messageType.CONNECTION_ESTABLISHED,
             data: null
           },
           privKey: privKey
