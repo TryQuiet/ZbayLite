@@ -614,7 +614,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     if (type === messageType.CONNECTION_ESTABLISHED) {
       console.log('handling connection')
       if  (!contact.connected)  {
-        //dispatch(contactsHandlers.actions.setContactConnected({ connected: true, key: publicKey }))
+        dispatch(contactsHandlers.actions.setContactConnected({ connected: true, key: publicKey }))
         dispatch(contactsHandlers.epics.connectWsContacts(publicKey))
       }
     }
