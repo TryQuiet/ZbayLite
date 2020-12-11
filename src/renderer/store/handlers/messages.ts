@@ -595,6 +595,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
   const currentChannel = channelSelectors.channel(getState())
   const userFilter = notificationCenterSelectors.userFilterType(getState())
   const contacts = contactsSelectors.contacts(getState())
+  const contact = contactsSelectors.contact(publicKey)(getState())
   try {
     message = await unpackMemo(data)
     const { type } = message
@@ -612,8 +613,10 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     publicKey = getPublicKeysFromSignature(message).toString('hex')
     if (type === messageType.CONNECTION_ESTABLISHED) {
       console.log('handling connection')
-      //dispatch(contactsHandlers.actions.setContactConnected({ connected: true, key: publicKey }))
-      dispatch(contactsHandlers.epics.connectWsContacts(publicKey))
+      if  (!contact.connected)  {
+        //dispatch(contactsHandlers.actions.setContactConnected({ connected: true, key: publicKey }))
+        dispatch(contactsHandlers.epics.connectWsContacts(publicKey))
+      }
     }
     if (users !== undefined) {
       const fromUser = users[publicKey]
