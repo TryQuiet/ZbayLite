@@ -595,7 +595,6 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
   const currentChannel = channelSelectors.channel(getState())
   const userFilter = notificationCenterSelectors.userFilterType(getState())
   const contacts = contactsSelectors.contacts(getState())
-  const contact = contactsSelectors.contact(publicKey)(getState())
   try {
     message = await unpackMemo(data)
     const { type } = message
@@ -611,6 +610,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     console.log('HANDLING WEBSOCKET MESSAGE')
     console.log(type)
     publicKey = getPublicKeysFromSignature(message).toString('hex')
+    const contact = contactsSelectors.contact(publicKey)(getState())
     if (type === messageType.CONNECTION_ESTABLISHED) {
       console.log('handling connection')
       if  (!contact.connected)  {
