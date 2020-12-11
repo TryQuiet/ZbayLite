@@ -607,7 +607,8 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
       }
     }
     publicKey = getPublicKeysFromSignature(message).toString('hex')
-    if (type === 'CONNECTION_ESTABLISHED') {
+    if (type === messageType.CONNECTION_ESTABLISHED) {
+      console.log('handling connection')
       dispatch(contactsHandlers.actions.setContactConnected({ connected: true, key: publicKey }))
     }
     if (users !== undefined) {

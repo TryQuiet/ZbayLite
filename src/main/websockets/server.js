@@ -21,9 +21,6 @@ export const createServer = mainWindow => {
       console.log('socket opened')
     })
     socket.on('message', function (message) {
-      // console.log(JSON.stringify(message))
-      console.log('message bou')
-      console.log(message)
       mainWindow.webContents.send('wsMessage', message)
     })
     socket.on('close', function (message) {
