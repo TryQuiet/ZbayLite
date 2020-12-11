@@ -37,7 +37,9 @@ export const connect = address =>
           },
           privKey: privKey
         })
+        console.log('before memo')
         const memo = await packMemo(message, false)
+        console.log('after memo')
         console.log('connected')
         socket.send(memo)
         socket.on('close', function (a) {
