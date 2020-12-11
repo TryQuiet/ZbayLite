@@ -41,7 +41,7 @@ export const connect = address =>
         console.log('connected')
         socket.send(memo)
         socket.on('close', function (a) {
-          console.log('disconnected')
+          console.log('disconnected client')
           socket.close()
           connections.delete(address)
         })

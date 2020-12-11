@@ -181,7 +181,7 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
     history.push(`/main/direct-messages/${contact.publicKey}/${contact.nickname}`)
   }
 }
-export const connectWsContacts = () => async (dispatch, getState) => {
+export const connectWsContacts = (key?: string) => async (dispatch, getState) => {
   const contacts = selectors.contacts(getState())
   const users = usersSelector.users(getState())
   var mapping = new Map()
@@ -213,10 +213,18 @@ export const connectWsContacts = () => async (dispatch, getState) => {
   })
 
   const contactsToConnect = []
-  for (const contact of Object.values(contacts)) {
-    const user = users[contact.key]
+  if (key) {
+    const user = users[key]
     if (user?.onionAddress) {
-      contactsToConnect.push({ key: contact.key, onionAddress: user?.onionAddress })
+      contactsToConnect.push({ key: key, onionAddress: user?.onionAddress })
+    }
+  }
+  else {
+    for (const contact of Object.values(contacts)) {
+      const user = users[contact.key]
+      if (user?.onionAddress) {
+        contactsToConnect.push({ key: contact.key, onionAddress: user?.onionAddress })
+      }
     }
   }
   // eslint-disable-next-line @typescript-eslint/promise-function-async
