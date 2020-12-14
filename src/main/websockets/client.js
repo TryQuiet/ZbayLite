@@ -20,7 +20,8 @@ export const connect = address =>
     try {
       const options = url.parse(proxy)
       const agent = new HttpsProxyAgent(options)
-      const socket = new WebSocketClient(address, { agent: agent })
+      const socket = new WebSocketClient(address, { agent: agent }, { handshakeTimeout: 30000 })
+      console.log(socket)
       const id = setTimeout(() => {
         // eslint-disable-next-line
         reject('timeout')
@@ -49,6 +50,9 @@ export const connect = address =>
         })
         clearTimeout(id)
         resolve(socket)
+      })
+      socket.once('close', () => {
+        console.log('connection closed')
       })
     } catch (error) {
       console.log(error)
