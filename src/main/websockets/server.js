@@ -11,7 +11,7 @@ export const createServer = mainWindow => {
     autoAcceptConnections: true
   })
   wsServer.on('connection', function (socket) {
-    console.log('New connection')
+    console.log('New incoming connection')
     socket.on('message', function (message) {
       mainWindow.webContents.send('wsMessage', message)
     })

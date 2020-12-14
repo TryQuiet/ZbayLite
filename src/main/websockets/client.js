@@ -20,7 +20,7 @@ export const connect = address =>
     try {
       const options = url.parse(proxy)
       const agent = new HttpsProxyAgent(options)
-      const socket = new WebSocketClient(address, { agent: agent }, { handshakeTimeout: 30000 })
+      const socket = new WebSocketClient(address, { agent: agent }, { handshakeTimeout: 1000 })
       console.log(socket)
       const id = setTimeout(() => {
         // eslint-disable-next-line
@@ -38,10 +38,7 @@ export const connect = address =>
           },
           privKey: privKey
         })
-        console.log('before memo')
         const memo = await packMemo(message, false)
-        console.log('after memo')
-        console.log('connected')
         socket.send(memo)
         socket.on('close', function (a) {
           console.log('disconnected client')
@@ -51,8 +48,9 @@ export const connect = address =>
         clearTimeout(id)
         resolve(socket)
       })
-      socket.once('close', () => {
-        console.log('connection closed')
+      socket.on('error', err => {
+        reject('timeout')
+        console.log(err)
       })
     } catch (error) {
       console.log(error)
