@@ -11,7 +11,6 @@ import channels from '../../zcash/channels'
 
 import identitySelectors from '../selectors/identity'
 import txnTimestampsSelector from '../selectors/txnTimestamps'
-import contactsSelector from '../selectors/contacts'
 import usersHandlers from './users'
 import coordinatorHandlers from './coordinator'
 import whitelistHandlers from './whitelist'
@@ -425,10 +424,6 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   }
   dispatch(setLoadingMessage(''))
   dispatch(setLoading(false))
-  const contacts = contactsSelector.contacts
-  for (const contact in contacts) {
-    dispatch(contactsHandlers.actions.setContactConnected({ key: contact, connected: false }))
-  }
   dispatch(contactsHandlers.epics.connectWsContacts())
   if (electronStore.get('isMigrating')) {
     dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
