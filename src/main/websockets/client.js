@@ -9,7 +9,7 @@ import { packMemo } from '../../renderer/zbay/transit'
 
 import electronStore from '../../shared/electronStore'
 
-var identity = electronStore.get('identity')
+const identity = electronStore.get('identity')
 
 var messages = require('../../renderer/zbay/index').messages
 
@@ -30,7 +30,7 @@ export const connect = address =>
       })
       socket.on('open', async function (a) {
         const privKey = identity.signerPrivKey
-        let message = messages.createMessage({
+        const message = messages.createMessage({
           messageData: {
             type: messageType.CONNECTION_ESTABLISHED,
             data: null
