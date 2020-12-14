@@ -606,14 +606,10 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
         id: '1'
       }
     }
-    console.log(message)
-    console.log('HANDLING WEBSOCKET MESSAGE')
-    console.log(type)
     publicKey = getPublicKeysFromSignature(message).toString('hex')
     const contact = contactsSelectors.contact(publicKey)(getState())
     if (type === messageType.CONNECTION_ESTABLISHED) {
-      console.log('handling connection')
-      if  (!contact.connected)  {
+      if (!contact.connected) {
         //dispatch(contactsHandlers.actions.setContactConnected({ connected: true, key: publicKey }))
         dispatch(contactsHandlers.epics.connectWsContacts(publicKey))
       }

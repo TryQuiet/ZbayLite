@@ -20,8 +20,7 @@ export const connect = address =>
     try {
       const options = url.parse(proxy)
       const agent = new HttpsProxyAgent(options)
-      const socket = new WebSocketClient(address, { agent: agent }, { handshakeTimeout: 1000 })
-      console.log(socket)
+      const socket = new WebSocketClient(address, { agent: agent }, { handshakeTimeout: 30000 })
       const id = setTimeout(() => {
         // eslint-disable-next-line
         reject('timeout')

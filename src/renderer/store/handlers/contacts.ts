@@ -214,16 +214,11 @@ export const connectWsContacts = (key?: string) => async (dispatch, getState) =>
 
   const contactsToConnect = []
   if (key) {
-    console.log('this is KEY')
     const user = users[key]
-    if (user) {
-      console.log('got user')
-    }
     if (user?.onionAddress) {
       contactsToConnect.push({ key: key, onionAddress: user?.onionAddress })
     }
-  }
-  else {
+  } else {
     for (const contact of Object.values(contacts)) {
       const user = users[contact.key]
       if (user?.onionAddress) {

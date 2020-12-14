@@ -311,7 +311,6 @@ app.on('ready', async () => {
   })
   ipcMain.on('initWsConnection', async (event, arg) => {
     const request = JSON.parse(arg)
-    console.log(request.address)
     try {
       const socket = await websockets.connect(request.address)
 
