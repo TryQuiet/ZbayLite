@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import * as R from 'ramda'
 import classNames from 'classnames'
@@ -144,11 +144,18 @@ const inputStateToMessage = {
     'You can not reply to this message because you are not registered. Please register your nickname ( button next to your balance )'
 }
 
+function sleep(ms) {
+  var start = new Date().getTime(),
+    expire = start + ms
+  while (new Date().getTime() < expire) {}
+  return
+}
+
 export const ChannelInput = ({
   classes,
   onChange,
   onKeyPress,
-  message,
+  message: initialMessage,
   inputState,
   infoClass,
   setInfoClass,
@@ -175,10 +182,13 @@ export const ChannelInput = ({
   const [selected, setSelected] = React.useState(0)
   const [emojiHovered, setEmojiHovered] = React.useState(false)
   const [openEmoji, setOpenEmoji] = React.useState(false)
-  const [htmlMessage, setHtmlMessage] = React.useState(message)
+  const [htmlMessage, setHtmlMessage] = React.useState(initialMessage)
+  const [message, setMessage] = React.useState(initialMessage)
   const [typingIndicator, setTypingIndicator] = React.useState(false)
 
   const showTypingIndicator = isDM && isContactTyping && isContactConnected
+
+  console.log('rerender')
 
   window.onfocus = () => {
     inputRef.current.el.current.focus()
@@ -207,19 +217,24 @@ export const ChannelInput = ({
   }, [message])
   React.useEffect(() => {
     setHtmlMessage(message)
-  }, [id]),
-      React.useEffect(() => {
-          if (htmlMessage) {
-            setTypingIndicator(true)
-          } else {
-            setTypingIndicator(false)
-          }
-      }, [htmlMessage])
+  }, [id])
   React.useEffect(() => {
-    if  (!isContactConnected) return
+    if (htmlMessage) {
+      setTypingIndicator(true)
+    } else {
+      setTypingIndicator(false)
+    }
+  }, [htmlMessage])
+  React.useEffect(() => {
+    if (!isContactConnected) return
     sendTypingIndicator(typingIndicator)
   }, [typingIndicator])
+  React.useEffect(() => {
+    console.log('quit')
+    return () => onChange(message)
+  }, [])
   
+
   const findMentions = text => {
     const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))
     const lastMention = splitedMsg[splitedMsg.length - 1].startsWith('@')
@@ -266,6 +281,31 @@ export const ChannelInput = ({
     }
     return splitedMsg.join(String.fromCharCode(160))
   }
+
+  //console.time('sanitizeHtml')
+  const t2 = sanitizeHtml(htmlMessage)
+  //console.timeEnd('sanitizeHtml')
+  //console.time('fineMentions')
+  const sanitizedHtml = findMentions(t2)
+  //sleep(1)
+  //console.timeEnd('fineMentions')
+  const onChangeCb = useCallback(
+    e => {
+      if (inputState === INPUT_STATE.AVAILABLE) {
+
+        //onChange(e.nativeEvent.target.innerText)
+        setMessage(e.nativeEvent.target.innerText)
+        console.log({ a: e.nativeEvent.target.innerText, b: e.target.value })
+        if (!e.nativeEvent.target.innerText) {
+          setHtmlMessage('')
+        } else {
+          setHtmlMessage(e.target.value)
+        }
+      }
+      setAnchorEl(e.currentTarget.lastElementChild)
+    },
+    [setAnchorEl, onChange, setHtmlMessage]
+  )
   return (
     <Grid
       container
@@ -295,7 +335,7 @@ export const ChannelInput = ({
               currentMsg[currentMsg.length - 1] =
                 '@' + refMentionsToSelect.current[refSelected.current].nickname
               currentMsg.push(String.fromCharCode(160))
-              onChange(currentMsg.join(String.fromCharCode(160)))
+              setMessage(currentMsg.join(String.fromCharCode(160)))
               setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
               inputRef.current.el.current.focus()
             }}
@@ -351,18 +391,8 @@ export const ChannelInput = ({
                     setFocused(true)
                   }
                 }}
-                html={findMentions(sanitizeHtml(htmlMessage))}
-                onChange={e => {
-                  if (inputState === INPUT_STATE.AVAILABLE) {
-                    onChange(e.nativeEvent.target.innerText)
-                    if (!e.nativeEvent.target.innerText) {
-                      setHtmlMessage('')
-                    } else {
-                      setHtmlMessage(e.target.value)
-                    }
-                  }
-                  setAnchorEl(e.currentTarget.lastElementChild)
-                }}
+                html={sanitizedHtml}
+                onChange={onChangeCb}
                 onKeyDown={e => {
                   if (refMentionsToSelect.current.length) {
                     if (e.nativeEvent.keyCode === 40) {
@@ -390,6 +420,7 @@ export const ChannelInput = ({
                       currentMsg.push(String.fromCharCode(160))
                       setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
                       e.preventDefault()
+                      
                     }
                     return
                   }
@@ -397,8 +428,11 @@ export const ChannelInput = ({
                     inputState === INPUT_STATE.AVAILABLE &&
                     e.nativeEvent.keyCode === 13 &&
                     e.target.innerText !== ''
-                  ) {
+                    ) {
+                    onChange(e.target.innerText)
                     onKeyPress(e)
+                    setMessage('')
+                    setHtmlMessage('')
                     scrollToBottom()
                   } else {
                     if (e.nativeEvent.keyCode === 13) {
@@ -438,7 +472,7 @@ export const ChannelInput = ({
                     <Picker
                       onEmojiClick={(e, emoji) => {
                         setHtmlMessage(message + emoji.emoji)
-                        onChange(message + emoji.emoji)
+                        setMessage(message + emoji.emoji)
                         setOpenEmoji(false)
                       }}
                     />
@@ -468,7 +502,10 @@ export const ChannelInput = ({
           </Grid>
         </Grid>
       )}
-      <TypingIndicator contactUsername={contactUsername} showTypingIndicator={showTypingIndicator} />
+      <TypingIndicator
+        contactUsername={contactUsername}
+        showTypingIndicator={showTypingIndicator}
+      />
     </Grid>
   )
 }
