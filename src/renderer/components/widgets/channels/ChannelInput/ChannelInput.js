@@ -217,6 +217,11 @@ export const ChannelInput = ({
   React.useEffect(() => {
     setMessage(initialMessage)
     setHtmlMessage(initialMessage)
+    console.log('effect', initialMessage)
+    return () => {
+      console.log('clean', messageRef.current)
+      onChange(messageRef.current)
+    }
   }, [id])
   React.useEffect(() => {
     messageRef.current = message
@@ -232,10 +237,10 @@ export const ChannelInput = ({
     if (!isContactConnected) return
     sendTypingIndicator(typingIndicator)
   }, [typingIndicator])
-  React.useEffect(() => {
-    console.log('unmount')
-    return () => onChange(messageRef.current)
-  }, [])
+  // React.useEffect(() => {
+  //   console.log('unmount')
+  //   return () => onChange(messageRef.current)
+  // }, [])
 
   const findMentions = text => {
     const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))
