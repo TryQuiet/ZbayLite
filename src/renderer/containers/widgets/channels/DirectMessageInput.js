@@ -69,20 +69,17 @@ export const ChannelInput = ({
   const [anchorEl, setAnchorEl] = React.useState({})
   const [mentionsToSelect, setMentionsToSelect] = React.useState([])
   const isFromZbayUser = channelName !== 'Unknown'
-  const onChangeCb = React.useCallback(
-    e => {
-      onChange(e)
-      //resetDebounce()
-    },
-    [onChange]
-  )
+  console.log('rerender container')
   return (
     <ChannelInputComponent
       isDM
       infoClass={infoClass}
       id={id}
       setInfoClass={setInfoClass}
-      onChange={onChangeCb}
+      onChange={e => {
+        onChange(e)
+        resetDebounce()
+      }}
       onKeyPress={sendDirectMessageOnEnter}
       message={message}
       inputState={isFromZbayUser ? inputState : INPUT_STATE.DISABLE}

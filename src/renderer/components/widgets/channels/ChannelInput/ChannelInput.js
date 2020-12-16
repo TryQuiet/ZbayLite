@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef } from 'react'
 import PropTypes from 'prop-types'
 import * as R from 'ramda'
 import classNames from 'classnames'
@@ -175,6 +175,7 @@ export const ChannelInput = ({
   contactUsername,
   isDM
 }) => {
+  const messageRef = React.useRef()
   const refSelected = React.useRef()
   const refMentionsToSelect = React.useRef()
   const inputRef = React.createRef()
@@ -187,8 +188,6 @@ export const ChannelInput = ({
   const [typingIndicator, setTypingIndicator] = React.useState(false)
 
   const showTypingIndicator = isDM && isContactTyping && isContactConnected
-
-  console.log('rerender')
 
   window.onfocus = () => {
     inputRef.current.el.current.focus()
@@ -216,8 +215,12 @@ export const ChannelInput = ({
     }
   }, [message])
   React.useEffect(() => {
-    setHtmlMessage(message)
+    setMessage(initialMessage)
+    setHtmlMessage(initialMessage)
   }, [id])
+  React.useEffect(() => {
+    messageRef.current = message
+  }, [message])
   React.useEffect(() => {
     if (htmlMessage) {
       setTypingIndicator(true)
@@ -230,10 +233,9 @@ export const ChannelInput = ({
     sendTypingIndicator(typingIndicator)
   }, [typingIndicator])
   React.useEffect(() => {
-    console.log('quit')
-    return () => onChange(message)
+    console.log('unmount')
+    return () => onChange(messageRef.current)
   }, [])
-  
 
   const findMentions = text => {
     const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))
@@ -292,10 +294,9 @@ export const ChannelInput = ({
   const onChangeCb = useCallback(
     e => {
       if (inputState === INPUT_STATE.AVAILABLE) {
-
         //onChange(e.nativeEvent.target.innerText)
+        console.log(`set msg to ${e.nativeEvent.target.innerText}`)
         setMessage(e.nativeEvent.target.innerText)
-        console.log({ a: e.nativeEvent.target.innerText, b: e.target.value })
         if (!e.nativeEvent.target.innerText) {
           setHtmlMessage('')
         } else {
@@ -420,7 +421,6 @@ export const ChannelInput = ({
                       currentMsg.push(String.fromCharCode(160))
                       setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
                       e.preventDefault()
-                      
                     }
                     return
                   }
@@ -428,7 +428,7 @@ export const ChannelInput = ({
                     inputState === INPUT_STATE.AVAILABLE &&
                     e.nativeEvent.keyCode === 13 &&
                     e.target.innerText !== ''
-                    ) {
+                  ) {
                     onChange(e.target.innerText)
                     onKeyPress(e)
                     setMessage('')
