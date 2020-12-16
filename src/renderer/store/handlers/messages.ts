@@ -609,11 +609,13 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     publicKey = getPublicKeysFromSignature(message).toString('hex')
     const contact = contactsSelectors.contact(publicKey)(getState())
     if (type === messageType.CONNECTION_ESTABLISHED) {
-      if (!contact.connected) {
-        //dispatch(contactsHandlers.actions.setContactConnected({ connected: true, key: publicKey }))
-        dispatch(contactsHandlers.epics.connectWsContacts(publicKey))
+      if (contact) {
+        if (!contact.connected) {
+          //dispatch(contactsHandlers.actions.setContactConnected({ connected: true, key: publicKey }))
+          dispatch(contactsHandlers.epics.connectWsContacts(publicKey))
+        }
+        return
       }
-      return
     }
     if (users !== undefined) {
       const fromUser = users[publicKey]
