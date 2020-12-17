@@ -69,7 +69,6 @@ export const ChannelInput = ({
   const [anchorEl, setAnchorEl] = React.useState({})
   const [mentionsToSelect, setMentionsToSelect] = React.useState([])
   const isFromZbayUser = channelName !== 'Unknown'
-  console.log('rerender container')
   return (
     <ChannelInputComponent
       isDM

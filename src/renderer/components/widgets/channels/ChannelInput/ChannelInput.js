@@ -144,13 +144,6 @@ const inputStateToMessage = {
     'You can not reply to this message because you are not registered. Please register your nickname ( button next to your balance )'
 }
 
-function sleep(ms) {
-  var start = new Date().getTime(),
-    expire = start + ms
-  while (new Date().getTime() < expire) {}
-  return
-}
-
 export const ChannelInput = ({
   classes,
   onChange,
@@ -185,7 +178,7 @@ export const ChannelInput = ({
   const [openEmoji, setOpenEmoji] = React.useState(false)
   const [htmlMessage, setHtmlMessage] = React.useState(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
-  const [typingIndicator, setTypingIndicator] = React.useState(false)
+  const typingIndicator = !!message
 
   const showTypingIndicator = isDM && isContactTyping && isContactConnected
 
@@ -217,30 +210,18 @@ export const ChannelInput = ({
   React.useEffect(() => {
     setMessage(initialMessage)
     setHtmlMessage(initialMessage)
-    console.log('effect', initialMessage)
     return () => {
-      console.log('clean', messageRef.current)
       onChange(messageRef.current)
     }
   }, [id])
   React.useEffect(() => {
     messageRef.current = message
   }, [message])
-  React.useEffect(() => {
-    if (htmlMessage) {
-      setTypingIndicator(true)
-    } else {
-      setTypingIndicator(false)
-    }
-  }, [htmlMessage])
+
   React.useEffect(() => {
     if (!isContactConnected) return
     sendTypingIndicator(typingIndicator)
   }, [typingIndicator])
-  // React.useEffect(() => {
-  //   console.log('unmount')
-  //   return () => onChange(messageRef.current)
-  // }, [])
 
   const findMentions = text => {
     const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))
@@ -289,13 +270,8 @@ export const ChannelInput = ({
     return splitedMsg.join(String.fromCharCode(160))
   }
 
-  //console.time('sanitizeHtml')
   const t2 = sanitizeHtml(htmlMessage)
-  //console.timeEnd('sanitizeHtml')
-  //console.time('fineMentions')
   const sanitizedHtml = findMentions(t2)
-  //sleep(1)
-  //console.timeEnd('fineMentions')
   const onChangeCb = useCallback(
     e => {
       if (inputState === INPUT_STATE.AVAILABLE) {
