@@ -608,7 +608,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     }
     publicKey = getPublicKeysFromSignature(message).toString('hex')
     const contact = contactsSelectors.contact(publicKey)(getState())
-    if (contact) {
+    if (contact.key === publicKey) {
       dispatch(
         contactsHandlers.actions.setTypingIndicator({
           typingIndicator: !!typeIndicator,
