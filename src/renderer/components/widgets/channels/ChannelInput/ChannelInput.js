@@ -275,8 +275,6 @@ export const ChannelInput = ({
   const onChangeCb = useCallback(
     e => {
       if (inputState === INPUT_STATE.AVAILABLE) {
-        //onChange(e.nativeEvent.target.innerText)
-        console.log(`set msg to ${e.nativeEvent.target.innerText}`)
         setMessage(e.nativeEvent.target.innerText)
         if (!e.nativeEvent.target.innerText) {
           setHtmlMessage('')
