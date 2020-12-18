@@ -1,7 +1,8 @@
 var WebSocketClient = require('ws')
 var url = require('url')
 var HttpsProxyAgent = require('https-proxy-agent')
-var proxy = 'http://localhost:9082'
+
+//import { getPorts } from '../../../tor/index'
 
 import { messageType } from '../../shared/static'
 
@@ -15,9 +16,13 @@ var messages = require('../../renderer/zbay/index').messages
 
 const connections = new Map()
 
+var ports = electronStore.get('ports')
+
 export const connect = address =>
   new Promise((resolve, reject) => {
+    var proxy = `http://localhost:${ports.httpTunnelPort}`
     try {
+      console.log(proxy)
       const options = url.parse(proxy)
       const agent = new HttpsProxyAgent(options)
       const socket = new WebSocketClient(address, { agent: agent }, { handshakeTimeout: 30000 })
@@ -57,21 +62,22 @@ export const connect = address =>
       reject(new Error('error'))
     }
   })
-export const clearConnections = () => {
-  connections.forEach((_, value) => {
-    try {
-      value.close()
-    } catch (error) {
-      console.error('Failed to close socket')
-    }
-  })
-}
+
+  export const clearConnections = () => {
+    connections.forEach((_, value) => {
+      try {
+        value.close()
+      } catch (error) {
+        console.error('Failed to close socket')
+      }
+    })
+  }
 export const handleSend = async ({ message, endpoint }) => {
-  try {
-    if (!connections.get(endpoint)) {
-      const connection = await connect(endpoint)
-      connections.set(endpoint, connection)
-      connection.send(message)
+    try {
+      if (!connections.get(endpoint)) {
+        const connection = await connect(endpoint)
+        connections.set(endpoint, connection)
+        connection.send(message)
     } else {
       connections.get(endpoint).send(message)
     }
