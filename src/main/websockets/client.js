@@ -2,8 +2,6 @@ var WebSocketClient = require('ws')
 var url = require('url')
 var HttpsProxyAgent = require('https-proxy-agent')
 
-//import { getPorts } from '../../../tor/index'
-
 import { messageType } from '../../shared/static'
 
 import { packMemo } from '../../renderer/zbay/transit'
@@ -12,17 +10,16 @@ import electronStore from '../../shared/electronStore'
 
 const identity = electronStore.get('identity')
 
-var messages = require('../../renderer/zbay/index').messages
+const messages = require('../../renderer/zbay/index').messages
 
 const connections = new Map()
 
-var ports = electronStore.get('ports')
+const ports = electronStore.get('ports')
 
 export const connect = address =>
   new Promise((resolve, reject) => {
     var proxy = `http://localhost:${ports.httpTunnelPort}`
     try {
-      console.log(proxy)
       const options = url.parse(proxy)
       const agent = new HttpsProxyAgent(options)
       const socket = new WebSocketClient(address, { agent: agent }, { handshakeTimeout: 30000 })

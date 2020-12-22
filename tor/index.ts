@@ -2,7 +2,6 @@ const path = require('path')
 const fp = require('find-free-port')
 const isDev = process.env.NODE_ENV === 'development'
 
-//const electronStore = require('../src/shared/electronStore')
 import electronStore from '../src/shared/electronStore'
 
 const pathDev = path.join.apply(null, [process.cwd(), 'tor', 'tor'])
@@ -19,7 +18,7 @@ const pathProdSettingsTemplate = path.join.apply(null, [
 ])
 const os = require('os')
 
-export const getPorts = async () => {
+export const getPorts = async (): Promise<{ socksPort: number; httpTunnelPort: number }> => {
   let [socksPort] = await fp(9052)
   let [httpTunnelPort] = await fp(9082)
   return {
@@ -80,9 +79,9 @@ export const spawnTor = async () => {
     })
   })
 }
-export const getOnionAddress = () => {
+export const getOnionAddress = (): string => {
   var fs = require('fs')
-  const address = fs.readFileSync(
+  const address: string = fs.readFileSync(
     path.join.apply(null, [os.homedir(), 'zbay_tor/hostname']),
     'utf8'
   )
