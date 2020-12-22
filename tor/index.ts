@@ -1,23 +1,46 @@
 const path = require('path')
+const fp = require('find-free-port')
 const isDev = process.env.NODE_ENV === 'development'
+
+import electronStore from '../src/shared/electronStore'
 
 const pathDev = path.join.apply(null, [process.cwd(), 'tor', 'tor'])
 const pathDevLib = path.join.apply(null, [process.cwd(), 'tor'])
 const pathProdLib = path.join.apply(null, [process.resourcesPath, 'tor'])
 const pathDevSettings = path.join.apply(null, [process.cwd(), 'tor', 'torrc'])
+const pathDevSettingsTemplate = path.join.apply(null, [process.cwd(), 'tor', 'torrcTemplate'])
 const pathProd = path.join.apply(null, [process.resourcesPath, 'tor', 'tor'])
-const pathProdSettings = path.join.apply(null, [process.resourcesPath, 'tor', 'torrc'])
+const pathProdSettings = path.join.apply(null, [process.resourcesPath, 'tor', 'torrcTemplate'])
+const pathProdSettingsTemplate = path.join.apply(null, [
+  process.resourcesPath,
+  'tor',
+  'torrcTemplate'
+])
 const os = require('os')
 
+export const getPorts = async (): Promise<{ socksPort: number; httpTunnelPort: number }> => {
+  let [socksPort] = await fp(9052)
+  let [httpTunnelPort] = await fp(9082)
+  return {
+    socksPort,
+    httpTunnelPort
+  }
+}
+
 const spawn = require('child_process').spawn
-const spawnTor = () =>
-  new Promise((resolve) => {
+export const spawnTor = async () => {
+  const ports = await getPorts()
+  electronStore.set('ports', ports)
+  new Promise(resolve => {
     var fs = require('fs')
-    const data = fs.readFileSync(isDev ? pathDevSettings : pathProdSettings, 'utf8')
-    const result = data.replace(
-      /PATH_TO_CHANGE/g,
-      path.join.apply(null, [os.homedir(), 'zbay_tor'])
+    fs.copyFileSync(
+      isDev ? pathDevSettingsTemplate : pathProdSettingsTemplate,
+      isDev ? pathDevSettings : pathProdSettings
     )
+    const data = fs.readFileSync(isDev ? pathDevSettings : pathProdSettings, 'utf8')
+    let result = data.replace(/PATH_TO_CHANGE/g, path.join.apply(null, [os.homedir(), 'zbay_tor']))
+    result = result.replace(/SOCKS_PORT/g, ports.socksPort)
+    result = result.replace(/HTTP_TUNNEL_PORT/g, ports.httpTunnelPort)
     fs.writeFileSync(
       isDev ? pathDevSettings : path.join.apply(null, [os.homedir(), 'torrc']),
       result,
@@ -54,12 +77,14 @@ const spawnTor = () =>
       }
     })
   })
-const getOnionAddress = () => {
+}
+export const getOnionAddress = (): string => {
   var fs = require('fs')
-  const address = fs.readFileSync(
+  const address: string = fs.readFileSync(
     path.join.apply(null, [os.homedir(), 'zbay_tor/hostname']),
     'utf8'
   )
   return address
 }
-module.exports = { spawnTor, getOnionAddress }
+
+export default { spawnTor, getOnionAddress, getPorts }
