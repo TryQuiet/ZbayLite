@@ -38,7 +38,6 @@ export const spawnTor = async () => {
       isDev ? pathDevSettings : pathProdSettings
     )
     const data = fs.readFileSync(isDev ? pathDevSettings : pathProdSettings, 'utf8')
-    console.log(ports)
     let result = data.replace(/PATH_TO_CHANGE/g, path.join.apply(null, [os.homedir(), 'zbay_tor']))
     result = result.replace(/SOCKS_PORT/g, ports.socksPort)
     result = result.replace(/HTTP_TUNNEL_PORT/g, ports.httpTunnelPort)
