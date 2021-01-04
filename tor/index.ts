@@ -79,14 +79,14 @@ export const spawnTor = async () => {
   })
 }
 
-export const getOnionAddress = async () => {
+export const getOnionAddress = () => {
   var fs = require('fs')
   const hostnamePath = path.join.apply(null, [os.homedir(), 'zbay_tor/hostname'])
   let address: string = null
   if (fs.existsSync(hostnamePath)) {
     address = fs.readFileSync(hostnamePath, 'utf8')
   } else {
-    getOnionAddress()
+    return getOnionAddress()
   }
   return address
 }
