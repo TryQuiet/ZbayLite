@@ -79,13 +79,6 @@ export const spawnTor = async () => {
   })
 }
 
-export const sleep = (time = 1000) =>
-  new Promise<void>(resolve => {
-    setTimeout(() => {
-      resolve()
-    }, time)
-  })
-
 export const getOnionAddress = async () => {
   var fs = require('fs')
   const hostnamePath = path.join.apply(null, [os.homedir(), 'zbay_tor/hostname'])
@@ -93,7 +86,6 @@ export const getOnionAddress = async () => {
   if (fs.existsSync(hostnamePath)) {
     address = fs.readFileSync(hostnamePath, 'utf8')
   } else {
-    await sleep(1000)
     getOnionAddress()
   }
   return address
