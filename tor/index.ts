@@ -78,7 +78,8 @@ export const spawnTor = async () => {
     })
   })
 }
-export const getOnionAddress = (): string => {
+
+export const getOnionAddress = () => {
   var fs = require('fs')
   const hostnamePath = path.join.apply(null, [os.homedir(), 'zbay_tor/hostname'])
   let address: string = null
