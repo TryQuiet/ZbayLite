@@ -13,14 +13,14 @@ import electronStore from '../shared/electronStore'
 import Client from './cli/client'
 import websockets, { clearConnections } from './websockets/client'
 import { createServer } from './websockets/server'
-import { spawnTor, getOnionAddress } from '../../tor'
+import { getOnionAddress, spawnTor } from '../../tlgManager/'
 
 const _killProcess = util.promisify(ps.kill)
 
-let isFetchedFromExternalSource = false
+const isFetchedFromExternalSource = false
 
 const isTestnet = parseInt(process.env.ZBAY_IS_TESTNET)
-let nodeProc = null
+const nodeProc = null
 
 export const isDev = process.env.NODE_ENV === 'development'
 const installExtensions = async () => {
