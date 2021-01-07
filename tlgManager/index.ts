@@ -3,7 +3,6 @@ import fp from 'find-free-port'
 import fs from 'fs'
 import path from 'path'
 import os from 'os'
-import * as child_process from 'child_process'
 import electronStore from '../src/shared/electronStore'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -48,6 +47,8 @@ export const spawnTor = async () => {
     }
   })
   await tor.init()
+  await tor.addService({ port: ports.gitHiddenService })
+  await tor.addService({ port: ports.libp2pHiddenService })
   tor.process.stderr.on('data', data => {
     console.error(`grep stderr: ${data}`)
   })
@@ -56,15 +57,19 @@ export const spawnTor = async () => {
       console.log(`ps process exited with code ${code}`)
     }
   })
-  return tor.process
+  return tor
 }
 
-export const getPorts = async (): Promise<{ socksPort: number, httpTunnelPort: number }> => {
+export const getPorts = async (): Promise<{ socksPort: number, httpTunnelPort: number, gitHiddenService: number, libp2pHiddenService: number }> => {
   const [socksPort] = await fp(9052)
   const [httpTunnelPort] = await fp(9082)
+  const [gitHiddenService] = await fp(7900)
+  const [libp2pHiddenService] = await fp(7950)
   return {
     socksPort,
-    httpTunnelPort
+    httpTunnelPort,
+    gitHiddenService,
+    libp2pHiddenService
   }
 }
 
@@ -74,10 +79,6 @@ export const getOnionAddress = (): string => {
     'utf8'
   )
   return address
-}
-
-export const test = async (): Promise<void> => {
-  console.log(TlgManager)
 }
 
 export default { spawnTor, getOnionAddress, getPorts }
