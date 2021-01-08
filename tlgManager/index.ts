@@ -47,8 +47,12 @@ export const spawnTor = async () => {
     }
   })
   await tor.init()
-  await tor.addService({ port: ports.gitHiddenService })
-  await tor.addService({ port: ports.libp2pHiddenService })
+  const serviceAddressGit = await tor.addService({ port: ports.gitHiddenService })
+  const serviceAddressLibp2p = await tor.addService({ port: ports.libp2pHiddenService })
+  electronStore.set('onionAddresses', {
+    serviceAddressGit,
+    serviceAddressLibp2p
+  })
   tor.process.stderr.on('data', data => {
     console.error(`grep stderr: ${data}`)
   })
@@ -81,4 +85,20 @@ export const getOnionAddress = (): string => {
   return address
 }
 
-export default { spawnTor, getOnionAddress, getPorts }
+export const runLibp2p = async (): Promise<void> => {
+  const git = new TlgManager.Git()
+  await git.init()
+  await git.spawnGitDaemon()
+  const { serviceAddressGit, serviceAddressLibp2p } = electronStore.get('onionAddresses')
+  const dataServer = new TlgManager.DataServer()
+  dataServer.listen()
+  const connectonsManager = new TlgManager.ConnectionsManager({ port: 7788, host: serviceAddressLibp2p.address, agentHost: 'localhost', agentPort: 9050 })
+  const node = await connectonsManager.initializeNode()
+  console.log(node, 'node')
+  const peerIdOnionAddress = await connectonsManager.createOnionPeerId(node.peerId)
+  const key = new TextEncoder().encode(serviceAddressGit.address)
+  await connectonsManager.publishOnionAddress(peerIdOnionAddress, key)
+  await TlgManager.initListeners(dataServer.io, connectonsManager, git)
+}
+
+export default { spawnTor, getOnionAddress, getPorts, runLibp2p }
