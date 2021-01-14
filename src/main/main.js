@@ -314,6 +314,8 @@ app.on('ready', async () => {
   })
   ipcMain.on('1', async () => {
     console.log('1')
+    const i = electronStore.get('useTor')
+    console.log(i)
   })
   ipcMain.on('2', async () => {
     console.log('2')
