@@ -312,6 +312,15 @@ app.on('ready', async () => {
       )
     }
   })
+  ipcMain.on('1', async () => {
+    console.log('1')
+  })
+  ipcMain.on('2', async () => {
+    console.log('2')
+  })
+  ipcMain.on('3', async () => {
+    console.log('3')
+  })
   ipcMain.on('initWsConnection', async (event, arg) => {
     const request = JSON.parse(arg)
     try {
