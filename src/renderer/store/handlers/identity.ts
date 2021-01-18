@@ -10,6 +10,7 @@ import client from '../../zcash'
 import channels from '../../zcash/channels'
 
 import identitySelectors from '../selectors/identity'
+import appSelectors from '../selectors/app'
 import txnTimestampsSelector from '../selectors/txnTimestamps'
 import usersHandlers from './users'
 import coordinatorHandlers from './coordinator'
@@ -380,6 +381,8 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   let identity = identityToSet
   dispatch(setLoading(true))
   const isNewUser = electronStore.get('isNewUser')
+  const useTor = appSelectors.useTor(getState())
+  electronStore.set('useTor', useTor)
   try {
     const removedChannels = electronStore.get('removedChannels')
     if (removedChannels) {
@@ -424,7 +427,9 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   }
   dispatch(setLoadingMessage(''))
   dispatch(setLoading(false))
-  dispatch(contactsHandlers.epics.connectWsContacts())
+  setTimeout(() => {
+    dispatch(contactsHandlers.epics.connectWsContacts())
+  }, 2000)
   if (electronStore.get('isMigrating')) {
     dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
   }
