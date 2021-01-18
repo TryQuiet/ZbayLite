@@ -283,12 +283,14 @@ app.on('ready', async () => {
     if (torProcess === null) {
       console.log('spawning tor for application')
       torProcess = await spawnTor()
+      electronStore.set('isTorActive', true)
     }
   })
   ipcMain.on('killTor', async (event, arg) => {
     if (torProcess !== null) {
       torProcess.kill()
       torProcess = null
+      electronStore.set('isTorActive', false)
     }
   })
   ipcMain.on('proceed-update', (event, arg) => {
