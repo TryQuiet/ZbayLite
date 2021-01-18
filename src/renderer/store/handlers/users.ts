@@ -289,7 +289,7 @@ export const registerOnionAddress = torStatus => async (dispatch, getState) => {
   if (useTor === torStatus) {
     return
   }
-  const savedUseTor = electronStore.get(`useTor`)
+  const savedUseTor = electronStore.get('useTor')
   if (savedUseTor !== undefined) {
     if (torStatus === true) {
       ipcRenderer.send('spawnTor')

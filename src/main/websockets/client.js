@@ -18,7 +18,12 @@ const ports = electronStore.get('ports')
 
 export const connect = address =>
   new Promise((resolve, reject) => {
-    const proxy = `http://localhost:${ports.httpTunnelPort}`
+    let proxy = null
+    if (ports !== undefined) {
+     proxy = `http://localhost:${ports.httpTunnelPort}`
+    } else {
+      proxy = 'http://localhost:9082'
+    }
     try {
       const options = url.parse(proxy)
       const agent = new HttpsProxyAgent(options)
