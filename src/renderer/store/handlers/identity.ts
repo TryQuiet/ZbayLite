@@ -429,7 +429,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   dispatch(setLoading(false))
   setTimeout(() => {
     dispatch(contactsHandlers.epics.connectWsContacts())
-  }, 2000)
+      }, 5000)
   if (electronStore.get('isMigrating')) {
     dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
   }
