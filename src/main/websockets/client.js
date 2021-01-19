@@ -8,16 +8,17 @@ var WebSocketClient = require('ws')
 var url = require('url')
 var HttpsProxyAgent = require('https-proxy-agent')
 
-const identity = electronStore.get('identity')
 
 const messages = require('../../renderer/zbay/index').messages
 
 const connections = new Map()
 
-const ports = electronStore.get('ports')
 
 export const connect = address =>
-  new Promise((resolve, reject) => {
+new Promise((resolve, reject) => {
+  const ports = electronStore.get('ports')
+  const identity = electronStore.get('identity')
+  console.log('trying to establish connection in websocket client')
     let proxy = null
     if (ports !== undefined) {
      proxy = `http://localhost:${ports.httpTunnelPort}`

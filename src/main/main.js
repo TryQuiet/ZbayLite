@@ -283,12 +283,14 @@ app.on('ready', async () => {
     if (torProcess === null) {
       console.log('spawning tor for application')
       torProcess = await spawnTor()
+      electronStore.set('isTorActive', true)
     }
   })
   ipcMain.on('killTor', async (event, arg) => {
     if (torProcess !== null) {
       torProcess.kill()
       torProcess = null
+      electronStore.set('isTorActive', false)
     }
   })
   ipcMain.on('proceed-update', (event, arg) => {
@@ -314,9 +316,11 @@ app.on('ready', async () => {
   })
 
   ipcMain.on('initWsConnection', async (event, arg) => {
+    console.log('entered init in main main')
     const request = JSON.parse(arg)
     try {
       const socket = await websockets.connect(request.address)
+      console.log(`socket is ${socket}`)
       if (mainWindow) {
         mainWindow.webContents.send(
           'initWsConnection',

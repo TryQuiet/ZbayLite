@@ -222,6 +222,7 @@ export const connectWsContacts = (key?: string) => async (dispatch, getState) =>
     for (const contact of Object.values(contacts)) {
       const user = users[contact.key]
       if (user?.onionAddress) {
+        console.log("trying to connect inside contacts loop")
         contactsToConnect.push({ key: contact.key, onionAddress: user?.onionAddress })
       }
     }

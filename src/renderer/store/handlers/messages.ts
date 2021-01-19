@@ -717,6 +717,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
         }
       } else {
         if (!contacts[publicKey]) {
+          console.log('adding incomin connection to contacts')
           await dispatch(
             contactsHandlers.actions.addContact({
               key: publicKey,
@@ -724,6 +725,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
               username: msg.sender.username
             })
           )
+          console.log('trying connection with new contact')
           dispatch(contactsHandlers.epics.connectWsContacts(publicKey))
         }
         dispatch(
