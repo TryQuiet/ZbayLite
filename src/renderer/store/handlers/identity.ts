@@ -427,18 +427,9 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   }
   dispatch(setLoadingMessage(''))
   dispatch(setLoading(false))
-
-  const connectWsContacts = () => {
-    const isTorActive = electronStore.get('isTorActive')
-    if (isTorActive) {
-      dispatch(contactsHandlers.epics.connectWsContacts())
-    } else {
-      setTimeout(() => {
-        connectWsContacts()
-      }),
-        2000
-    }
-  }
+  setTimeout(() => {
+    dispatch(contactsHandlers.epics.connectWsContacts())
+      }, 5000)
   if (electronStore.get('isMigrating')) {
     dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
   }
