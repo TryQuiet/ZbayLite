@@ -18,6 +18,7 @@ export const connect = address =>
 new Promise((resolve, reject) => {
   const ports = electronStore.get('ports')
   const identity = electronStore.get('identity')
+  console.log('trying to establish connection in websocket client')
     let proxy = null
     if (ports !== undefined) {
      proxy = `http://localhost:${ports.httpTunnelPort}`
