@@ -170,12 +170,10 @@ export const VaultUnlockerForm = ({
                 >Advanced settings"</Typography>
               )}
             </Grid> */}
-            {(loader.loading || isRescanning || !isSynced) && (
+            {loader.loading && (
               <Grid item container justify='center' alignItems='center'>
                 <Typography variant='body2' className={classes.status}>
-                  {syncingStart && (isRescanning || !isSynced)
-                    ? `Syncing ${currentBlock.toString()} / ${latestBlock.toString()}`
-                    : `${loader.message}`}
+                  {loader.message}
                 </Typography>
               </Grid>
             )}
@@ -185,11 +183,7 @@ export const VaultUnlockerForm = ({
               </Grid>
             )} */}
           </Grid>
-          {nodeConnected &&
-            isLogIn &&
-            !isRescanning &&
-            isSynced &&
-            isInitialLoadFinished && <Redirect to='/main/channel/general' />}
+          {nodeConnected && isInitialLoadFinished && <Redirect to='/main/channel/general' />}
         </Form>
       )}
     </Formik>

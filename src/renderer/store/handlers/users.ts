@@ -3,6 +3,8 @@ import { createAction, handleActions } from 'redux-actions'
 import * as R from 'ramda'
 import { ipcRenderer } from 'electron'
 
+import axios from 'axios'
+
 import feesSelector from '../selectors/fees'
 import nodeSelectors from '../selectors/node'
 import feesHandlers from './fees'
@@ -14,13 +16,15 @@ import identitySelector from '../selectors/identity'
 import { actions as identityActions } from '../handlers/identity'
 import appSelectors from '../selectors/app'
 import { getPublicKeysFromSignature } from '../../zbay/messages'
-import { messageType, actionTypes, unknownUserId } from '../../../shared/static'
+import { messageType, actionTypes, unknownUserId, REQUEST_USER_REGISTRATION_ENDPOINT } from '../../../shared/static'
 import { messages as zbayMessages } from '../../zbay'
 import client from '../../zcash'
 import staticChannels from '../../zcash/channels'
 import notificationsHandlers from './notifications'
 import { infoNotification, successNotification } from './utils'
 import electronStore from '../../../shared/electronStore'
+
+import { packMemo } from '../../zbay/transit'
 
 import { DisplayableMessage } from '../../zbay/messages.types'
 
@@ -219,8 +223,32 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     message: registrationMessageTor,
     address: torChannelAddress
   })
+  const userMemo: unknown = await packMemo(registrationMessage) 
+  const torMemo = await packMemo(registrationMessageTor)
+  console.log(`userMemo is ${userMemo}`)
+  const userMemo64 = (userMemo as Buffer).toString('base64')
+  console.log(`64 base memo is ${userMemo64}`)
+  let lambda
   try {
-    const txid = await client.sendTransaction([transferTor, transfer])
+    lambda = await axios.get(REQUEST_USER_REGISTRATION_ENDPOINT, {
+      params: {
+        address: usersChannelAddress,
+        memo: userMemo
+      }
+    })
+  } catch (error) {
+    console.log('error')
+    // dispatch(
+    //   notificationsHandlers.actions.enqueueSnackbar(
+    //     errorNotification({
+    //       message: `Request to faucet failed.`
+    //     })
+    //   )
+    // )
+  }
+  console.log(lambda)
+  try {
+    // const txid = await client.sendTransaction([transferTor, transfer])
     if (retry === 0) {
       dispatch(
         identityActions.setRegistraionStatus({
@@ -240,14 +268,14 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
         status: 'IN_PROGRESS'
       })
     }
-    if (txid.error) {
-      throw new Error(txid.error)
-    }
+    // if (txid.error) {
+    //   throw new Error(txid.error)
+    // }
     ipcRenderer.send('spawnTor')
     electronStore.set('useTor', true)
     dispatch(appHandlers.actions.setUseTor(true))
-    electronStore.set('registrationStatus.txid', txid.txid)
-    electronStore.set('registrationStatus.confirmation', 0)
+    //electronStore.set('registrationStatus.txid', txid.txid)
+    //electronStore.set('registrationStatus.confirmation', 0)
     dispatch(checkRegistrationConfirmations({ firstRun: true }))
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
@@ -259,29 +287,29 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     dispatch(notificationsHandlers.actions.removeSnackbar('username'))
   } catch (err) {
     console.log(err)
-    if (retry === 0) {
-      dispatch(
-        notificationsHandlers.actions.enqueueSnackbar(
-          infoNotification({
-            message: `Waiting for funds to register username—this can take a few minutes.`,
-            key: 'username'
-          })
-        )
-      )
-    }
-    if (debounce === true && retry < 10) {
-      setTimeout(() => {
-        dispatch(createOrUpdateUser({ ...payload, retry: retry + 1 }))
-      }, 75000)
-      return
-    }
-    dispatch(
-      identityActions.setRegistraionStatus({
-        nickname,
-        status: 'ERROR'
-      })
-    )
-    dispatch(actionCreators.openModal('failedUsernameRegister')())
+    // if (retry === 0) {
+    //   dispatch(
+    //     notificationsHandlers.actions.enqueueSnackbar(
+    //       infoNotification({
+    //         message: `Waiting for funds to register username—this can take a few minutes.`,
+    //         key: 'username'
+    //       })
+    //     )
+    //   )
+    // }
+    // if (debounce === true && retry < 10) {
+    //   setTimeout(() => {
+    //     dispatch(createOrUpdateUser({ ...payload, retry: retry + 1 }))
+    //   }, 75000)
+    //   return
+    // }
+    // dispatch(
+    //   identityActions.setRegistraionStatus({
+    //     nickname,
+    //     status: 'ERROR'
+    //   })
+    // )
+    // dispatch(actionCreators.openModal('failedUsernameRegister')())
   }
 }
 export const registerOnionAddress = torStatus => async (dispatch, getState) => {
