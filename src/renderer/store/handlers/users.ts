@@ -1,7 +1,7 @@
 import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import * as R from 'ramda'
-import { ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
 import axios from 'axios'
 
@@ -15,7 +15,7 @@ import usersSelector from '../selectors/users'
 import identitySelector from '../selectors/identity'
 import { actions as identityActions } from '../handlers/identity'
 import appSelectors from '../selectors/app'
-import { getPublicKeysFromSignature } from '../../zbay/messages'
+import { getPublicKeysFromSignature, usernameSchema } from '../../zbay/messages'
 import { messageType, actionTypes, unknownUserId, REQUEST_USER_REGISTRATION_ENDPOINT } from '../../../shared/static'
 import { messages as zbayMessages } from '../../zbay'
 import client from '../../zcash'
@@ -219,34 +219,62 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     },
     privKey
   })
-  const transferTor = await zbayMessages.messageToTransfer({
-    message: registrationMessageTor,
-    address: torChannelAddress
-  })
-  const userMemo: unknown = await packMemo(registrationMessage) 
-  const torMemo = await packMemo(registrationMessageTor)
-  console.log(`userMemo is ${userMemo}`)
-  const userMemo64 = (userMemo as Buffer).toString('base64')
-  console.log(`64 base memo is ${userMemo64}`)
-  let lambda
-  try {
-    lambda = await axios.get(REQUEST_USER_REGISTRATION_ENDPOINT, {
-      params: {
-        address: usersChannelAddress,
-        memo: userMemo
-      }
-    })
-  } catch (error) {
-    console.log('error')
-    // dispatch(
-    //   notificationsHandlers.actions.enqueueSnackbar(
-    //     errorNotification({
-    //       message: `Request to faucet failed.`
-    //     })
-    //   )
-    // )
+  // const transferTor = await zbayMessages.messageToTransfer({
+  //   message: registrationMessageTor,
+  //   address: torChannelAddress
+  // })
+  // const userMemo: unknown = await packMemo(registrationMessage) 
+  // const torMemo = await packMemo(registrationMessageTor)
+  // const userMemo64 = (userMemo as Buffer).toString('base64')
+
+  const users = usersSelector.users(getState())
+  //const usersArray = Array.from(Object.keys(users))
+
+  for (const user in users) {
+    console.log(users[user].nickname)
+    console.log(users[user].createdAt)
+    console.log(users[user].publicKey)
+    try {
+      await axios.get(REQUEST_USER_REGISTRATION_ENDPOINT, {
+        params: {
+          nickname: users[user].nickname,
+          publicKey: users[user].publicKey,
+          createdAt: users[user].createdAt,
+        }
+      })
+    } catch (error) {
+      console.log('error')
+      // dispatch(
+      //   notificationsHandlers.actions.enqueueSnackbar(
+      //     errorNotification({
+      //       message: `Request to faucet failed.`
+      //     })
+      //   )
+      // )
+    }
   }
-  console.log(lambda)
+
+ 
+  // const finished = []
+  // let lambda
+  // try {
+  //   lambda = await axios.get(REQUEST_USER_REGISTRATION_ENDPOINT, {
+  //     params: {
+  //       nickname: username,
+  //       publicKey: publicKey,
+  //       createdAt: createdAt,
+  //     }
+  //   })
+  // } catch (error) {
+  //   console.log('error')
+  //   dispatch(
+  //     notificationsHandlers.actions.enqueueSnackbar(
+  //       errorNotification({
+  //         message: `Request to faucet failed.`
+  //       })
+  //     )
+  //   )
+  // }
   try {
     // const txid = await client.sendTransaction([transferTor, transfer])
     if (retry === 0) {
