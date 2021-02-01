@@ -157,8 +157,6 @@ export const checkRegistrationConfirmations = ({ firstRun }) => async (dispatch,
     const users = usersSelector.users(getState())
     const usersArray = Array.from(Object.keys(users))
 
-console.log('registration confitmaion')
-
     if(usersArray.includes(publicKey)){
       electronStore.set('registrationStatus.status', 'SUCCESS')
       electronStore.set('registrationStatus.confirmation', 10)
@@ -193,7 +191,6 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
   })
   dispatch(actionCreators.closeModal('accountSettingsModal')())
   const onionAddress = identitySelector.onionAddress(getState())
-  console.log(onionAddress)
   const messageDataTor = {
     onionAddress: onionAddress.substring(0, 56)
   }
@@ -207,9 +204,6 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
 
   const userMemo = await packMemo(registrationMessage)
   const torMemo = await packMemo(registrationMessageTor)
-
-  console.log(userMemo)
-  console.log(torMemo)
 
   try {
     await axios.get(REQUEST_USER_REGISTRATION_ENDPOINT, {
@@ -417,7 +411,6 @@ let usernames = [];
 
 if (true) {
   (function (){
-    console.log('entered IIFE')
   try {
     axios.get(FETCH_USERNAMES_ENDPOINT).then((res) => {
       usernames = res.data.message

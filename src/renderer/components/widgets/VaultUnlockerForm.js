@@ -171,7 +171,7 @@ export const VaultUnlockerForm = ({
           </Grid>
           {nodeConnected &&
             isLogIn &&
-            (isNewUser || isSynced) &&
+            isSynced &&
             !isRescanning &&
             isInitialLoadFinished && <Redirect to='/main/channel/general' />}
         </Form>

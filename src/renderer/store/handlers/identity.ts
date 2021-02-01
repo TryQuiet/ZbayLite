@@ -416,7 +416,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
       if (usernameStatus === 'IN_PROGRESS') {
         dispatch(usersHandlers.epics.checkRegistrationConfirmations({ firstRun: true }))
       } else {
-        dispatch(usersHandlers.epics.createOrUpdateUser({ nickname, debounce: true }))
+        await dispatch(usersHandlers.epics.createOrUpdateUser({ nickname, debounce: true }))
         console.log('after registration')
       }
     }
