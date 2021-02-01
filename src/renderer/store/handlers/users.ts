@@ -231,7 +231,7 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     )
   }
   try {
-    if (retry === 0) {
+  
       dispatch(
         identityActions.setRegistraionStatus({
           nickname,
@@ -249,7 +249,7 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
         nickname,
         status: 'IN_PROGRESS'
       })
-    }
+    
     ipcRenderer.send('spawnTor')
     electronStore.set('useTor', true)
     dispatch(appHandlers.actions.setUseTor(true))
@@ -271,6 +271,13 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     dispatch(notificationsHandlers.actions.removeSnackbar('username'))
   } catch (err) {
     console.log(err)
+    dispatch(	
+      identityActions.setRegistraionStatus({	
+        nickname,	
+        status: 'ERROR'	
+      })	
+    )	
+    dispatch(actionCreators.openModal('failedUsernameRegister')())
   }
 }
 export const registerOnionAddress = torStatus => async (dispatch, getState) => {

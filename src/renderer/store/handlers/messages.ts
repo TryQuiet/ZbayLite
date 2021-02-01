@@ -139,10 +139,12 @@ export const fetchAllMessages = async (): Promise<{ [key in string]: any[] }> =>
 }
 export const fetchMessages = () => async (dispatch, getState) => {
   try {
+    console.log('fetching new messages')
     const txns = await fetchAllMessages()
     // Uncomment to create snapshot on next run.
     // createSnapshot(txns)
 
+    console.log(txns)
     const allMessagesTxnId = appSelectors.allTransactionsId(getState())
     for (const key in txns) {
       if (Object.prototype.hasOwnProperty.call(txns, key)) {
