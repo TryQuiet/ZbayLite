@@ -107,6 +107,7 @@ export const checkNodeStatus = nodeProcessStatus => async (dispatch, getState) =
 let lastSavedBlock = 0
 const getStatus = () => async (dispatch, getState) => {
   try {
+    console.log('getting status node')
     const info = await client.info()
     const height = await client.height()
     if (info.latest_block_height > height) {

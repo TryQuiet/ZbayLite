@@ -229,6 +229,14 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
         })
       )
     )
+    dispatch(	
+      identityActions.setRegistraionStatus({	
+        nickname,	
+        status: 'ERROR'	
+      })	
+    )	
+    dispatch(actionCreators.openModal('failedUsernameRegister')())
+    return
   }
   try {
   

@@ -416,9 +416,11 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
       if (usernameStatus === 'IN_PROGRESS') {
         dispatch(usersHandlers.epics.checkRegistrationConfirmations({ firstRun: true }))
       } else {
-        await dispatch(usersHandlers.epics.createOrUpdateUser({ nickname, debounce: true }))
+        dispatch(usersHandlers.epics.createOrUpdateUser({ nickname, debounce: true }))
+        console.log('after registration')
       }
     }
+    console.log('before coordinator')
     setTimeout(() => dispatch(coordinatorHandlers.epics.coordinator()), 5000)
     dispatch(setLoadingMessage('Loading users and messages'))
   } catch (err) {}

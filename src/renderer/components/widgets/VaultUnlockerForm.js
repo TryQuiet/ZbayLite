@@ -161,15 +161,6 @@ export const VaultUnlockerForm = ({
                 inProgress={!done || isRescanning || syncingStart}
               />
             </Grid>
-            {/* <Grid container item justify='center'>
-              {!syncingStart && (
-                <Typography
-                  variant='body'
-                  className={classes.moreOptionsButton}
-                  onClick={() => openModal()}
-                >Advanced settings"</Typography>
-              )}
-            </Grid> */}
             {loader.loading && (
               <Grid item container justify='center' alignItems='center'>
                 <Typography variant='body2' className={classes.status}>
@@ -177,13 +168,12 @@ export const VaultUnlockerForm = ({
                 </Typography>
               </Grid>
             )}
-            {/* {locked && done && !isRescanning && (
-              <Grid item className={classes.torDiv}>
-                <Tor />
-              </Grid>
-            )} */}
           </Grid>
-          {nodeConnected && isInitialLoadFinished && <Redirect to='/main/channel/general' />}
+          {nodeConnected &&
+            isLogIn &&
+            (isNewUser || isSynced) &&
+            !isRescanning &&
+            isInitialLoadFinished && <Redirect to='/main/channel/general' />}
         </Form>
       )}
     </Formik>
