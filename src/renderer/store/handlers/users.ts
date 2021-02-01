@@ -1,32 +1,29 @@
 import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import * as R from 'ramda'
-import { contextBridge, ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron'
 
 import axios from 'axios'
 
-import feesSelector from '../selectors/fees'
 import nodeSelectors from '../selectors/node'
 import feesHandlers from './fees'
 import appHandlers from './app'
-import { fetchAllMessages } from '../handlers/messages'
 import { actionCreators } from './modals'
 import usersSelector from '../selectors/users'
 import identitySelector from '../selectors/identity'
 import { actions as identityActions } from '../handlers/identity'
 import appSelectors from '../selectors/app'
-import { getPublicKeysFromSignature, usernameSchema } from '../../zbay/messages'
-import { messageType, actionTypes, unknownUserId, REQUEST_USER_REGISTRATION_ENDPOINT } from '../../../shared/static'
+import { getPublicKeysFromSignature } from '../../zbay/messages'
+import { messageType, actionTypes, unknownUserId, REQUEST_USER_REGISTRATION_ENDPOINT, FETCH_USERNAMES_ENDPOINT } from '../../../shared/static'
 import { messages as zbayMessages } from '../../zbay'
-import client from '../../zcash'
 import staticChannels from '../../zcash/channels'
 import notificationsHandlers from './notifications'
-import { infoNotification, successNotification } from './utils'
+import { successNotification, errorNotification } from './utils'
 import electronStore from '../../../shared/electronStore'
 
-import { packMemo } from '../../zbay/transit'
-
 import { DisplayableMessage } from '../../zbay/messages.types'
+
+import {packMemo} from '../../zbay/transit'
 
 import { ActionsType, PayloadType } from './types'
 
@@ -146,37 +143,32 @@ export const checkRegistrationConfirmations = ({ firstRun }) => async (dispatch,
         nickname,
         status: 'IN_PROGRESS'
       })
-    )
-    dispatch(
-      mockOwnUser({
-        sigPubKey: publicKey,
-        address,
+      )
+      dispatch(
+        mockOwnUser({
+          sigPubKey: publicKey,
+          address,
         nickname
       })
-    )
-  }
-  setTimeout(async () => {
-    const txid = electronStore.get('registrationStatus.txid')
-    const txns = await fetchAllMessages()
-    const outgoingTransactions = txns['undefined']
-    const registrationTransaction = outgoingTransactions.filter(el => el.txid === txid)[0]
-    if (registrationTransaction) {
-      const { block_height: blockHeight } = registrationTransaction
-      const currentHeight = await client.height()
-      if (currentHeight - blockHeight > 9) {
-        electronStore.set('registrationStatus.status', 'SUCCESS')
-        electronStore.set('registrationStatus.confirmation', 10)
-        dispatch(
-          notificationsHandlers.actions.enqueueSnackbar(
-            successNotification({
-              message: `Username registered.`
-            })
-          )
+      )
+    }
+    setTimeout(async () => {
+    const publicKey = identitySelector.signerPubKey(getState())
+    const users = usersSelector.users(getState())
+    const usersArray = Array.from(Object.keys(users))
+
+console.log('registration confitmaion')
+
+    if(usersArray.includes(publicKey)){
+      electronStore.set('registrationStatus.status', 'SUCCESS')
+      electronStore.set('registrationStatus.confirmation', 10)
+      dispatch(
+        notificationsHandlers.actions.enqueueSnackbar(
+          successNotification({
+            message: `Username registered.`
+          })
         )
-      } else {
-        electronStore.set('registrationStatus.confirmation', currentHeight - blockHeight)
-        dispatch(checkRegistrationConfirmations({ firstRun: false }))
-      }
+      )
     }
   }, 75000)
 }
@@ -186,14 +178,12 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
   const publicKey = identitySelector.signerPubKey(getState())
   const address = identitySelector.address(getState())
   const privKey = identitySelector.signerPrivKey(getState())
-  const fee = feesSelector.userFee(getState())
   const messageData = {
     firstName,
     lastName,
     nickname,
     address
   }
-  const usersChannelAddress = staticChannels.registeredUsers.mainnet.address
   const registrationMessage = zbayMessages.createMessage({
     messageData: {
       type: zbayMessages.messageType.USER,
@@ -201,17 +191,12 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     },
     privKey
   })
-  const transfer = await zbayMessages.messageToTransfer({
-    message: registrationMessage,
-    address: usersChannelAddress,
-    amount: fee
-  })
   dispatch(actionCreators.closeModal('accountSettingsModal')())
   const onionAddress = identitySelector.onionAddress(getState())
+  console.log(onionAddress)
   const messageDataTor = {
     onionAddress: onionAddress.substring(0, 56)
   }
-  const torChannelAddress = staticChannels.tor.mainnet.address
   const registrationMessageTor = zbayMessages.createMessage({
     messageData: {
       type: zbayMessages.messageType.USER_V2,
@@ -219,64 +204,33 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     },
     privKey
   })
-  // const transferTor = await zbayMessages.messageToTransfer({
-  //   message: registrationMessageTor,
-  //   address: torChannelAddress
-  // })
-  // const userMemo: unknown = await packMemo(registrationMessage) 
-  // const torMemo = await packMemo(registrationMessageTor)
-  // const userMemo64 = (userMemo as Buffer).toString('base64')
 
-  const users = usersSelector.users(getState())
-  //const usersArray = Array.from(Object.keys(users))
+  const userMemo = await packMemo(registrationMessage)
+  const torMemo = await packMemo(registrationMessageTor)
 
-  for (const user in users) {
-    console.log(users[user].nickname)
-    console.log(users[user].createdAt)
-    console.log(users[user].publicKey)
-    try {
-      await axios.get(REQUEST_USER_REGISTRATION_ENDPOINT, {
-        params: {
-          nickname: users[user].nickname,
-          publicKey: users[user].publicKey,
-          createdAt: users[user].createdAt,
-        }
-      })
-    } catch (error) {
-      console.log('error')
-      // dispatch(
-      //   notificationsHandlers.actions.enqueueSnackbar(
-      //     errorNotification({
-      //       message: `Request to faucet failed.`
-      //     })
-      //   )
-      // )
-    }
-  }
+  console.log(userMemo)
+  console.log(torMemo)
 
- 
-  // const finished = []
-  // let lambda
-  // try {
-  //   lambda = await axios.get(REQUEST_USER_REGISTRATION_ENDPOINT, {
-  //     params: {
-  //       nickname: username,
-  //       publicKey: publicKey,
-  //       createdAt: createdAt,
-  //     }
-  //   })
-  // } catch (error) {
-  //   console.log('error')
-  //   dispatch(
-  //     notificationsHandlers.actions.enqueueSnackbar(
-  //       errorNotification({
-  //         message: `Request to faucet failed.`
-  //       })
-  //     )
-  //   )
-  // }
   try {
-    // const txid = await client.sendTransaction([transferTor, transfer])
+    await axios.get(REQUEST_USER_REGISTRATION_ENDPOINT, {
+      params: {
+        userMemo: userMemo,
+        torMemo: torMemo,
+        nickname: nickname,
+        publicKey: publicKey,
+      }
+    })
+  } catch (error) {
+    console.log('error')
+    dispatch(
+      notificationsHandlers.actions.enqueueSnackbar(
+        errorNotification({
+          message: `Registration failed, try again in few minutes`
+        })
+      )
+    )
+  }
+  try {
     if (retry === 0) {
       dispatch(
         identityActions.setRegistraionStatus({
@@ -296,14 +250,9 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
         status: 'IN_PROGRESS'
       })
     }
-    // if (txid.error) {
-    //   throw new Error(txid.error)
-    // }
     ipcRenderer.send('spawnTor')
     electronStore.set('useTor', true)
     dispatch(appHandlers.actions.setUseTor(true))
-    //electronStore.set('registrationStatus.txid', txid.txid)
-    //electronStore.set('registrationStatus.confirmation', 0)
     dispatch(checkRegistrationConfirmations({ firstRun: true }))
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
@@ -312,32 +261,16 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
         })
       )
     )
+    dispatch(
+      notificationsHandlers.actions.enqueueSnackbar(
+        successNotification({
+          message: `Your onion address will be public in few minutes`
+        })
+      )
+    )
     dispatch(notificationsHandlers.actions.removeSnackbar('username'))
   } catch (err) {
     console.log(err)
-    // if (retry === 0) {
-    //   dispatch(
-    //     notificationsHandlers.actions.enqueueSnackbar(
-    //       infoNotification({
-    //         message: `Waiting for funds to register username—this can take a few minutes.`,
-    //         key: 'username'
-    //       })
-    //     )
-    //   )
-    // }
-    // if (debounce === true && retry < 10) {
-    //   setTimeout(() => {
-    //     dispatch(createOrUpdateUser({ ...payload, retry: retry + 1 }))
-    //   }, 75000)
-    //   return
-    // }
-    // dispatch(
-    //   identityActions.setRegistraionStatus({
-    //     nickname,
-    //     status: 'ERROR'
-    //   })
-    // )
-    // dispatch(actionCreators.openModal('failedUsernameRegister')())
   }
 }
 export const registerOnionAddress = torStatus => async (dispatch, getState) => {
@@ -359,37 +292,6 @@ export const registerOnionAddress = torStatus => async (dispatch, getState) => {
   ipcRenderer.send('spawnTor')
   dispatch(appHandlers.actions.setUseTor(torStatus))
   electronStore.set('useTor', true)
-  const privKey = identitySelector.signerPrivKey(getState())
-  const onionAddress = identitySelector.onionAddress(getState())
-  const messageData = {
-    onionAddress: onionAddress.substring(0, 56)
-  }
-  const torChannelAddress = staticChannels.tor.mainnet.address
-  const registrationMessage = zbayMessages.createMessage({
-    messageData: {
-      type: zbayMessages.messageType.USER_V2,
-      data: messageData
-    },
-    privKey
-  })
-  const transfer = await zbayMessages.messageToTransfer({
-    message: registrationMessage,
-    address: torChannelAddress
-  })
-  // dispatch(actionCreators.closeModal('accountSettingsModal')())
-  const txid = await client.sendTransaction(transfer)
-  console.log('sending transaction with onion address')
-  if (txid.error) {
-    console.log('error while sending transaction with onion address')
-    throw new Error(txid.error)
-  }
-  dispatch(
-    notificationsHandlers.actions.enqueueSnackbar(
-      successNotification({
-        message: `Your onion address will be public in few minutes`
-      })
-    )
-  )
   dispatch(notificationsHandlers.actions.removeSnackbar('username'))
 }
 
@@ -496,15 +398,27 @@ export const fetchOnionAddresses = (address, messages: DisplayableMessage[]) => 
   }
 }
 
+let usernames = [];
+
+if (true) {
+  (function (){
+    console.log('entered IIFE')
+  try {
+    axios.get(FETCH_USERNAMES_ENDPOINT).then((res) => {
+      usernames = res.data.message
+  }
+  ).catch((err) => {
+    console.log('cant fetch usernames')
+    console.log(err)
+  })
+} catch (err) {
+  console.log(err)
+}
+})();
+}
+
 export const isNicknameTaken = username => (dispatch, getState) => {
-  const users = usersSelector.users(getState())
-  const userNames = Object.keys(users)
-    .map((key, index) => {
-      return users[key].nickname
-    })
-    .filter(name => !name.startsWith('anon'))
-  const uniqUsernames = R.uniq(userNames)
-  return R.includes(username, uniqUsernames)
+return R.includes(username, usernames)
 }
 
 export const epics = {
