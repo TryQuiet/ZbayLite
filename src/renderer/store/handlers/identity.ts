@@ -410,15 +410,17 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(messagesHandlers.epics.fetchMessages())
     await dispatch(appHandlers.epics.initializeUseTor())
     const usernameStatus = electronStore.get('registrationStatus.status')
-    const usernameRegistrationTxid = electronStore.get('registrationStatus.txid')
     const nickname = electronStore.get('registrationStatus.nickname')
+    console.log(usernameStatus)
     if (nickname && usernameStatus !== 'SUCCESS') {
-      if (!usernameRegistrationTxid) {
-        await dispatch(usersHandlers.epics.createOrUpdateUser({ nickname, debounce: true }))
-      } else {
+      if (usernameStatus === 'IN_PROGRESS') {
         dispatch(usersHandlers.epics.checkRegistrationConfirmations({ firstRun: true }))
+      } else {
+        await dispatch(usersHandlers.epics.createOrUpdateUser({ nickname, debounce: true }))
+        console.log('after registration')
       }
     }
+    console.log('before coordinator')
     setTimeout(() => dispatch(coordinatorHandlers.epics.coordinator()), 5000)
     dispatch(setLoadingMessage('Loading users and messages'))
   } catch (err) {}

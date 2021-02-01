@@ -144,7 +144,7 @@ export const VaultUnlockerForm = ({
                   variant='body1'
                   gutterBottom
                 >
-                  {!isNewUser ? `Welcome Back` : `Welcome to Zbay! Connect now to start syncing.`}
+                  {!isNewUser ? `Welcome Back` : `Welcome to Zbay!`}
                 </Typography>
               </Grid>
             )}
@@ -161,34 +161,18 @@ export const VaultUnlockerForm = ({
                 inProgress={!done || isRescanning || syncingStart}
               />
             </Grid>
-            {/* <Grid container item justify='center'>
-              {!syncingStart && (
-                <Typography
-                  variant='body'
-                  className={classes.moreOptionsButton}
-                  onClick={() => openModal()}
-                >Advanced settings"</Typography>
-              )}
-            </Grid> */}
-            {(loader.loading || isRescanning || !isSynced) && (
+            {loader.loading && (
               <Grid item container justify='center' alignItems='center'>
                 <Typography variant='body2' className={classes.status}>
-                  {syncingStart && (isRescanning || !isSynced)
-                    ? `Syncing ${currentBlock.toString()} / ${latestBlock.toString()}`
-                    : `${loader.message}`}
+                  {loader.message}
                 </Typography>
               </Grid>
             )}
-            {/* {locked && done && !isRescanning && (
-              <Grid item className={classes.torDiv}>
-                <Tor />
-              </Grid>
-            )} */}
           </Grid>
           {nodeConnected &&
             isLogIn &&
-            !isRescanning &&
             isSynced &&
+            !isRescanning &&
             isInitialLoadFinished && <Redirect to='/main/channel/general' />}
         </Form>
       )}
