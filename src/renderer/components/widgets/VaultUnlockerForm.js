@@ -157,22 +157,21 @@ export const VaultUnlockerForm = ({
                 margin='normal'
                 text={!isNewUser ? 'Sign in' : 'Connect Now'}
                 fullWidth
-                disabled={!done || isRescanning || syncingStart}
-                inProgress={!done || isRescanning || syncingStart}
+                inProgress={!done}
               />
             </Grid>
-            {loader.loading && (
+            
               <Grid item container justify='center' alignItems='center'>
                 <Typography variant='body2' className={classes.status}>
                   {loader.message}
                 </Typography>
               </Grid>
-            )}
+            
           </Grid>
           {nodeConnected &&
             isLogIn &&
-            isSynced &&
             !isRescanning &&
+            isSynced &&
             isInitialLoadFinished && <Redirect to='/main/channel/general' />}
         </Form>
       )}
