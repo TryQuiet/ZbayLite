@@ -408,7 +408,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(fetchBalance())
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
-    await dispatch(appHandlers.epics.initializeUseTor())
+    // await dispatch(appHandlers.epics.initializeUseTor())
     const usernameStatus = electronStore.get('registrationStatus.status')
     const nickname = electronStore.get('registrationStatus.nickname')
     console.log(usernameStatus)
@@ -429,10 +429,8 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   }
   dispatch(setLoadingMessage(''))
   dispatch(setLoading(false))
-  setTimeout(() => {
     dispatch(contactsHandlers.epics.connectWsContacts())
-      }, 5000)
-  if (electronStore.get('isMigrating')) {
+    if (electronStore.get('isMigrating')) {
     dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
   }
 }

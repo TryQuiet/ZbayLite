@@ -253,14 +253,17 @@ app.on('ready', async () => {
   mainWindow.webContents.on('did-finish-load', async () => {
     mainWindow.webContents.send('ping')
     try {
-      // Spawn and kill tor to generate onionAddress
-      console.log('spawning tor for onion address')
-      torProcess = await spawnTor()
-      createServer(mainWindow)
-      mainWindow.webContents.send('onionAddress', getOnionAddress())
-      torProcess.kill()
-      torProcess = null
-      console.log('killed tor process')
+      if (!torProcess) {
+
+        // Spawn and kill tor to generate onionAddress
+        console.log('spawning tor for onion address')
+        torProcess = await spawnTor()
+        createServer(mainWindow)
+        mainWindow.webContents.send('onionAddress', getOnionAddress())
+        // torProcess.kill()
+        // torProcess = null
+        // console.log('killed tor process')
+      } 
     } catch (error) {
       console.log(error)
     }
