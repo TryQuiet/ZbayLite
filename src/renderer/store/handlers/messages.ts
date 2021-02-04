@@ -620,6 +620,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
         console.log('Contact exist')
         if (!contact.connected) {
           console.log('Contact is not connected, initializing connection')
+          console.log(publicKey)
           //dispatch(contactsHandlers.actions.setContactConnected({ connected: true, key: publicKey }))
           dispatch(contactsHandlers.epics.connectWsContacts(publicKey))
         }

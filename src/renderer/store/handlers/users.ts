@@ -252,9 +252,9 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
         status: 'IN_PROGRESS'
       })
     
-    ipcRenderer.send('spawnTor')
-    electronStore.set('useTor', true)
-    dispatch(appHandlers.actions.setUseTor(true))
+    // ipcRenderer.send('spawnTor')
+    // electronStore.set('useTor', true)
+    // dispatch(appHandlers.actions.setUseTor(true))
     dispatch(checkRegistrationConfirmations({ firstRun: true }))
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
