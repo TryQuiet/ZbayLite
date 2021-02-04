@@ -32,7 +32,7 @@ new Promise((resolve, reject) => {
       const id = setTimeout(() => {
         // eslint-disable-next-line
         reject('timeout')
-      }, 20000)
+      }, 35000)
       socket.on('unexpected-response', err => {
         console.log(err)
       })
