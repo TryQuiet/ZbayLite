@@ -287,10 +287,13 @@ app.on('ready', async () => {
       console.log('spawning tor for application')
       torProcess = await spawnTor()
       electronStore.set('isTorActive', true)
+      mainWindow.webContents.send('connectWsContacts')
     }
   })
   ipcMain.on('killTor', async (event, arg) => {
+    console.log('starting killing tor')
     if (torProcess !== null) {
+      console.log('tor killing proccessing')
       torProcess.kill()
       torProcess = null
       electronStore.set('isTorActive', false)
