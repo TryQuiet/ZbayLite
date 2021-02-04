@@ -4,7 +4,7 @@ import { createAction, handleActions } from 'redux-actions'
 import secp256k1 from 'secp256k1'
 import { randomBytes } from 'crypto'
 import { DateTime } from 'luxon'
-import { remote } from 'electron'
+import { ipcRenderer, remote } from 'electron'
 
 import client from '../../zcash'
 import channels from '../../zcash/channels'
@@ -408,8 +408,11 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(fetchBalance())
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
-    await dispatch(appHandlers.epics.initializeUseTor())
-    const usernameStatus = electronStore.get('registrationStatus.status')
+    if (!useTor) {
+      ipcRenderer.send('killTor')
+      // await dispatch(appHandlers.epics.initializeUseTor())
+    }
+      const usernameStatus = electronStore.get('registrationStatus.status')
     const nickname = electronStore.get('registrationStatus.nickname')
     console.log(usernameStatus)
     if (nickname && usernameStatus !== 'SUCCESS') {
@@ -429,10 +432,8 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   }
   dispatch(setLoadingMessage(''))
   dispatch(setLoading(false))
-  setTimeout(() => {
     dispatch(contactsHandlers.epics.connectWsContacts())
-      }, 5000)
-  if (electronStore.get('isMigrating')) {
+    if (electronStore.get('isMigrating')) {
     dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
   }
 }

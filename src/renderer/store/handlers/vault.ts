@@ -154,7 +154,7 @@ const unlockVaultEpic = (
   } else {
     const identity = electronStore.get('identity')
     if (!identity) {
-      dispatch(actionCreators.openModal('registrationGuide')())
+      //dispatch(actionCreators.openModal('registrationGuide')())
       await dispatch(createVaultEpic())
     } else {
       await dispatch(setVaultIdentity())

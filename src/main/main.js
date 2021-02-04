@@ -253,14 +253,17 @@ app.on('ready', async () => {
   mainWindow.webContents.on('did-finish-load', async () => {
     mainWindow.webContents.send('ping')
     try {
-      // Spawn and kill tor to generate onionAddress
-      console.log('spawning tor for onion address')
-      torProcess = await spawnTor()
-      createServer(mainWindow)
-      mainWindow.webContents.send('onionAddress', getOnionAddress())
-      torProcess.kill()
-      torProcess = null
-      console.log('killed tor process')
+      if (!torProcess) {
+
+        // Spawn and kill tor to generate onionAddress
+        console.log('spawning tor for onion address')
+        torProcess = await spawnTor()
+        createServer(mainWindow)
+        mainWindow.webContents.send('onionAddress', getOnionAddress())
+        // torProcess.kill()
+        // torProcess = null
+        // console.log('killed tor process')
+      } 
     } catch (error) {
       console.log(error)
     }
@@ -284,10 +287,13 @@ app.on('ready', async () => {
       console.log('spawning tor for application')
       torProcess = await spawnTor()
       electronStore.set('isTorActive', true)
+      mainWindow.webContents.send('connectWsContacts')
     }
   })
   ipcMain.on('killTor', async (event, arg) => {
+    console.log('starting killing tor')
     if (torProcess !== null) {
+      console.log('tor killing proccessing')
       torProcess.kill()
       torProcess = null
       electronStore.set('isTorActive', false)
