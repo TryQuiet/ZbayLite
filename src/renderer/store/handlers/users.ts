@@ -14,7 +14,13 @@ import identitySelector from '../selectors/identity'
 import { actions as identityActions } from '../handlers/identity'
 import appSelectors from '../selectors/app'
 import { getPublicKeysFromSignature } from '../../zbay/messages'
-import { messageType, actionTypes, unknownUserId, REQUEST_USER_REGISTRATION_ENDPOINT, FETCH_USERNAMES_ENDPOINT } from '../../../shared/static'
+import {
+  messageType,
+  actionTypes,
+  unknownUserId,
+  REQUEST_USER_REGISTRATION_ENDPOINT,
+  FETCH_USERNAMES_ENDPOINT
+} from '../../../shared/static'
 import { messages as zbayMessages } from '../../zbay'
 import staticChannels from '../../zcash/channels'
 import notificationsHandlers from './notifications'
@@ -23,7 +29,7 @@ import electronStore from '../../../shared/electronStore'
 
 import { DisplayableMessage } from '../../zbay/messages.types'
 
-import {packMemo} from '../../zbay/transit'
+import { packMemo } from '../../zbay/transit'
 
 import { ActionsType, PayloadType } from './types'
 
@@ -133,44 +139,6 @@ export const registerAnonUsername = () => async (dispatch, getState) => {
   await dispatch(createOrUpdateUser({ nickname: `anon${publicKey.substring(0, 10)}` }))
 }
 
-export const checkRegistrationConfirmations = ({ firstRun }) => async (dispatch, getState) => {
-  if (firstRun) {
-    const publicKey = identitySelector.signerPubKey(getState())
-    const address = identitySelector.address(getState())
-    const nickname = electronStore.get('registrationStatus.nickname')
-    dispatch(
-      identityActions.setRegistraionStatus({
-        nickname,
-        status: 'IN_PROGRESS'
-      })
-      )
-      dispatch(
-        mockOwnUser({
-          sigPubKey: publicKey,
-          address,
-        nickname
-      })
-      )
-    }
-    setTimeout(async () => {
-    const publicKey = identitySelector.signerPubKey(getState())
-    const users = usersSelector.users(getState())
-    const usersArray = Array.from(Object.keys(users))
-
-    if(usersArray.includes(publicKey)){
-      electronStore.set('registrationStatus.status', 'SUCCESS')
-      electronStore.set('registrationStatus.confirmation', 10)
-      dispatch(
-        notificationsHandlers.actions.enqueueSnackbar(
-          successNotification({
-            message: `Username registered.`
-          })
-        )
-      )
-    }
-  }, 75000)
-}
-
 export const createOrUpdateUser = payload => async (dispatch, getState) => {
   const { nickname, firstName = '', lastName = '', debounce = false, retry = 0 } = payload
   const publicKey = identitySelector.signerPubKey(getState())
@@ -182,6 +150,7 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     nickname,
     address
   }
+
   const registrationMessage = zbayMessages.createMessage({
     messageData: {
       type: zbayMessages.messageType.USER,
@@ -223,39 +192,30 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
         })
       )
     )
-    dispatch(	
-      identityActions.setRegistraionStatus({	
-        nickname,	
-        status: 'ERROR'	
-      })	
-    )	
+    dispatch(
+      identityActions.setRegistraionStatus({
+        nickname,
+        status: 'ERROR'
+      })
+    )
     dispatch(actionCreators.openModal('failedUsernameRegister')())
     return
   }
+
   try {
-  
-      dispatch(
-        identityActions.setRegistraionStatus({
-          nickname,
-          status: 'IN_PROGRESS'
-        })
-      )
-      dispatch(
-        mockOwnUser({
-          sigPubKey: publicKey,
-          address,
-          nickname
-        })
-      )
-      electronStore.set('registrationStatus', {
+    dispatch(
+      identityActions.setRegistraionStatus({
         nickname,
         status: 'IN_PROGRESS'
       })
-    
-    // ipcRenderer.send('spawnTor')
-    // electronStore.set('useTor', true)
-    // dispatch(appHandlers.actions.setUseTor(true))
-    dispatch(checkRegistrationConfirmations({ firstRun: true }))
+    )
+    dispatch(
+      mockOwnUser({
+        sigPubKey: publicKey,
+        address,
+        nickname
+      })
+    )
     dispatch(
       notificationsHandlers.actions.enqueueSnackbar(
         successNotification({
@@ -273,12 +233,12 @@ export const createOrUpdateUser = payload => async (dispatch, getState) => {
     dispatch(notificationsHandlers.actions.removeSnackbar('username'))
   } catch (err) {
     console.log(err)
-    dispatch(	
-      identityActions.setRegistraionStatus({	
-        nickname,	
-        status: 'ERROR'	
-      })	
-    )	
+    dispatch(
+      identityActions.setRegistraionStatus({
+        nickname,
+        status: 'ERROR'
+      })
+    )
     dispatch(actionCreators.openModal('failedUsernameRegister')())
   }
 }
@@ -319,7 +279,6 @@ export const fetchUsers = (address, messages: DisplayableMessage[]) => async (
     let minfee = 0
     let users = {}
     const network = nodeSelectors.network(getState())
-    const { status: registrationStatus } = identitySelector.registrationStatus(getState())
     const signerPubKey = identitySelector.signerPubKey(getState())
     for (const msg of registrationMessages) {
       if (
@@ -345,29 +304,22 @@ export const fetchUsers = (address, messages: DisplayableMessage[]) => async (
     }
     dispatch(feesHandlers.actions.setUserFee(minfee))
     const isRegistrationComplete = users[signerPubKey]
-    if (!isRegistrationComplete && registrationStatus === 'IN_PROGRESS') {
-      const publicKey = identitySelector.signerPubKey(getState())
-      const address = identitySelector.address(getState())
-      const { nickname } = identitySelector.registrationStatus(getState())
-      const mockedUser = {
-        [publicKey]: {
-          ..._UserData,
-          address,
-          nickname,
-          publicKey
-        }
+    if (isRegistrationComplete) {
+      if (users[signerPubKey].createdAt !== 0) {
+        dispatch(
+          identityActions.setRegistraionStatus({
+            nickname: '',
+            status: 'SUCCESS'
+          })
+        )
+        dispatch(
+          notificationsHandlers.actions.enqueueSnackbar(
+            successNotification({
+              message: `Username registered.`
+            })
+          )
+        )
       }
-      users = {
-        ...users,
-        ...mockedUser
-      }
-    } else {
-      dispatch(
-        identityActions.setRegistraionStatus({
-          nickname: '',
-          status: 'SUCCESS'
-        })
-      )
     }
     dispatch(setUsers({ users }))
   } catch (err) {
@@ -407,26 +359,28 @@ export const fetchOnionAddresses = (address, messages: DisplayableMessage[]) => 
   }
 }
 
-let usernames = [];
+let usernames = []
 
 if (true) {
-  (function (){
-  try {
-    axios.get(FETCH_USERNAMES_ENDPOINT).then((res) => {
-      usernames = res.data.message
-  }
-  ).catch((err) => {
-    console.log('cant fetch usernames')
-    console.log(err)
-  })
-} catch (err) {
-  console.log(err)
-}
-})();
+  (function () {
+    try {
+      axios
+        .get(FETCH_USERNAMES_ENDPOINT)
+        .then(res => {
+          usernames = res.data.message
+        })
+        .catch(err => {
+          console.log('cant fetch usernames')
+          console.log(err)
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  })()
 }
 
 export const isNicknameTaken = username => (dispatch, getState) => {
-return R.includes(username, usernames)
+  return R.includes(username, usernames)
 }
 
 export const epics = {
@@ -435,8 +389,8 @@ export const epics = {
   createOrUpdateUser,
   registerAnonUsername,
   fetchOnionAddresses,
-  registerOnionAddress,
-  checkRegistrationConfirmations
+  registerOnionAddress
+  // checkRegistrationConfirmations
 }
 
 export const reducer = handleActions<UsersStore, PayloadType<UserActions>>(
