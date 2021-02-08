@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import identitySelectors from "./identity";
 import messagesQueueSelectors from "./messagesQueue";
 import contacts from "./contacts";
+import users from './users'
 import { networkFee, messageType } from "../../../shared/static";
 
 import { Store } from '../reducers'
@@ -182,9 +183,17 @@ export const shareableUri = createSelector(channel, (c) => c.shareableUri);
 export const inputLocked = createSelector(
   identitySelectors.balance("zec"),
   identitySelectors.lockedBalance("zec"),
-  (available, locked) => {
+  users.users,
+  identitySelectors.signerPubKey,
+  (available, locked, users, signerPubKey) => {
     if (available.gt(networkFee)) {
-      return INPUT_STATE.AVAILABLE;
+      if (users[signerPubKey]) {
+        if (users[signerPubKey].createdAt) {
+          return INPUT_STATE.AVAILABLE;
+        } else {
+          return INPUT_STATE.UNREGISTERED
+        }
+      }
     } else {
       if (locked.gt(0)) {
         return INPUT_STATE.LOCKED;
