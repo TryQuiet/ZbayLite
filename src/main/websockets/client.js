@@ -28,11 +28,11 @@ new Promise((resolve, reject) => {
     try {
       const options = url.parse(proxy)
       const agent = new HttpsProxyAgent(options)
-      const socket = new WebSocketClient(address, { agent: agent }, { handshakeTimeout: 30000 })
+      const socket = new WebSocketClient(address, { agent: agent }, { handshakeTimeout: 80_000 })
       const id = setTimeout(() => {
         // eslint-disable-next-line
         reject('timeout')
-      }, 35000)
+      }, 80_000)
       socket.on('unexpected-response', err => {
         console.log(err)
       })
