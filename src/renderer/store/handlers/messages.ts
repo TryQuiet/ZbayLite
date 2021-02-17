@@ -141,7 +141,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
   try {
     const txns = await fetchAllMessages()
     // Uncomment to create snapshot on next run.
-    // createSnapshot(txns)
+     createSnapshot(txns)
 
     const allMessagesTxnId = appSelectors.allTransactionsId(getState())
     for (const key in txns) {
@@ -608,7 +608,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     }
     publicKey = getPublicKeysFromSignature(message).toString('hex')
     const contact = contactsSelectors.contact(publicKey)(getState())
-    if (contact.key === publicKey) {
+    if (contact && contact.key === publicKey) {
       dispatch(
         contactsHandlers.actions.setTypingIndicator({
           typingIndicator: !!typeIndicator,
