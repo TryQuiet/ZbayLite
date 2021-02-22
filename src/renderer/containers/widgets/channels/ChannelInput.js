@@ -22,7 +22,6 @@ export const mapStateToProps = state => {
       ? channelSelectors.data(state).username
       : ' Unnamed',
     users: usersSelectors.users(state),
-    feeUsd: ratesSelector.feeUsd(state),
     myUser: usersSelectors.myUser(state),
     isSizeCheckingInProgress: channelSelectors.isSizeCheckingInProgress(state),
     isMessageTooLong: channelSelectors.messageSizeStatus(state)
@@ -52,7 +51,6 @@ export const ChannelInput = ({
   users,
   members,
   checkMentions,
-  feeUsd,
   myUser,
   checkMessageSizeLimit,
   targetRecipientAddress,
@@ -79,7 +77,7 @@ export const ChannelInput = ({
       }}
       message={message}
       inputState={inputState}
-      inputPlaceholder={`#${channelName} as @${myUser.nickname} - $${feeUsd}`}
+      inputPlaceholder={`#${channelName} as @${myUser.nickname}`}
       channelName={channelName}
       messageLimit={MESSAGE_SIZE}
       anchorEl={anchorEl}

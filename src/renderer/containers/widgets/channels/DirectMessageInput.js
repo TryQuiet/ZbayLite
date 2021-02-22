@@ -24,7 +24,6 @@ export const mapStateToProps = (state, { contactId }) => {
       : INPUT_STATE.UNREGISTERED,
     channelName: contactsSelectors.contact(contactId)(state).username,
     users: usersSelectors.users(state),
-    feeUsd: ratesSelector.feeUsd(state),
     myUser: usersSelectors.myUser(state),
     isSizeCheckingInProgress: channelSelectors.isSizeCheckingInProgress(state),
     isMessageTooLong: channelSelectors.messageSizeStatus(state),
@@ -55,7 +54,6 @@ export const ChannelInput = ({
   channelName,
   resetDebounce,
   users,
-  feeUsd,
   myUser,
   isMessageTooLong,
   isSizeCheckingInProgress,
@@ -82,7 +80,7 @@ export const ChannelInput = ({
       onKeyPress={sendDirectMessageOnEnter}
       message={message}
       inputState={isFromZbayUser ? inputState : INPUT_STATE.DISABLE}
-      inputPlaceholder={`@${channelName} as @${myUser.nickname} - $${feeUsd}`}
+      inputPlaceholder={`@${channelName} as @${myUser.nickname}`}
       messageLimit={MESSAGE_SIZE}
       anchorEl={anchorEl}
       setAnchorEl={setAnchorEl}

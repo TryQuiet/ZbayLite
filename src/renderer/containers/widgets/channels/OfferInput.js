@@ -6,7 +6,6 @@ import ChannelInputComponent from '../../../components/widgets/channels/ChannelI
 import channelHandlers from '../../../store/handlers/channel'
 import offersHandlers from '../../../store/handlers/offers'
 import channelSelectors from '../../../store/selectors/channel'
-import ratesSelector from '../../../store/selectors/rates'
 import { MESSAGE_ITEM_SIZE } from '../../../zbay/transit'
 import usersSelectors from '../../../store/selectors/users'
 import contactsSelectors from '../../../store/selectors/contacts'
@@ -19,7 +18,6 @@ export const mapStateToProps = (state, { offer }) => {
     inputState: channelSelectors.inputLocked(state),
     offerName: contactsSelectors.contact(offer)(state).username,
     users: usersSelectors.users(state),
-    feeUsd: ratesSelector.feeUsd(state),
     myUser: usersSelectors.myUser(state)
   }
 }
@@ -42,7 +40,6 @@ export const ChannelInput = ({
   inputState,
   offerName,
   users,
-  feeUsd,
   myUser,
   resetDebounce,
   id
@@ -53,7 +50,7 @@ export const ChannelInput = ({
   const nameSplit = offerName.split('@')
   const inputPlaceholder = `@${nameSplit[nameSplit.length - 1]} as @${
     myUser.nickname
-  } - $${feeUsd}`
+  }`
   return (
     <ChannelInputComponent
       infoClass={infoClass}
