@@ -144,7 +144,7 @@ export const VaultUnlockerForm = ({
                   variant='body1'
                   gutterBottom
                 >
-                  {!isNewUser ? `Welcome Back` : `Welcome to Zbay! Connect now to start syncing.`}
+                  {!isNewUser ? 'Welcome Back' : 'Welcome to Zbay! Connect now to start syncing.'}
                 </Typography>
               </Grid>
             )}

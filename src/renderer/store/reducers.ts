@@ -11,7 +11,6 @@ import channelHandlers from './handlers/channel'
 import channelsHandlers from './handlers/channels'
 import nodeHandlers from './handlers/node'
 import ratesHandlers from './handlers/rates'
-import vaultHandlers from './handlers/vault'
 import modalsHandlers from './handlers/modals'
 import messagesQueueHandlers from './handlers/messagesQueue'
 import directMessagesQueueHandlers from './handlers/directMessagesQueue'
@@ -43,7 +42,6 @@ const persistConfig = {
     'identity',
     'users',
     'channels',
-    'vault',
     'offers',
     'removedChannels',
     'publicChannels',
@@ -71,7 +69,6 @@ const reducers = {
   channel: channelHandlers.reducer,
   channels: channelsHandlers.reducer,
   node: nodeHandlers.reducer,
-  vault: vaultHandlers.reducer,
   criticalError: criticalErrorHandlers.reducer,
   contacts: contactsHandlers.reducer,
   directMessageChannel: directMessageChannelHandlers.reducer,
@@ -90,7 +87,4 @@ const reducers = {
 
 export type Store = StoreType<typeof reducers>
 
-export default persistReducer(
-  persistConfig,
-  combineReducers(reducers)
-)
+export default persistReducer(persistConfig, combineReducers(reducers))

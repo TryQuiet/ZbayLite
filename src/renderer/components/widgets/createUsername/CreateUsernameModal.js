@@ -174,13 +174,13 @@ const CustomInputComponent = ({
       className={classNames({
         [classes.focus]: true,
         [classes.margin]: true,
-        [classes.error]: errors['nickname'] || false
+        [classes.error]: errors.nickname || false
       })}
       placeholder={'Enter a username'}
       value={updatedValue}
-      error={errors['nickname'] || false}
-      helperText={errors['nickname']}
-      defaultValue={values['nickname'] || ''}
+      error={errors.nickname || false}
+      helperText={errors.nickname}
+      defaultValue={values.nickname || ''}
       {...rest}
       {...props}
       onPaste={e => e.preventDefault()}
