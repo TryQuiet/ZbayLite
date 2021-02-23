@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+  },
+  "include": [
+    "./src/main/**.js",
+    "./src/main/**.ts",
+    "./src/shared/**.js",
+    "./src/shared/**.ts",
+  ],
+}

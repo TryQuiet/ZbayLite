@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "allowJs": true,
+    "noEmit": true,
     "checkJs": false,
     "module": "commonjs",
     "target": "es5",
