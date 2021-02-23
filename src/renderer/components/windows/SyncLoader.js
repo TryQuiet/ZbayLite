@@ -94,7 +94,7 @@ export const SyncLoader = ({
     getStatus()
   }, 10000)
   if (currentBlock.plus(10).gt(latestBlock)) {
-    return <Redirect to='/main/channel/general' />
+    return <Redirect to='/vault' />
   } else {
     return (
       <WindowWrapper className={classes.root}>

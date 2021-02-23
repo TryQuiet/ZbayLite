@@ -9,7 +9,7 @@ export const mapStateToProps = state => ({
 })
 
 export const Loading = ({ newUser, openedModal, done }) => {
-  return <Redirect to='/main/channel/general' />
+  return <Redirect to='/vault' />
 }
 
 export default connect(

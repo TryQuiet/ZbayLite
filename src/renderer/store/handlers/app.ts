@@ -111,7 +111,7 @@ export const restartAndRescan = () => async dispatch => {
   )
   await dispatch(nodeHandlers.actions.setIsRescanning(true))
   setTimeout(() => {
-    history.push('/main/channel/general')
+    history.push('/vault')
     electronStore.set('channelsToRescan', {})
     electronStore.set('isRescanned', true)
   }, 500)

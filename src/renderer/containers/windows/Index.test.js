@@ -3,6 +3,7 @@ import { shallow } from 'enzyme'
 
 import { Index, mapStateToProps, mapDispatchToProps } from './Index'
 import create from '../../store/create'
+import vaultHandlers from '../../store/handlers/vault'
 
 describe('Index', () => {
   let store = null
