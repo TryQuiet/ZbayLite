@@ -166,7 +166,6 @@ const CustomInputComponent = ({
 }) => {
   const { value, ...rest } = field
   const updatedValue = sanitize(value)
-  console.log("aaaaaaaa", isFirstValidate)
   return (
     <TextField
       variant={'outlined'}
