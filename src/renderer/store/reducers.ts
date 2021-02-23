@@ -52,7 +52,8 @@ const persistConfig = {
     'rates',
     'importedChannel',
     'fees'
-  ]
+  ],
+  blacklist: ['vault']
 }
 
 const reducers = {
