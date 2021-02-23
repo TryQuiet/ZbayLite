@@ -1,9 +1,15 @@
 import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
+import crypto from 'crypto'
+import { ipcRenderer } from 'electron'
+import axios from 'axios'
 
-import { typeFulfilled, typeRejected, typePending } from './utils'
+import { typeFulfilled, typeRejected, typePending, errorNotification } from './utils'
 import identityHandlers from './identity'
-import { actionTypes } from '../../../shared/static'
+import notificationsHandlers from './notifications'
+import nodeHandlers from './node'
+import { actionCreators } from './modals'
+import { REQUEST_MONEY_ENDPOINT, actionTypes } from '../../../shared/static'
 import electronStore from '../../../shared/electronStore'
 
 import { ActionsType, PayloadType } from './types'
@@ -67,6 +73,50 @@ const loadVaultStatus = () => async dispatch => {
   await dispatch(setVaultStatus(true))
 }
 
+const createVaultEpic = (fromMigrationFile = false) => async dispatch => {
+  const randomBytes = crypto.randomBytes(32).toString('hex')
+  try {
+    electronStore.set('isNewUser', true)
+    electronStore.set('vaultPassword', randomBytes)
+    const identity = await dispatch(
+      identityHandlers.epics.createIdentity({
+        name: randomBytes,
+        fromMigrationFile
+      })
+    )
+    await dispatch(nodeHandlers.actions.setIsRescanning(true))
+
+    await dispatch(identityHandlers.epics.setIdentity(identity))
+    await dispatch(identityHandlers.epics.loadIdentity())
+    await dispatch(setVaultStatus(true))
+    ipcRenderer.send('vault-created')
+    try {
+      await axios.get(REQUEST_MONEY_ENDPOINT, {
+        params: {
+          address: identity.address
+        }
+      })
+    } catch (error) {
+      console.log('error', error)
+      dispatch(
+        notificationsHandlers.actions.enqueueSnackbar(
+          errorNotification({
+            message: 'Request to faucet failed.'
+          })
+        )
+      )
+    }
+    return identity
+  } catch (error) {
+    dispatch(
+      notificationsHandlers.actions.enqueueSnackbar(
+        errorNotification({
+          message: `Failed to create vault: ${error.message}`
+        })
+      )
+    )
+  }
+}
 export const setVaultIdentity = () => async dispatch => {
   try {
     const identity = electronStore.get('identity')
@@ -76,9 +126,26 @@ export const setVaultIdentity = () => async dispatch => {
   }
 }
 
+const unlockVaultEpic = (formActions, setDone) => async dispatch => {
+  await dispatch(setLoginSuccessfull(false))
+  setDone(false)
+  const identity = electronStore.get('identity')
+  if (!identity) {
+    dispatch(actionCreators.openModal('registrationGuide')())
+    await dispatch(createVaultEpic())
+  } else {
+    await dispatch(setVaultIdentity())
+  }
+
+  await dispatch(setLoginSuccessfull(true))
+  formActions.setSubmitting(false)
+  setDone(true)
+}
+
 export const epics = {
   loadVaultStatus,
-  setVaultIdentity
+  setVaultIdentity,
+  unlockVault: unlockVaultEpic
 }
 
 export const reducer = handleActions<Vault, PayloadType<VaultActions>>(

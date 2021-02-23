@@ -106,7 +106,7 @@ export const VaultUnlockerForm = ({
     <Formik
       onSubmit={(values, actions) => {
         setSyncingStart(true)
-        onSubmit(values, actions, setDone)
+        onSubmit(actions, setDone)
       }}
       validationSchema={isDev ? null : formSchema}
       initialValues={initialValues}
