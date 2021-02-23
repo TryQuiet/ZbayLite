@@ -160,13 +160,13 @@ const getValidationSchema = (values, checkNickname) => {
 const CustomInputComponent = ({
   classes,
   field,
+  isFirstValidate,
   form: { touched, errors, values },
-
-  ...props
+  ...props,
 }) => {
   const { value, ...rest } = field
   const updatedValue = sanitize(value)
-
+  console.log("aaaaaaaa", isFirstValidate)
   return (
     <TextField
       variant={'outlined'}
@@ -174,12 +174,12 @@ const CustomInputComponent = ({
       className={classNames({
         [classes.focus]: true,
         [classes.margin]: true,
-        [classes.error]: errors['nickname'] || false
+        [classes.error]: isFirstValidate && (errors['nickname'] || false) 
       })}
       placeholder={'Enter a username'}
       value={updatedValue}
-      error={errors['nickname'] || false}
-      helperText={errors['nickname']}
+      error={isFirstValidate && (errors['nickname'] || false) }
+      helperText={isFirstValidate && (errors['nickname'] || false) }
       defaultValue={values['nickname'] || ''}
       {...rest}
       {...props}
@@ -204,6 +204,7 @@ export const CreateUsernameModal = ({
   usernameFee,
   zecRate
 }) => {
+  const [isFirstValidate, setFirstValidate] = useState(false)
   const [formSent, setFormSent] = useState(false)
   const isNewUser = electronStore.get('isNewUser')
   return (
@@ -219,15 +220,7 @@ export const CreateUsernameModal = ({
               initialValues={initialValues}
               validate={values => validate(values, checkNickname)}
             >
-              {({
-                values,
-                isSubmitting,
-                isValid,
-                handleChange,
-                validateForm,
-                validateField,
-                setFieldValue
-              }) => {
+              {() => {
                 return (
                   <Form className={classes.fullWidth}>
                     <Grid container className={classes.container}>
@@ -239,6 +232,7 @@ export const CreateUsernameModal = ({
                           name='nickname'
                           classes={classes}
                           component={CustomInputComponent}
+                          isFirstValidate={isFirstValidate}
                         />
                       </Grid>
                       <Grid item xs={12} className={classes.infoDiv}>
@@ -263,8 +257,8 @@ export const CreateUsernameModal = ({
                           color='primary'
                           type='submit'
                           fullWidth
-                          disabled={!isValid || isSubmitting || !enoughMoney}
                           className={classes.button}
+                          onClick={() => {setFirstValidate(true)}}
                         >
                           Continue
                         </Button>
