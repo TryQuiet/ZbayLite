@@ -77,7 +77,6 @@ const formSchema = Yup.object().shape({
 
 export const VaultUnlockerForm = ({
   classes,
-  locked,
   initialValues,
   onSubmit,
   nodeConnected,
@@ -179,11 +178,6 @@ export const VaultUnlockerForm = ({
                 </Typography>
               </Grid>
             )}
-            {/* {locked && done && !isRescanning && (
-              <Grid item className={classes.torDiv}>
-                <Tor />
-              </Grid>
-            )} */}
           </Grid>
           {nodeConnected &&
             isLogIn &&
@@ -198,7 +192,6 @@ export const VaultUnlockerForm = ({
 VaultUnlockerForm.propTypes = {
   classes: PropTypes.object.isRequired,
   isLogIn: PropTypes.bool.isRequired,
-  locked: PropTypes.bool.isRequired,
   unlocking: PropTypes.bool.isRequired,
   exists: PropTypes.bool.isRequired,
   done: PropTypes.bool.isRequired,

@@ -11,6 +11,7 @@ import { persistStore } from 'redux-persist'
 import store from './store'
 import Index from './containers/windows/Index'
 import Main from './containers/windows/Main'
+import Vault from './containers/windows/Vault'
 import RegistrationGuide from './containers/windows/RegistrationGuide'
 import Loading from './containers//windows/Loading'
 import Notifier from './containers/ui/Notifier'
@@ -71,6 +72,7 @@ export default () => {
               <BlockchainLocationModal />
               <SendMoney />
               <FailedUsernameRegister />
+              <Route path='/vault' exact component={Vault} />
               <Route path='/main' component={Main} />
               <Route path='/zcashNode' component={Index} />
               <Route path='/loading' component={Loading} />
