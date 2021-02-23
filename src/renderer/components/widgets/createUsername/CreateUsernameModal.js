@@ -160,7 +160,7 @@ const getValidationSchema = (values, checkNickname) => {
 const CustomInputComponent = ({
   classes,
   field,
-  isFirstValidate,
+  isTouched,
   form: { touched, errors, values },
   ...props,
 }) => {
@@ -173,12 +173,12 @@ const CustomInputComponent = ({
       className={classNames({
         [classes.focus]: true,
         [classes.margin]: true,
-        [classes.error]: isFirstValidate && (errors['nickname'] || false) 
+        [classes.error]: isTouched && errors['nickname'] 
       })}
       placeholder={'Enter a username'}
       value={updatedValue}
-      error={isFirstValidate && (errors['nickname'] || false) }
-      helperText={isFirstValidate && (errors['nickname'] || false) }
+      error={isTouched && errors['nickname'] }
+      helperText={isTouched && errors['nickname']}
       defaultValue={values['nickname'] || ''}
       {...rest}
       {...props}
@@ -203,7 +203,7 @@ export const CreateUsernameModal = ({
   usernameFee,
   zecRate
 }) => {
-  const [isFirstValidate, setFirstValidate] = useState(false)
+  const [isTouched, setTouched] = useState(false)
   const [formSent, setFormSent] = useState(false)
   const isNewUser = electronStore.get('isNewUser')
   return (
@@ -231,7 +231,7 @@ export const CreateUsernameModal = ({
                           name='nickname'
                           classes={classes}
                           component={CustomInputComponent}
-                          isFirstValidate={isFirstValidate}
+                          isTouched={isTouched}
                         />
                       </Grid>
                       <Grid item xs={12} className={classes.infoDiv}>
@@ -257,7 +257,7 @@ export const CreateUsernameModal = ({
                           type='submit'
                           fullWidth
                           className={classes.button}
-                          onClick={() => {setFirstValidate(true)}}
+                          onClick={() => {setTouched(true)}}
                         >
                           Continue
                         </Button>
