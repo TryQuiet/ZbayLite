@@ -101,6 +101,7 @@
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.13.0",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
     "@storybook/addon-actions": "^5.2.8",
@@ -150,7 +151,7 @@
     "history": "^4.10.1",
     "html-webpack-plugin": "^3.2.0",
     "is-image-url": "^1.1.8",
-    "jest": "^24.8.0",
+    "jest": "^26.6.3",
     "neon": "^2.0.0",
     "neon-cli": "^0.4.0",
     "node-loader": "^1.0.0",
@@ -184,11 +185,12 @@
       "<rootDir>/src/shared/setupTests.js"
     ],
     "transform": {
-      "^.+\\.(t|j)sx?$": "ts-jest"
+      "^.+\\.tsx?$": "ts-jest",
+      "^.+\\.jsx?$": "babel-jest"
     },
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/shared/testing/fileMock.js",
-      "\\.(css|less)$": "identity-obj-proxy"
+      "\\.(scss|css|less)$": "identity-obj-proxy"
     },
     "testRegex": "src/.*\\.test\\.(t|j)s$",
     "snapshotSerializers": [

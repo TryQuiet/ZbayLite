@@ -13,11 +13,11 @@ describe('NodePanelFreeUtxos', () => {
   let store = null
   beforeEach(() => {
     store = create({
-        identity: {
-          ...initialState,
-          data: { freeUtxos: 5 }
-        }
+      identity: {
+        ...initialState,
+        data: { freeUtxos: 5 }
       }
+    }
     )
   })
 

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`NodePanelFreeUtxos renders the field 1`] = `
-<Memo(WithStyles(Component))
+<Memo(WithStyles(NodePanelField))
   name="FREE UTXO'S"
   value="5"
 />
