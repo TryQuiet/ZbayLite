@@ -23,6 +23,6 @@
     "transpileOnly": true
   },
   "exclude": [
-    "__mocks__", "scripts", "webpack", "worker", "dist", "**/*.stories.js"
+    "__mocks__", "scripts", "webpack", "worker", "dist"
   ]
 }
