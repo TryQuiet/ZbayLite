@@ -115,8 +115,8 @@ export const ChannelsListItem = ({
                   className={channel?.connected ? classes.connectedIcon : classes.notConnectedIcon}
                   src={
                     isFromZbay
-                    ? (channel?.connected ? onlineIcon : offlineIcon)
-                    : avatarAnonMask
+                      ? (channel?.connected ? onlineIcon : offlineIcon)
+                      : avatarAnonMask
                   }
                 />
               )}
