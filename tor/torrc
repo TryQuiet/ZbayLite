@@ -15,8 +15,8 @@
 ## Tor opens a socks proxy on port 9050 by default -- even if you don't
 ## configure one below. Set "SocksPort 0" if you plan to run Tor only
 ## as a relay, and not make any local application connections yourself.
-SocksPort 9053 # Default: Bind to localhost:9050 for local connections.
-HTTPTunnelPort 9083
+SocksPort 9052 # Default: Bind to localhost:9050 for local connections.
+HTTPTunnelPort 9082
 #SocksPort 192.168.0.1:9100 # Bind to this address:port too.
 #SocksPort 172.19.0.1:9050
 
@@ -70,11 +70,11 @@ HTTPTunnelPort 9083
 ## HiddenServicePort x y:z says to redirect requests on port x to the
 ## address y:z.
 
-HiddenServiceDir /home/kowal/zbay_tor
+HiddenServiceDir PATH_TO_CHANGE
 HiddenServicePort 80 127.0.0.1:3435
 
 #HiddenServiceDir C:\Users\username\Documents\tor\hidden_service
-#HiddenServicePort 80 127.0.0.1:8080 
+#HiddenServicePort 80 127.0.0.1:8080
 #HiddenServicePort 22 127.0.0.1:22
 
 #Placeholder
@@ -193,4 +193,3 @@ HiddenServicePort 80 127.0.0.1:3435
 ## a private bridge, for example because you'll give out your bridge
 ## address manually to your friends, uncomment this line:
 #PublishServerDescriptor 0
-
