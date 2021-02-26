@@ -182,14 +182,14 @@ export const inputLocked = createSelector(
           return INPUT_STATE.UNREGISTERED
         }
       }
-    } 
+    }
     else {
-      if(currentContactArray[0]){
+      if (currentContactArray[0]) {
         return INPUT_STATE.AVAILABLE
-    }
-    if (locked.gt(0)) {
-      return INPUT_STATE.LOCKED
-    }
+      }
+      if (locked.gt(0)) {
+        return INPUT_STATE.LOCKED
+      }
     }
     return INPUT_STATE.DISABLE
   }
