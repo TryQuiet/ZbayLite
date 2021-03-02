@@ -1,5 +1,5 @@
 /* eslint import/first: 0 */
-import channelSelectors from './channel'
+import channelSelectors, { INPUT_STATE } from './channel'
 
 import create from '../create'
 
@@ -119,7 +119,7 @@ describe('Channel selectors', () => {
     const store = create({
       ...initialState
     })
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`0`)
+    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.DISABLE)
   })
 
   it('- input_disable_with_money_without_signerPubKey', async () => {
@@ -134,7 +134,7 @@ describe('Channel selectors', () => {
         }
       }
     })
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`0`)
+    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.DISABLE)
   })
 
   it('- input_unregistered_with_money_with_signerPubKey_without_createdAt', async () => {
@@ -150,7 +150,7 @@ describe('Channel selectors', () => {
         }
       }
     })
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`3`)
+    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.UNREGISTERED)
   })
 
   it('- input_avilable_with_money', async () => {
@@ -173,7 +173,7 @@ describe('Channel selectors', () => {
         }
       }
     })
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`1`)
+    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.AVAILABLE)
   })
 
   it('- input_avilable_without_money_with_online_contact', async () => {
@@ -192,7 +192,7 @@ describe('Channel selectors', () => {
         }
       }
     })
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`1`)
+    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.AVAILABLE)
   })
 
   it('- input_locked', async () => {
@@ -207,6 +207,6 @@ describe('Channel selectors', () => {
         }
       }
     })
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`2`)
+    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.LOCKED)
   })
 })
