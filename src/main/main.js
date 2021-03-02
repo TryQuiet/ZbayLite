@@ -289,7 +289,7 @@ app.on('ready', async () => {
     if (tor !== null) {
       const ports = electronStore.get('ports')
       console.log(ports)
-      await tor.killService({ port: 9418 })
+      //await tor.killService({ port: 9418 })
       await tor.killService({ port: ports.libp2pHiddenService })
       tor.kill()
       tor = null
@@ -399,7 +399,7 @@ app.on('before-quit', async e => {
   sleep(2000)
   if (tor !== null) {
     const ports = electronStore.get('ports')
-    await tor.killService({ port: 9418 })
+    //await tor.killService({ port: 9418 })
     await tor.killService({ port: ports.libp2pHiddenService })
     tor.kill()
   }
