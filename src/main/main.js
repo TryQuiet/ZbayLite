@@ -275,7 +275,6 @@ app.on('ready', async () => {
   })
 
   ipcMain.on('spawnTor', async (event, arg) => {
-    console.log(`checking if tor process is not running and it is ${tor}`)
     if (tor === null) {
       tor = await spawnTor()
       await runLibp2p(mainWindow.webContents)
@@ -285,13 +284,10 @@ app.on('ready', async () => {
   })
 
   ipcMain.on('killTor', async (event, arg) => {
-    console.log('starting killing tor')
     if (tor !== null) {
       const ports = electronStore.get('ports')
-      console.log(ports)
-      //await tor.killService({ port: 9418 })
       await tor.killService({ port: ports.libp2pHiddenService })
-      tor.kill()
+      await tor.kill()
       tor = null
     }
   })
@@ -399,9 +395,8 @@ app.on('before-quit', async e => {
   sleep(2000)
   if (tor !== null) {
     const ports = electronStore.get('ports')
-    //await tor.killService({ port: 9418 })
     await tor.killService({ port: ports.libp2pHiddenService })
-    tor.kill()
+    await tor.kill()
   }
   // Killing worker takes couple of sec
   await client.terminate()
