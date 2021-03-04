@@ -269,11 +269,11 @@ export const CreateUsernameModal = ({
             </Formik>
           </React.Fragment>
         ) : (
-            <UsernameCreated
-              handleClose={handleClose}
-              setFormSent={setFormSent}
-            />
-          )}
+          <UsernameCreated
+            handleClose={handleClose}
+            setFormSent={setFormSent}
+          />
+        )}
       </Grid>
     </Modal>
   )

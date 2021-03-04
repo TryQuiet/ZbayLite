@@ -378,7 +378,7 @@ let usernames = [];
   }
 })()
 
-export const isNicknameTaken = username => (dispatch, getState) => {
+export const isNicknameTaken = username => {
   return R.includes(username, usernames)
 }
 

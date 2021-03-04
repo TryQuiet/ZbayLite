@@ -171,7 +171,7 @@ export const inputLocked = createSelector(
   (available, locked, users, signerPubKey, channelId, contacts) => {
     const contactsData = Object.values(contacts)
     const currentContactArray = contactsData.filter((item) => {
-      return item.key == channelId && item.connected
+      return item.key === channelId && item.connected
     })
 
     if (available.gt(networkFee)) {
@@ -182,14 +182,13 @@ export const inputLocked = createSelector(
           return INPUT_STATE.UNREGISTERED
         }
       }
-    } 
-    else {
-      if(currentContactArray[0]){
+    } else {
+      if (currentContactArray[0]) {
         return INPUT_STATE.AVAILABLE
-    }
-    if (locked.gt(0)) {
-      return INPUT_STATE.LOCKED
-    }
+      }
+      if (locked.gt(0)) {
+        return INPUT_STATE.LOCKED
+      }
     }
     return INPUT_STATE.DISABLE
   }

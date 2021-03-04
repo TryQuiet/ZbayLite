@@ -419,7 +419,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   const users = usersSelector.users(getState())
   const usersValues = Object.values(users)
   const holmesContactArray = usersValues.filter((item) => {
-    return item.publicKey == '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2'
+    return item.publicKey === '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2'
   })
   const holmesContact = holmesContactArray[0]
 
