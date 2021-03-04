@@ -18,8 +18,6 @@ export const connect = address =>
     console.log('trying to establish connection in websocket client')
     try {
 
-      console.log(`address ${address}`)
-
       const agent = new HttpsProxyAgent({
         host: 'localhost',
         port: ports.httpTunnelPort
