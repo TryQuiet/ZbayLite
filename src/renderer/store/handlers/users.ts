@@ -360,9 +360,9 @@ export const fetchOnionAddresses = (messages: DisplayableMessage[]) => async (
   }
 }
 
-let usernames = ['ala'];
+let usernames = ['ala']
 
-(function () {
+;(function () {
   try {
     axios
       .get(FETCH_USERNAMES_ENDPOINT)
@@ -378,7 +378,7 @@ let usernames = ['ala'];
   }
 })()
 
-export const isNicknameTaken = username => (dispatch, getState) => {
+export const isNicknameTaken = username => () => {
   return R.includes(username, usernames)
 }
 

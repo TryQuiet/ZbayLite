@@ -106,14 +106,10 @@ const styles = theme => ({
 })
 
 Yup.addMethod(Yup.mixed, 'validateMessage', function (checkNickname) {
-  return this.test(
-    'test',
-    'Sorry username already taken. please choose another',
-    function (value) {
-      const isUsernameTaken = checkNickname(value)
-      return !isUsernameTaken
-    }
-  )
+  return this.test('test', 'Sorry username already taken. please choose another', function (value) {
+    const isUsernameTaken = checkNickname(value)
+    return !isUsernameTaken
+  })
 })
 
 const getErrorsFromValidationError = validationError => {
@@ -217,8 +213,7 @@ export const CreateUsernameModal = ({
             <Formik
               onSubmit={values => submitForm(handleSubmit, values, setFormSent)}
               initialValues={initialValues}
-              validate={values => validate(values, checkNickname)}
-            >
+              validate={values => validate(values, checkNickname)}>
               {() => {
                 return (
                   <Form className={classes.fullWidth}>
@@ -236,9 +231,8 @@ export const CreateUsernameModal = ({
                       </Grid>
                       <Grid item xs={12} className={classes.infoDiv}>
                         <Typography variant='caption' className={classes.info}>
-                          Your username cannot have any spaces or special
-                          characters, must be lowercase letters and numbers
-                          only.
+                          Your username cannot have any spaces or special characters, must be
+                          lowercase letters and numbers only.
                         </Typography>
                       </Grid>
                     </Grid>
@@ -247,8 +241,7 @@ export const CreateUsernameModal = ({
                       className={classes.buttonsContainer}
                       direction={'row'}
                       justify={'flex-start'}
-                      spacing={2}
-                    >
+                      spacing={2}>
                       <Grid item xs={'auto'} className={classes.buttonDiv}>
                         <Button
                           variant='contained'
@@ -257,8 +250,9 @@ export const CreateUsernameModal = ({
                           type='submit'
                           fullWidth
                           className={classes.button}
-                          onClick={() => { setTouched(true) }}
-                        >
+                          onClick={() => {
+                            setTouched(true)
+                          }}>
                           Continue
                         </Button>
                       </Grid>
@@ -269,11 +263,8 @@ export const CreateUsernameModal = ({
             </Formik>
           </React.Fragment>
         ) : (
-            <UsernameCreated
-              handleClose={handleClose}
-              setFormSent={setFormSent}
-            />
-          )}
+          <UsernameCreated handleClose={handleClose} setFormSent={setFormSent} />
+        )}
       </Grid>
     </Modal>
   )
