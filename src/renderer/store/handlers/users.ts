@@ -360,7 +360,7 @@ export const fetchOnionAddresses = (messages: DisplayableMessage[]) => async (
   }
 }
 
-let usernames = ['ala'];
+let usernames: string[] = [];
 
 (function () {
   try {
