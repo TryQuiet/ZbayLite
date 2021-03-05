@@ -360,14 +360,20 @@ export const fetchOnionAddresses = (messages: DisplayableMessage[]) => async (
   }
 }
 
-let usernames = ['ala']
-
-;(function () {
-  try {
-    axios
+export const fetchTakenUsernames = () => async (dispatch, getState) => {
+  console.log('fetch taken usernames api call')
+  return new Promise(async (resolve,reject) => {
+    const registrationStatus = identitySelector.registrationStatus(getState())
+    try {
+      await axios
       .get(FETCH_USERNAMES_ENDPOINT)
       .then(res => {
-        usernames = res.data.message
+        dispatch(
+          identityActions.setRegistraionStatus({
+            ...registrationStatus,
+            takenUsernames: res.data.message
+          })
+        )
       })
       .catch(err => {
         console.log('cant fetch usernames')
@@ -375,20 +381,19 @@ let usernames = ['ala']
       })
   } catch (err) {
     console.log(err)
+    reject('fucked up')
   }
-})()
-
-export const isNicknameTaken = username => () => {
-  return R.includes(username, usernames)
+  resolve('success, not fucked up')
+})
 }
 
 export const epics = {
   fetchUsers,
-  isNicknameTaken,
   createOrUpdateUser,
   registerAnonUsername,
   fetchOnionAddresses,
-  registerOnionAddress
+  registerOnionAddress,
+  fetchTakenUsernames
 }
 
 export const reducer = handleActions<UsersStore, PayloadType<UserActions>>(

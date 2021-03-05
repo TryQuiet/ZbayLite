@@ -105,10 +105,15 @@ const styles = theme => ({
   }
 })
 
-Yup.addMethod(Yup.mixed, 'validateMessage', function (checkNickname) {
+const isNicknameTaken = (username, takenUsernames) => {
+  return R.includes(username, takenUsernames)
+}
+
+Yup.addMethod(Yup.mixed, 'validateMessage', function (username, takenUsernames) {
   return this.test('test', 'Sorry username already taken. please choose another', function (value) {
-    const isUsernameTaken = checkNickname(value)
+    const isUsernameTaken = isNicknameTaken(username, takenUsernames)
     return !isUsernameTaken
+    return false
   })
 })
 
@@ -124,12 +129,12 @@ const getErrorsFromValidationError = validationError => {
 
 const sanitize = x => (x ? x.replace(/[^a-zA-Z0-9]+$/g, '').toLowerCase() : undefined)
 
-const validate = ({ nickname }, checkNickname) => {
+const validate = ({ nickname }, takenUsernames) => {
   const sanitizedValue = sanitize(nickname)
   const values = {
     nickname: sanitizedValue
   }
-  const validationSchema = getValidationSchema(values, checkNickname)
+  const validationSchema = getValidationSchema(values, takenUsernames)
   try {
     validationSchema.validateSync(values, { abortEarly: false })
     return {}
@@ -138,7 +143,7 @@ const validate = ({ nickname }, checkNickname) => {
   }
 }
 
-const getValidationSchema = (values, checkNickname) => {
+const getValidationSchema = (values, takenUsernames) => {
   return Yup.object().shape({
     nickname: Yup.string()
       .min(3)
@@ -148,7 +153,7 @@ const getValidationSchema = (values, checkNickname) => {
           'Your username cannot have any spaces or special characters, must be lowercase letters and numbers only',
         excludeEmptyString: true
       })
-      .validateMessage(checkNickname)
+      .validateMessage(values.nickname, takenUsernames)
       .required('Required')
   })
 }
@@ -193,11 +198,7 @@ export const CreateUsernameModal = ({
   open,
   handleClose,
   initialValues,
-  checkNickname,
-  handleSubmit,
-  enoughMoney,
-  usernameFee,
-  zecRate
+  handleSubmit
 }) => {
   const [isTouched, setTouched] = useState(false)
   const [formSent, setFormSent] = useState(false)
@@ -213,7 +214,7 @@ export const CreateUsernameModal = ({
             <Formik
               onSubmit={values => submitForm(handleSubmit, values, setFormSent)}
               initialValues={initialValues}
-              validate={values => validate(values, checkNickname)}>
+              validate={values => validate(values, initialValues.takenUsernames.takenUsernames)}>
               {() => {
                 return (
                   <Form className={classes.fullWidth}>
