@@ -188,7 +188,7 @@ export const inputLocked = createSelector(
   users.users,
   identitySelectors.signerPubKey,
   channelId,
-  contacts,
+  contacts.contacts,
   (available, locked, users, signerPubKey, channelId, contacts) => {
     const contactsData = Object.values(contacts)
     const currentContactArray = contactsData.filter((item) => {

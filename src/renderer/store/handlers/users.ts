@@ -359,7 +359,7 @@ export const fetchOnionAddresses = (address, messages: DisplayableMessage[]) => 
   }
 }
 
-let usernames = []
+let usernames: string[] = [];
 
 (function () {
   try {
