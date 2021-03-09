@@ -5,9 +5,11 @@ import secp256k1 from 'secp256k1'
 import { randomBytes } from 'crypto'
 import { DateTime } from 'luxon'
 import { ipcRenderer, remote } from 'electron'
+import { Store } from '../reducers'
 
 import history from '../../../shared/history'
 import usersSelector from '../selectors/users'
+import contactsSelector from '../selectors/contacts'
 import client from '../../zcash'
 import channels from '../../zcash/channels'
 import identitySelectors from '../selectors/identity'
@@ -421,76 +423,78 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   dispatch(setLoadingMessage(''))
   dispatch(setLoading(false))
 
-  const users = usersSelector.users(getState())
-  const usersValues = Object.values(users)
-  const holmesContactArray = usersValues.filter((item) => {
-    return item.publicKey == '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2'
-  })
-  const holmesContact = holmesContactArray[0]
 
-  await dispatch(
-    contactsHandlers.epics.createVaultContact({ contact: holmesContact, history })
-  )
-
-  const messageFromHolmes = {
-    type: 1,
-    spent: '0',
-    fromYou: false,
-    status: 'broadcasted',
-    blockHeight: 1133337,
-    signature: {
-      type: 'Buffer',
-      data: [88]
-    },
-    r: 1,
-    message:
-      'holmes message',
-    typeIndicator: 0,
-    createdAt: DateTime.utc().toSeconds(),
-    id: 'f05d94ae824cede4551877hhgs026b5303b0d349eead7fd513b77987b9a29269',
-    sender: {
-      replyTo: 'zs1ydvkmgvraapkzwuvrva2d8c8eslmkw3wtlx0kuq0vu23xvnc753d35qjdlklmu9rr40a6kla2wx',
-      username: 'holmes',
-      publicKey: '',
-      address: '',
-      nickname: ''
-    },
-    isUnregistered: false,
-    publicKey: '02546654a7ba175534849088cd6094140f8b91edf7798996853ed59cd201d5a9e6'
-  }
-
-  const messageHi = {
-    ...messageFromHolmes,
-    message: "Hi! My name's Holmes. I'm an activist. I used to co-direct the organization https://fightforthefuture.org, which sort of saved the Internet, multiple times I think? Now I'm making Zbay!"
-  } as unknown as DisplayableMessage
-
-  const messageOurGoal = {
-    ...messageFromHolmes,
-    createdAt: DateTime.utc().toSeconds() + 1,
-    message: "Our goal is a team chat space like Slack or Discord, but with no central server that can leak a team's entire chat history (including the mortifying parts) all over Google in an instant."
-  } as unknown as DisplayableMessage
-
-  const messageZbay = {
-    ...messageFromHolmes,
-    createdAt: DateTime.utc().toSeconds() + 2,
-    message: "Zbay is janky / confusing sometimes 🤦‍♀️, but DMs work okay, and once you have some Zcash (we're sending some now) you can can say hi on #zbay and #store! 🎉"
-  } as unknown as DisplayableMessage
-
-  const messageOrTry = {
-    ...messageFromHolmes,
-    createdAt: DateTime.utc().toSeconds() + 3,
-    message: "Or try messaging me here! If I'm away I'll be back soon. Questions? Annoyances? Any burning needs where, if Zbay met them, you'd use it every day? I'd be so, so grateful to hear from you!"
-  } as unknown as DisplayableMessage
-
-  await dispatch(
-    contactsHandlers.actions.setMessages({
-      key: holmesContact.publicKey,
-      username: holmesContact.nickname,
-      contactAddress: holmesContact.address,
-      messages: [messageHi, messageOurGoal, messageZbay, messageOrTry]
+  if (electronStore.get("isNewUser")) {
+    const users = usersSelector.users(getState())
+    const usersValues = Object.values(users)
+    const holmesContactArray = usersValues.filter((item) => {
+      return item.publicKey == '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2'
     })
-  )
+    const holmesContact = holmesContactArray[0]
 
+    await dispatch(
+      contactsHandlers.epics.createVaultContact({ contact: holmesContact, history })
+    )
+
+    const messageFromHolmes = {
+      type: 1,
+      spent: '0',
+      fromYou: false,
+      status: 'broadcasted',
+      blockHeight: 1133337,
+      signature: {
+        type: 'Buffer',
+        data: [88]
+      },
+      r: 1,
+      message:
+        'holmes message',
+      typeIndicator: 0,
+      createdAt: DateTime.utc().toSeconds() + 0.5,
+      id: 'f05d94ae824cede4551877hhgs026b5303b0d349eead7fd513b77987b9a29269',
+      sender: {
+        replyTo: 'zs1ydvkmgvraapkzwuvrva2d8c8eslmkw3wtlx0kuq0vu23xvnc753d35qjdlklmu9rr40a6kla2wx',
+        username: 'holmes',
+        publicKey: '',
+        address: '',
+        nickname: ''
+      },
+      isUnregistered: false,
+      publicKey: '02546654a7ba175534849088cd6094140f8b91edf7798996853ed59cd201d5a9e6'
+    }
+
+    const messageHi = {
+      ...messageFromHolmes,
+      message: "Hi! My name's Holmes. I'm an activist. I used to co-direct the organization https://fightforthefuture.org, which sort of saved the Internet, multiple times I think? Now I'm making Zbay!"
+    } as unknown as DisplayableMessage
+
+    const messageOurGoal = {
+      ...messageFromHolmes,
+      createdAt: DateTime.utc().toSeconds() + 1,
+      message: "Our goal is a team chat space like Slack or Discord, but with no central server that can leak a team's entire chat history (including the mortifying parts) all over Google in an instant."
+    } as unknown as DisplayableMessage
+
+    const messageZbay = {
+      ...messageFromHolmes,
+      createdAt: DateTime.utc().toSeconds() + 1.5,
+      message: "Zbay is janky / confusing sometimes 🤦‍♀️, but DMs work okay, and once you have some Zcash (we're sending some now) you can can say hi on #zbay and #store! 🎉"
+    } as unknown as DisplayableMessage
+
+    const messageOrTry = {
+      ...messageFromHolmes,
+      createdAt: DateTime.utc().toSeconds() + 2,
+      message: "Or try messaging me here! If I'm away I'll be back soon. Questions? Annoyances? Any burning needs where, if Zbay met them, you'd use it every day? I'd be so, so grateful to hear from you!"
+    } as unknown as DisplayableMessage
+
+    await dispatch(
+      contactsHandlers.actions.setMessages({
+        key: holmesContact.publicKey,
+        username: holmesContact.nickname,
+        contactAddress: holmesContact.address,
+        messages: [messageHi, messageOurGoal, messageZbay, messageOrTry]
+      })
+    )
+  }
   dispatch(contactsHandlers.epics.connectWsContacts())
   if (electronStore.get('isMigrating')) {
     dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
@@ -516,8 +520,8 @@ export const updateDonation = allow => async (dispatch, getState) => {
   )
 }
 
-export const updateDonationAddress = address => async (dispatch, getState) => {}
-export const updateShieldingTax = allow => async (dispatch, getState) => {}
+export const updateDonationAddress = address => async (dispatch, getState) => { }
+export const updateShieldingTax = allow => async (dispatch, getState) => { }
 export const generateNewAddress = () => async (dispatch, getState) => {
   if (!electronStore.get('addresses')) {
     electronStore.set('addresses', JSON.stringify([]))
