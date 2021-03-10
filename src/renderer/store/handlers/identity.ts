@@ -145,7 +145,7 @@ export const setDonationAddress = createAction<string>(actionTypes.SET_DONATION_
 export const setShieldingTax = createAction<boolean>(actionTypes.SET_SHIELDING_TAX)
 export const setFreeUtxos = createAction<number>(actionTypes.SET_FREE_UTXOS)
 export const setUserAddreses = createAction<string[]>(actionTypes.SET_USER_ADDRESSES)
-export const setRegistraionStatus = createAction<{ nickname: string; status: string, takenUsernames?: string[] }>(
+export const setRegistraionStatus = createAction<{ nickname: string; status: string; takenUsernames?: string[] }>(
   actionTypes.SET_REGISTRAION_STATUS
 )
 export const setUserShieldedAddreses = createAction<any[]>(actionTypes.SET_USER_SHIELDED_ADDRESES)
@@ -376,7 +376,6 @@ export const loadIdentity = () => async dispatch => {
 }
 
 export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
-  // let identity = await migrateTo_0_2_0.ensureIdentityHasKeys(identityToSet)
   const identity = identityToSet
   dispatch(setLoading(true))
   const isNewUser = electronStore.get('isNewUser')

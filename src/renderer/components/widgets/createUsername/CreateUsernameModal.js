@@ -105,15 +105,10 @@ const styles = theme => ({
   }
 })
 
-const isNicknameTaken = (username, takenUsernames) => {
-  return R.includes(username, takenUsernames)
-}
-
 Yup.addMethod(Yup.mixed, 'validateMessage', function (username, takenUsernames) {
   return this.test('test', 'Sorry username already taken. please choose another', function (value) {
-    const isUsernameTaken = isNicknameTaken(username, takenUsernames)
+    const isUsernameTaken = takenUsernames.includes(username)
     return !isUsernameTaken
-    return false
   })
 })
 
