@@ -445,8 +445,8 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
       message:
         'holmes message',
       typeIndicator: 0,
-      createdAt: DateTime.utc().toSeconds() + 0.5,
-      id: 'f05d94ae824cede4551877hhgs026b5303b0d349eead7fd513b77987b9a29269',
+      createdAt: DateTime.utc().toSeconds(),
+      id: '',
       sender: {
         replyTo: 'zs1ydvkmgvraapkzwuvrva2d8c8eslmkw3wtlx0kuq0vu23xvnc753d35qjdlklmu9rr40a6kla2wx',
         username: 'holmes',
@@ -460,24 +460,29 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
 
     const messageHi = {
       ...messageFromHolmes,
+      createdAt: DateTime.utc().toSeconds() + 1,
+      id: 'sklf7894hthur7467sd786fsjh49832095usldf89345jklhj34s98734lkjfdsa',
       message: "Hi! My name's Holmes. I'm an activist. I used to co-direct the organization https://fightforthefuture.org, which sort of saved the Internet, multiple times I think? Now I'm making Zbay!"
     } as unknown as DisplayableMessage
 
     const messageOurGoal = {
       ...messageFromHolmes,
-      createdAt: DateTime.utc().toSeconds() + 1,
+      createdAt: DateTime.utc().toSeconds() + 2,
+      id: 'opcvlkdsjjpe04908589234lnfs0d9f82038lnmpqweri02978234ljhlsdfu821',
       message: "Our goal is a team chat space like Slack or Discord, but with no central server that can leak a team's entire chat history (including the mortifying parts) all over Google in an instant."
     } as unknown as DisplayableMessage
 
     const messageZbay = {
       ...messageFromHolmes,
-      createdAt: DateTime.utc().toSeconds() + 1.5,
+      createdAt: DateTime.utc().toSeconds() + 3,
+      id: 'aoiurhtnlksjdfjs0d99849233lojkkljhsioduyfo09r8t39045uilknfsldfj9',
       message: "Zbay is janky / confusing sometimes 🤦‍♀️, but DMs work okay, and once you have some Zcash (we're sending some now) you can can say hi on #zbay and #store! 🎉"
     } as unknown as DisplayableMessage
 
     const messageOrTry = {
       ...messageFromHolmes,
-      createdAt: DateTime.utc().toSeconds() + 2,
+      createdAt: DateTime.utc().toSeconds() + 4,
+      id: 'iopueoirtjlksnjfvi8sufvklrhjtoiwuer5p893085098opwsjefsbdfkgiurew',
       message: "Or try messaging me here! If I'm away I'll be back soon. Questions? Annoyances? Any burning needs where, if Zbay met them, you'd use it every day? I'd be so, so grateful to hear from you!"
     } as unknown as DisplayableMessage
 
