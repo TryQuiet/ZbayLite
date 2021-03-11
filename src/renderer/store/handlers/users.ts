@@ -360,25 +360,25 @@ export const fetchOnionAddresses = (messages: DisplayableMessage[]) => async (
 }
 
 export const fetchTakenUsernames = () => async (dispatch, getState) => {
-    const registrationStatus = identitySelector.registrationStatus(getState())
-    try {
-      await axios
-        .get(FETCH_USERNAMES_ENDPOINT)
-        .then(res => {
-          dispatch(
-            identityActions.setRegistraionStatus({
-              ...registrationStatus,
-              takenUsernames: res.data.message
-            })
-          )
-        })
-        .catch(err => {
-          console.log('cant fetch usernames')
-          console.log(err)
-        })
-    } catch (err) {
-      console.log(err)
-    }
+  const registrationStatus = identitySelector.registrationStatus(getState())
+  try {
+    await axios
+      .get(FETCH_USERNAMES_ENDPOINT)
+      .then(res => {
+        dispatch(
+          identityActions.setRegistraionStatus({
+            ...registrationStatus,
+            takenUsernames: res.data.message
+          })
+        )
+      })
+      .catch(err => {
+        console.log('cant fetch usernames')
+        console.log(err)
+      })
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 export const epics = {

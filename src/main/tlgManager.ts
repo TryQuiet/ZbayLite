@@ -11,11 +11,6 @@ const pathDevLib = path.join.apply(null, [process.cwd(), 'tor'])
 const pathProdLib = path.join.apply(null, [process.resourcesPath, 'tor'])
 const pathDevSettings = path.join.apply(null, [process.cwd(), 'tor', 'torrc'])
 const pathProd = path.join.apply(null, [process.resourcesPath, 'tor', 'tor'])
-const pathProdSettingsTemplate = path.join.apply(null, [process.resourcesPath, 'tor', 'torrc'])
-
-export const migrateOldTorAddress = async () => {
-
-}
 
 export const spawnTor = async () => {
   const ports = await getPorts()
@@ -38,23 +33,19 @@ export const spawnTor = async () => {
   const hiddenServices = electronStore.get('hiddenServices')
 
   if (!hiddenServices) {
-    migrateOldTorAddress()
-  }
+    let libp2pHiddenService
+    let directMessagesHiddenService
 
-  if (!hiddenServices) {
-    const libp2pHiddenService = await tor.addNewService(
-      ports.libp2pHiddenService,
-      ports.libp2pHiddenService
-    )
-    const directMessagesHiddenService = await tor.addNewService(
-      80,
-      ports.directMessagesHiddenService
-    )
+    try {
+      libp2pHiddenService = await tor.addNewService(
+        ports.libp2pHiddenService,
+        ports.libp2pHiddenService
+      )
+      directMessagesHiddenService = await tor.addNewService(80, ports.directMessagesHiddenService)
+    } catch (e) {
+      console.log(`can't add new onion services ${e}`)
+    }
 
-    
-
-    console.log(libp2pHiddenService)
-    console.log(directMessagesHiddenService)
     const services = {
       libp2pHiddenService,
       directMessagesHiddenService
@@ -63,19 +54,23 @@ export const spawnTor = async () => {
   } else {
     const services = Array.from(Object.keys(hiddenServices))
     for (const service of services) {
-      if (service === 'directMessagesHiddenService') {
-        tor.addOnion({
-          virtPort: 80,
+      try {
+        if (service === 'directMessagesHiddenService') {
+          await tor.addOnion({
+            virtPort: 80,
+            targetPort: ports[service],
+            privKey: hiddenServices[service].privateKey
+          })
+          continue
+        }
+        await tor.addOnion({
+          virtPort: ports[service],
           targetPort: ports[service],
           privKey: hiddenServices[service].privateKey
         })
-        continue
+      } catch (e) {
+        console.log(`can't add onion services ${e}`)
       }
-      tor.addOnion({
-        virtPort: ports[service],
-        targetPort: ports[service],
-        privKey: hiddenServices[service].privateKey
-      })
     }
   }
 
@@ -87,7 +82,6 @@ export const spawnTor = async () => {
       console.log(`ps process exited with code ${code}`)
     }
   })
-  console.log(`this is ${tor}`)
   return tor
 }
 
@@ -111,7 +105,7 @@ export const getPorts = async (): Promise<{
 
 export const getOnionAddress = (): string => {
   const hiddenServices = electronStore.get('hiddenServices')
-  const address: string = hiddenServices.directMessagesHiddenService.onionAddress
+  const address = hiddenServices.directMessagesHiddenService.onionAddress
   return address
 }
 
@@ -121,7 +115,7 @@ export const runLibp2p = async (webContents): Promise<any> => {
 
   const connectonsManager = new TlgManager.ConnectionsManager({
     port: ports.libp2pHiddenService,
-    host: libp2pHiddenService.onionAddress + '.onion',
+    host: `${libp2pHiddenService.onionAddress}.onion`,
     agentHost: 'localhost',
     agentPort: ports.socksPort
   })
