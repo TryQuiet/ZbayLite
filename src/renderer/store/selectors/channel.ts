@@ -150,10 +150,10 @@ export const mergeIntoOne = (messages) => {
   for (const msg of messages) {
     const isMessageInTargetZone = last
       ? checkMessageTargetTimeWindow({
-          targetCreatedAt: last.createdAt,
-          timeStamp: msg.createdAt,
-          timeWindow: last.createdAt + 300,
-        })
+        targetCreatedAt: last.createdAt,
+        timeStamp: msg.createdAt,
+        timeWindow: last.createdAt + 300,
+      })
       : true;
     if (last && msg.status === "failed") {
       result.push([]);
@@ -205,12 +205,16 @@ export const inputLocked = createSelector(
       }
     }
     else {
-      if(currentContactArray[0]){
-        return INPUT_STATE.AVAILABLE
-    }
-    if (locked.gt(0)) {
-      return INPUT_STATE.LOCKED
-    }
+      if (users[signerPubKey]) {
+        if (users[signerPubKey].createdAt) {
+          if (currentContactArray[0]) {
+            return INPUT_STATE.AVAILABLE
+          }
+        }
+      }
+      if (locked.gt(0)) {
+        return INPUT_STATE.LOCKED
+      }
     }
     return INPUT_STATE.DISABLE;
   }
