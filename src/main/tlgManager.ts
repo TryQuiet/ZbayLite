@@ -13,6 +13,10 @@ const pathDevSettings = path.join.apply(null, [process.cwd(), 'tor', 'torrc'])
 const pathProd = path.join.apply(null, [process.resourcesPath, 'tor', 'tor'])
 const pathProdSettingsTemplate = path.join.apply(null, [process.resourcesPath, 'tor', 'torrc'])
 
+export const migrateOldTorAddress = async () => {
+
+}
+
 export const spawnTor = async () => {
   const ports = await getPorts()
   electronStore.set('ports', ports)
@@ -34,6 +38,10 @@ export const spawnTor = async () => {
   const hiddenServices = electronStore.get('hiddenServices')
 
   if (!hiddenServices) {
+    migrateOldTorAddress()
+  }
+
+  if (!hiddenServices) {
     const libp2pHiddenService = await tor.addNewService(
       ports.libp2pHiddenService,
       ports.libp2pHiddenService
@@ -42,6 +50,8 @@ export const spawnTor = async () => {
       80,
       ports.directMessagesHiddenService
     )
+
+    
 
     console.log(libp2pHiddenService)
     console.log(directMessagesHiddenService)
