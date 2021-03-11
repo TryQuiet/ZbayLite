@@ -436,7 +436,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
       spent: '0',
       fromYou: false,
       status: 'broadcasted',
-      blockHeight: 1133337,
+      blockHeight: 0,
       signature: {
         type: 'Buffer',
         data: [88]
@@ -444,46 +444,37 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
       r: 1,
       message:
         'holmes message',
-      typeIndicator: 0,
+      typeIndicator: false,
       createdAt: DateTime.utc().toSeconds(),
       id: '',
       sender: {
         replyTo: 'zs1ydvkmgvraapkzwuvrva2d8c8eslmkw3wtlx0kuq0vu23xvnc753d35qjdlklmu9rr40a6kla2wx',
-        username: 'holmes',
-        publicKey: '',
-        address: '',
-        nickname: ''
-      },
-      isUnregistered: false,
-      publicKey: '02546654a7ba175534849088cd6094140f8b91edf7798996853ed59cd201d5a9e6'
+        username: 'holmes'
+      }
     }
 
     const messageHi = {
       ...messageFromHolmes,
-      createdAt: DateTime.utc().toSeconds() + 1,
+      blockHeight: 9999999999999999,
+      createdAt: Math.floor(DateTime.utc().toSeconds() + 1),
       id: 'sklf7894hthur7467sd786fsjh49832095usldf89345jklhj34s98734lkjfdsa',
-      message: "Hi! My name's Holmes. I'm an activist. I used to co-direct the organization https://fightforthefuture.org, which sort of saved the Internet, multiple times I think? Now I'm making Zbay!"
+      message: "Hi! My name’s Holmes. Previously I co-founded the activist organization https://fightforthefuture.org , which fights for privacy and freedom online."
     } as unknown as DisplayableMessage
 
     const messageOurGoal = {
       ...messageFromHolmes,
-      createdAt: DateTime.utc().toSeconds() + 2,
+      blockHeight: 9999999999999999,
+      createdAt: Math.floor(DateTime.utc().toSeconds() + 2),
       id: 'opcvlkdsjjpe04908589234lnfs0d9f82038lnmpqweri02978234ljhlsdfu821',
-      message: "Our goal is a team chat space like Slack or Discord, but with no central server that can leak a team's entire chat history (including the mortifying parts) all over Google in an instant."
+      message: "Now I’m working on Zbay, to build a team chat space like Slack or Discord, but with no central server to leak your team’s entire chat history, and with private digital money (Zcash) built-in."
     } as unknown as DisplayableMessage
 
     const messageZbay = {
       ...messageFromHolmes,
-      createdAt: DateTime.utc().toSeconds() + 3,
+      blockHeight: 9999999999999999,
+      createdAt: Math.floor(DateTime.utc().toSeconds() + 3),
       id: 'aoiurhtnlksjdfjs0d99849233lojkkljhsioduyfo09r8t39045uilknfsldfj9',
-      message: "Zbay is janky / confusing sometimes 🤦‍♀️, but DMs work okay, and once you have some Zcash (we're sending some now) you can can say hi on #zbay and #store! 🎉"
-    } as unknown as DisplayableMessage
-
-    const messageOrTry = {
-      ...messageFromHolmes,
-      createdAt: DateTime.utc().toSeconds() + 4,
-      id: 'iopueoirtjlksnjfvi8sufvklrhjtoiwuer5p893085098opwsjefsbdfkgiurew',
-      message: "Or try messaging me here! If I'm away I'll be back soon. Questions? Annoyances? Any burning needs where, if Zbay met them, you'd use it every day? I'd be so, so grateful to hear from you!"
+      message: "Any questions? Feedback? Annoyances? Burning needs where if Zbay met them you’d use it every day? If so, message me here!"
     } as unknown as DisplayableMessage
 
     await dispatch(
@@ -491,7 +482,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
         key: holmesContact.publicKey,
         username: holmesContact.nickname,
         contactAddress: holmesContact.address,
-        messages: [messageHi, messageOurGoal, messageZbay, messageOrTry]
+        messages: [messageHi, messageOurGoal, messageZbay]
       })
     )
   }
