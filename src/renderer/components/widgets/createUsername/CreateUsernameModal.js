@@ -248,14 +248,9 @@ export const CreateUsernameModal = ({
                           type='submit'
                           fullWidth
                           className={classes.button}
-<<<<<<< HEAD
-                          onClick={() => {setTouched(true)}}
-                        >
-=======
                           onClick={() => {
                             setTouched(true)
                           }}>
->>>>>>> 8729f84e83087b51f1997293d3ed8d01aa209d36
                           Continue
                         </Button>
                       </Grid>
