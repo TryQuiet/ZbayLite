@@ -1,9 +1,5 @@
 /* eslint import/first: 0 */
-<<<<<<< HEAD
 import channelSelectors, { INPUT_STATE } from './channel'
-=======
-import channelSelectors from './channel'
->>>>>>> 735b2c6b... add data selector test and all inputLocked selector tests
 
 import create from '../create'
 
@@ -123,11 +119,7 @@ describe('Channel selectors', () => {
     const store = create({
       ...initialState
     })
-<<<<<<< HEAD
     expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.DISABLE)
-=======
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`0`)
->>>>>>> 735b2c6b... add data selector test and all inputLocked selector tests
   })
 
   it('- input_disable_with_money_without_signerPubKey', async () => {
@@ -142,11 +134,7 @@ describe('Channel selectors', () => {
         }
       }
     })
-<<<<<<< HEAD
     expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.DISABLE)
-=======
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`0`)
->>>>>>> 735b2c6b... add data selector test and all inputLocked selector tests
   })
 
   it('- input_unregistered_with_money_with_signerPubKey_without_createdAt', async () => {
@@ -162,11 +150,7 @@ describe('Channel selectors', () => {
         }
       }
     })
-<<<<<<< HEAD
     expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.UNREGISTERED)
-=======
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`3`)
->>>>>>> 735b2c6b... add data selector test and all inputLocked selector tests
   })
 
   it('- input_avilable_with_money', async () => {
@@ -189,11 +173,7 @@ describe('Channel selectors', () => {
         }
       }
     })
-<<<<<<< HEAD
     expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.AVAILABLE)
-=======
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`1`)
->>>>>>> 735b2c6b... add data selector test and all inputLocked selector tests
   })
 
   it('- input_avilable_without_money_with_online_contact', async () => {
@@ -212,11 +192,7 @@ describe('Channel selectors', () => {
         }
       }
     })
-<<<<<<< HEAD
     expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.AVAILABLE)
-=======
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`1`)
->>>>>>> 735b2c6b... add data selector test and all inputLocked selector tests
   })
 
   it('- input_locked', async () => {
@@ -231,10 +207,6 @@ describe('Channel selectors', () => {
         }
       }
     })
-<<<<<<< HEAD
     expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.LOCKED)
-=======
-    expect(channelSelectors.inputLocked(store.getState())).toMatchInlineSnapshot(`2`)
->>>>>>> 735b2c6b... add data selector test and all inputLocked selector tests
   })
 })
