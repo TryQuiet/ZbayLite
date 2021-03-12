@@ -515,15 +515,9 @@ export const updateDonation = () => async dispatch => {
   )
 }
 
-<<<<<<< HEAD
-export const updateDonationAddress = () => () => { }
-export const updateShieldingTax = () => () => { }
-export const generateNewAddress = () => async dispatch => {
-=======
 export const updateDonationAddress = address => async (dispatch, getState) => { }
 export const updateShieldingTax = allow => async (dispatch, getState) => { }
 export const generateNewAddress = () => async (dispatch, getState) => {
->>>>>>> 17fc4893... fix "sending" messages from holmes
   if (!electronStore.get('addresses')) {
     electronStore.set('addresses', JSON.stringify([]))
   }
