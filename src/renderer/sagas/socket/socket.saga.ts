@@ -34,6 +34,9 @@ export function subscribe(socket) {
     socket.on(socketsActions.RESPONSE_FETCH_ALL_MESSAGES, payload => {
       emit(publicChannelsActions.responseLoadAllMessages(payload))
     })
+    socket.on(socketsActions.RESPONSE_GET_PUBLIC_CHANNELS, payload => {
+      console.log('UPDATING CHANNELS ON THE CLIENT SIDE: ', payload)
+    })
     return () => {}
   })
 }
@@ -95,11 +98,28 @@ export function* fetchAllMessages(socket): Generator {
   }
 }
 
+export function* gimmeData(socket): Generator {  // only for test, remove
+  console.log('GET PUBLIC CHANNELS')
+  while (true) {
+    const { payload } = yield* take(`${publicChannelsActions.gimmeData}`)
+    socket.emit('gimmeData', payload)
+  }
+}
+
+export function* getPublicChannels(socket): Generator {
+  while (true) {
+    const { payload } = yield* take(`${publicChannelsActions.getPublicChannels}`)
+    socket.emit(socketsActions.GET_PUBLIC_CHANNELS)
+  }
+}
+
 export function* useIO(socket): Generator {
   yield fork(handleActions, socket)
   yield fork(sendMessage, socket)
   yield fork(fetchAllMessages, socket)
   yield fork(subscribeForTopic, socket)
+  yield fork(gimmeData, socket)  // only for test, remove
+  yield fork(getPublicChannels, socket)
 }
 
 export function* startConnection(): Generator {

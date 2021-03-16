@@ -163,14 +163,34 @@ export const fetchMessages = () => async (dispatch, getState) => {
     const importedChannels = electronStore.get('importedChannels')
     const publicChannels = publicChannelsSelectors.publicChannels(getState())
     const publicChannelAddresses = Object.values(publicChannels).map(el => el.address)
-    if (importedChannels) {
-      for (const address of Object.keys(importedChannels)) {
-        await dispatch(setChannelMessages(importedChannels[address], txns[address]))
-        if (publicChannelAddresses.includes(address)) {
-          await dispatch(publicChannelsActions.subscribeForTopic(address))
-        }
-      }
-    }
+    
+    // Testing:
+    // console.log('THE NUMBER: ', Object.values(publicChannels).length)
+    // let i = 0
+    // for (const pChannel of Object.values(publicChannels)) {
+    //   i++
+    //   console.log('dispatching', pChannel.name)
+    //   if (pChannel.name === 'zbay' || pChannel.name === 'store' || i <=5 ) {
+    //     await dispatch(publicChannelsActions.gimmeData({
+    //       address: pChannel.address,
+    //       displayName: pChannel.name,
+    //       description: pChannel.description,
+    //       owner: pChannel.owner,
+    //       timestamp: pChannel.timestamp
+    //     }))
+    //   }
+    // }
+
+    // if (importedChannels) {  // probably not needed anymore
+    //   for (const address of Object.keys(importedChannels)) {
+    //     await dispatch(setChannelMessages(importedChannels[address], txns[address]))
+        
+
+        // if (publicChannelAddresses.includes(address)) {
+        //   await dispatch(publicChannelsActions.subscribeForTopic(address))
+        // }
+    //   }
+    // }
     await dispatch(
       setChannelMessages(channels.general.mainnet, txns[channels.general.mainnet.address])
     )
@@ -195,6 +215,12 @@ export const fetchMessages = () => async (dispatch, getState) => {
     return {}
   }
 }
+
+// Data from orbitdb
+export const updatePublicChannels = () => async (dispatch) => {
+  await dispatch(publicChannelsActions.getPublicChannels())
+}
+
 export const checkTransferCount = (address, messages) => async (dispatch, getState) => {
   if (messages) {
     if (
@@ -224,6 +250,8 @@ const msgTypeToNotification = new Set([
   messageType.ITEM_BASIC,
   messageType.TRANSFER
 ])
+
+
 
 export const findNewMessages = (key, messages, state, isDM = false) => {
   if (messages) {
@@ -745,7 +773,8 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
 }
 export const epics = {
   fetchMessages,
-  handleWebsocketMessage
+  handleWebsocketMessage,
+  updatePublicChannels
 }
 
 export default {
