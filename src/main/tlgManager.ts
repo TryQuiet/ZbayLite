@@ -75,8 +75,8 @@ export const spawnTor = async () => {
     }
   }
 
-  if (fs.existsSync(`${path.join.apply(null, [os.homedir(), `zbay_tor`])}`)) {
-    fs.rmdirSync(`${path.join.apply(null, [os.homedir(), `zbay_tor`])}`, {
+  if (fs.existsSync(`${path.join.apply(null, [os.homedir(), 'zbay_tor'])}`)) {
+    fs.rmdirSync(`${path.join.apply(null, [os.homedir(), 'zbay_tor'])}`, {
       recursive: true
     })
   }
