@@ -36,6 +36,7 @@ export function subscribe(socket) {
     })
     socket.on(socketsActions.RESPONSE_GET_PUBLIC_CHANNELS, payload => {
       console.log('UPDATING CHANNELS ON THE CLIENT SIDE: ', payload)
+      emit(publicChannelsActions.responseGetPublicChannels(payload))
     })
     return () => {}
   })
@@ -99,7 +100,6 @@ export function* fetchAllMessages(socket): Generator {
 }
 
 export function* gimmeData(socket): Generator {  // only for test, remove
-  console.log('GET PUBLIC CHANNELS')
   while (true) {
     const { payload } = yield* take(`${publicChannelsActions.gimmeData}`)
     socket.emit('gimmeData', payload)

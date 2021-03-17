@@ -186,9 +186,9 @@ export const fetchMessages = () => async (dispatch, getState) => {
     //     await dispatch(setChannelMessages(importedChannels[address], txns[address]))
         
 
-        // if (publicChannelAddresses.includes(address)) {
-        //   await dispatch(publicChannelsActions.subscribeForTopic(address))
-        // }
+    //     if (publicChannelAddresses.includes(address)) {
+    //       await dispatch(publicChannelsActions.subscribeForTopic(address))
+    //     }
     //   }
     // }
     await dispatch(

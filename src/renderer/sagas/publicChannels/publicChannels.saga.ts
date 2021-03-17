@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { publicChannelsActions, PublicChannelsActions } from './publicChannels.reducer'
 import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
 // import { socketsActions } from '../socket/socket.saga.reducer'
+import publicChannelsHandlers, { setPublicChannels } from '../../store/handlers/publicChannels'
 import {
   getPublicKeysFromSignature,
   usernameSchema,
@@ -86,6 +87,15 @@ export function* loadMessage(action: PublicChannelsActions['loadMessage']): Gene
   )
 }
 
+export function* getPublicChannels(action: PublicChannelsActions['responseGetPublicChannels']): Generator {
+  console.log('SAGA: loading public channels')
+  console.log(action.payload)
+  if (action.payload) {
+    delete action.payload['undefined']
+    yield put(setPublicChannels(action.payload))
+  }
+}
+
 export function* loadAllMessages(
   action: PublicChannelsActions['responseLoadAllMessages']
 ): Generator {
@@ -126,6 +136,7 @@ export function* loadAllMessages(
 export function* publicChannelsSaga(): Generator {
   yield all([
     takeEvery(`${publicChannelsActions.loadMessage}`, loadMessage),
-    takeEvery(`${publicChannelsActions.responseLoadAllMessages}`, loadAllMessages)
+    takeEvery(`${publicChannelsActions.responseLoadAllMessages}`, loadAllMessages),
+    takeEvery(`${publicChannelsActions.responseGetPublicChannels}`, getPublicChannels)
   ])
 }

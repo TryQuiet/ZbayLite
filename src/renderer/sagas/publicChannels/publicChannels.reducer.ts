@@ -28,6 +28,19 @@ export interface IChannelInfo {
   timestamp?: number
 }
 
+interface ChannelInfo {
+  address: string
+  name: string
+  description: string
+  owner: string
+  timestamp: number
+  keys: Record<'ivk', string>
+}
+
+export interface IChannelInfoResponse {
+  [name: string]: ChannelInfo
+}
+
 export const publicChannelsActions = {
   sendMessage: createAction(Socket.SEND_MESSAGE),
   loadMessage: createAction<Libp2pMessage>(Socket.MESSAGE),
@@ -39,6 +52,7 @@ export const publicChannelsActions = {
   subscribeForTopic: createAction<string>(Socket.SUBSCRIBE_FOR_TOPIC),
   gimmeData: createAction<IChannelInfo>('gimmeData'),  // Test, remove
   getPublicChannels: createAction<void>(Socket.GET_PUBLIC_CHANNELS),
+  responseGetPublicChannels: createAction<IChannelInfoResponse>(Socket.RESPONSE_GET_PUBLIC_CHANNELS),
   addMessage: createAction<{
     key: string
     message: { [key: string]: DisplayableMessage }

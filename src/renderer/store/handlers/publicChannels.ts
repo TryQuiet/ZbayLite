@@ -47,7 +47,11 @@ export interface PublicChannelsStore {
 
 export const initialState: PublicChannelsStore = {}
 
-export const setPublicChannels = createAction<{ [name: string]: PublicChannel }>(
+// export const setPublicChannels = createAction<{ [name: string]: PublicChannel }>(
+//   actionTypes.SET_PUBLIC_CHANNELS
+// )
+
+export const setPublicChannels = createAction<any>(
   actionTypes.SET_PUBLIC_CHANNELS
 )
 
@@ -112,6 +116,11 @@ export const fetchPublicChannels = (messages: DisplayableMessage[]) => async dis
     console.warn(err)
   }
 }
+
+export const updatePublicChannels = (channels) => async dispatch => {
+  await dispatch(setPublicChannels(channels))
+}
+
 export const publishChannel = ({
   channelAddress,
   channelName,
@@ -167,7 +176,8 @@ export const publishChannel = ({
 
 export const epics = {
   fetchPublicChannels,
-  publishChannel
+  publishChannel,
+  updatePublicChannels
 }
 
 export const reducer = handleActions<PublicChannelsStore, PayloadType<PublicChannelsActions>>(
