@@ -205,12 +205,8 @@ export const inputLocked = createSelector(
       }
     }
     else {
-      if (users[signerPubKey]) {
-        if (users[signerPubKey].createdAt) {
-          if (currentContactArray[0]) {
-            return INPUT_STATE.AVAILABLE
-          }
-        }
+      if (currentContactArray[0]) {
+        return INPUT_STATE.AVAILABLE
       }
       if (locked.gt(0)) {
         return INPUT_STATE.LOCKED
