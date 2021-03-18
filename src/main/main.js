@@ -1,3 +1,5 @@
+'use strict'
+
 import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import electronLocalshortcut from 'electron-localshortcut'
 import path from 'path'
@@ -21,6 +23,8 @@ const isFetchedFromExternalSource = false
 
 const isTestnet = parseInt(process.env.ZBAY_IS_TESTNET)
 const nodeProc = null
+
+electronStore.set('appDataPath', app.getPath('appData'))
 
 export const isDev = process.env.NODE_ENV === 'development'
 const installExtensions = async () => {
