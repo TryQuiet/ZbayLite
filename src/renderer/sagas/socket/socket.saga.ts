@@ -99,13 +99,6 @@ export function* fetchAllMessages(socket): Generator {
   }
 }
 
-export function* gimmeData(socket): Generator {  // only for test, remove
-  while (true) {
-    const { payload } = yield* take(`${publicChannelsActions.gimmeData}`)
-    socket.emit('gimmeData', payload)
-  }
-}
-
 export function* getPublicChannels(socket): Generator {
   while (true) {
     const { payload } = yield* take(`${publicChannelsActions.getPublicChannels}`)
@@ -118,7 +111,6 @@ export function* useIO(socket): Generator {
   yield fork(sendMessage, socket)
   yield fork(fetchAllMessages, socket)
   yield fork(subscribeForTopic, socket)
-  yield fork(gimmeData, socket)  // only for test, remove
   yield fork(getPublicChannels, socket)
 }
 

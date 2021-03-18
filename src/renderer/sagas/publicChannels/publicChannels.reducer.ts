@@ -50,7 +50,6 @@ export const publicChannelsActions = {
     messages: any[]
   }>(Socket.RESPONSE_FETCH_ALL_MESSAGES),
   subscribeForTopic: createAction<string>(Socket.SUBSCRIBE_FOR_TOPIC),
-  gimmeData: createAction<IChannelInfo>('gimmeData'),  // Test, remove
   getPublicChannels: createAction<void>(Socket.GET_PUBLIC_CHANNELS),
   responseGetPublicChannels: createAction<IChannelInfoResponse>(Socket.RESPONSE_GET_PUBLIC_CHANNELS),
   addMessage: createAction<{

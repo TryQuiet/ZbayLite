@@ -155,42 +155,24 @@ export const fetchMessages = () => async (dispatch, getState) => {
     await dispatch(usersHandlers.epics.fetchUsers(txns[channels.registeredUsers.mainnet.address]))
     await dispatch(usersHandlers.epics.fetchOnionAddresses(txns[channels.tor.mainnet.address]))
     await dispatch(ratesHandlers.epics.fetchPrices(txns[channels.priceOracle.mainnet.address]))
-    await dispatch(
-      publicChannelsHandlers.epics.fetchPublicChannels(
-        txns[channels.channelOfChannels.mainnet.address]
-      )
-    )
+    // await dispatch(
+    //   publicChannelsHandlers.epics.fetchPublicChannels(
+    //     txns[channels.channelOfChannels.mainnet.address]
+    //   )
+    // )
     const importedChannels = electronStore.get('importedChannels')
     const publicChannels = publicChannelsSelectors.publicChannels(getState())
     const publicChannelAddresses = Object.values(publicChannels).map(el => el.address)
-    
-    // Testing:
-    // console.log('THE NUMBER: ', Object.values(publicChannels).length)
-    // let i = 0
-    // for (const pChannel of Object.values(publicChannels)) {
-    //   i++
-    //   console.log('dispatching', pChannel.name)
-    //   if (pChannel.name === 'zbay' || pChannel.name === 'store' || i <=5 ) {
-    //     await dispatch(publicChannelsActions.gimmeData({
-    //       address: pChannel.address,
-    //       displayName: pChannel.name,
-    //       description: pChannel.description,
-    //       owner: pChannel.owner,
-    //       timestamp: pChannel.timestamp
-    //     }))
-    //   }
-    // }
 
-    // if (importedChannels) {  // probably not needed anymore
-    //   for (const address of Object.keys(importedChannels)) {
-    //     await dispatch(setChannelMessages(importedChannels[address], txns[address]))
-        
+    // Ignore public channels - they are taken from db now
+    const privateChannelsAddresses = Object.keys(importedChannels).filter((addr) => !publicChannelAddresses.includes(addr))
+    console.log('private channels: ', privateChannelsAddresses)
+    if (privateChannelsAddresses) {
+      for (const address of privateChannelsAddresses) {
+        await dispatch(setChannelMessages(importedChannels[address], txns[address]))
+      }
+    }
 
-    //     if (publicChannelAddresses.includes(address)) {
-    //       await dispatch(publicChannelsActions.subscribeForTopic(address))
-    //     }
-    //   }
-    // }
     await dispatch(
       setChannelMessages(channels.general.mainnet, txns[channels.general.mainnet.address])
     )
