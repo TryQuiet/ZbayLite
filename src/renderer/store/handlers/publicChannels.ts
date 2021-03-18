@@ -47,11 +47,7 @@ export interface PublicChannelsStore {
 
 export const initialState: PublicChannelsStore = {}
 
-// export const setPublicChannels = createAction<{ [name: string]: PublicChannel }>(
-//   actionTypes.SET_PUBLIC_CHANNELS
-// )
-
-export const setPublicChannels = createAction<any>(
+export const setPublicChannels = createAction<{ [name: string]: PublicChannel }>(
   actionTypes.SET_PUBLIC_CHANNELS
 )
 

@@ -20,14 +20,6 @@ export interface Libp2pMessage {
   message: BasicMessage
 }
 
-export interface IChannelInfo {
-  address: string
-  displayName?: string
-  description?: string
-  owner?: string
-  timestamp?: number
-}
-
 interface ChannelInfo {
   address: string
   name: string
@@ -50,7 +42,7 @@ export const publicChannelsActions = {
     messages: any[]
   }>(Socket.RESPONSE_FETCH_ALL_MESSAGES),
   subscribeForTopic: createAction<string>(Socket.SUBSCRIBE_FOR_TOPIC),
-  getPublicChannels: createAction<void>(Socket.GET_PUBLIC_CHANNELS),
+  getPublicChannels: createAction<string>(Socket.GET_PUBLIC_CHANNELS),
   responseGetPublicChannels: createAction<IChannelInfoResponse>(Socket.RESPONSE_GET_PUBLIC_CHANNELS),
   addMessage: createAction<{
     key: string

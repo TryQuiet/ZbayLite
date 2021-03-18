@@ -16,7 +16,7 @@ import { actions as channelActions } from './channel'
 import contactsHandlers from './contacts'
 import usersHandlers from './users'
 import ratesHandlers from './rates'
-import publicChannelsHandlers from './publicChannels'
+// import publicChannelsHandlers from './publicChannels'
 import appHandlers from './app'
 
 import {
@@ -164,7 +164,7 @@ export const fetchMessages = () => async (dispatch, getState) => {
     const publicChannels = publicChannelsSelectors.publicChannels(getState())
     const publicChannelAddresses = Object.values(publicChannels).map(el => el.address)
 
-    // Ignore public channels - they are taken from db now
+    // Ignore public channels from blockchain - they are taken from db now
     const privateChannelsAddresses = Object.keys(importedChannels).filter((addr) => !publicChannelAddresses.includes(addr))
     console.log('private channels: ', privateChannelsAddresses)
     if (privateChannelsAddresses) {
@@ -232,8 +232,6 @@ const msgTypeToNotification = new Set([
   messageType.ITEM_BASIC,
   messageType.TRANSFER
 ])
-
-
 
 export const findNewMessages = (key, messages, state, isDM = false) => {
   if (messages) {

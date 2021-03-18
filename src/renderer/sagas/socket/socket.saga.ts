@@ -35,7 +35,6 @@ export function subscribe(socket) {
       emit(publicChannelsActions.responseLoadAllMessages(payload))
     })
     socket.on(socketsActions.RESPONSE_GET_PUBLIC_CHANNELS, payload => {
-      console.log('UPDATING CHANNELS ON THE CLIENT SIDE: ', payload)
       emit(publicChannelsActions.responseGetPublicChannels(payload))
     })
     return () => {}
@@ -101,7 +100,7 @@ export function* fetchAllMessages(socket): Generator {
 
 export function* getPublicChannels(socket): Generator {
   while (true) {
-    const { payload } = yield* take(`${publicChannelsActions.getPublicChannels}`)
+    yield* take(`${publicChannelsActions.getPublicChannels}`)
     socket.emit(socketsActions.GET_PUBLIC_CHANNELS)
   }
 }
