@@ -22,6 +22,8 @@ const isFetchedFromExternalSource = false
 const isTestnet = parseInt(process.env.ZBAY_IS_TESTNET)
 const nodeProc = null
 
+electronStore.set('appDataPath', app.getPath('appData'))
+
 export const isDev = process.env.NODE_ENV === 'development'
 const installExtensions = async () => {
   if (!isDev) return
@@ -40,6 +42,7 @@ const installExtensions = async () => {
   }
 }
 
+
 const windowSize = {
   width: 800,
   height: 540
@@ -49,6 +52,7 @@ var mainWindow
 let running = false
 
 const gotTheLock = app.requestSingleInstanceLock()
+
 
 if (!gotTheLock) {
   app.quit()
