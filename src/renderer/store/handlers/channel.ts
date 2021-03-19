@@ -131,7 +131,19 @@ const loadChannel = key => async (dispatch, getState) => {
       dispatch(setShareableUri(uri))
     }
     electronStore.set(`lastSeen.${key}`, `${Math.floor(DateTime.utc().toSeconds())}`)
-    dispatch(setAddress(contact.address))
+    console.log("kontakt", contact)
+    if (contact.address === undefined) {
+      console.log(contact.messages)
+      const contactsList = Object.values(contact.messages)
+      const contactAddress = contactsList[0].sender.replyTo
+      console.log("czy jest git?", contactAddress)
+      dispatch(setAddress(contactAddress))
+    } else {
+      dispatch(setAddress(contact.address))
+    }
+
+
+
 
     dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: key }))
     // await dispatch(clearNewMessages())
@@ -263,6 +275,11 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         status: 'pending',
         message: messageToSend
       })
+      if (messagePlaceholder.sender.replyTo === '') {
+        const myAddress = identitySelectors.address(getState())
+        messagePlaceholder.sender.replyTo = myAddress
+      }
+
       dispatch(
         contactsHandlers.actions.addMessage({
           key: channel.id,
@@ -490,6 +507,7 @@ export const reducer = handleActions<Channel, PayloadType<ChannelActions>>(
       }),
     [setAddress.toString()]: (state, { payload: address }: ChannelActions['setAddress']) =>
       produce(state, draft => {
+        console.log("set address", address)
         draft.address = address
       }),
     [resetChannel.toString()]: () => initialState

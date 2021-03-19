@@ -626,6 +626,14 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
           username: isUsernameValid ? fromUser.nickname : `anon${publicKey.substring(0, 10)}`
         })
       } else {
+
+
+
+
+
+
+
+
         sender = new ExchangeParticipant({
           replyTo: '',
           username: `anon${publicKey}`
