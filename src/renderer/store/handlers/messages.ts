@@ -144,7 +144,6 @@ export const fetchMessages = () => async (dispatch, getState) => {
     const txns = await fetchAllMessages()
     // Uncomment to create snapshot on next run.
     // createSnapshot(txns)
-
     const allMessagesTxnId = appSelectors.allTransactionsId(getState())
     for (const key in txns) {
       if (Object.prototype.hasOwnProperty.call(txns, key)) {
@@ -165,11 +164,13 @@ export const fetchMessages = () => async (dispatch, getState) => {
     const publicChannelAddresses = Object.values(publicChannels).map(el => el.address)
 
     // Ignore public channels from blockchain - they are taken from db now
-    const privateChannelsAddresses = Object.keys(importedChannels).filter((addr) => !publicChannelAddresses.includes(addr))
-    console.log('private channels: ', privateChannelsAddresses)
-    if (privateChannelsAddresses) {
-      for (const address of privateChannelsAddresses) {
-        await dispatch(setChannelMessages(importedChannels[address], txns[address]))
+    if (importedChannels) {
+      const privateChannelsAddresses = Object.keys(importedChannels).filter((addr) => !publicChannelAddresses.includes(addr))
+      console.log('private channels: ', privateChannelsAddresses)
+      if (privateChannelsAddresses) {
+        for (const address of privateChannelsAddresses) {
+          await dispatch(setChannelMessages(importedChannels[address], txns[address]))
+        }
       }
     }
 
@@ -198,8 +199,8 @@ export const fetchMessages = () => async (dispatch, getState) => {
   }
 }
 
-// Data from orbitdb
 export const updatePublicChannels = () => async (dispatch) => {
+  /** Get public channels from db */
   await dispatch(publicChannelsActions.getPublicChannels())
 }
 
