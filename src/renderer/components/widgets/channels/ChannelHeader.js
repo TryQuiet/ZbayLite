@@ -176,9 +176,9 @@ export const ChannelHeader = ({
                 })}>
                 {isRegisteredUsername || !isFromZbay
                   ? isFromZbay
-                    ? `${prefix[channelType]}${channel.name}`
+                    ? `${prefix[channelType]}${channel.name.substring(0, 20)}`
                     : 'unknown'
-                  : `${prefix[channelType]}${channel.address}`}
+                  : `${prefix[channelType]}${channel.name.substring(0, 20)}`}
               </Typography>
             </Grid>
             {mutedFlag && (
@@ -198,7 +198,7 @@ export const ChannelHeader = ({
           </Grid>
           {!R.isNil(members) ? (
             <Typography variant='caption' className={classes.subtitle}>
-              {members.has(userAddress) ? members.size : members.size + 1} Participants
+              {members.has(userAddress) ? members.size : members.size + 1} xdxd Participants
             </Typography>
           ) : null}
         </Grid>
