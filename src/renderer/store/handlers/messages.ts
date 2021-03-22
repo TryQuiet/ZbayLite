@@ -36,6 +36,7 @@ import { displayDirectMessageNotification, displayMessageNotification } from '..
 import electronStore from '../../../shared/electronStore'
 import notificationCenterSelectors from '../selectors/notificationCenter'
 import staticChannelsMessages from '../../static/staticChannelsMessages.json'
+import publicChannelsByName from '../selectors/publicChannels'
 
 export const messageSender = {
   replyTo: '',
@@ -174,10 +175,10 @@ export const fetchMessages = () => async (dispatch, getState) => {
       }
     }
 
-    await dispatch(
-      setChannelMessages(channels.general.mainnet, txns[channels.general.mainnet.address])
-    )
-    await dispatch(setChannelMessages(channels.store.mainnet, txns[channels.store.mainnet.address]))
+    // await dispatch(
+    //   setChannelMessages(channels.general.mainnet, txns[channels.general.mainnet.address])
+    // )
+    // await dispatch(setChannelMessages(channels.store.mainnet, txns[channels.store.mainnet.address]))
     await dispatch(setOutgoingTransactions(txns.undefined || []))
     dispatch(setUsersMessages(txns[identityAddress] || []))
     let allTransactionsId = allMessagesTxnId
@@ -199,9 +200,19 @@ export const fetchMessages = () => async (dispatch, getState) => {
   }
 }
 
-export const updatePublicChannels = () => async (dispatch) => {
-  /** Get public channels from db */
+export const updatePublicChannels = () => async (dispatch, getState) => {
+  /** Get public channels from db, set main channel on sidebar if needed */
   await dispatch(publicChannelsActions.getPublicChannels())
+  const mainChannel = publicChannelsByName.publicChannelsByName('zbay')(getState())
+  if (mainChannel && !contactsSelectors.contactExists(mainChannel.address)) {
+    await dispatch(
+      contactsHandlers.actions.addContact({
+        key: mainChannel.address,
+        contactAddress: mainChannel.address,
+        username: mainChannel.name
+      })
+    )
+  }
 }
 
 export const checkTransferCount = (address, messages) => async (dispatch, getState) => {
