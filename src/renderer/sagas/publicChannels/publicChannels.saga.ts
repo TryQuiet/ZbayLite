@@ -100,6 +100,9 @@ export function* loadAllMessages(
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
   const importedChannels = electronStore.get('importedChannels')
+  if (!importedChannels) {
+    return
+  }
   const { name } = importedChannels[action.payload.channelAddress]
   if (name) {
     const displayableMessages = action.payload.messages.map(msg => transferToMessage(msg, users))

@@ -42,7 +42,7 @@ export const publicChannelsActions = {
     messages: any[]
   }>(Socket.RESPONSE_FETCH_ALL_MESSAGES),
   subscribeForTopic: createAction<IChannelInfo>(Socket.SUBSCRIBE_FOR_TOPIC),
-  getPublicChannels: createAction<string>(Socket.GET_PUBLIC_CHANNELS),
+  getPublicChannels: createAction(Socket.GET_PUBLIC_CHANNELS),
   responseGetPublicChannels: createAction<IChannelInfoResponse>(Socket.RESPONSE_GET_PUBLIC_CHANNELS),
   addMessage: createAction<{
     key: string
