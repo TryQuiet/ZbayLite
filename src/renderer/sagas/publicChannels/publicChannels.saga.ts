@@ -88,7 +88,7 @@ export function* loadMessage(action: PublicChannelsActions['loadMessage']): Gene
 }
 
 export function* getPublicChannels(action: PublicChannelsActions['responseGetPublicChannels']): Generator {
-  console.log('loading public channels from db')
+  console.log('loading public channels')
   if (action.payload) {
     yield put(setPublicChannels(action.payload))
   }
