@@ -1,5 +1,3 @@
-'use strict'
-
 import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import electronLocalshortcut from 'electron-localshortcut'
 import path from 'path'
@@ -44,7 +42,6 @@ const installExtensions = async () => {
   }
 }
 
-
 const windowSize = {
   width: 800,
   height: 540
@@ -54,7 +51,6 @@ var mainWindow
 let running = false
 
 const gotTheLock = app.requestSingleInstanceLock()
-
 
 if (!gotTheLock) {
   app.quit()
