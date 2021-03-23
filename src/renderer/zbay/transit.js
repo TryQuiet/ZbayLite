@@ -1,5 +1,6 @@
 import { inflate, deflate } from '../compression'
 import { moderationActionsType, messageType } from '../../shared/static'
+import { ZcashBalance } from '../components/widgets/walletPanel/ZcashBalance/ZcashBalance'
 
 const currentNetwork = parseInt(process.env.ZBAY_IS_TESTNET) ? 2 : 1
 
@@ -16,6 +17,7 @@ const TXID_SIZE = 64
 const TYPING_INDICATOR = 1
 
 const ONION_ADDRESS_SIZE = 56
+const ZCASH_ADDRESS_SIZE = 56
 
 export const MESSAGE_SIZE =
   MEMO_SIZE -
@@ -59,12 +61,7 @@ export const TITLE_SIZE = 30
 const PROVIDE_SHIPPING_SIZE = 1
 const AMOUNT_SIZE = 8
 const DESCRIPTION_SIZE =
-  MESSAGE_SIZE -
-  TAG_SIZE -
-  BACKGROUND_SIZE -
-  TITLE_SIZE -
-  PROVIDE_SHIPPING_SIZE -
-  AMOUNT_SIZE
+  MESSAGE_SIZE - TAG_SIZE - BACKGROUND_SIZE - TITLE_SIZE - PROVIDE_SHIPPING_SIZE - AMOUNT_SIZE
 
 const addressSizeToType = {
   [SHIELDED_MAINNET_SIZE]: ADDRESS_TYPE.SHIELDED_MAINNET,
@@ -90,10 +87,7 @@ export const CHANNEL_DESCRIPTION_SIZE = networkType =>
     typeToIvkSize[networkType])
 
 export const UPDATE_DESCRIPTION_SIZE =
-  MESSAGE_SIZE -
-  MIN_FEE_SIZE +
-  ONLY_FOR_REGISTERED_SIZE +
-  typeToAddressSize[currentNetwork]
+  MESSAGE_SIZE - MIN_FEE_SIZE + ONLY_FOR_REGISTERED_SIZE + typeToAddressSize[currentNetwork]
 
 const moderationTypeToSize = {
   [moderationActionsType.ADD_MOD]: PUBLIC_KEY_SIZE,
@@ -236,6 +230,17 @@ export const packMemo = async (message, typingIndicato) => {
         MESSAGE_SIZE
       )
       break
+    case messageType.BASIC:
+      const onionAddress = Buffer.alloc(ONION_ADDRESS_SIZE)
+      onionAddress.write(message.message.onionAddress)
+      console.log(onionAddress)
+      const zcashAddress = Buffer.alloc(ZCASH_ADDRESS_SIZE)
+      zcashAddress.write(message.message.zcashAddress)
+      console.log(zcashAddress)
+      msgData = Buffer.concat([onionAddress, zcashAddress], MESSAGE_SIZE)
+      const d = await deflate(message.message)
+      msgData.write(d)
+      break
     default:
       msgData = Buffer.alloc(MESSAGE_SIZE)
       const d = await deflate(message.message)
@@ -289,9 +294,7 @@ export const unpackMemo = async memo => {
       const nickname = memoBuff.slice(lastNameEnds, nicknameEnds)
 
       const addressTypeEnds = nicknameEnds + ADDRESS_TYPE_SIZE
-      const addressType = memoBuff
-        .slice(nicknameEnds, addressTypeEnds)
-        .readUInt8()
+      const addressType = memoBuff.slice(nicknameEnds, addressTypeEnds).readUInt8()
 
       const addressEnds = addressTypeEnds + typeToAddressSize[addressType]
       const address = memoBuff.slice(addressTypeEnds, addressEnds)
@@ -330,14 +333,10 @@ export const unpackMemo = async memo => {
       const title = memoBuff.slice(backgroundEnds, titleEnds)
 
       const provideShippingEnds = titleEnds + PROVIDE_SHIPPING_SIZE
-      const provideShipping = memoBuff
-        .slice(titleEnds, provideShippingEnds)
-        .readUInt8()
+      const provideShipping = memoBuff.slice(titleEnds, provideShippingEnds).readUInt8()
 
       const amountEnds = provideShippingEnds + AMOUNT_SIZE
-      const amount = memoBuff
-        .slice(provideShippingEnds, amountEnds)
-        .readDoubleBE()
+      const amount = memoBuff.slice(provideShippingEnds, amountEnds).readDoubleBE()
 
       const descriptionEnds = amountEnds + DESCRIPTION_SIZE
       const description = memoBuff.slice(amountEnds, descriptionEnds)
@@ -376,9 +375,7 @@ export const unpackMemo = async memo => {
       const minFeeEnds = ownerEnds + MIN_FEE_SIZE
       const minFee = memoBuff.slice(ownerEnds, minFeeEnds).readUInt32BE()
       const onlyRegisteredEnds = minFeeEnds + ONLY_FOR_REGISTERED_SIZE
-      const onlyRegistered = memoBuff
-        .slice(minFeeEnds, onlyRegisteredEnds)
-        .readUInt8()
+      const onlyRegistered = memoBuff.slice(minFeeEnds, onlyRegisteredEnds).readUInt8()
       return {
         type,
         signature,
@@ -391,23 +388,15 @@ export const unpackMemo = async memo => {
         createdAt
       }
     case messageType.CHANNEL_SETTINGS_UPDATE:
-      const updateChannelAddressEnds =
-        timestampEnds + typeToAddressSize[currentNetwork]
-      const updateChannelAddress = memoBuff.slice(
-        timestampEnds,
-        updateChannelAddressEnds
-      )
+      const updateChannelAddressEnds = timestampEnds + typeToAddressSize[currentNetwork]
+      const updateChannelAddress = memoBuff.slice(timestampEnds, updateChannelAddressEnds)
       const updateMinFeeEnds = updateChannelAddressEnds + MIN_FEE_SIZE
-      const updateMinFee = memoBuff
-        .slice(updateChannelAddressEnds, updateMinFeeEnds)
-        .readUInt32BE()
-      const updateOnlyRegisteredEnds =
-        updateMinFeeEnds + ONLY_FOR_REGISTERED_SIZE
+      const updateMinFee = memoBuff.slice(updateChannelAddressEnds, updateMinFeeEnds).readUInt32BE()
+      const updateOnlyRegisteredEnds = updateMinFeeEnds + ONLY_FOR_REGISTERED_SIZE
       const updateOnlyRegistered = memoBuff
         .slice(updateMinFeeEnds, updateOnlyRegisteredEnds)
         .readUInt8()
-      const updateChannelDescriptionEnds =
-        updateOnlyRegisteredEnds + UPDATE_DESCRIPTION_SIZE
+      const updateChannelDescriptionEnds = updateOnlyRegisteredEnds + UPDATE_DESCRIPTION_SIZE
       const updateChannelDescription = memoBuff.slice(
         updateOnlyRegisteredEnds,
         updateChannelDescriptionEnds
@@ -428,14 +417,9 @@ export const unpackMemo = async memo => {
       const moderationTypeEnds = timestampEnds + MODERATION_TYPE_SIZE
       const moderationType = memoBuff.slice(timestampEnds, moderationTypeEnds)
       const targetSizeFlagEnds = moderationTypeEnds + TARGET_SIZE_FLAG
-      const targetSizeFlag = memoBuff
-        .slice(moderationTypeEnds, targetSizeFlagEnds)
-        .readUInt8()
+      const targetSizeFlag = memoBuff.slice(moderationTypeEnds, targetSizeFlagEnds).readUInt8()
       const moderationTargetEnds = targetSizeFlagEnds + targetSizeFlag
-      const moderationTarget = memoBuff.slice(
-        targetSizeFlagEnds,
-        moderationTargetEnds
-      )
+      const moderationTarget = memoBuff.slice(targetSizeFlagEnds, moderationTargetEnds)
       return {
         type,
         signature,
@@ -448,22 +432,15 @@ export const unpackMemo = async memo => {
       }
     case messageType.PUBLISH_CHANNEL:
       const networkTypeEnds = timestampEnds + PUBLISH_CHANNEL_NETWORK_TYPE_SIZE
-      const networkType = memoBuff
-        .slice(timestampEnds, networkTypeEnds)
-        .readUInt8()
+      const networkType = memoBuff.slice(timestampEnds, networkTypeEnds).readUInt8()
       const channelNameEnds = networkTypeEnds + PUBLISH_CHANNEL_NAME_SIZE
       const channelName = memoBuff.slice(networkTypeEnds, channelNameEnds)
-      const channelAddressEnds =
-        channelNameEnds + typeToAddressSize[networkType]
+      const channelAddressEnds = channelNameEnds + typeToAddressSize[networkType]
       const channelAddress = memoBuff.slice(channelNameEnds, channelAddressEnds)
       const channelIvkEnds = channelAddressEnds + typeToIvkSize[networkType]
       const channelIvk = memoBuff.slice(channelAddressEnds, channelIvkEnds)
-      const channelDescriptionEnds =
-        channelIvkEnds + CHANNEL_DESCRIPTION_SIZE(networkType)
-      const channelDescription = memoBuff.slice(
-        channelIvkEnds,
-        channelDescriptionEnds
-      )
+      const channelDescriptionEnds = channelIvkEnds + CHANNEL_DESCRIPTION_SIZE(networkType)
+      const channelDescription = memoBuff.slice(channelIvkEnds, channelDescriptionEnds)
       return {
         type,
         signature,
@@ -477,6 +454,25 @@ export const unpackMemo = async memo => {
         },
         createdAt
       }
+
+    case messageType.BASIC:
+      const onionAddressEnds = timestampEnds + ONION_ADDRESS_SIZE
+      const onionAddress = memoBuff.slice(timestampEnds, onionAddressEnds).readUInt8()
+      const zcashAddressEnds = onionAddressEnds + ZCASH_ADDRESS_SIZE
+      const zcashAddress = memoBuff.slice(onionAddressEnds, zcashAddressEnds).readUInt8()
+      const messageEnds = zcashAddressEnds + MESSAGE_SIZE -1
+      const message = memoBuff.slice(zcashAddressEnds, messageEnds).readUInt8()
+
+      return {
+        type,
+        signature,
+        r,
+        onionAddress,
+        zcashAddress,
+        message: await inflate(message.toString()),
+        createdAt
+      }
+
     default:
       const message = memoBuff.slice(timestampEnds)
       const typeIndicator = memoBuff.slice(MEMO_SIZE - 1).readUInt8()

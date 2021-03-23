@@ -131,6 +131,11 @@ const loadChannel = key => async (dispatch, getState) => {
       dispatch(setShareableUri(uri))
     }
     electronStore.set(`lastSeen.${key}`, `${Math.floor(DateTime.utc().toSeconds())}`)
+
+
+
+
+    //------------------------------------------------------------------------------------------------------
     console.log("kontakt", contact)
     if (contact.address === undefined) {
       console.log(contact.messages)
@@ -252,7 +257,9 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
     message = messages.createMessage({
       messageData: {
         type: messageType.BASIC,
-        data: messageToSend
+        data: messageToSend,
+        onionAddress: "onionAddress",
+        zcashAddress: "zcashAddress"
       },
       privKey: privKey
     })
@@ -275,10 +282,21 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         status: 'pending',
         message: messageToSend
       })
+
+
+
+      console.log("heeeee Przed  ", messagePlaceholder.sender.replyTo)
+      //------------------------------------------------------------------------------------------------------
       if (messagePlaceholder.sender.replyTo === '') {
+        console.log("heeeee ?  ")
         const myAddress = identitySelectors.address(getState())
         messagePlaceholder.sender.replyTo = myAddress
       }
+      console.log("heeeee Po  ", messagePlaceholder.sender.replyTo)
+
+
+
+
 
       dispatch(
         contactsHandlers.actions.addMessage({
