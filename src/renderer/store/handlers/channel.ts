@@ -250,23 +250,27 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
   const users = usersSelectors.users(getState())
   const useTor = appSelectors.useTor(getState())
   const id = channelSelectors.id(getState())
+  const myUserOnionAddress = identitySelectors.data(getState())
+  const myUser = usersSelectors.myUser(getState())
   let message
+
   if (enterPressed && !shiftPressed) {
     event.preventDefault()
     const privKey = identitySelectors.signerPrivKey(getState())
     message = messages.createMessage({
       messageData: {
         type: messageType.BASIC,
-        data: messageToSend,
-        onionAddress: "onionAddress",
-        zcashAddress: "zcashAddress"
+        data: {
+          ...messageToSend,
+          onionAddress: myUserOnionAddress.onionAddress,
+          zcashAddress: myUser.address
+        },
       },
       privKey: privKey
     })
     const isMergedMessageTooLong = await dispatch(_checkMessageSize(message.message))
     if (!isMergedMessageTooLong) {
       dispatch(setMessage({ value: '', id: id }))
-      const myUser = usersSelectors.myUser(getState())
       const messageDigest = crypto.createHash('sha256')
       const messageEssentials = R.pick(['createdAt', 'message'])(message)
       const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')

@@ -231,13 +231,15 @@ export const packMemo = async (message, typingIndicato) => {
       )
       break
     case messageType.BASIC:
+      console.log('onion', message.message.onionAddress)
+      console.log('zcash', message.message.zcashAddress)
       const onionAddress = Buffer.alloc(ONION_ADDRESS_SIZE)
-      onionAddress.write(message.message.onionAddress)
+      onionAddress.write('message.message.onionAddress')
       console.log(onionAddress)
       const zcashAddress = Buffer.alloc(ZCASH_ADDRESS_SIZE)
-      zcashAddress.write(message.message.zcashAddress)
+      zcashAddress.write('message.message.zcashAddress')
       console.log(zcashAddress)
-      msgData = Buffer.concat([onionAddress, zcashAddress], MESSAGE_SIZE)
+      msgData = Buffer.concat([onionAddress, zcashAddress], MESSAGE_SIZE - ONION_ADDRESS_SIZE - ZCASH_ADDRESS_SIZE) //here
       const d = await deflate(message.message)
       msgData.write(d)
       break
