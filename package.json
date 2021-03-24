@@ -90,7 +90,9 @@
     "mainnet": "docker-compose up znode-mainnet",
     "testnet": "docker-compose up znode-testnet",
     "neon": "electron-build-env neon build --release && npm run copyBinary",
+    "neonWin": "electron-build-env neon build --release && npm run copyBinaryWin",
     "copyBinary": "cp native/index.node worker",
+    "copyBinaryWin": "move native/index.node worker",
     "neon-rebuild": "rm native/index.node && rm -rf native/target && rm native/Cargo.lock && npm run neon"
   },
   "author": {

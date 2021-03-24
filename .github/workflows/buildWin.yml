@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - merge-master-orbitdb
+      - feature/build-indexnode-cli
 
 jobs:
   build_on_windows:
@@ -22,11 +22,20 @@ jobs:
       with:
         fileName: 'win-certificate.pfx'
         encodedString: ${{ secrets.WIN_CSC_LINK }}
-    - name: fetch index.node
+    - name: download rust
       shell: bash
+      run: curl https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe --output ./rustup-init.exe
+    - name: install rust
+      shell: bash
+      run: ./rustup-init.exe
+    - name: build binary
+      shell: bash
+      run: npm run neoncp
+    - name: fetch index.node
+      shell: bashcp
       run: curl https://zbay-binaries.s3.us-east-2.amazonaws.com/index.node --output ./worker/index.node
     - name: install dependencies
-      shell: bash
+      shell: bashcp
       run: npm install
     - name: pull tor binary
       shell: bash
