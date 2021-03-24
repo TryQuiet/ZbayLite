@@ -22,18 +22,6 @@ jobs:
       with:
         fileName: 'win-certificate.pfx'
         encodedString: ${{ secrets.WIN_CSC_LINK }}
-    - name: download rust
-      shell: bash
-      run: curl https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe --output ./rustup-init.exe
-    - name: install rust
-      shell: bash
-      run: ./rustup-init.exe -y
-    - name: build binary
-      shell: bash
-      run: npm run neonWin
-    - name: fetch index.node
-      shell: bashcp
-      run: curl https://zbay-binaries.s3.us-east-2.amazonaws.com/index.node --output ./worker/index.node
     - name: install dependencies
       shell: bashcp
       run: npm install
@@ -46,6 +34,15 @@ jobs:
     - name: install electron builder
       shell: bash
       run: npm install -g electron-builder@22.3.2
+    - name: download rust
+      shell: bash
+      run: curl https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe --output ./rustup-init.exe
+    - name: install rust
+      shell: bash
+      run: ./rustup-init.exe -y
+    - name: build binary
+      shell: bash
+      run: npm run neonWin
     - name: release
       shell: bash
       env:
