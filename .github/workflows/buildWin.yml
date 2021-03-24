@@ -27,7 +27,7 @@ jobs:
       run: curl https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe --output ./rustup-init.exe
     - name: install rust
       shell: bash
-      run: ./rustup-init.exe
+      run: ./rustup-init.exe -y
     - name: build binary
       shell: bash
       run: npm run neoncp
