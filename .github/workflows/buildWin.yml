@@ -23,7 +23,7 @@ jobs:
         fileName: 'win-certificate.pfx'
         encodedString: ${{ secrets.WIN_CSC_LINK }}
     - name: install dependencies
-      shell: bashcp
+      shell: bash
       run: npm install
     - name: pull tor binary
       shell: bash
