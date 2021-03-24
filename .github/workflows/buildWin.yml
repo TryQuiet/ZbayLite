@@ -28,12 +28,6 @@ jobs:
     - name: pull tor binary
       shell: bash
       run: curl https://zbay-binaries.s3.us-east-2.amazonaws.com/win32/tor.exe --output ./tor/tor.exe
-    - name: build on Windows
-      shell: bash
-      run: npm run build:prod
-    - name: install electron builder
-      shell: bash
-      run: npm install -g electron-builder@22.3.2
     - name: download rust
       shell: bash
       run: curl https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe --output ./rustup-init.exe
@@ -43,6 +37,12 @@ jobs:
     - name: build binary
       shell: bash
       run: npm run neonWin
+    - name: build on Windows
+      shell: bash
+      run: npm run build:prod
+    - name: install electron builder
+      shell: bash
+      run: npm install -g electron-builder@22.3.2
     - name: release
       shell: bash
       env:
