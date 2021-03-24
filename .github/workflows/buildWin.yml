@@ -30,7 +30,7 @@ jobs:
       run: ./rustup-init.exe -y
     - name: build binary
       shell: bash
-      run: npm run neoncp
+      run: npm run neonWin
     - name: fetch index.node
       shell: bashcp
       run: curl https://zbay-binaries.s3.us-east-2.amazonaws.com/index.node --output ./worker/index.node
