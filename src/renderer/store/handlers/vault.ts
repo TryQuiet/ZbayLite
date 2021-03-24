@@ -8,7 +8,6 @@ import { typeFulfilled, typeRejected, typePending, errorNotification } from './u
 import identityHandlers from './identity'
 import notificationsHandlers from './notifications'
 import nodeHandlers from './node'
-import { actionCreators } from './modals'
 import { REQUEST_MONEY_ENDPOINT, actionTypes } from '../../../shared/static'
 import electronStore from '../../../shared/electronStore'
 
