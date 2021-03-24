@@ -16,7 +16,6 @@ import { actions as channelActions } from './channel'
 import contactsHandlers from './contacts'
 import usersHandlers from './users'
 import ratesHandlers from './rates'
-import channelHandlers from '../handlers/channel'
 // import publicChannelsHandlers from './publicChannels'
 import appHandlers from './app'
 
@@ -226,7 +225,7 @@ export const setMainChannel = () => async (dispatch, getState) => {
   }
 }
 
-export const updatePublicChannels = () => async (dispatch, getState) => {
+export const updatePublicChannels = () => async (dispatch) => {
   /** Get public channels from db, set main channel on sidebar if needed */
   await dispatch(publicChannelsActions.getPublicChannels())
   await dispatch(setMainChannel())
