@@ -139,10 +139,10 @@ const loadChannel = key => async (dispatch, getState) => {
     console.log("kontakt", contact)
     if (contact.address === undefined) {
       console.log(contact.messages)
-      const contactsList = Object.values(contact.messages)
-      const contactAddress = contactsList[0].sender.replyTo
-      console.log("czy jest git?", contactAddress)
-      dispatch(setAddress(contactAddress))
+      const contactsListMessages = Object.values(contact.messages)
+
+      console.log("czy jest git?", contactsListMessages)
+
     } else {
       dispatch(setAddress(contact.address))
     }
@@ -216,6 +216,7 @@ const sendTypingIndicator = value => async (dispatch, getState) => {
 
   if (useTor && users[channel.id] && users[channel.id].onionAddress) {
     try {
+      console.log("here?")
       const memo = await packMemo(message, value)
       const result = await sendMessage(memo, users[channel.id].onionAddress)
       if (result === -1) {
@@ -261,7 +262,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       messageData: {
         type: messageType.BASIC,
         data: {
-          ...messageToSend,
+          messageToSend,
           onionAddress: myUserOnionAddress.onionAddress,
           zcashAddress: myUser.address
         },
@@ -286,7 +287,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         status: 'pending',
         message: messageToSend
       })
-
 
 
       console.log("heeeee Przed  ", messagePlaceholder.sender.replyTo)

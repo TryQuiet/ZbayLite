@@ -17,7 +17,7 @@ const TXID_SIZE = 64
 const TYPING_INDICATOR = 1
 
 const ONION_ADDRESS_SIZE = 56
-const ZCASH_ADDRESS_SIZE = 56
+const ZCASH_ADDRESS_SIZE = 78
 
 export const MESSAGE_SIZE =
   MEMO_SIZE -
@@ -230,18 +230,31 @@ export const packMemo = async (message, typingIndicato) => {
         MESSAGE_SIZE
       )
       break
-    case messageType.BASIC:
-      console.log('onion', message.message.onionAddress)
-      console.log('zcash', message.message.zcashAddress)
+      case messageType.BASIC:
+      console.log('PPP onion : ', message.message.onionAddress)
+      console.log('zcash : ', message.message.zcashAddress)
+
       const onionAddress = Buffer.alloc(ONION_ADDRESS_SIZE)
-      onionAddress.write('message.message.onionAddress')
-      console.log(onionAddress)
+      onionAddress.write(message.message.zcashAddress)
+      console.log('PPP 1. onionAddress', onionAddress)
+      console.log('PPP - ONION_ADDRESS_SIZE', ONION_ADDRESS_SIZE)
+
       const zcashAddress = Buffer.alloc(ZCASH_ADDRESS_SIZE)
-      zcashAddress.write('message.message.zcashAddress')
-      console.log(zcashAddress)
-      msgData = Buffer.concat([onionAddress, zcashAddress], MESSAGE_SIZE - ONION_ADDRESS_SIZE - ZCASH_ADDRESS_SIZE) //here
-      const d = await deflate(message.message)
-      msgData.write(d)
+      zcashAddress.write(message.message.zcashAddress)
+      console.log('PPP 2. zcashAddress', zcashAddress)
+      console.log('PPP - ZCASH_ADDRESS_SIZE', ZCASH_ADDRESS_SIZE)
+
+      
+      
+      const message1 = Buffer.alloc(MESSAGE_SIZE - ONION_ADDRESS_SIZE - ZCASH_ADDRESS_SIZE)
+      const d = await deflate(message.message.messageToSend)
+      message1.write(d)
+      console.log('PPP 3. d', d)
+      console.log('PPP - message1', message1)
+      
+      msgData = Buffer.concat([onionAddress, zcashAddress, message1], MESSAGE_SIZE)
+      console.log('PPP 4. msgData', msgData)
+      console.log('PPP - MESSAGE_SIZE', MESSAGE_SIZE)
       break
     default:
       msgData = Buffer.alloc(MESSAGE_SIZE)
@@ -458,13 +471,24 @@ export const unpackMemo = async memo => {
       }
 
     case messageType.BASIC:
-      const onionAddressEnds = timestampEnds + ONION_ADDRESS_SIZE
-      const onionAddress = memoBuff.slice(timestampEnds, onionAddressEnds).readUInt8()
-      const zcashAddressEnds = onionAddressEnds + ZCASH_ADDRESS_SIZE
-      const zcashAddress = memoBuff.slice(onionAddressEnds, zcashAddressEnds).readUInt8()
-      const messageEnds = zcashAddressEnds + MESSAGE_SIZE -1
-      const message = memoBuff.slice(zcashAddressEnds, messageEnds).readUInt8()
+      console.log('UUU 1. timestampEnds', timestampEnds)
 
+      const onionAddressEnds = timestampEnds + ONION_ADDRESS_SIZE
+      const onionAddress = memoBuff.slice(timestampEnds, onionAddressEnds)
+      console.log('UUU 2. onionAddressEnds', onionAddressEnds)
+      console.log('UUU - onionAddress', onionAddress)
+
+      const zcashAddressEnds = onionAddressEnds + ZCASH_ADDRESS_SIZE
+      const zcashAddress = memoBuff.slice(onionAddressEnds, zcashAddressEnds)
+      console.log('UUU 3. zcashAddressEnds', zcashAddressEnds)
+      console.log('UUU - zcashAddress', zcashAddress)
+
+      const messageEnds = MESSAGE_SIZE - ONION_ADDRESS_SIZE - ZCASH_ADDRESS_SIZE
+      const message = memoBuff.slice(zcashAddressEnds, messageEnds)
+      console.log('UUU 4. messageEnds', messageEnds)
+      console.log('UUU - message', message)
+      console.log('UUU', memoBuff)
+      
       return {
         type,
         signature,

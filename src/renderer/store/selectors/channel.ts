@@ -174,6 +174,7 @@ export const inputLocked = createSelector(
       return item.key === channelId && item.connected
     })
 
+    return INPUT_STATE.AVAILABLE
     if (available.gt(networkFee)) {
       if (users[signerPubKey]) {
         if (users[signerPubKey].createdAt) {
