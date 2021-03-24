@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - feature/build-indexnode-cli
+      - merge-master-orbitdb
 
 jobs:
   build_on_windows:
