@@ -135,17 +135,25 @@ const loadChannel = key => async (dispatch, getState) => {
 
 
 
-    //------------------------------------------------------------------------------------------------------
-    console.log("kontakt", contact)
-    if (contact.address === undefined) {
-      console.log(contact.messages)
-      const contactsListMessages = Object.values(contact.messages)
 
-      console.log("czy jest git?", contactsListMessages)
+
+
+    // ŁADOWANIE KANAŁU/ Pobranie pierwszej wiadomosci od anona (if address == undefined), 
+    // wyciagniecie z niej adresow i wstawienie ich do stora (aktualny otwarty kanal) 
+
+    console.log("CHANNEL-contact", contact)
+    const contactsListMessages = Object.values(contact.messages)
+    console.log("CHANNEL-contactsListMessages?", contactsListMessages)
+
+    if (contact.address === undefined) {
 
     } else {
       dispatch(setAddress(contact.address))
     }
+
+
+
+
 
 
 
@@ -205,6 +213,11 @@ const sendTypingIndicator = value => async (dispatch, getState) => {
   const users = usersSelectors.users(getState())
   const useTor = appSelectors.useTor(getState())
 
+  const myUserOnionAddress = identitySelectors.data(getState())
+  const myUser = usersSelectors.myUser(getState())
+  const onionAddressProp = myUserOnionAddress.onionAddress
+  const zcashAddressProp = myUser.address
+
   const privKey = identitySelectors.signerPrivKey(getState())
   const message = messages.createMessage({
     messageData: {
@@ -216,8 +229,7 @@ const sendTypingIndicator = value => async (dispatch, getState) => {
 
   if (useTor && users[channel.id] && users[channel.id].onionAddress) {
     try {
-      console.log("here?")
-      const memo = await packMemo(message, value)
+      const memo = await packMemo(message, value, onionAddressProp, zcashAddressProp)
       const result = await sendMessage(memo, users[channel.id].onionAddress)
       if (result === -1) {
         dispatch(
@@ -251,8 +263,11 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
   const users = usersSelectors.users(getState())
   const useTor = appSelectors.useTor(getState())
   const id = channelSelectors.id(getState())
+
   const myUserOnionAddress = identitySelectors.data(getState())
   const myUser = usersSelectors.myUser(getState())
+  const onionAddressProp = myUserOnionAddress.onionAddress
+  const zcashAddressProp = myUser.address
   let message
 
   if (enterPressed && !shiftPressed) {
@@ -262,9 +277,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       messageData: {
         type: messageType.BASIC,
         data: {
-          messageToSend,
-          onionAddress: myUserOnionAddress.onionAddress,
-          zcashAddress: myUser.address
+          messageToSend
         },
       },
       privKey: privKey
@@ -289,14 +302,9 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       })
 
 
-      console.log("heeeee Przed  ", messagePlaceholder.sender.replyTo)
-      //------------------------------------------------------------------------------------------------------
-      if (messagePlaceholder.sender.replyTo === '') {
-        console.log("heeeee ?  ")
-        const myAddress = identitySelectors.address(getState())
-        messagePlaceholder.sender.replyTo = myAddress
-      }
-      console.log("heeeee Po  ", messagePlaceholder.sender.replyTo)
+
+
+
 
 
 
@@ -318,7 +326,8 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       const identityAddress = identitySelectors.address(getState())
       if (useTor && users[channel.id] && users[channel.id].onionAddress) {
         try {
-          const memo = await packMemo(message, false)
+          console.log("CHANNEL-zcash-onion", zcashAddressProp, onionAddressProp)
+          const memo = await packMemo(message, false, onionAddressProp, zcashAddressProp)
           const result = await sendMessage(memo, users[channel.id].onionAddress)
           if (result === -1) {
             dispatch(
@@ -529,7 +538,7 @@ export const reducer = handleActions<Channel, PayloadType<ChannelActions>>(
       }),
     [setAddress.toString()]: (state, { payload: address }: ChannelActions['setAddress']) =>
       produce(state, draft => {
-        console.log("set address", address)
+        console.log("CHANNEL-address", address)
         draft.address = address
       }),
     [resetChannel.toString()]: () => initialState
