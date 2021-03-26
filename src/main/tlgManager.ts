@@ -145,6 +145,15 @@ console.log('before spawning connectionsmanager')
     }
   })
 
+  export const sleep = (time = 1000) =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, time)
+  })
+
+sleep(10000)
+
   console.log('before inirializing mode')
 
   await connectonsManager.initializeNode()
@@ -153,7 +162,7 @@ console.log('before inirializing dataserver')
 
   const dataServer = new TlgManager.DataServer()
   dataServer.listen()
-  TlgManager.initListeners(dataServer.io, connectonsManager)
+  TlgManager.initListeners(dataServer.io, connectonsManager)srah
   webContents.send('connectToWebsocket')
 }
 
