@@ -152,7 +152,7 @@ console.log('before spawning connectionsmanager')
     }, time)
   })
 
-sleep(10000)
+await sleep(10000)
 
   console.log('before inirializing mode')
 
