@@ -258,7 +258,7 @@ app.on('ready', async () => {
       tor = await spawnTor(mainWindow.webContents)
       createServer(mainWindow)
       mainWindow.webContents.send('onionAddress', getOnionAddress())
-      await runLibp2p(mainWindow.webContents)
+      //await runLibp2p(mainWindow.webContents)
     } catch (error) {
       console.log(error)
     }
@@ -279,7 +279,7 @@ app.on('ready', async () => {
   ipcMain.on('spawnTor', async (event, arg) => {
     if (tor === null) {
       tor = await spawnTor()
-      await runLibp2p(mainWindow.webContents)
+      //await runLibp2p(mainWindow.webContents)
       electronStore.set('isTorActive', true)
       mainWindow.webContents.send('connectWsContacts')
     }
