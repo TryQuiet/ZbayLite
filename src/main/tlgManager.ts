@@ -123,10 +123,15 @@ export const getOnionAddress = (): string => {
 }
 
 export const runLibp2p = async (webContents): Promise<any> => {
+
+console.log('entered runlibp2p')
+
   const ports = electronStore.get('ports')
   const appDataPath = electronStore.get('appDataPath')
   console.log(`this is appdata path srah ${appDataPath}`)
   const { libp2pHiddenService } = electronStore.get('hiddenServices')
+
+console.log('before spawning connectionsmanager')
 
   const connectonsManager = new TlgManager.ConnectionsManager({
     port: ports.libp2pHiddenService,
@@ -139,7 +144,13 @@ export const runLibp2p = async (webContents): Promise<any> => {
       }
     }
   })
+
+  console.log('before inirializing mode')
+
   await connectonsManager.initializeNode()
+
+console.log('before inirializing dataserver')
+
   const dataServer = new TlgManager.DataServer()
   dataServer.listen()
   TlgManager.initListeners(dataServer.io, connectonsManager)
