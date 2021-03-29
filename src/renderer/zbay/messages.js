@@ -449,7 +449,6 @@ export const messageToTransfer = async ({
   fee = networkFee,
   donation = { allow: false }
 }) => {
-  console.log("eeeelko", address)
   let transfer
   let memo
   if (address.length === 35) {

@@ -113,7 +113,6 @@ export type ChannelActions = ActionsType<typeof actions>
 
 const loadChannel = key => async (dispatch, getState) => {
   try {
-    console.log("id-key", key)
     dispatch(setChannelId(key))
     dispatch(setDisplayableLimit(30))
     // Calculate URI on load, that way it won't be outdated, even if someone decides
@@ -133,33 +132,13 @@ const loadChannel = key => async (dispatch, getState) => {
     }
     electronStore.set(`lastSeen.${key}`, `${Math.floor(DateTime.utc().toSeconds())}`)
 
-
-
-
-
-
-
-    // ŁADOWANIE KANAŁU/ Pobranie pierwszej wiadomosci od anona (if address == undefined), 
-    // wyciagniecie z niej adresow i wstawienie ich do stora (aktualny otwarty kanal) 
-
-    console.log("CHANNEL-contact", contact)
     const contactsListMessages = Object.values(contact.messages)
-    console.log("CHANNEL-contactsListMessages?", contactsListMessages)
     const channelAddress = contactsListMessages[0].zcashAddress
     if (contact.address === undefined) {
-      console.log("XDXD")
       dispatch(setAddress(channelAddress))
     } else {
       dispatch(setAddress(contact.address))
     }
-
-
-
-
-
-
-
-
 
     dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: key }))
     // await dispatch(clearNewMessages())
@@ -232,7 +211,6 @@ const sendTypingIndicator = value => async (dispatch, getState) => {
 
   if (useTor && users[channel.id] && users[channel.id].onionAddress) {
     try {
-      console.log("TRYCATCH2", onionAddressProp)
       const memo = await packMemo(message, value, onionAddressProp, zcashAddressProp)
       const result = await sendMessage(memo, users[channel.id].onionAddress)
       if (result === -1) {
@@ -272,7 +250,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
   const myUser = usersSelectors.myUser(getState())
   const onionAddressProp = myUserOnionAddress.onionAddress
   const zcashAddressProp = myUser.address
-  console.log('onionAddressProp, zcashAddressProp', onionAddressProp, zcashAddressProp)
   let message
 
   if (enterPressed && !shiftPressed) {
@@ -327,20 +304,13 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
           id: key
         })
       )
-      console.log('22onionAddressProp, zcashAddressProp', onionAddressProp, zcashAddressProp)
 
       const identityAddress = identitySelectors.address(getState())
-      console.log("CHANNEL-key?", id)
       const contact2 = contactsSelectors.contact(id)(getState())
-      console.log("CHANNEL-contact?", contact2)
-
       const contactsListMessages2 = Object.values(contact2.messages)
-      console.log("CHANNEL-contactsListMessages?", contactsListMessages2)
       let channelOnionAddress = null
       let user = null
       let onionAddress = null
-
-      console.log('iff', contactsListMessages2)
 
       if (contactsListMessages2[0]) {
         channelOnionAddress = contactsListMessages2[0].onionAddress
@@ -349,18 +319,13 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       if (users[channel.id] === undefined && channelOnionAddress !== '') {
         user = ''
         onionAddress = channelOnionAddress
-        console.log('iffonionAddress, channelOnionAddress', onionAddress, channelOnionAddress)
       } else {
         user = users[channel.id]
         onionAddress = users[channel.id].onionAddress
       }
-      console.log("if1", useTor)
-      console.log("if2", user)
-      console.log("if3", onionAddress)
 
       if (useTor && user !== null && onionAddress !== null) {
         try {
-          console.log('TRYCATCH', onionAddressProp)
           const memo = await packMemo(message, false, onionAddressProp, zcashAddressProp)
           const result = await sendMessage(memo, onionAddress)
           if (result === -1) {
