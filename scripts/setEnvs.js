@@ -28,7 +28,7 @@ exports.default = async function (context) {
   fs.unlinkSync(`${context.artifactPaths[0]}`)
   const appName = context.artifactPaths[0].split('/').pop()
   if (appName) {
-    childProcess.execSync(`mv ./Zbay-x86_64.AppImage ${context.outDir}/${appName}`)
+    childProcess.execSync(`mv ./Zbay-x86_64.AppImage ${context.outDir}/dupa`)
   } else throw new Error('no file name')
   return console.log('env added')
 }
