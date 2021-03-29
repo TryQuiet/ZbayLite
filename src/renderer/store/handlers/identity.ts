@@ -499,8 +499,6 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
       })
     )
   }
-  console.log('BEFORE DISPATCHING AFTER ADDING HOLMES')
-  dispatch(contactsHandlers.epics.connectWsContacts())
   if (electronStore.get('isMigrating')) {
     dispatch(modalsHandlers.actionCreators.openModal('migrationModal')())
   }
