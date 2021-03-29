@@ -198,7 +198,7 @@ export const ChannelHeader = ({
           </Grid>
           {!R.isNil(members) ? (
             <Typography variant='caption' className={classes.subtitle}>
-              {members.has(userAddress) ? members.size : members.size + 1} xdxd Participants
+              {members.has(userAddress) ? members.size : members.size + 1} Participants
             </Typography>
           ) : null}
         </Grid>

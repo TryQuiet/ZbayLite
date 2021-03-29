@@ -458,7 +458,7 @@ export const messageToTransfer = async ({
       amount: new BigNumber(amount).times(satoshiMultiplier).toNumber()
     }
   } else {
-    memo = await packMemo(message)
+    memo = await packMemo(message, false, "", "")
     transfer = {
       address: address,
       amount: new BigNumber(amount).times(satoshiMultiplier).toNumber(),

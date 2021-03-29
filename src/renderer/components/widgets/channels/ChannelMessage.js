@@ -95,7 +95,13 @@ const checkLinking = (
   allowAll,
   whitelisted
 ) => {
-  let parsedMessage = message
+  let newMessage
+  if(message.messageToSend){
+    newMessage= message.messageToSend
+  }else {
+    newMessage = message
+  }
+  let parsedMessage = newMessage
     .replace(/ /g, String.fromCharCode(160))
     .replace(/\n/gi, `${String.fromCharCode(160)}\n${String.fromCharCode(160)}`)
     .split(String.fromCharCode(160))
@@ -248,9 +254,12 @@ export const ChannelMessage = ({
   const [parsedMessage, setParsedMessage] = React.useState('')
   const [openModal, setOpenModal] = React.useState(false)
   const status = message.status || null
-  const messageData = message.message.itemId
+  let messageData = message.message.itemId
     ? message.message.text
     : message.message
+  if(messageData.messageToSend){
+    messageData= messageData.messageToSend
+  }
   const autoloadImage =
     imageUrl && !torEnabled
       ? autoload.includes(new URL(imageUrl).hostname)

@@ -72,34 +72,36 @@ export class DisplayableMessage {
   amount: number
   memo: string
   datetime: string
+  zcashAddress: string
+  onionAddress: string
 
   constructor(
     values: Partial<DisplayableMessage> &
-    Pick<
-    DisplayableMessage,
-    | 'id'
-    | 'keys'
-    | 'owner'
-    | 'name'
-    | 'sender'
-    | 'receiver'
-    | 'createdAt'
-    | 'message'
-    | 'tag'
-    | 'isUnregistered'
-    | 'specialType'
-    | 'blockTime'
-    | 'block_height'
-    | 'messageId'
-    | 'nickname'
-    | 'address'
-    | 'outgoing_metadata'
-    | 'memohex'
-    | 'txid'
-    | 'amount'
-    | 'memo'
-    | 'datetime'
-    >
+      Pick<
+        DisplayableMessage,
+        | 'id'
+        | 'keys'
+        | 'owner'
+        | 'name'
+        | 'sender'
+        | 'receiver'
+        | 'createdAt'
+        | 'message'
+        | 'tag'
+        | 'isUnregistered'
+        | 'specialType'
+        | 'blockTime'
+        | 'block_height'
+        | 'messageId'
+        | 'nickname'
+        | 'address'
+        | 'outgoing_metadata'
+        | 'memohex'
+        | 'txid'
+        | 'amount'
+        | 'memo'
+        | 'datetime'
+      >
   ) {
     Object.assign(this, values)
   }
