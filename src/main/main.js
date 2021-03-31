@@ -153,28 +153,48 @@ const createWindow = () => {
 
 let isUpdatedStatusCheckingStarted = false
 
+const isNetworkError = errorObject => {
+  return (
+    errorObject.message === 'net::ERR_INTERNET_DISCONNECTED' ||
+    errorObject.message === 'net::ERR_PROXY_CONNECTION_FAILED' ||
+    errorObject.message === 'net::ERR_CONNECTION_RESET' ||
+    errorObject.message === 'net::ERR_CONNECTION_CLOSE' ||
+    errorObject.message === 'net::ERR_NAME_NOT_RESOLVED' ||
+    errorObject.message === 'net::ERR_CONNECTION_TIMED_OUT'
+  )
+}
+
 export const checkForUpdate = win => {
   if (!isUpdatedStatusCheckingStarted) {
-    autoUpdater.checkForUpdates()
-    autoUpdater.on('checking-for-update', () => {
-      console.log('checking for updates...')
-    })
-    autoUpdater.on('error', error => {
-      console.log(error)
-    })
-    autoUpdater.on('update-not-available', () => {
-      console.log('event no update')
-      electronStore.set('updateStatus', config.UPDATE_STATUSES.NO_UPDATE)
-    })
-    autoUpdater.on('update-available', info => {
-      console.log(info)
-      electronStore.set('updateStatus', config.UPDATE_STATUSES.PROCESSING_UPDATE)
-    })
+    try {
+      autoUpdater.checkForUpdates()
+      autoUpdater.on('checking-for-update', () => {
+        console.log('checking for updates...')
+      })
+      autoUpdater.on('error', error => {
+        console.log(error)
+      })
+      autoUpdater.on('update-not-available', () => {
+        console.log('event no update')
+        electronStore.set('updateStatus', config.UPDATE_STATUSES.NO_UPDATE)
+      })
+      autoUpdater.on('update-available', info => {
+        console.log(info)
+        electronStore.set('updateStatus', config.UPDATE_STATUSES.PROCESSING_UPDATE)
+      })
 
-    autoUpdater.on('update-downloaded', info => {
-      win.webContents.send('newUpdateAvailable')
-    })
-    isUpdatedStatusCheckingStarted = true
+      autoUpdater.on('update-downloaded', info => {
+        win.webContents.send('newUpdateAvailable')
+      })
+      isUpdatedStatusCheckingStarted = true
+    } catch (err) {
+      if (isNetworkError(error)) {
+        console.log('Network Error')
+      } else {
+        console.log('Unknown Error')
+        console.log(error == null ? 'unknown' : (error.stack || error).toString())
+      }
+    }
   }
   autoUpdater.checkForUpdates()
 }
