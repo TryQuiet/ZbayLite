@@ -168,25 +168,6 @@ export const checkForUpdate = win => {
   if (!isUpdatedStatusCheckingStarted) {
     try {
       autoUpdater.checkForUpdates()
-      autoUpdater.on('checking-for-update', () => {
-        console.log('checking for updates...')
-      })
-      autoUpdater.on('error', error => {
-        console.log(error)
-      })
-      autoUpdater.on('update-not-available', () => {
-        console.log('event no update')
-        electronStore.set('updateStatus', config.UPDATE_STATUSES.NO_UPDATE)
-      })
-      autoUpdater.on('update-available', info => {
-        console.log(info)
-        electronStore.set('updateStatus', config.UPDATE_STATUSES.PROCESSING_UPDATE)
-      })
-
-      autoUpdater.on('update-downloaded', info => {
-        win.webContents.send('newUpdateAvailable')
-      })
-      isUpdatedStatusCheckingStarted = true
     } catch (error) {
       if (isNetworkError(error)) {
         console.log('Network Error')
@@ -195,8 +176,36 @@ export const checkForUpdate = win => {
         console.log(error == null ? 'unknown' : (error.stack || error).toString())
       }
     }
+    autoUpdater.on('checking-for-update', () => {
+      console.log('checking for updates...')
+    })
+    autoUpdater.on('error', error => {
+      console.log(error)
+    })
+    autoUpdater.on('update-not-available', () => {
+      console.log('event no update')
+      electronStore.set('updateStatus', config.UPDATE_STATUSES.NO_UPDATE)
+    })
+    autoUpdater.on('update-available', info => {
+      console.log(info)
+      electronStore.set('updateStatus', config.UPDATE_STATUSES.PROCESSING_UPDATE)
+    })
+
+    autoUpdater.on('update-downloaded', info => {
+      win.webContents.send('newUpdateAvailable')
+    })
+    isUpdatedStatusCheckingStarted = true
   }
-  autoUpdater.checkForUpdates()
+  try {
+    autoUpdater.checkForUpdates()
+  } catch (error) {
+    if (isNetworkError(error)) {
+      console.log('Network Error')
+    } else {
+      console.log('Unknown Error')
+      console.log(error == null ? 'unknown' : (error.stack || error).toString())
+    }
+  }
 }
 
 const killZcashdProcess = async () => {
