@@ -187,7 +187,7 @@ export const checkForUpdate = win => {
         win.webContents.send('newUpdateAvailable')
       })
       isUpdatedStatusCheckingStarted = true
-    } catch (err) {
+    } catch (error) {
       if (isNetworkError(error)) {
         console.log('Network Error')
       } else {
