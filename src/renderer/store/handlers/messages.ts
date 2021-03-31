@@ -626,7 +626,6 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     message = await unpackMemo(data)
     const { type } = message
     const { typeIndicator } = message
-    console.log("message1", message)
     if (type === 'UNKNOWN') {
       return {
         type: 'UNKNOWN',
@@ -663,8 +662,6 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
           username: isUsernameValid ? fromUser.nickname : `anon${publicKey.substring(0, 10)}`
         })
       } else {
-
-
         sender = new ExchangeParticipant({
           replyTo: '',
           username: `anon${publicKey}`
@@ -676,7 +673,6 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     console.warn(err)
     return null
   }
-  console.log("message2", messageSchema)
   if (message.message) {
     try {
       const toUser =
@@ -703,7 +699,6 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
         tag: message.message.tag,
         shippingData: message.message.shippingData
       }
-      console.log("mess", msg)
       const parsedMsg = new DisplayableMessage(msg)
       // const contacts = contactsSelectors.contacts(getState())
       if (msg.message.itemId) {

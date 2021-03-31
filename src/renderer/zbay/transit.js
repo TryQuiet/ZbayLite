@@ -16,6 +16,7 @@ const TXID_SIZE = 64
 const TYPING_INDICATOR = 1
 
 const ONION_ADDRESS_SIZE = 56
+const ZCASH_ADDRESS_SIZE = 78
 
 export const MESSAGE_SIZE =
   MEMO_SIZE -
@@ -127,7 +128,7 @@ export const checkMessageSizeAfterComporession = async message => {
 //   return allocatedMessage.toString()
 // }
 
-export const packMemo = async (message, typingIndicato, onionAddressProp, zcashAddressProp) => {
+export const packMemo = async (message, typingIndicato, onionAddressProp = '', zcashAddressProp = '') => {
   const formatFlag = Buffer.alloc(MEMO_FORMAT_FLAG_SIZE)
   formatFlag.writeUInt8(MEMO_FORMAT_FLAG_VALUE)
   const type = Buffer.alloc(TYPE_SIZE)
@@ -236,21 +237,24 @@ export const packMemo = async (message, typingIndicato, onionAddressProp, zcashA
         MESSAGE_SIZE
       )
       break
-    default:
-      console.log("TRANSIT-zcash-onion", zcashAddressProp, onionAddressProp)
+    case messageType.BASIC:
+      const onionAddress2 = Buffer.alloc(ONION_ADDRESS_SIZE)
+      onionAddress2.write(onionAddressProp)
 
-      const onionAddress = Buffer.alloc(56)
-      onionAddress.write(onionAddressProp)
-      
-      const zcashAddress = Buffer.alloc(78)
+      const zcashAddress = Buffer.alloc(ZCASH_ADDRESS_SIZE)
       zcashAddress.write(zcashAddressProp)
-      const msgD = Buffer.alloc(MESSAGE_SIZE - 56 - 78)
+      const msgD = Buffer.alloc(MESSAGE_SIZE - ONION_ADDRESS_SIZE - ZCASH_ADDRESS_SIZE)
       const d = await deflate(message.message)
       msgD.write(d)
       msgData = Buffer.concat(
-        [onionAddress, zcashAddress, msgD],
+        [onionAddress2, zcashAddress, msgD],
         MESSAGE_SIZE
       )
+      break
+    default:
+      msgData = Buffer.alloc(MESSAGE_SIZE)
+      const dd = await deflate(message.message)
+      msgData.write(dd)
       break
   }
   await checkMessageSizeAfterComporession(message.message)
@@ -488,22 +492,31 @@ export const unpackMemo = async memo => {
         },
         createdAt
       }
-    default:
-      const onionAddress = memoBuff.slice(timestampEnds, timestampEnds + 56)
-      const zcashAddress = memoBuff.slice(timestampEnds + 56, timestampEnds + 56 + 78)
-
-      const message = memoBuff.slice(timestampEnds + 56 + 78, MEMO_SIZE -1)
+    case messageType.BASIC:
+      const onionAddress2 = memoBuff.slice(timestampEnds, timestampEnds + ONION_ADDRESS_SIZE)
+      const zcashAddress2 = memoBuff.slice(timestampEnds + ONION_ADDRESS_SIZE, timestampEnds + ONION_ADDRESS_SIZE + ZCASH_ADDRESS_SIZE)
+      const message2 = memoBuff.slice(timestampEnds + ONION_ADDRESS_SIZE + ZCASH_ADDRESS_SIZE, MEMO_SIZE - 1)
       const typeIndicator = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
-      //console.log('UU-TRANSIT-onionAddress-zcashAssress', onionAddress, zcashAddress)
+      return {
+        type,
+        signature,
+        r,
+        message: await inflate(message2.toString()),
+        typeIndicator,
+        createdAt,
+        onionAddress: onionAddress2.toString(),
+        zcashAddress: zcashAddress2.toString()
+      }
+    default:
+      const message = memoBuff.slice(timestampEnds)
+      const typeIndicator2 = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
       return {
         type,
         signature,
         r,
         message: await inflate(message.toString()),
-        typeIndicator,
-        createdAt,
-        onionAddress: onionAddress.toString(),
-        zcashAddress: zcashAddress.toString()
+        typeIndicator2,
+        createdAt
       }
   }
 }

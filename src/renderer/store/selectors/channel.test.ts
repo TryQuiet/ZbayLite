@@ -149,7 +149,7 @@ describe('Channel selectors', () => {
         }
       }
     })
-    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.UNREGISTERED)
+    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.AVAILABLE)
   })
 
   it('- input_avilable_with_money', async () => {

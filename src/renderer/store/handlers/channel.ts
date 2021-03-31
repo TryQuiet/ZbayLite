@@ -30,6 +30,7 @@ import { packMemo } from '../../zbay/transit'
 
 import { ActionsType, PayloadType } from './types'
 import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
+import { setUsers, User } from './users'
 
 // TODO: to remove, but must be replaced in all the tests
 export const ChannelState = {
@@ -260,7 +261,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         type: messageType.BASIC,
         data: {
           messageToSend
-        },
+        }
       },
       privKey: privKey
     })
@@ -283,15 +284,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         message: messageToSend
       })
 
-
-
-
-
-
-
-
-
-
       dispatch(
         contactsHandlers.actions.addMessage({
           key: channel.id,
@@ -308,26 +300,33 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       const identityAddress = identitySelectors.address(getState())
       const contact2 = contactsSelectors.contact(id)(getState())
       const contactsListMessages2 = Object.values(contact2.messages)
-      let channelOnionAddress = null
-      let user = null
-      let onionAddress = null
 
       if (contactsListMessages2[0]) {
-        channelOnionAddress = contactsListMessages2[0].onionAddress
+        const channelOnionAddress = contactsListMessages2[0].onionAddress
+        const channelZcashAddress = contactsListMessages2[0].zcashAddress
+        if (users[channel.id] === undefined && channelOnionAddress !== '') {
+          const newUser = new User({
+            key: channel.id,
+            firstName: '',
+            publicKey: channel.id,
+            lastName: '',
+            nickname: '',
+            address: channelZcashAddress,
+            onionAddress: channelOnionAddress,
+            createdAt: Math.floor(DateTime.utc().toSeconds())
+          })
+          const newUsersBook = {
+            ...users,
+            [newUser.key]: newUser
+          }
+          dispatch(setUsers({ users: newUsersBook }))
+        }
       }
 
-      if (users[channel.id] === undefined && channelOnionAddress !== '') {
-        user = ''
-        onionAddress = channelOnionAddress
-      } else {
-        user = users[channel.id]
-        onionAddress = users[channel.id].onionAddress
-      }
-
-      if (useTor && user !== null && onionAddress !== null) {
+      if (useTor && users[channel.id] && users[channel.id].onionAddress) {
         try {
           const memo = await packMemo(message, false, onionAddressProp, zcashAddressProp)
-          const result = await sendMessage(memo, onionAddress)
+          const result = await sendMessage(memo, users[channel.id].onionAddress)
           if (result === -1) {
             dispatch(
               contactsHandlers.actions.setContactConnected({ key: channel.id, connected: false })
@@ -537,7 +536,6 @@ export const reducer = handleActions<Channel, PayloadType<ChannelActions>>(
       }),
     [setAddress.toString()]: (state, { payload: address }: ChannelActions['setAddress']) =>
       produce(state, draft => {
-        console.log("CHANNEL-address", address)
         draft.address = address
       }),
     [resetChannel.toString()]: () => initialState

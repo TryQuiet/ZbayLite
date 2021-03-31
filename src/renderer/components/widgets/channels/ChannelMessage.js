@@ -96,9 +96,9 @@ const checkLinking = (
   whitelisted
 ) => {
   let newMessage
-  if(message.messageToSend){
-    newMessage= message.messageToSend
-  }else {
+  if (message.messageToSend) {
+    newMessage = message.messageToSend
+  } else {
     newMessage = message
   }
   let parsedMessage = newMessage
@@ -257,8 +257,8 @@ export const ChannelMessage = ({
   let messageData = message.message.itemId
     ? message.message.text
     : message.message
-  if(messageData.messageToSend){
-    messageData= messageData.messageToSend
+  if (messageData.messageToSend) {
+    messageData = messageData.messageToSend
   }
   const autoloadImage =
     imageUrl && !torEnabled
