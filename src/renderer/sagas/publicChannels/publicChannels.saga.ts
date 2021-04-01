@@ -15,7 +15,6 @@ import { actions } from '../../store/handlers/contacts'
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
-import electronStore from '../../../shared/electronStore'
 
 const all: any = effectsAll
 

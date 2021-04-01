@@ -378,10 +378,10 @@ export const loadIdentity = () => async dispatch => {
 }
 
 export const prepareUpgradedVersion = () => async (dispatch, getState) => {
-  // Temporary fix for apps upgraded from versions < 3 
+  // Temporary fix for apps upgraded from versions < 3
   if (!electronStore.get('isNewUser') && !electronStore.get('appUpgraded')) {
     const appVersion = appSelectors.version(getState())
-    const appVersionNumber = Number(appVersion.split("-")[0].split(".")[0])
+    const appVersionNumber = Number(appVersion.split('-')[0].split('.')[0])
     if (appVersionNumber >= 3) {
       dispatch(clearPublicChannels())
       console.log('Cleared public channels')

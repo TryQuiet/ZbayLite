@@ -196,7 +196,7 @@ export const reducer = handleActions<PublicChannelsStore, PayloadType<PublicChan
     [clearPublicChannels.toString()]: (
       state
     ) =>
-      produce(state, draft => {
+      produce(state, () => {
         return {}
       })
   },
