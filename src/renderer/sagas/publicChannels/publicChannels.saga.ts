@@ -13,6 +13,7 @@ import {
 import { findNewMessages } from '../../store/handlers/messages'
 import { actions } from '../../store/handlers/contacts'
 import usersSelectors from '../../store/selectors/users'
+import contactsSelectors from '../../store/selectors/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
 import electronStore from '../../../shared/electronStore'
 
@@ -99,12 +100,14 @@ export function* loadAllMessages(
 ): Generator {
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
-  const importedChannels = electronStore.get('importedChannels')
-  if (!importedChannels) {
+  const channel = yield* select(contactsSelectors.contact(action.payload.channelAddress))
+  if (!channel) {
+    console.log(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
     return
   }
-  const { name } = importedChannels[action.payload.channelAddress]
-  if (name) {
+
+  const { username } = channel
+  if (username) {
     const displayableMessages = action.payload.messages.map(msg => transferToMessage(msg, users))
     for (const msg of displayableMessages) {
       yield put(
@@ -121,7 +124,7 @@ export function* loadAllMessages(
         displayMessageNotification({
           senderName: msg.sender.username,
           message: msg.message,
-          channelName: name
+          channelName: username
         })
       }
     })
