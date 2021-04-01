@@ -1,6 +1,7 @@
 export enum MessageType {
   BASIC = 1,
   AD = 2,
+  START_CONVERSATION = 3,
   TRANSFER = 4,
   USER = 5,
   CHANNEL_SETTINGS = 6,

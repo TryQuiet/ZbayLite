@@ -114,13 +114,16 @@ export type ChannelActions = ActionsType<typeof actions>
 
 const loadChannel = key => async (dispatch, getState) => {
   try {
+
     dispatch(setChannelId(key))
     dispatch(setDisplayableLimit(30))
     // Calculate URI on load, that way it won't be outdated, even if someone decides
     // to update channel in vault manually
+
     const contact = contactsSelectors.contact(key)(getState())
     const unread = contact.newMessages.length
     remote.app.setBadgeCount(remote.app.getBadgeCount() - unread)
+
     const ivk =
       electronStore.get(`defaultChannels.${contact.address}.keys.ivk`) ||
       electronStore.get(`importedChannels.${contact.address}.keys.ivk`)
@@ -132,10 +135,10 @@ const loadChannel = key => async (dispatch, getState) => {
       dispatch(setShareableUri(uri))
     }
     electronStore.set(`lastSeen.${key}`, `${Math.floor(DateTime.utc().toSeconds())}`)
-
     const contactsListMessages = Object.values(contact.messages)
-    const channelAddress = contactsListMessages[0].zcashAddress
+
     if (contact.address === undefined) {
+      const channelAddress = contactsListMessages[0].zcashAddress
       dispatch(setAddress(channelAddress))
     } else {
       dispatch(setAddress(contact.address))
@@ -144,6 +147,7 @@ const loadChannel = key => async (dispatch, getState) => {
     dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: key }))
     // await dispatch(clearNewMessages())
     // await dispatch(updateLastSeen())
+
   } catch (err) { }
 }
 const loadOffer = (id, address) => async dispatch => {
@@ -195,12 +199,6 @@ const sendTypingIndicator = value => async (dispatch, getState) => {
   const channel = channelSelectors.channel(getState())
   const users = usersSelectors.users(getState())
   const useTor = appSelectors.useTor(getState())
-
-  const myUserOnionAddress = identitySelectors.data(getState())
-  const myUser = usersSelectors.myUser(getState())
-  const onionAddressProp = myUserOnionAddress.onionAddress
-  const zcashAddressProp = myUser.address
-
   const privKey = identitySelectors.signerPrivKey(getState())
   const message = messages.createMessage({
     messageData: {
@@ -212,7 +210,7 @@ const sendTypingIndicator = value => async (dispatch, getState) => {
 
   if (useTor && users[channel.id] && users[channel.id].onionAddress) {
     try {
-      const memo = await packMemo(message, value, onionAddressProp, zcashAddressProp)
+      const memo = await packMemo(message, value)
       const result = await sendMessage(memo, users[channel.id].onionAddress)
       if (result === -1) {
         dispatch(
@@ -249,27 +247,136 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
 
   const myUserOnionAddress = identitySelectors.data(getState())
   const myUser = usersSelectors.myUser(getState())
-  const onionAddressProp = myUserOnionAddress.onionAddress
-  const zcashAddressProp = myUser.address
+  const onionAddress = myUserOnionAddress.onionAddress
+  const zcashAddress = myUser.address
   let message
 
   if (enterPressed && !shiftPressed) {
     event.preventDefault()
     const privKey = identitySelectors.signerPrivKey(getState())
+
+
+
+
+
+
+
+    const identityAddress = identitySelectors.address(getState())
+    const contact = contactsSelectors.contact(id)(getState())
+    const contactsListMessages = Object.values(contact.messages)
+    console.log(contactsListMessages)
+    if (contactsListMessages[0]) {
+      const channelOnionAddress = contactsListMessages[0].onionAddress
+      const channelZcashAddress = contactsListMessages[0].zcashAddress
+      if (users[channel.id] === undefined && channelOnionAddress !== '') {//-- if we got message but user not exist
+        const newUser = new User({
+          key: channel.id,
+          firstName: '',
+          publicKey: channel.id,
+          lastName: '',
+          nickname: '',
+          address: channelZcashAddress,
+          onionAddress: channelOnionAddress,
+          createdAt: Math.floor(DateTime.utc().toSeconds())
+        })
+        const newUsersBook = {
+          ...users,
+          [newUser.key]: newUser
+        }
+        dispatch(setUsers({ users: newUsersBook }))
+      }
+
+    }
+    //else { // ---------------- SENDING FIRST CHANNEL MESSAGE WITH ADDRESSES---------------------
+    console.log("PIERWSZA WIAD")
     message = messages.createMessage({
       messageData: {
-        type: messageType.BASIC,
+        type: messageType.START_CONVERSATION,
         data: {
-          messageToSend
+          zcashAddress: onionAddress,
+          onionAddress: zcashAddress
         }
       },
       privKey: privKey
     })
+    dispatch(setMessage({ value: '', id: id }))
+    const messageDigest = crypto.createHash('sha256')
+    console.log('messageDigest', messageDigest)
+
+    const messageEssentials = R.pick(['createdAt', 'message'])(message)
+    console.log('messageEssentials', messageEssentials, message)
+
+    const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
+
+    const messagePlaceholder = new DisplayableMessage({
+      ...message,
+      id: key,
+      sender: {
+        replyTo: myUser.address,
+        username: myUser.nickname
+      },
+      fromYou: true,
+      status: 'pending',
+      message: messageToSend
+    })
+
+    dispatch(
+      contactsHandlers.actions.addMessage({
+        key: channel.id,
+        message: { [key]: messagePlaceholder }
+      })
+    )
+    dispatch(
+      operationsHandlers.actions.addOperation({
+        channelId: channel.id,
+        id: key
+      })
+    )
+
+
+
+    try {
+      console.log('TRY')
+      const memo = await packMemo(message, false)
+      const result = await sendMessage(memo, users[channel.id].onionAddress)
+      if (result === -1) {
+        dispatch(
+          contactsHandlers.actions.setContactConnected({ key: channel.id, connected: false })
+        )
+        throw new Error('unable to connect')
+      }
+      dispatch(
+        contactsHandlers.actions.setContactConnected({ key: channel.id, connected: true })
+      )
+      return
+    } catch (error) {
+      console.log(error)
+      console.log('socket timeout')
+    }
+    // }
+
+
+
+
+
+
+
+    message = messages.createMessage({
+      messageData: {
+        type: messageType.BASIC,
+        data: messageToSend
+      },
+      privKey: privKey
+    })
+
     const isMergedMessageTooLong = await dispatch(_checkMessageSize(message.message))
     if (!isMergedMessageTooLong) {
       dispatch(setMessage({ value: '', id: id }))
       const messageDigest = crypto.createHash('sha256')
+      console.log('messageDigest', messageDigest)
       const messageEssentials = R.pick(['createdAt', 'message'])(message)
+      console.log('messageEssentials', messageEssentials, message)
+
       const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
 
       const messagePlaceholder = new DisplayableMessage({
@@ -297,35 +404,13 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         })
       )
 
-      const identityAddress = identitySelectors.address(getState())
-      const contact2 = contactsSelectors.contact(id)(getState())
-      const contactsListMessages2 = Object.values(contact2.messages)
 
-      if (contactsListMessages2[0]) {
-        const channelOnionAddress = contactsListMessages2[0].onionAddress
-        const channelZcashAddress = contactsListMessages2[0].zcashAddress
-        if (users[channel.id] === undefined && channelOnionAddress !== '') {
-          const newUser = new User({
-            key: channel.id,
-            firstName: '',
-            publicKey: channel.id,
-            lastName: '',
-            nickname: '',
-            address: channelZcashAddress,
-            onionAddress: channelOnionAddress,
-            createdAt: Math.floor(DateTime.utc().toSeconds())
-          })
-          const newUsersBook = {
-            ...users,
-            [newUser.key]: newUser
-          }
-          dispatch(setUsers({ users: newUsersBook }))
-        }
-      }
+
+
 
       if (useTor && users[channel.id] && users[channel.id].onionAddress) {
         try {
-          const memo = await packMemo(message, false, onionAddressProp, zcashAddressProp)
+          const memo = await packMemo(message, false)
           const result = await sendMessage(memo, users[channel.id].onionAddress)
           if (result === -1) {
             dispatch(
