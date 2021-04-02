@@ -170,6 +170,7 @@ export const ChannelInput = ({
 }) => {
   const messageRef = React.useRef()
   const refSelected = React.useRef()
+  const isFirstRenderRef = React.useRef(true)
   const refMentionsToSelect = React.useRef()
   const inputRef = React.createRef()
   const [focused, setFocused] = React.useState(false)
@@ -210,9 +211,12 @@ export const ChannelInput = ({
   React.useEffect(() => {
     setMessage(initialMessage)
     setHtmlMessage(initialMessage)
-    return () => {
-      onChange(messageRef.current)
+    if (!isFirstRenderRef.current) {
+      return () => {
+        onChange(messageRef.current)
+      }
     }
+    isFirstRenderRef.current = false
   }, [id])
   React.useEffect(() => {
     messageRef.current = message
@@ -274,6 +278,7 @@ export const ChannelInput = ({
   const sanitizedHtml = findMentions(t2)
   const onChangeCb = useCallback(
     e => {
+      console.log('RERENDERED SHIT')
       if (inputState === INPUT_STATE.AVAILABLE) {
         setMessage(e.nativeEvent.target.innerText)
         if (!e.nativeEvent.target.innerText) {
