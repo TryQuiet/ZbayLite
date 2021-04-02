@@ -13,6 +13,8 @@ import {
   satoshiMultiplier
 } from '../../shared/static'
 import client from '../zcash'
+import { message } from '../store/selectors/channel'
+import ObjectType from '@storybook/addon-knobs/dist/components/types/Object'
 
 export const ExchangeParticipant = Immutable.Record(
   {
@@ -361,10 +363,18 @@ export const hash = (data) => {
 
 export const signMessage = ({ messageData, privKey }) => {
   // sign the messageData
-  const sigObj = secp256k1.sign(
-    hash(JSON.stringify(messageData.data)),
-    Buffer.from(privKey, 'hex')
-  )
+let mess =messageData.data
+
+ if(typeof mess === 'object'){
+  mess= "XDDD"
+ }
+
+ console.log("xdddd", privKey)
+    const sigObj = secp256k1.sign(
+      hash(JSON.stringify(mess)),
+      Buffer.from(privKey, 'hex')
+    )
+  
   return {
     type: messageData.type,
     spent: messageData.spent || new BigNumber(0),

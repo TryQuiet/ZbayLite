@@ -348,7 +348,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       dispatch(
         contactsHandlers.actions.setContactConnected({ key: channel.id, connected: true })
       )
-      return
     } catch (error) {
       console.log(error)
       console.log('socket timeout')
@@ -359,7 +358,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
 
 
 
-
+    console.log('w channel', message)
 
     message = messages.createMessage({
       messageData: {
@@ -369,6 +368,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       privKey: privKey
     })
 
+    console.log('w channel', message)
     const isMergedMessageTooLong = await dispatch(_checkMessageSize(message.message))
     if (!isMergedMessageTooLong) {
       dispatch(setMessage({ value: '', id: id }))

@@ -495,12 +495,12 @@ export const unpackMemo = async memo => {
       const onionUserAddress = memoBuff.slice(timestampEnds, timestampEnds + ONION_ADDRESS_SIZE)
       const zcashUserAddress = memoBuff.slice(timestampEnds + ONION_ADDRESS_SIZE, timestampEnds + ONION_ADDRESS_SIZE + ZCASH_ADDRESS_SIZE)
       const typeIndicator = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
-      console.log('UU-TRANSIT', onionUserAddress, zcashUserAddress, typeIndicator)
+      console.log('UU-TRANSIT', onionUserAddress.toString(), zcashUserAddress.toString(), typeIndicator)
       return {
         type,
         signature,
         r,
-        message: "",
+        message: "XDDD",
         typeIndicator,
         createdAt,
         onionAddress: onionUserAddress.toString(),
@@ -508,13 +508,13 @@ export const unpackMemo = async memo => {
       }
     default:
       const message = memoBuff.slice(timestampEnds)
-      const typeIndicator2 = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
+      const typeIndicator = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
       return {
         type,
         signature,
         r,
         message: await inflate(message.toString()),
-        typeIndicator2,
+        typeIndicator,
         createdAt
       }
   }
