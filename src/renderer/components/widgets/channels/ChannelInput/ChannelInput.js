@@ -278,7 +278,6 @@ export const ChannelInput = ({
   const sanitizedHtml = findMentions(t2)
   const onChangeCb = useCallback(
     e => {
-      console.log('RERENDERED SHIT')
       if (inputState === INPUT_STATE.AVAILABLE) {
         setMessage(e.nativeEvent.target.innerText)
         if (!e.nativeEvent.target.innerText) {
