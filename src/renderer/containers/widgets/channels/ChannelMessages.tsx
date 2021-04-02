@@ -19,7 +19,11 @@ import appHandlers from '../../../store/handlers/app'
 import electronStore from '../../../../shared/electronStore'
 
 export const ChannelMessages = ({ tab, contentRect }) => {
+<<<<<<< HEAD
   const isDev = process.env.NODE_ENV === 'development'
+=======
+  const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production'
+>>>>>>> d95bb4217cff02dd61092952d9e80cc4feb1bdd5
 
   const [scrollPosition, setScrollPosition] = React.useState(-1)
   const [isRescanned, setIsRescanned] = React.useState(true)
