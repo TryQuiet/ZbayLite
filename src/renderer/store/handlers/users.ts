@@ -155,17 +155,10 @@ export const createOrUpdateUser = (payload: {
   const address = identitySelector.address(getState())
   const privKey = identitySelector.signerPrivKey(getState())
 
-<<<<<<< HEAD
   const isDev = process.env.NODE_ENV === 'development'
 
   if (isDev) {
     nickname = `dev-${nickname}`
-=======
-  const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production'
-
-  if (isDev) {
-    nickname = `dev-test-account-${nickname}`
->>>>>>> d95bb4217cff02dd61092952d9e80cc4feb1bdd5
   }
   const messageData = {
     firstName,

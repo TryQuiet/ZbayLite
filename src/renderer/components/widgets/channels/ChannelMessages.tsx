@@ -214,11 +214,7 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
                         }}
                       />
                     )
-<<<<<<< HEAD
                   } else if (!isDev && msg.nickname.startsWith('dev-')) {
-=======
-                  } else if (!isDev && msg.nickname.startsWith('dev-test-account-')) {
->>>>>>> d95bb4217cff02dd61092952d9e80cc4feb1bdd5
                     return
                   } else {
                     return <UserRegisteredMessage message={msg} />
