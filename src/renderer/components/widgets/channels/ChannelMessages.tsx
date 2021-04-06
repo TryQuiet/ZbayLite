@@ -8,7 +8,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { MessageType } from '../../../../shared/static.types'
 import ChannelMessage from '../../../containers/widgets/channels/ChannelMessage'
 import WelcomeMessage from './WelcomeMessage'
-import RescanMessage from '../../../containers/widgets/channels/RescanMessage'
 import ChannelItemTransferMessage from '../../../containers/widgets/channels/ItemTransferMessage'
 import ChannelAdMessage from '../../../containers/widgets/channels/ListingMessage'
 import MessagesDivider from '../MessagesDivider'
@@ -181,8 +180,6 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
         className={classes.list}
         style={{ marginTop: offset }}>
         {isOwner && <WelcomeMessage message={welcomeMessages.main} />}
-
-        {!isRescanned && !isDM && <RescanMessage />}
         {/* {isOffer && !showLoader && (
           <WelcomeMessage message={welcomeMessages['offer'](tag, username)} />
         )} */}
