@@ -114,7 +114,6 @@ export type ChannelActions = ActionsType<typeof actions>
 
 const loadChannel = key => async (dispatch, getState) => {
   try {
-
     dispatch(setChannelId(key))
     dispatch(setDisplayableLimit(30))
     // Calculate URI on load, that way it won't be outdated, even if someone decides
@@ -147,7 +146,6 @@ const loadChannel = key => async (dispatch, getState) => {
     dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: key }))
     // await dispatch(clearNewMessages())
     // await dispatch(updateLastSeen())
-
   } catch (err) { }
 }
 const loadOffer = (id, address) => async dispatch => {
@@ -261,7 +259,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
     if (contactsListMessages[0]) {
       const channelOnionAddress = contactsListMessages[0].onionAddress
       const channelZcashAddress = contactsListMessages[0].zcashAddress
-      if (users[channel.id] === undefined && channelOnionAddress !== '') {//-- if we got message but user not exist
+      if (users[channel.id] === undefined && channelOnionAddress !== '') { // -- if we got message but user not exist
         const newUser = new User({
           key: channel.id,
           firstName: '',
@@ -278,65 +276,63 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
         }
         dispatch(setUsers({ users: newUsersBook }))
       }
-
-    }
-    //else { // ---------------- SENDING FIRST CHANNEL MESSAGE WITH ADDRESSES---------------------
-    message = messages.createMessage({
-      messageData: {
-        type: messageType.START_CONVERSATION,
-        data: {
-          onionAddress: onionAddress,
-          zcashAddress: zcashAddress
-        }
-      },
-      privKey: privKey
-    })
-    dispatch(setMessage({ value: '', id: id }))
-    const messageDigest = crypto.createHash('sha256')
-    const messageEssentials = R.pick(['createdAt', 'message'])(message)
-    const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
-    const messagePlaceholder = new DisplayableMessage({
-      ...message,
-      id: key,
-      sender: {
-        replyTo: myUser.address,
-        username: myUser.nickname
-      },
-      fromYou: true,
-      status: 'pending',
-      message: messageToSend
-    })
-
-    dispatch(
-      contactsHandlers.actions.addMessage({
-        key: channel.id,
-        message: { [key]: messagePlaceholder }
+    } else { // ---------------- SENDING FIRST CHANNEL MESSAGE WITH ADDRESSES---------------------
+      message = messages.createMessage({
+        messageData: {
+          type: messageType.START_CONVERSATION,
+          data: {
+            onionAddress: onionAddress,
+            zcashAddress: zcashAddress
+          }
+        },
+        privKey: privKey
       })
-    )
-    dispatch(
-      operationsHandlers.actions.addOperation({
-        channelId: channel.id,
-        id: key
+      dispatch(setMessage({ value: '', id: id }))
+      const messageDigest = crypto.createHash('sha256')
+      const messageEssentials = R.pick(['createdAt', 'message'])(message)
+      const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
+      const messagePlaceholder = new DisplayableMessage({
+        ...message,
+        id: key,
+        sender: {
+          replyTo: myUser.address,
+          username: myUser.nickname
+        },
+        fromYou: true,
+        status: 'pending',
+        message: messageToSend
       })
-    )
 
-    try {
-      const memo = await packMemo(message, false)
-      const result = await sendMessage(memo, users[channel.id].onionAddress)
-      if (result === -1) {
-        dispatch(
-          contactsHandlers.actions.setContactConnected({ key: channel.id, connected: false })
-        )
-        throw new Error('unable to connect')
-      }
       dispatch(
-        contactsHandlers.actions.setContactConnected({ key: channel.id, connected: true })
+        contactsHandlers.actions.addMessage({
+          key: channel.id,
+          message: { [key]: messagePlaceholder }
+        })
       )
-    } catch (error) {
-      console.log(error)
-      console.log('socket timeout')
+      dispatch(
+        operationsHandlers.actions.addOperation({
+          channelId: channel.id,
+          id: key
+        })
+      )
+
+      try {
+        const memo = await packMemo(message, false)
+        const result = await sendMessage(memo, users[channel.id].onionAddress)
+        if (result === -1) {
+          dispatch(
+            contactsHandlers.actions.setContactConnected({ key: channel.id, connected: false })
+          )
+          throw new Error('unable to connect')
+        }
+        dispatch(
+          contactsHandlers.actions.setContactConnected({ key: channel.id, connected: true })
+        )
+      } catch (error) {
+        console.log(error)
+        console.log('socket timeout')
+      }
     }
-    //}
     message = messages.createMessage({
       messageData: {
         type: messageType.BASIC,

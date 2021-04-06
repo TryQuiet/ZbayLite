@@ -5,9 +5,7 @@ import crypto from 'crypto'
 import fs from 'fs'
 import { createAction } from 'redux-actions'
 
-import secp256k1 from 'secp256k1'
-import hash from '../../../renderer/zbay/messages'
-
+import { getPublicKeysFromSignature, usernameSchema, messageSchema } from '../../../renderer/zbay/messages'
 
 import appSelectors from '../selectors/app'
 import channelSelectors from '../selectors/channel'
@@ -33,7 +31,7 @@ import {
 import { messages as zbayMessages } from '../../zbay'
 import { checkMessageSizeAfterComporession, unpackMemo } from '../../zbay/transit'
 import client from '../../zcash'
-import { getPublicKeysFromSignature, usernameSchema, messageSchema } from '../../zbay/messages'
+
 import { DisplayableMessage, ExchangeParticipant } from '../../zbay/messages.types'
 import channels from '../../zcash/channels'
 import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
@@ -630,7 +628,6 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
       console.log('messGHOST', data, message)
     } else {
       console.log('mess', data, message)
-
     }
     const { type } = message
     const { typeIndicator } = message

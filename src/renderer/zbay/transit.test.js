@@ -178,7 +178,7 @@ describe('transit', () => {
       const data = await packMemo(message)
       expect(Buffer.byteLength(data, 'hex')).toEqual(MEMO_SIZE)
       const output = await unpackMemo(data)
-      expect(output).toEqual({ ...message, typeIndicator: 0, onionAddress: Buffer.alloc(56).toString(), zcashAddress: Buffer.alloc(78).toString() })
+      expect(output).toEqual({ ...message, typeIndicator: 0 })
     })
   })
   describe('pack/unpack User memo', () => {
@@ -232,7 +232,7 @@ describe('transit', () => {
       const data = await packMemo(itemTransfer)
       expect(Buffer.byteLength(data, 'hex')).toEqual(MEMO_SIZE)
       const output = await unpackMemo(data)
-      expect(output).toEqual({ ...itemTransfer, typeIndicator2: 0 })
+      expect(output).toEqual({ ...itemTransfer, typeIndicator: 0 })
     })
   })
   describe('pack/unpack Channel Settings memo', () => {

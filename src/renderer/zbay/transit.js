@@ -285,6 +285,7 @@ export const unpackMemo = async memo => {
   const signature = memoBuff.slice(typeEnds, signatureEnds)
   const rEnds = signatureEnds + SIGNATURE_R_SIZE
   const r = memoBuff.slice(signatureEnds, rEnds).readUInt8()
+  const typeIndicator = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
 
   const timestampEnds = rEnds + TIMESTAMP_SIZE
   const createdAt = memoBuff.slice(rEnds, timestampEnds).readUInt32BE()
@@ -492,12 +493,11 @@ export const unpackMemo = async memo => {
     case messageType.START_CONVERSATION:
       const onionUserAddress = memoBuff.slice(timestampEnds, timestampEnds + ONION_ADDRESS_SIZE)
       const zcashUserAddress = memoBuff.slice(timestampEnds + ONION_ADDRESS_SIZE, timestampEnds + ONION_ADDRESS_SIZE + ZCASH_ADDRESS_SIZE)
-      const typeIndicator = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
       return {
         type,
         signature,
         r,
-        message: "startMessage",
+        message: 'startMessage',
         typeIndicator,
         createdAt,
         onionAddress: onionUserAddress.toString(),
@@ -505,7 +505,7 @@ export const unpackMemo = async memo => {
       }
     default:
       const message = memoBuff.slice(timestampEnds)
-      const typeIndicator = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
+      //const typeIndicator = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
       return {
         type,
         signature,

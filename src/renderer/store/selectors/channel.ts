@@ -3,7 +3,6 @@ import identitySelectors from './identity'
 import messagesQueueSelectors from './messagesQueue'
 import { networkFee, messageType } from '../../../shared/static'
 import publicChannels from './publicChannels'
-import users from './users'
 
 import { Store } from '../reducers'
 import { DisplayableMessage } from '../../zbay/messages.types'
@@ -163,34 +162,37 @@ export const channelId = createSelector(channel, ch => ch.id)
 
 export const inputLocked = createSelector(
   identitySelectors.balance('zec'),
-  identitySelectors.lockedBalance('zec'),
-  users.users,
-  identitySelectors.signerPubKey,
+  // identitySelectors.lockedBalance('zec'),
+  // users.users,
+  // identitySelectors.signerPubKey,
   channelId,
   contacts,
-  (available, locked, users, signerPubKey, channelId, contacts) => {
+  (
+    available,
+    // locked,
+    // users,
+    // signerPubKey,
+    channelId,
+    contacts
+  ) => {
     const contactsData = Object.values(contacts)
     const currentContactArray = contactsData.filter(item => {
-      return item.key === channelId && (item.connected !== undefined)
+      return item.key === channelId && (item.connected === (false || true))
     })
 
     console.log(currentContactArray)
 
     if (currentContactArray[0]) {
       if (currentContactArray[0].connected) {
-        console.log("DM-polaczony")
         return INPUT_STATE.AVAILABLE
       } else {
         if (available.gt(networkFee)) {
-          console.log("DM-nie-polaczony-z-kasa")
           return INPUT_STATE.AVAILABLE
         } else {
-          console.log("DM-nie-polaczony-bez-kasa")
           return INPUT_STATE.DISABLE
         }
       }
     } else {
-      console.log("CH")
       return INPUT_STATE.AVAILABLE
     }
   }

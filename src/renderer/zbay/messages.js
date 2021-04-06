@@ -362,21 +362,19 @@ export const hash = (data) => {
 }
 
 export const signMessage = ({ messageData, privKey }) => {
-let mess =messageData.data
+  let mess = messageData.data
 
- if(mess && typeof mess === 'object'){
-  console.log('messs',mess)
+  if (mess && typeof mess === 'object') {
+    const arrayKeys = Object.values(mess)
+    if (arrayKeys.length === 2) {
+      mess = 'startMessage'
+    }
+  }
+  const sigObj = secp256k1.sign(
+    hash(JSON.stringify(mess)),
+    Buffer.from(privKey, 'hex')
+  )
 
-   const arrayKeys = Object.values(mess)
-   if(arrayKeys.length === 2){
-    mess= 'startMessage'
-   }
- }
-    const sigObj = secp256k1.sign(
-      hash(JSON.stringify(mess)),
-      Buffer.from(privKey, 'hex')
-    )
-  
   return {
     type: messageData.type,
     spent: messageData.spent || new BigNumber(0),
