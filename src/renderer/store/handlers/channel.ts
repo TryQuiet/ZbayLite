@@ -285,8 +285,8 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       messageData: {
         type: messageType.START_CONVERSATION,
         data: {
-          zcashAddress: onionAddress,
-          onionAddress: zcashAddress
+          onionAddress: onionAddress,
+          zcashAddress: zcashAddress
         }
       },
       privKey: privKey
