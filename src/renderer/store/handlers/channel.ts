@@ -255,16 +255,9 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
     event.preventDefault()
     const privKey = identitySelectors.signerPrivKey(getState())
 
-
-
-
-
-
-
     const identityAddress = identitySelectors.address(getState())
     const contact = contactsSelectors.contact(id)(getState())
     const contactsListMessages = Object.values(contact.messages)
-    console.log(contactsListMessages)
     if (contactsListMessages[0]) {
       const channelOnionAddress = contactsListMessages[0].onionAddress
       const channelZcashAddress = contactsListMessages[0].zcashAddress
@@ -288,7 +281,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
 
     }
     //else { // ---------------- SENDING FIRST CHANNEL MESSAGE WITH ADDRESSES---------------------
-    console.log("PIERWSZA WIAD")
     message = messages.createMessage({
       messageData: {
         type: messageType.START_CONVERSATION,
@@ -301,13 +293,8 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
     })
     dispatch(setMessage({ value: '', id: id }))
     const messageDigest = crypto.createHash('sha256')
-    console.log('messageDigest', messageDigest)
-
     const messageEssentials = R.pick(['createdAt', 'message'])(message)
-    console.log('messageEssentials', messageEssentials, message)
-
     const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
-
     const messagePlaceholder = new DisplayableMessage({
       ...message,
       id: key,
@@ -333,10 +320,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       })
     )
 
-
-
     try {
-      console.log('TRY')
       const memo = await packMemo(message, false)
       const result = await sendMessage(memo, users[channel.id].onionAddress)
       if (result === -1) {
@@ -352,14 +336,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       console.log(error)
       console.log('socket timeout')
     }
-    // }
-
-
-
-
-
-    console.log('w channel', message)
-
+    //}
     message = messages.createMessage({
       messageData: {
         type: messageType.BASIC,
@@ -368,15 +345,11 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
       privKey: privKey
     })
 
-    console.log('w channel', message)
     const isMergedMessageTooLong = await dispatch(_checkMessageSize(message.message))
     if (!isMergedMessageTooLong) {
       dispatch(setMessage({ value: '', id: id }))
       const messageDigest = crypto.createHash('sha256')
-      console.log('messageDigest', messageDigest)
       const messageEssentials = R.pick(['createdAt', 'message'])(message)
-      console.log('messageEssentials', messageEssentials, message)
-
       const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
 
       const messagePlaceholder = new DisplayableMessage({
@@ -403,10 +376,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
           id: key
         })
       )
-
-
-
-
 
       if (useTor && users[channel.id] && users[channel.id].onionAddress) {
         try {

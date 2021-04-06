@@ -362,14 +362,15 @@ export const hash = (data) => {
 }
 
 export const signMessage = ({ messageData, privKey }) => {
-  // sign the messageData
 let mess =messageData.data
 
  if(typeof mess === 'object'){
-  mess= "XDDD"
+   const arrayKeys = Object.keys(mess)
+   if(arrayKeys === 2){
+    mess= 'startMessage'
+   }
+   console.log('messs',mess)
  }
-
- console.log("xdddd", privKey)
     const sigObj = secp256k1.sign(
       hash(JSON.stringify(mess)),
       Buffer.from(privKey, 'hex')

@@ -239,7 +239,6 @@ export const packMemo = async (message, typingIndicato) => {
       break
     case messageType.START_CONVERSATION:
       const onionUserAddress = Buffer.alloc(ONION_ADDRESS_SIZE)
-      console.log('PP-TR',message.message.onionAddress)
       onionUserAddress.write(message.message.onionAddress)
 
       const zcashUserAddress = Buffer.alloc(ZCASH_ADDRESS_SIZE)
@@ -250,7 +249,6 @@ export const packMemo = async (message, typingIndicato) => {
       )
       break
     default:
-      console.log("default")
       msgData = Buffer.alloc(MESSAGE_SIZE)
       const dd = await deflate(message.message)
       msgData.write(dd)
@@ -495,12 +493,11 @@ export const unpackMemo = async memo => {
       const onionUserAddress = memoBuff.slice(timestampEnds, timestampEnds + ONION_ADDRESS_SIZE)
       const zcashUserAddress = memoBuff.slice(timestampEnds + ONION_ADDRESS_SIZE, timestampEnds + ONION_ADDRESS_SIZE + ZCASH_ADDRESS_SIZE)
       const typeIndicator = memoBuff.slice(MEMO_SIZE - 1).readUInt8()
-      console.log('UU-TRANSIT', onionUserAddress.toString(), zcashUserAddress.toString(), typeIndicator)
       return {
         type,
         signature,
         r,
-        message: "XDDD",
+        message: "startMessage",
         typeIndicator,
         createdAt,
         onionAddress: onionUserAddress.toString(),

@@ -171,26 +171,28 @@ export const inputLocked = createSelector(
   (available, locked, users, signerPubKey, channelId, contacts) => {
     const contactsData = Object.values(contacts)
     const currentContactArray = contactsData.filter(item => {
-      return item.key === channelId && item.connected
+      return item.key === channelId && (item.connected !== undefined)
     })
 
-    if (available.gt(networkFee)) {
-      if (users[signerPubKey]) {
-        if (users[signerPubKey].createdAt) {
+    console.log(currentContactArray)
+
+    if (currentContactArray[0]) {
+      if (currentContactArray[0].connected) {
+        console.log("DM-polaczony")
+        return INPUT_STATE.AVAILABLE
+      } else {
+        if (available.gt(networkFee)) {
+          console.log("DM-nie-polaczony-z-kasa")
           return INPUT_STATE.AVAILABLE
         } else {
-          return INPUT_STATE.AVAILABLE
+          console.log("DM-nie-polaczony-bez-kasa")
+          return INPUT_STATE.DISABLE
         }
       }
     } else {
-      if (currentContactArray[0]) {
-        return INPUT_STATE.AVAILABLE
-      }
-      if (locked.gt(0)) {
-        return INPUT_STATE.LOCKED
-      }
+      console.log("CH")
+      return INPUT_STATE.AVAILABLE
     }
-    return INPUT_STATE.DISABLE
   }
 )
 

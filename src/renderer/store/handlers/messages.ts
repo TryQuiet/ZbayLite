@@ -641,11 +641,6 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
         id: '1'
       }
     }
-
-    if (message.message !== null) {
-      console.log("pubKee", message.message, message.signature, message.r)
-    }
-
     publicKey = getPublicKeysFromSignature(message).toString('hex')
     const contact = contactsSelectors.contact(publicKey)(getState())
     if (contact && contact.key === publicKey) {
@@ -668,17 +663,13 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
     }
     if (users !== undefined) {
       const fromUser = users[publicKey]
-      console.log('co jest', publicKey)
       if (fromUser !== undefined) {
-        console.log("serio??", message)
-
         const isUsernameValid = usernameSchema.isValidSync(fromUser)
         sender = new ExchangeParticipant({
           replyTo: fromUser.address,
           username: isUsernameValid ? fromUser.nickname : `anon${publicKey.substring(0, 10)}`
         })
       } else {
-        console.log("serio2??", message)
         sender = new ExchangeParticipant({
           replyTo: '',
           username: `anon${publicKey}`
@@ -718,7 +709,6 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
         shippingData: message.message.shippingData
       }
       const parsedMsg = new DisplayableMessage(msg)
-      console.log("parsedMsg", parsedMsg)
       // const contacts = contactsSelectors.contacts(getState())
       if (msg.message.itemId) {
         const item = msg.message.itemId
