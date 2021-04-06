@@ -59,7 +59,6 @@ interface IChannelMessagesProps {
   usersRegistration: any[]
   publicChannelsRegistration: any[]
   isDM?: boolean
-  isRescanned: boolean // required?;
   isNewUser: boolean // required?
   scrollPosition: number
   setScrollPosition: (arg?: any) => void
@@ -97,8 +96,6 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   channelId,
   onLinkedChannel,
   publicChannels,
-  isRescanned,
-  isDM,
   onRescan,
   isNewUser,
   isDev
