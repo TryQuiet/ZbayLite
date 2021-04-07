@@ -17,8 +17,6 @@ import { getOnionAddress, spawnTor, runLibp2p } from './tlgManager'
 
 const _killProcess = util.promisify(ps.kill)
 
-const isFetchedFromExternalSource = false
-
 const isTestnet = parseInt(process.env.ZBAY_IS_TESTNET)
 const nodeProc = null
 
@@ -440,10 +438,10 @@ app.on('before-quit', async e => {
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
+  // NOTE: temporarly quit macos when using 'X'. Reloading the app loses the connection with waggle. To be fixed.
   const vaultStatus = electronStore.get('vaultStatus')
-  const shouldFullyClose =
-    isFetchedFromExternalSource || vaultStatus !== config.VAULT_STATUSES.CREATED
-  if (process.platform !== 'darwin' || shouldFullyClose) {
+  const shouldFullyClose = vaultStatus !== config.VAULT_STATUSES.CREATED
+  if (shouldFullyClose) {
     app.quit()
   }
 })
