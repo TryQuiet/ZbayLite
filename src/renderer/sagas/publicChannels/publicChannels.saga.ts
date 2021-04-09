@@ -127,23 +127,19 @@ export function* loadAllMessages(
       return item.name === username
     })
     newMsgs.forEach(msg => {
-      if (newMsgs.length > 0 && msg.sender.replyTo) {
-        if (msg.sender.username !== myUser.nickname) {
-          displayMessageNotification({
-            senderName: msg.sender.username,
-            message: msg.message,
-            channelName: username,
-            address: contact[0].address
-          })
-        }
-      } else {
-        if (msg.sender.username !== myUser.nickname) {
-          displayMessageNotification({
-            senderName: msg.sender.username,
-            message: msg.message,
-            channelName: username
-          })
-        }
+      if (newMsgs.length > 0 && msg.sender.replyTo && msg.sender.username !== myUser.nickname) {
+        displayMessageNotification({
+          senderName: msg.sender.username,
+          message: msg.message,
+          channelName: username,
+          address: contact[0].address
+        })
+      } else if (msg.sender.username !== myUser.nickname) {
+        displayMessageNotification({
+          senderName: msg.sender.username,
+          message: msg.message,
+          channelName: username
+        })
       }
     })
     yield put(
