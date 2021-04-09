@@ -118,14 +118,31 @@ export function* loadAllMessages(
     }
     const state = yield* select()
     const newMsgs = findNewMessages(action.payload.channelAddress, displayableMessages, state)
+    console.log("newMsgs-0000000", newMsgs)
+
     newMsgs.forEach(msg => {
-      if (msg.sender.username !== myUser.nickname) {
-        displayMessageNotification({
-          senderName: msg.sender.username,
-          message: msg.message,
-          channelName: username
-        })
+      if (newMsgs.length > 0 && msg.sender.replyTo) {
+        console.log("address-000000", msg.sender.replyTo)
+        console.log("name-00000", username, msg.sender.username)
+        if (msg.sender.username !== myUser.nickname) {
+          displayMessageNotification({
+            senderName: msg.sender.username,
+            message: msg.message,
+            channelName: username,
+            address: msg.sender.replyTo
+          })
+        }
+      } else {
+        if (msg.sender.username !== myUser.nickname) {
+          displayMessageNotification({
+            senderName: msg.sender.username,
+            message: msg.message,
+            channelName: username
+          })
+        }
       }
+
+
     })
     yield put(
       actions.appendNewMessages({
