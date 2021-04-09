@@ -15,6 +15,7 @@ import { actions } from '../../store/handlers/contacts'
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
+import publicChannelsSelectors from '../../store/selectors/publicChannels'
 
 const all: any = effectsAll
 
@@ -99,6 +100,8 @@ export function* loadAllMessages(
 ): Generator {
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
+  const pubChannels = yield* select(publicChannelsSelectors.publicChannels)
+
   const channel = yield* select(contactsSelectors.contact(action.payload.channelAddress))
   if (!channel) {
     console.log(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
@@ -118,18 +121,19 @@ export function* loadAllMessages(
     }
     const state = yield* select()
     const newMsgs = findNewMessages(action.payload.channelAddress, displayableMessages, state)
-    console.log("newMsgs-0000000", newMsgs)
 
+    const pubChannelsArray = Object.values(pubChannels)
+    const contact = pubChannelsArray.filter((item) => {
+      return item.name === username
+    })
     newMsgs.forEach(msg => {
       if (newMsgs.length > 0 && msg.sender.replyTo) {
-        console.log("address-000000", msg.sender.replyTo)
-        console.log("name-00000", username, msg.sender.username)
         if (msg.sender.username !== myUser.nickname) {
           displayMessageNotification({
             senderName: msg.sender.username,
             message: msg.message,
             channelName: username,
-            address: msg.sender.replyTo
+            address: contact[0].address
           })
         }
       } else {
@@ -141,8 +145,6 @@ export function* loadAllMessages(
           })
         }
       }
-
-
     })
     yield put(
       actions.appendNewMessages({

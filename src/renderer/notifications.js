@@ -10,8 +10,7 @@ export const createNotification = ({ title, body, data }) => {
   }
   const notification = new Notification(title, { body: body })
   notification.onclick = () => {
-    console.log("data-0000000", data)
-    history.push('/main/channel/')
+    history.push(data)
   }
   return notification
 }
@@ -20,7 +19,7 @@ export const displayMessageNotification = ({
   senderName,
   message,
   channelName,
-  address=''
+  address = ''
 }) => {
   if (!message) {
     return
@@ -41,7 +40,7 @@ export const displayDirectMessageNotification = ({ message, username }) => {
     title: `New message from ${username || 'Unnamed'}`,
     body: `${message.message.substring(0, 64)}${
       message.message.length > 64 ? '...' : ''
-    }`, 
+    }`,
     data: `/main/direct-messages/${message.publicKey}/${username}`
   })
 }
