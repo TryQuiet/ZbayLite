@@ -439,11 +439,7 @@ app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   // NOTE: temporarly quit macos when using 'X'. Reloading the app loses the connection with waggle. To be fixed.
-  const vaultStatus = electronStore.get('vaultStatus')
-  const shouldFullyClose = vaultStatus !== config.VAULT_STATUSES.CREATED
-  if (shouldFullyClose) {
-    app.quit()
-  }
+  app.quit()
 })
 
 app.on('activate', () => {
