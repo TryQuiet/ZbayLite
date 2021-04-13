@@ -16,6 +16,7 @@ import { _checkMessageSize } from './messages'
 import directMessagesQueueHandlers from './directMessagesQueue'
 import { ActionsType, PayloadType } from './types'
 import usersSelector from '../selectors/users'
+import directMessagesHandlers from './directMessages'
 
 const sendDirectMessage = (payload, redirect = true) => async (dispatch, getState) => {
   const { spent, type, message: messageData } = payload
@@ -171,7 +172,11 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
 ) => {
   const contacts = selectors.contacts(getState())
   // Create temp user
+  console.log('inside create vault contact')
+  console.log(contacts[contact.publicKey])
   if (!contacts[contact.publicKey]) {
+    console.log('inside IF IF IF IF IF')
+    //directMessagesHandlers.epics.initializeConversation(contact.publicKey)
     await dispatch(
       addContact({
         key: contact.publicKey,
@@ -184,6 +189,7 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
     history.push(`/main/direct-messages/${contact.publicKey}/${contact.nickname}`)
   }
 }
+
 export const connectWsContacts = (key?: string) => async (dispatch, getState) => {
   const contacts = selectors.contacts(getState())
   const users = usersSelector.users(getState())

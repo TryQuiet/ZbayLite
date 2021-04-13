@@ -10,9 +10,11 @@ import history from '../../../shared/history'
 import client from '../../zcash'
 import channels from '../../zcash/channels'
 import identitySelectors from '../selectors/identity'
+import directMessagesSelectors  from '../selectors/directMessages'
 import appSelectors from '../selectors/app'
 import txnTimestampsSelector from '../selectors/txnTimestamps'
 import usersSelectors from '../selectors/users'
+import directMessagesHandlers from './directMessages'
 import coordinatorHandlers from './coordinator'
 import whitelistHandlers from './whitelist'
 import ownedChannelsHandlers from './ownedChannels'
@@ -400,6 +402,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   dispatch(setLoading(true))
   const isNewUser = electronStore.get('isNewUser')
   const useTor = appSelectors.useTor(getState())
+  const directMessagesPrivateKey = directMessagesSelectors.privateKey(getState())
   electronStore.set('useTor', useTor)
   try {
     const removedChannels = electronStore.get('removedChannels')
@@ -429,6 +432,9 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(prepareUpgradedVersion())
     await dispatch(channelsHandlers.epics.subscribeForPublicChannels())
     await dispatch(messagesHandlers.epics.updatePublicChannels())
+    if (!directMessagesPrivateKey) {
+      await dispatch(directMessagesHandlers.epics.generateDiffieHellman())
+    }
     if (!useTor) {
       ipcRenderer.send('killTor')
     }

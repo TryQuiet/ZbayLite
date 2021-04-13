@@ -6,6 +6,7 @@ import nodeHandlers from './node'
 import identityHandlers from './identity'
 import { actionTypes } from '../../../shared/static'
 import nodeSelectors from '../selectors/node'
+import directMessages from './directMessages'
 
 class Coordinator {
   running: boolean
@@ -35,6 +36,7 @@ const coordinator = () => async (dispatch, getState) => {
     .set(2, () => identityHandlers.epics.fetchFreeUtxos())
     .set(3, () => messagesHandlers.epics.updatePublicChannels()) // This should probably be called once
     .set(4, () => messagesHandlers.epics.fetchMessages())
+    .set(5, () => directMessages.epics.getAvailableUsers())
 
   const fetchStatus = async () => {
     for (let index = 0; index < statusActions.size; index++) {

@@ -77,12 +77,16 @@ export const SendMessageMain = ({
     <Formik
       enableReinitialize
       onSubmit={(values, { resetForm }) => {
+        console.log('form submitted')
         const { recipient, sendAnonymously } = values
+        console.log(recipient)
+        console.log(sendAnonymously)
         const includesNickname =
         Array.from(Object.values(users))
           .filter(obj => obj.nickname === recipient)[0] ||
           Array.from(Object.values(users))
             .filter(obj => obj.address === recipient)[0]
+        console.log(includesNickname)
         if (includesNickname && !sendAnonymously) {
           createNewContact({
             contact: includesNickname,

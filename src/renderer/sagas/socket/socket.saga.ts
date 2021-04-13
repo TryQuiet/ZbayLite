@@ -5,6 +5,10 @@ import {
   PublicChannelsActions,
   publicChannelsActions
 } from '../publicChannels/publicChannels.reducer'
+import {
+  directMessagesActions,
+  DirectMessagesActions
+} from '../directMessages/directMessages.reducer'
 import { eventChannel } from 'redux-saga'
 import { transferToMessage } from '../publicChannels/publicChannels.saga'
 import { fork } from 'redux-saga/effects'
@@ -27,7 +31,7 @@ export const connect = async () => {
 }
 
 export function subscribe(socket) {
-  return eventChannel<ActionFromMapping<PublicChannelsActions>>(emit => {
+  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions>>(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
     })
@@ -36,6 +40,14 @@ export function subscribe(socket) {
     })
     socket.on(socketsActions.RESPONSE_GET_PUBLIC_CHANNELS, payload => {
       emit(publicChannelsActions.responseGetPublicChannels(payload))
+    })
+    socket.on(socketsActions.RESPONSE_GET_AVAILABLE_USERS, payload => {
+      emit(directMessagesActions.responseGetAvailableUsers(payload))
+    })
+    socket.on(socketsActions.RESPONSE_GET_PRIVATE_CONVERSATIONS, payload => {
+      console.log('get answer from waggle')
+      console.log(`payload is ${payload}`)
+      emit(directMessagesActions.responseGetPrivateConversations(payload))
     })
     return () => {}
   })
@@ -105,12 +117,52 @@ export function* getPublicChannels(socket): Generator {
   }
 }
 
+// Direct Messages
+
+export function* getAvailableUsers(socket): Generator {
+  while (true) {
+    yield* take(`${directMessagesActions.getAvailableUsers}`)
+    socket.emit(socketsActions.GET_AVAILABLE_USERS)
+  }
+}
+
+export function* addUser(socket): Generator {
+  while (true) {
+    const { payload } = yield* take(`${directMessagesActions.addUser}`)
+    socket.emit(socketsActions.ADD_USER, payload)
+  }
+}
+
+export function* initializeConversation(socket): Generator {
+  while (true) {
+    const { payload } = yield* take(`${directMessagesActions.initializeConversation}`)
+    console.log('initialize converstion soscket saga')
+    socket.emit(socketsActions.INITIALIZE_CONVERSATION, payload)
+  }
+}
+
+export function* getPrivateConversations(socket): Generator {
+  while (true) {
+    const {payload} = yield* take(`${directMessagesActions.getPrivateConversations}`)
+    console.log('get private users sockset sagas')
+    socket.emit(socketsActions.GET_PRIVATE_CONVERSATIONS)
+  }
+}
+
+export function* sendDirectMessage(socket): Generator {}
+
 export function* useIO(socket): Generator {
   yield fork(handleActions, socket)
   yield fork(sendMessage, socket)
   yield fork(fetchAllMessages, socket)
   yield fork(subscribeForTopic, socket)
   yield fork(getPublicChannels, socket)
+  // Direct Messages
+  yield fork(addUser, socket)
+  yield fork(getAvailableUsers, socket)
+  yield fork(initializeConversation, socket)
+  yield fork(sendDirectMessage, socket)
+  yield fork(getPrivateConversations, socket)
 }
 
 export function* startConnection(): Generator {
