@@ -16,6 +16,8 @@ import channelSelectors from '../selectors/channel'
 import identitySelectors from '../selectors/identity'
 import contactsSelectors from '../selectors/contacts'
 import appSelectors from '../selectors/app'
+import directMessagesSelectors from '../selectors/directMessages'
+import directMessagesHandlers from '../handlers/directMessages'
 import client from '../../zcash'
 import { messages } from '../../zbay'
 import { errorNotification } from './utils'
@@ -30,6 +32,7 @@ import { packMemo } from '../../zbay/transit'
 
 import { ActionsType, PayloadType } from './types'
 import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
+import { directMessagesActions } from '../../sagas/directMessages/directMessages.reducer'
 
 // TODO: to remove, but must be replaced in all the tests
 export const ChannelState = {
@@ -222,10 +225,23 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
     resetTab(0)
   }
   const isPublicChannel = channelSelectors.isPublicChannel(getState())
+  const isDirectMessageChannel = true
+  // const isDirectMessageChannel = channelSelectors.isDirectMessageChannel(getState())
   if (isPublicChannel) {
     dispatch(publicChannelsActions.sendMessage())
     return
   }
+  if (isDirectMessageChannel) {
+    // If conversation does not exist
+    
+    await dispatch(directMessagesHandlers.epics.initializeConversation())
+    //dispatch(directMessagesActions.getPrivateConversations())
+    //dispatch(directMessagesActions.getAvailableUsers())
+    // If conversation exist
+    dispatch(directMessagesActions.sendMessage())
+    return
+  }
+     
   const enterPressed = event.nativeEvent.keyCode === 13
   const shiftPressed = event.nativeEvent.shiftKey === true
   const channel = channelSelectors.channel(getState())
