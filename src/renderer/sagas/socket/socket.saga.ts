@@ -122,6 +122,7 @@ export function* getPublicChannels(socket): Generator {
 export function* getAvailableUsers(socket): Generator {
   while (true) {
     yield* take(`${directMessagesActions.getAvailableUsers}`)
+    console.log('get available users in socket saga')
     socket.emit(socketsActions.GET_AVAILABLE_USERS)
   }
 }
