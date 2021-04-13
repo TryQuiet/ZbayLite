@@ -16,11 +16,31 @@ import usersSelectors from '../../store/selectors/users'
 import { messages } from '../../zbay'
 import config from '../../config'
 import { messageType } from '../../../shared/static'
+import { ipcRenderer } from 'electron'
 
+export const sleep = (time = 1000) =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, time)
+  })
 export const connect = async () => {
   const socket = io(config.socket.address)
   return await new Promise(resolve => {
-    socket.on('connect', () => {
+    socket.on('connect', async () => {
+      console.log('connection REEADY'
+      )
+      ipcRenderer.send('sleep')
+      console.log('going to sleep')
+      await sleep(10_000)
+      ipcRenderer.send('wakesleep')
+      console.log(
+    'waking up'
+      )
+      ipcRenderer.send(
+  'connectionReady2'
+      )
+      ipcRenderer.send('connectionReady')
       resolve(socket)
     })
   })

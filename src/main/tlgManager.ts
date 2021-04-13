@@ -3,6 +3,7 @@ import fp from 'find-free-port'
 import path from 'path'
 import os from 'os'
 import * as fs from 'fs'
+import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import electronStore from '../shared/electronStore'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -139,12 +140,19 @@ export const runLibp2p = async (webContents): Promise<any> => {
     }
   })
 
-  await connectonsManager.initializeNode()
-
+  
   const dataServer = new TlgManager.DataServer()
   dataServer.listen()
   TlgManager.initListeners(dataServer.io, connectonsManager)
   webContents.send('connectToWebsocket')
+  console.log('after sending webContents')
+  ipcMain.on(
+    'connectionReady', 
+async () => {
+  console.log('initializing node')
+  await connectonsManager.initializeNode()
+}
+  )
 }
 
 export default { spawnTor, getOnionAddress, getPorts, runLibp2p }

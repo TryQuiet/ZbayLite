@@ -304,6 +304,16 @@ app.on('ready', async () => {
     }
   })
 
+  ipcMain.on('connectionReady2', () => {
+    console.log('connectionReady')
+  })
+  ipcMain.on('sleep', () => {
+    console.log('sleep')
+  })
+  ipcMain.on('wakesleep', () => {
+    console.log('wakesleep')
+  })
+
   ipcMain.on('spawnTor', async (event, arg) => {
     if (tor === null) {
       tor = await spawnTor()
