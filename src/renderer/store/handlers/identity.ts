@@ -391,6 +391,17 @@ export const prepareUpgradedVersion = () => async (dispatch, getState) => {
   }
 }
 
+export const subscribeForChannels = () => async (dispatch, getState) => {
+  const id = setInterval(async () => {
+    if (electronStore.get('waggleInitialized')) {
+      console.log('Waggle initialized, subscribing for channels')
+      await dispatch(messagesHandlers.epics.updatePublicChannels())
+      await dispatch(channelsHandlers.epics.subscribeForPublicChannels())
+      clearInterval(id)
+    }
+  }, 1000)
+}
+
 export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   const nickname = identitySelectors.name(getState())
   const identityOnionAddress = identitySelectors.onionAddress(getState())
@@ -421,14 +432,13 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     dispatch(setLoadingMessage('Fetching balance and loading channels'))
     await dispatch(initAddreses())
     dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
+    await dispatch(subscribeForChannels())
     dispatch(ratesHandlers.epics.setInitialPrice())
     await dispatch(nodeHandlers.epics.getStatus())
     await dispatch(fetchBalance())
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
     await dispatch(prepareUpgradedVersion())
-    await dispatch(channelsHandlers.epics.subscribeForPublicChannels())
-    await dispatch(messagesHandlers.epics.updatePublicChannels())
     if (!useTor) {
       ipcRenderer.send('killTor')
     }

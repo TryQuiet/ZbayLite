@@ -121,7 +121,7 @@ ipcRenderer.on('checkNodeStatus', (event, { status }) => {
 })
 
 ipcRenderer.on('connectToWebsocket', (event) => {
-  console.log('working connecting')
+  console.log('connecting to websocket')
   store.dispatch(socketsActions.connect())
 })
 
