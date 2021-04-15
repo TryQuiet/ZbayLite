@@ -4,7 +4,8 @@ import BigNumber from 'bignumber.js'
 import { publicChannelsActions, PublicChannelsActions } from './publicChannels.reducer'
 import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
 // import { socketsActions } from '../socket/socket.saga.reducer'
-import { setPublicChannels } from '../../store/handlers/publicChannels'
+import { setPublicChannels, epics } from '../../store/handlers/publicChannels'
+import contactsHandlers from '../../store/handlers/contacts'
 import {
   getPublicKeysFromSignature,
   usernameSchema,
@@ -16,6 +17,7 @@ import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
 import publicChannelsSelectors from '../../store/selectors/publicChannels'
+import electronStore from '../../../shared/electronStore'
 
 const all: any = effectsAll
 
@@ -92,6 +94,20 @@ export function* getPublicChannels(action: PublicChannelsActions['responseGetPub
   console.log('loading public channels')
   if (action.payload) {
     yield put(setPublicChannels(action.payload))
+
+    const mainChannel = yield* select(publicChannelsSelectors.publicChannelsByName('zbay'))
+    if (mainChannel && !electronStore.get('generalChannelInitialized')) {
+      console.log('Setting main channel')
+      yield put(
+        contactsHandlers.actions.addContact({
+          key: mainChannel.address,
+          contactAddress: mainChannel.address,
+          username: mainChannel.name
+        })
+      )
+      yield put(publicChannelsActions.subscribeForTopic(mainChannel))
+      electronStore.set('generalChannelInitialized', true)
+    }
   }
 }
 

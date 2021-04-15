@@ -22,6 +22,7 @@ import nodeHandlers from './node'
 import usersHandlers from './users'
 import notificationCenterHandlers from './notificationCenter'
 import channelsHandlers from '../handlers/channels'
+import publicChannelsHandlers from '../handlers/publicChannels'
 import { successNotification } from './utils'
 import modalsHandlers from './modals'
 import notificationsHandlers from './notifications'
@@ -391,11 +392,11 @@ export const prepareUpgradedVersion = () => async (dispatch, getState) => {
   }
 }
 
-export const subscribeForChannels = () => async (dispatch, getState) => {
+export const subscribeForChannels = () => async dispatch => {
   const id = setInterval(async () => {
     if (electronStore.get('waggleInitialized')) {
       console.log('Waggle initialized, subscribing for channels')
-      await dispatch(messagesHandlers.epics.updatePublicChannels())
+      await dispatch(publicChannelsHandlers.epics.loadPublicChannels())
       await dispatch(channelsHandlers.epics.subscribeForPublicChannels())
       clearInterval(id)
     }

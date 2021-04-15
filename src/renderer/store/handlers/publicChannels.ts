@@ -6,12 +6,16 @@ import nodeSelectors from '../selectors/node'
 import client from '../../zcash'
 import { errorNotification, successNotification } from './utils'
 import identitySelectors from '../selectors/identity'
+import publicChannelsSelectors from '../selectors/publicChannels'
 import notificationsHandlers from './notifications'
+import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
 import messagesOperators from '../../zbay/messages'
 import { ADDRESS_TYPE } from '../../zbay/transit'
 import feesHandlers from './fees'
+import contactsHandlers from './contacts'
 import staticChannels from '../../zcash/channels'
 import { messageType, actionTypes } from '../../../shared/static'
+import electronStore from '../../../shared/electronStore'
 
 import { ActionsType, PayloadType } from './types'
 
@@ -122,6 +126,11 @@ export const updatePublicChannels = (channels) => async dispatch => {
   await dispatch(setPublicChannels(channels))
 }
 
+export const loadPublicChannels = () => async dispatch => {
+  /** Get public channels from db */
+  await dispatch(publicChannelsActions.getPublicChannels())
+}
+
 export const publishChannel = ({
   channelAddress,
   channelName,
@@ -178,7 +187,8 @@ export const publishChannel = ({
 export const epics = {
   fetchPublicChannels,
   publishChannel,
-  updatePublicChannels
+  updatePublicChannels,
+  loadPublicChannels
 }
 
 export const reducer = handleActions<PublicChannelsStore, PayloadType<PublicChannelsActions>>(

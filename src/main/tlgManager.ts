@@ -5,8 +5,6 @@ import os from 'os'
 import * as fs from 'fs'
 import { ipcMain } from 'electron'
 import electronStore from '../shared/electronStore'
-import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
-import { connected } from 'node:process'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -125,8 +123,7 @@ export const getOnionAddress = (): string => {
   return address
 }
 
-export const runLibp2p = async (webContents): Promise<any> => {
-  electronStore.set('waggleInitialized', false)
+export const runWaggle = async (webContents): Promise<any> => {
   const ports = electronStore.get('ports')
   const appDataPath = electronStore.get('appDataPath')
   const { libp2pHiddenService } = electronStore.get('hiddenServices')
@@ -147,11 +144,10 @@ export const runLibp2p = async (webContents): Promise<any> => {
   dataServer.listen()
   TlgManager.initListeners(dataServer.io, connectonsManager)
   webContents.send('connectToWebsocket')
-  console.log('after sending webContents')
   ipcMain.on('connectionReady', async (event) => {
     await connectonsManager.initializeNode()
     electronStore.set('waggleInitialized', true)
   })
 }
 
-export default { spawnTor, getOnionAddress, getPorts, runLibp2p }
+export default { spawnTor, getOnionAddress, getPorts, runWaggle }

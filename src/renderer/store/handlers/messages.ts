@@ -189,28 +189,6 @@ export const fetchMessages = () => async (dispatch, getState) => {
   }
 }
 
-export const setMainChannel = () => async (dispatch, getState) => {
-  const mainChannel = publicChannelsSelectors.publicChannelsByName('zbay')(getState())
-  if (mainChannel && !electronStore.get('generalChannelInitialized')) {
-    await dispatch(
-      contactsHandlers.actions.addContact({
-        key: mainChannel.address,
-        contactAddress: mainChannel.address,
-        username: mainChannel.name
-      })
-    )
-    dispatch(publicChannelsActions.subscribeForTopic(mainChannel))
-    console.log('set general channel')
-    electronStore.set('generalChannelInitialized', true)
-  }
-}
-
-export const updatePublicChannels = () => async (dispatch) => {
-  /** Get public channels from db, set main channel on sidebar if needed */
-  await dispatch(publicChannelsActions.getPublicChannels())
-  await dispatch(setMainChannel())
-}
-
 export const checkTransferCount = (address, messages) => async (dispatch, getState) => {
   if (messages) {
     if (
@@ -761,8 +739,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
 }
 export const epics = {
   fetchMessages,
-  handleWebsocketMessage,
-  updatePublicChannels
+  handleWebsocketMessage
 }
 
 export default {
