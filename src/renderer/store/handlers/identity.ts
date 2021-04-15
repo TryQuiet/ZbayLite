@@ -433,7 +433,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     dispatch(setLoadingMessage('Fetching balance and loading channels'))
     await dispatch(initAddreses())
     dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
-    await dispatch(subscribeForChannels())
+    dispatch(subscribeForChannels())
     dispatch(ratesHandlers.epics.setInitialPrice())
     await dispatch(nodeHandlers.epics.getStatus())
     await dispatch(fetchBalance())

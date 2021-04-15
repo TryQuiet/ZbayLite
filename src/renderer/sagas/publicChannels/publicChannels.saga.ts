@@ -3,16 +3,15 @@ import { put, select } from 'typed-redux-saga'
 import BigNumber from 'bignumber.js'
 import { publicChannelsActions, PublicChannelsActions } from './publicChannels.reducer'
 import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
-// import { socketsActions } from '../socket/socket.saga.reducer'
-import { setPublicChannels, epics } from '../../store/handlers/publicChannels'
-import contactsHandlers from '../../store/handlers/contacts'
+import { setPublicChannels } from '../../store/handlers/publicChannels'
+import contactsHandlers, { actions } from '../../store/handlers/contacts'
 import {
   getPublicKeysFromSignature,
   usernameSchema,
   exchangeParticipant
 } from '../../zbay/messages'
 import { findNewMessages } from '../../store/handlers/messages'
-import { actions } from '../../store/handlers/contacts'
+
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'

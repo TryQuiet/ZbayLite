@@ -11,12 +11,10 @@ import usersSelectors from '../selectors/users'
 import contactsSelectors from '../selectors/contacts'
 import identitySelectors from '../selectors/identity'
 import publicChannelsSelectors from '../selectors/publicChannels'
-import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
 import { actions as channelActions } from './channel'
 import contactsHandlers from './contacts'
 import usersHandlers from './users'
 import ratesHandlers from './rates'
-// import publicChannelsHandlers from './publicChannels'
 import appHandlers from './app'
 
 import {

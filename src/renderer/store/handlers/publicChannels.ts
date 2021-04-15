@@ -6,19 +6,14 @@ import nodeSelectors from '../selectors/node'
 import client from '../../zcash'
 import { errorNotification, successNotification } from './utils'
 import identitySelectors from '../selectors/identity'
-import publicChannelsSelectors from '../selectors/publicChannels'
 import notificationsHandlers from './notifications'
 import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
 import messagesOperators from '../../zbay/messages'
 import { ADDRESS_TYPE } from '../../zbay/transit'
 import feesHandlers from './fees'
-import contactsHandlers from './contacts'
 import staticChannels from '../../zcash/channels'
 import { messageType, actionTypes } from '../../../shared/static'
-import electronStore from '../../../shared/electronStore'
-
 import { ActionsType, PayloadType } from './types'
-
 import { DisplayableMessage } from '../../zbay/messages.types'
 
 // Used only in some tests

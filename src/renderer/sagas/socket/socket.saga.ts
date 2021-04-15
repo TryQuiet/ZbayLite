@@ -18,13 +18,6 @@ import config from '../../config'
 import { messageType } from '../../../shared/static'
 import { ipcRenderer } from 'electron'
 
-export const sleep = (time = 1000) =>
-  new Promise(resolve => {
-    setTimeout(() => {
-      resolve()
-    }, time)
-  })
-
 export const connect = async () => {
   const socket = io(config.socket.address)
   return await new Promise(resolve => {

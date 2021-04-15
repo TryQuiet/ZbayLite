@@ -144,9 +144,11 @@ export const runWaggle = async (webContents): Promise<any> => {
   dataServer.listen()
   TlgManager.initListeners(dataServer.io, connectonsManager)
   webContents.send('connectToWebsocket')
-  ipcMain.on('connectionReady', async (event) => {
-    await connectonsManager.initializeNode()
-    electronStore.set('waggleInitialized', true)
+  ipcMain.on('connectionReady', async () => {
+    if (!electronStore.get('waggleInitialized')) {
+      await connectonsManager.initializeNode()
+      electronStore.set('waggleInitialized', true)
+    }
   })
 }
 
