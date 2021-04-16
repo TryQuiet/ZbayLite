@@ -11,12 +11,10 @@ import usersSelectors from '../selectors/users'
 import contactsSelectors from '../selectors/contacts'
 import identitySelectors from '../selectors/identity'
 import publicChannelsSelectors from '../selectors/publicChannels'
-import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
 import { actions as channelActions } from './channel'
 import contactsHandlers from './contacts'
 import usersHandlers from './users'
 import ratesHandlers from './rates'
-// import publicChannelsHandlers from './publicChannels'
 import appHandlers from './app'
 
 import {
@@ -154,11 +152,6 @@ export const fetchMessages = () => async (dispatch, getState) => {
     await dispatch(usersHandlers.epics.fetchUsers(txns[channels.registeredUsers.mainnet.address]))
     await dispatch(usersHandlers.epics.fetchOnionAddresses(txns[channels.tor.mainnet.address]))
     await dispatch(ratesHandlers.epics.fetchPrices(txns[channels.priceOracle.mainnet.address]))
-    // await dispatch(
-    //   publicChannelsHandlers.epics.fetchPublicChannels(
-    //     txns[channels.channelOfChannels.mainnet.address]
-    //   )
-    // )
     const importedChannels = electronStore.get('importedChannels')
     const publicChannels = publicChannelsSelectors.publicChannels(getState())
     const publicChannelAddresses = Object.values(publicChannels).map(el => el.address)
@@ -173,17 +166,6 @@ export const fetchMessages = () => async (dispatch, getState) => {
       }
     }
 
-    // Load messages for subscribed public channels
-    const publicChannelsContacts = contactsSelectors.publicChannelsContacts(getState())
-    console.log(`Loading all messages for ${publicChannelsContacts.length} channels`)
-    for (const contact of publicChannelsContacts) {
-      await dispatch(publicChannelsActions.loadAllMessages(contact.address))
-    }
-
-    // await dispatch(
-    //   setChannelMessages(channels.general.mainnet, txns[channels.general.mainnet.address])
-    // )
-    // await dispatch(setChannelMessages(channels.store.mainnet, txns[channels.store.mainnet.address]))
     await dispatch(setOutgoingTransactions(txns.undefined || []))
     dispatch(setUsersMessages(txns[identityAddress] || []))
     let allTransactionsId = allMessagesTxnId
@@ -203,28 +185,6 @@ export const fetchMessages = () => async (dispatch, getState) => {
     console.warn(err)
     return {}
   }
-}
-
-export const setMainChannel = () => async (dispatch, getState) => {
-  const mainChannel = publicChannelsSelectors.publicChannelsByName('zbay')(getState())
-  if (mainChannel && !electronStore.get('generalChannelInitialized')) {
-    await dispatch(
-      contactsHandlers.actions.addContact({
-        key: mainChannel.address,
-        contactAddress: mainChannel.address,
-        username: mainChannel.name
-      })
-    )
-    dispatch(publicChannelsActions.subscribeForTopic(mainChannel))
-    console.log('set general channel')
-    electronStore.set('generalChannelInitialized', true)
-  }
-}
-
-export const updatePublicChannels = () => async (dispatch) => {
-  /** Get public channels from db, set main channel on sidebar if needed */
-  await dispatch(publicChannelsActions.getPublicChannels())
-  await dispatch(setMainChannel())
 }
 
 export const checkTransferCount = (address, messages) => async (dispatch, getState) => {
@@ -777,8 +737,7 @@ export const handleWebsocketMessage = data => async (dispatch, getState) => {
 }
 export const epics = {
   fetchMessages,
-  handleWebsocketMessage,
-  updatePublicChannels
+  handleWebsocketMessage
 }
 
 export default {

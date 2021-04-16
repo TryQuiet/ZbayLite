@@ -23,7 +23,6 @@ import ratesHandlers from './rates'
 import nodeHandlers from './node'
 import usersHandlers from './users'
 import notificationCenterHandlers from './notificationCenter'
-import channelsHandlers from '../handlers/channels'
 import { successNotification } from './utils'
 import modalsHandlers from './modals'
 import notificationsHandlers from './notifications'
@@ -431,8 +430,6 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
     await dispatch(prepareUpgradedVersion())
-    await dispatch(channelsHandlers.epics.subscribeForPublicChannels())
-    await dispatch(messagesHandlers.epics.updatePublicChannels())
     await dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.signerPubKey))
     if (!directMessagesPrivateKey) {
     }
