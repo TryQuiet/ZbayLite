@@ -15,6 +15,8 @@ import staticChannels from '../../zcash/channels'
 import { messageType, actionTypes } from '../../../shared/static'
 import { ActionsType, PayloadType } from './types'
 import { DisplayableMessage } from '../../zbay/messages.types'
+import contactsSelectors from '../selectors/contacts'
+import publicChannelsSelectors from '../selectors/publicChannels'
 
 // Used only in some tests
 export const _PublicChannelData = {
@@ -126,6 +128,18 @@ export const loadPublicChannels = () => async dispatch => {
   await dispatch(publicChannelsActions.getPublicChannels())
 }
 
+export const subscribeForPublicChannels = () => async (dispatch, getState) => {
+  /** Subscribe for public channels from contacts (joined public channels) */
+  const publicChannelsContacts = contactsSelectors.publicChannelsContacts(getState())
+  for (const publicChannel of publicChannelsContacts) {
+    const channel = publicChannelsSelectors.publicChannelsByName(publicChannel.username)(getState())
+    console.log('subscribing for ', channel.name)
+    if (channel) {
+      dispatch(publicChannelsActions.subscribeForTopic(channel))
+    }
+  }
+}
+
 export const publishChannel = ({
   channelAddress,
   channelName,
@@ -183,7 +197,8 @@ export const epics = {
   fetchPublicChannels,
   publishChannel,
   updatePublicChannels,
-  loadPublicChannels
+  loadPublicChannels,
+  subscribeForPublicChannels
 }
 
 export const reducer = handleActions<PublicChannelsStore, PayloadType<PublicChannelsActions>>(

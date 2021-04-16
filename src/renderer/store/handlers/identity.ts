@@ -21,8 +21,6 @@ import ratesHandlers from './rates'
 import nodeHandlers from './node'
 import usersHandlers from './users'
 import notificationCenterHandlers from './notificationCenter'
-import channelsHandlers from '../handlers/channels'
-import publicChannelsHandlers from '../handlers/publicChannels'
 import { successNotification } from './utils'
 import modalsHandlers from './modals'
 import notificationsHandlers from './notifications'
@@ -392,17 +390,6 @@ export const prepareUpgradedVersion = () => async (dispatch, getState) => {
   }
 }
 
-export const subscribeForChannels = () => async dispatch => {
-  const id = setInterval(async () => {
-    if (electronStore.get('waggleInitialized')) {
-      console.log('Waggle initialized, subscribing for channels')
-      await dispatch(publicChannelsHandlers.epics.loadPublicChannels())
-      await dispatch(channelsHandlers.epics.subscribeForPublicChannels())
-      clearInterval(id)
-    }
-  }, 1000)
-}
-
 export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   const nickname = identitySelectors.name(getState())
   const identityOnionAddress = identitySelectors.onionAddress(getState())
@@ -433,7 +420,6 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     dispatch(setLoadingMessage('Fetching balance and loading channels'))
     await dispatch(initAddreses())
     dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
-    dispatch(subscribeForChannels())
     dispatch(ratesHandlers.epics.setInitialPrice())
     await dispatch(nodeHandlers.epics.getStatus())
     await dispatch(fetchBalance())
