@@ -4,6 +4,7 @@ import path from 'path'
 import os from 'os'
 import * as fs from 'fs'
 import electronStore from '../shared/electronStore'
+import { ipcMain } from 'electron'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -145,6 +146,13 @@ export const runLibp2p = async (webContents): Promise<any> => {
   dataServer.listen()
   TlgManager.initListeners(dataServer.io, connectonsManager)
   webContents.send('connectToWebsocket')
+
+  ipcMain.on('connectionReady', async () => {
+    if (!electronStore.get('waggleInitialized')) {
+      await connectonsManager.initializeNode()
+      electronStore.set('waggleInitialized', true)
+    }
+  })
 }
 
 export default { spawnTor, getOnionAddress, getPorts, runLibp2p }

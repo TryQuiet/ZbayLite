@@ -16,6 +16,7 @@ import { call, take, select, put } from 'typed-redux-saga'
 import { ActionFromMapping, Socket as socketsActions } from '../const/actionsTypes'
 import channelSelectors from '../../store/selectors/channel'
 import identitySelectors from '../../store/selectors/identity'
+import directMessagesSelectors from '../../store/selectors/directMessages'
 import usersSelectors from '../../store/selectors/users'
 import { messages } from '../../zbay'
 import config from '../../config'
@@ -40,6 +41,13 @@ export function subscribe(socket) {
     })
     socket.on(socketsActions.RESPONSE_GET_PUBLIC_CHANNELS, payload => {
       emit(publicChannelsActions.responseGetPublicChannels(payload))
+    })
+    // Direct messages
+    socket.on(socketsActions.DIRECT_MESSAGE, payload => {
+      emit(directMessagesActions.loadDirectMessage(payload))
+    })
+    socket.on(socketsActions.RESPONSE_FETCH_ALL_DIRECT_MESSAGES, payload => {
+      emit(directMessagesActions.responseLoadAllDirectMessages(payload))
     })
     socket.on(socketsActions.RESPONSE_GET_AVAILABLE_USERS, payload => {
       emit(directMessagesActions.responseGetAvailableUsers(payload))
@@ -119,6 +127,13 @@ export function* getPublicChannels(socket): Generator {
 
 // Direct Messages
 
+export function* subscribeForDirectMessageThread(socket): Generator {
+  while (true) {
+    const payload = yield* take(`${directMessagesActions.subscribeForDirectMessageThread}`)
+    socket.emit(socketsActions.SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD)
+  }
+}
+
 export function* getAvailableUsers(socket): Generator {
   while (true) {
     yield* take(`${directMessagesActions.getAvailableUsers}`)
@@ -130,6 +145,8 @@ export function* getAvailableUsers(socket): Generator {
 export function* addUser(socket): Generator {
   while (true) {
     const { payload } = yield* take(`${directMessagesActions.addUser}`)
+    console.log(`paylaod address is ${payload.address}`)
+    console.log(`paylaod diffiehellman is ${payload.halfKey}`)
     socket.emit(socketsActions.ADD_USER, payload)
   }
 }
@@ -138,19 +155,63 @@ export function* initializeConversation(socket): Generator {
   while (true) {
     const { payload } = yield* take(`${directMessagesActions.initializeConversation}`)
     console.log('initialize converstion soscket saga')
+    console.log(
+    `in initializeCOnversation saga it is ${payload.address}`
+    )
+    console.log(
+      `in initializeCOnversation saga it is ${payload.encryptedPhrase}`
+      )
     socket.emit(socketsActions.INITIALIZE_CONVERSATION, payload)
   }
 }
 
 export function* getPrivateConversations(socket): Generator {
   while (true) {
-    const {payload} = yield* take(`${directMessagesActions.getPrivateConversations}`)
-    console.log('get private users sockset sagas')
+    yield* take(`${directMessagesActions.getPrivateConversations}`)
+    console.log('get private conversations in socket sagas')
     socket.emit(socketsActions.GET_PRIVATE_CONVERSATIONS)
   }
 }
 
-export function* sendDirectMessage(socket): Generator {}
+export function* sendDirectMessage(socket): Generator {
+  while (true) {
+    yield* take(`${directMessagesActions.sendDirectMessage}`)
+    const { id } = yield* select(channelSelectors.channel)
+    const conversations = yield* select(directMessagesSelectors.conversations)
+    const conversationId = conversations[id].conversationId
+
+    const messageToSend = yield* select(channelSelectors.message)
+    const users = yield* select(usersSelectors.users)
+    let message = null
+    const privKey = yield* select(identitySelectors.signerPrivKey)
+    message = messages.createMessage({
+      messageData: {
+        type: messageType.BASIC,
+        data: messageToSend
+      },
+      privKey: privKey
+    })
+    const messageDigest = crypto.createHash('sha256')
+    const messageEssentials = R.pick(['createdAt', 'message'])(message)
+    const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
+    const preparedMessage = {
+      ...message,
+      id: key,
+      typeIndicator: false,
+      signature: message.signature.toString('base64')
+    }
+    const displayableMessage = transferToMessage(preparedMessage, users)
+    yield put(
+      directMessagesActions.addMessage({
+        key: id,
+        message: { [preparedMessage.id]: displayableMessage }
+      })
+    )
+    console.log(`ZBAYLITE SOCKET SAGA: id is ${id}`)
+    console.log(`ZBAYLITE SOCKET SAGA: prepared message is ${preparedMessage}`)
+    socket.emit(socketsActions.SEND_DIRECT_MESSAGE, { channelAddress: conversationId, message: preparedMessage })
+  }
+}
 
 export function* useIO(socket): Generator {
   yield fork(handleActions, socket)

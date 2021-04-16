@@ -18,15 +18,15 @@ interface IUser {
 }
 
 interface IConversation {
-  id: string
   sharedSecret: string
   contactPublicKey: string
+  conversationId: string
 }
 
 export class DirectMessages {
   users: { [key: string]: IUser }
   conversations: { [key: string]: IConversation }
-  conversationsList: {[key:string]: string}
+  conversationsList: { [key: string]: string }
   publicKey: string
   privateKey: string
   isAdded?: boolean
@@ -50,7 +50,9 @@ const fetchUsers = createAction<{ usersList: { [key: string]: IUser } }>(actionT
 const setPublicKey = createAction<string>(actionTypes.SET_PUBLIC_KEY)
 const setPrivateKey = createAction<string>(actionTypes.SET_PRIVATE_KEY)
 const addConversation = createAction<IConversation>(actionTypes.ADD_CONVERSATION)
-const fetchConversations = createAction<{conversationsList: {[key: string]: string}}>(actionTypes.FETCH_CONVERSATIONS)
+const fetchConversations = createAction<{ conversationsList: { [key: string]: string } }>(
+  actionTypes.FETCH_CONVERSATIONS
+)
 
 export const actions = {
   fetchUsers,
@@ -62,9 +64,10 @@ export const actions = {
 
 export type DirectMessagesActions = ActionsType<typeof actions>
 
-const generateDiffieHellman = () => async (dispatch, getState) => {
-  const signerPubKey = identitySelectors.signerPubKey(getState())
-  const nickname = usersSelectors.registeredUser(signerPubKey)(getState()).nickname
+const generateDiffieHellman = signerPublicKey => async (dispatch, getState) => {
+  //const signerPubKey = identitySelectors.signerPubKey(getState())
+  //console.log(signerPubKey)
+  console.log(`signer public key is ${signerPublicKey}`)
 
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
@@ -78,83 +81,98 @@ const generateDiffieHellman = () => async (dispatch, getState) => {
   await dispatch(actions.setPublicKey(publicKey))
 
   // Add me to users key value store
-  await dispatch(directMessagesActions.addUser({ address: signerPubKey, halfKey: publicKey, nickname: nickname }))
+  await dispatch(directMessagesActions.addUser({ publicKey: signerPublicKey, halfKey: publicKey }))
+}
+
+export const getPrivateConversations = () => (dispatch, getState) => {
+  dispatch(directMessagesActions.getPrivateConversations())
 }
 
 const encodeMessage = (sharedSecret, message) => {
   const IVO = '5183666c72eec9e45183666c72eec9e4'
-  const ENC_KEY = Buffer.from(sharedSecret.substring(0,64), "hex");
-  const IV = Buffer.from(IVO, "hex");
+  const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
+  const IV = Buffer.from(IVO, 'hex')
 
-  let cipher = crypto.createCipheriv("aes-256-cbc", ENC_KEY, IV);
-  let encrypted = cipher.update(message, "utf8", "base64");
-  encrypted += cipher.final("base64");
-  return encrypted;
+  let cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV)
+  let encrypted = cipher.update(message, 'utf8', 'base64')
+  encrypted += cipher.final('base64')
+  return encrypted
 }
 
 const decodeMessage = (sharedSecret, message) => {
   const IVO = '5183666c72eec9e45183666c72eec9e4'
-  const ENC_KEY = Buffer.from(sharedSecret.substring(0,64), "hex");
-  const IV = Buffer.from(IVO, "hex");
+  const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
+  const IV = Buffer.from(IVO, 'hex')
 
-  let decipher = crypto.createDecipheriv("aes-256-cbc", ENC_KEY, IV);
-  let decrypted = decipher.update(message, "base64", "utf8");
-  return decrypted + decipher.final("utf8");
+  let decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
+  let decrypted = decipher.update(message, 'base64', 'utf8')
+  return decrypted + decipher.final('utf8')
 }
 
-const checkConversation = conversation => (dispatch, getState) => {
+const checkConversation = (id, encryptedPhrase) => (dispatch, getState) => {
   const privKey = directMessagesSelectors.privateKey(getState())
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
   const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
   dh.setPrivateKey(privKey, 'hex')
-  const sharedSecret = dh.computeSecret(conversation.id,'hex')
-  const decodedMessage = decodeMessage(sharedSecret, conversation.encryptedPhrase)
+  const sharedSecret = dh.computeSecret(id, 'hex').toString('hex')
+  const decodedMessage = decodeMessage(sharedSecret, encryptedPhrase)
   if (decodedMessage.startsWith('no panic')) {
     console.log('success, message decoded successfully')
+
+    actions.addConversation({
+      sharedSecret,
+      contactPublicKey: decodedMessage.slice(8),
+      conversationId: id
+    })
+    return
   } else {
     console.log('cannot decode message, its not for me')
+    return
   }
-  // actions.addConversation({
-  //   sharedSecret,
-  //   contactPublicKey: pubKey,
-  //   id: 'dupa'
-  //     })
-  // Add contact and message if successfully decoded
 }
 
 const initializeConversation = () => async (dispatch, getState) => {
+  const contactPublicKey = channelSelectors.channel(getState()).id
 
-  const id = channelSelectors.channel(getState()).id
+  const halfKey = directMessagesSelectors.user(contactPublicKey)(getState()).halfKey
 
-  console.log(id)
-
-  const halfKey = directMessagesSelectors.user(id)(getState()).halfKey
+  console.log(`half key is ${halfKey}`)
 
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
 
   const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
   dh.generateKeys()
-  const privateKey = dh.getPrivateKey('hex')
+
   const pubKey = dh.getPublicKey('hex')
 
   const sharedSecret = dh.computeSecret(halfKey, 'hex').toString('hex')
 
-  const salt = crypto.createHash('sha256')
+  console.log(`shared secret is ${sharedSecret}`)
+
+  const salt = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
+
+  console.log(`salt is ${salt}`)
 
   const encryptedPhrase = encodeMessage(sharedSecret, `no panic${salt}`)
 
-  dispatch(actions.addConversation({
-sharedSecret,
-contactPublicKey: id,
-id: pubKey
-  }))
+  console.log(` encrypted phrase is ${encryptedPhrase}`)
 
-await dispatch(directMessagesActions.initializeConversation({
-  address: pubKey,
-  encryptedPhrase
-}))
+  dispatch(
+    actions.addConversation({
+      sharedSecret,
+      contactPublicKey: contactPublicKey,
+      conversationId: pubKey
+    })
+  )
+
+  await dispatch(
+    directMessagesActions.initializeConversation({
+      address: pubKey,
+      encryptedPhrase
+    })
+  )
 
   // Add keyvalue
   // Add entry to
@@ -173,13 +191,15 @@ const addMessage = publicKey => {}
 
 const getAvailableUsers = () => async (dispatch, getState) => {
   console.log('get available users')
-await dispatch(directMessagesActions.getAvailableUsers())
+  await dispatch(directMessagesActions.getAvailableUsers())
 }
 
 export const epics = {
   generateDiffieHellman,
   getAvailableUsers,
-  initializeConversation
+  initializeConversation,
+  getPrivateConversations,
+  checkConversation
 }
 
 export const reducer = handleActions<DirectMessagesStore, PayloadType<DirectMessagesActions>>(
@@ -196,8 +216,8 @@ export const reducer = handleActions<DirectMessagesStore, PayloadType<DirectMess
       }),
     [fetchConversations.toString()]: (
       state,
-      { payload: {conversationsList}}: DirectMessagesActions['fetchConversations']
-    ) => 
+      { payload: { conversationsList } }: DirectMessagesActions['fetchConversations']
+    ) =>
       produce(state, draft => {
         draft.conversationsList = {
           ...draft.conversationsList,

@@ -34,5 +34,10 @@ export enum Socket {
   INITIALIZE_CONVERSATION = 'initializeConversation',
   SEND_DIRECT_MESSAGE = 'sendDirectMessage',
   GET_PRIVATE_CONVERSATIONS = 'getPrivateConversations',
-  RESPONSE_GET_PRIVATE_CONVERSATIONS = 'responseGetPrivateConversations'
+  RESPONSE_GET_PRIVATE_CONVERSATIONS = 'responseGetPrivateConversations',
+  LOAD_ALL_DIRECT_MESSAGES = 'loadAllDirectMessages',
+  DIRECT_MESSAGE = 'directMessage',
+  RESPONSE_FETCH_ALL_DIRECT_MESSAGES = 'responseFetchAllDirectMessages',
+  SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD = 'subscribeForDirectMessageThread'
+  
 }

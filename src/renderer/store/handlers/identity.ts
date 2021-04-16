@@ -394,6 +394,7 @@ export const prepareUpgradedVersion = () => async (dispatch, getState) => {
 }
 
 export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
+  console.log('FIRE SET IDENTITY EPIC')
   const nickname = identitySelectors.name(getState())
   const identityOnionAddress = identitySelectors.onionAddress(getState())
   const myUser = usersSelectors.myUser(getState())
@@ -432,8 +433,8 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(prepareUpgradedVersion())
     await dispatch(channelsHandlers.epics.subscribeForPublicChannels())
     await dispatch(messagesHandlers.epics.updatePublicChannels())
+    await dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.signerPubKey))
     if (!directMessagesPrivateKey) {
-      await dispatch(directMessagesHandlers.epics.generateDiffieHellman())
     }
     if (!useTor) {
       ipcRenderer.send('killTor')

@@ -220,7 +220,6 @@ const sendTypingIndicator = value => async (dispatch, getState) => {
 }
 
 const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
-  console.log('working here')
   if (resetTab) {
     resetTab(0)
   }
@@ -232,16 +231,20 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
     return
   }
   if (isDirectMessageChannel) {
-    // If conversation does not exist
-    
-    await dispatch(directMessagesHandlers.epics.initializeConversation())
+    const id = channelSelectors.id(getState())
+    const conversations = directMessagesSelectors.conversations(getState())
+    const conversation = conversations[id]
+
+    if (!conversation) {
+      await dispatch(directMessagesHandlers.epics.initializeConversation())
+    }
     //dispatch(directMessagesActions.getPrivateConversations())
     //dispatch(directMessagesActions.getAvailableUsers())
     // If conversation exist
-    dispatch(directMessagesActions.sendMessage())
+    dispatch(directMessagesActions.sendDirectMessage())
     return
   }
-     
+
   const enterPressed = event.nativeEvent.keyCode === 13
   const shiftPressed = event.nativeEvent.shiftKey === true
   const channel = channelSelectors.channel(getState())

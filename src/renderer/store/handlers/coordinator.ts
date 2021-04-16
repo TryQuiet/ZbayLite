@@ -37,6 +37,7 @@ const coordinator = () => async (dispatch, getState) => {
     .set(3, () => messagesHandlers.epics.updatePublicChannels()) // This should probably be called once
     .set(4, () => messagesHandlers.epics.fetchMessages())
     .set(5, () => directMessages.epics.getAvailableUsers())
+    .set(6, () => directMessages.epics.getPrivateConversations())
 
   const fetchStatus = async () => {
     for (let index = 0; index < statusActions.size; index++) {
