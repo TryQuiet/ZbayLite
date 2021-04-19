@@ -196,12 +196,20 @@ export function* responseGetPrivateConversations(
   const privKey = yield* select(directMessagesSelectors.privateKey)
 
   for (const [key, value] of Object.entries(action.payload)) {
-
+    
     const conversation = checkConversation(key, value, privKey)
-
+    
     if (conversation) {
+      const user = yield* select(usersSelectors.registeredUser(key))
       yield put(
         actions.addConversation(conversation)
+        )
+      yield put(
+        contactsActions.addContact({
+          key: conversation.contactPublicKey,
+          username: user?.nickname || `anon${conversation.contactPublicKey.substring(0,8)}`,
+          contactAddress: user?.address || ''
+        })
       )
     }
 
