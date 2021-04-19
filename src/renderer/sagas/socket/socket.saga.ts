@@ -25,6 +25,7 @@ import { ipcRenderer } from 'electron'
 
 export const connect = async () => {
   const socket = io(config.socket.address)
+  console.log(socket)
   return await new Promise(resolve => {
     socket.on('connect', async () => {
       ipcRenderer.send('connectionReady')

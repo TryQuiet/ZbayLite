@@ -65,8 +65,6 @@ export const actions = {
 export type DirectMessagesActions = ActionsType<typeof actions>
 
 const generateDiffieHellman = signerPublicKey => async (dispatch, getState) => {
-  //const signerPubKey = identitySelectors.signerPubKey(getState())
-  //console.log(signerPubKey)
   console.log(`signer public key is ${signerPublicKey}`)
 
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
@@ -137,6 +135,8 @@ const subscribeForDirectMessagesThreads = () => async (dispatch, getState) => {}
 const initializeConversation = () => async (dispatch, getState) => {
   const contactPublicKey = channelSelectors.channel(getState()).id
 
+const myPublicKey = identitySelectors.signerPubKey(getState())
+
   const halfKey = directMessagesSelectors.user(contactPublicKey)(getState()).halfKey
 
   console.log(`half key is ${halfKey}`)
@@ -153,11 +153,7 @@ const initializeConversation = () => async (dispatch, getState) => {
 
   console.log(`shared secret is ${sharedSecret}`)
 
-  const salt = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
-
-  console.log(`salt is ${salt}`)
-
-  const encryptedPhrase = encodeMessage(sharedSecret, `no panic${salt}`)
+  const encryptedPhrase = encodeMessage(sharedSecret, `no panic${myPublicKey}`)
 
   console.log(` encrypted phrase is ${encryptedPhrase}`)
 

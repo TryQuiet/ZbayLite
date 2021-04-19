@@ -128,6 +128,7 @@ export const runWaggle = async (webContents): Promise<any> => {
   const appDataPath = electronStore.get('appDataPath')
   const { libp2pHiddenService } = electronStore.get('hiddenServices')
 
+  const dataServer = new TlgManager.DataServer()
   const connectonsManager = new TlgManager.ConnectionsManager({
     port: ports.libp2pHiddenService,
     host: `${libp2pHiddenService.onionAddress}.onion`,
@@ -140,13 +141,14 @@ export const runWaggle = async (webContents): Promise<any> => {
     }
   })
 
-  const dataServer = new TlgManager.DataServer()
   dataServer.listen()
   TlgManager.initListeners(dataServer.io, connectonsManager)
   webContents.send('connectToWebsocket')
   ipcMain.on('connectionReady', () => {
+    console.log('connection ready wchodzi')
     if (!electronStore.get('waggleInitialized')) {
       connectonsManager.initializeNode().then(() => {
+        console.log(' na pewno wchodzio')
         webContents.send('waggleInitialized')
         electronStore.set('waggleInitialized', true)
       }).catch(error => {
