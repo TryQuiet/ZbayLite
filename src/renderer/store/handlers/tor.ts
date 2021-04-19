@@ -95,26 +95,9 @@ const checkTor = () => async (dispatch, getState) => {
     client.write(msg)
   })
 }
-export const createZcashNode = torUrl => async dispatch => {
-  electronStore.set('torEnabled', !!torUrl)
-  let ipAddress
-  if (torUrl?.startsWith('localhost')) {
-    ipAddress = torUrl.replace('localhost', '127.0.0.1')
-  } else {
-    ipAddress = torUrl
-  }
-  ipcRenderer.send('create-node', ipAddress)
-  if (torUrl) {
-    dispatch(
-      notificationsHandlers.actions.enqueueSnackbar(
-        successNotification({ message: 'You are using Tor proxy.' })
-      )
-    )
-  }
-}
+
 export const epics = {
   checkTor,
-  createZcashNode,
   checkDeafult
 }
 
