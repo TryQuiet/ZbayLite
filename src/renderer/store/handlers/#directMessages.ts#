@@ -109,7 +109,7 @@ const decodeMessage = (sharedSecret, message) => {
   return decrypted + decipher.final('utf8')
 }
 
-const checkConversation = (id, encryptedPhrase) => (dispatch, getState) => {
+const checkConversation = (id, encryptedPhrase) => (dispatch, getStafte) => {
   const privKey = directMessagesSelectors.privateKey(getState())
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'

@@ -430,9 +430,6 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
     await dispatch(prepareUpgradedVersion())
-    await dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.signerPubKey))
-    if (!directMessagesPrivateKey) {
-    }
     if (!useTor) {
       ipcRenderer.send('killTor')
     }

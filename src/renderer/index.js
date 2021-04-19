@@ -13,6 +13,7 @@ import importChannelHandlers from './store/handlers/importedChannel'
 import coordinatorHandlers from './store/handlers/coordinator'
 import publicChannelsHandlers from './store/handlers/publicChannels'
 import messagesHandlers from './store/handlers/messages'
+import directMessagesHandlers from './store/handlers/directMessages'
 import nodeSelectors from './store/selectors/node'
 import coordinatorSelectors from './store/selectors/coordinator'
 import identityHandlers from './store/handlers/identity'
@@ -130,6 +131,9 @@ ipcRenderer.on('waggleInitialized', (event) => {
   console.log('Initialized waggle, subscribing to channels')
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())
   store.dispatch(publicChannelsHandlers.epics.subscribeForPublicChannels())
+  store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
+  store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
+  store.dispatch(directMessagesHandlers.epics.generateDiffieHellman())
 })
 
 ipcRenderer.on('newChannel', (event, { channelParams }) => {
