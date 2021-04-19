@@ -173,7 +173,7 @@ export function* responseGetPrivateConversations(
 
   for (const [key, value] of Object.entries(action.payload)) {
 
-    //epics.checkConversation(key, value)
+    epics.checkConversation(key, value)
 
     console.log(`${key}`)
     yield put(

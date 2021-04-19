@@ -24,6 +24,7 @@ import { errorNotification, successNotification } from './store/handlers/utils'
 import notificationsHandlers from './store/handlers/notifications'
 import appSelectors from './store/selectors/app'
 import { socketsActions } from './sagas/socket/socket.saga.reducer'
+import electronStore from '../shared/electronStore'
 
 Web.HashingTools.patchCorePBKDF()
 
@@ -133,7 +134,7 @@ ipcRenderer.on('waggleInitialized', (event) => {
   console.log(`waggle is initialized and publicKey is ${identity.signerPubKey}`)
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())
   store.dispatch(publicChannelsHandlers.epics.subscribeForPublicChannels())
-  //store.dispatch(directMessagesHandlers.epics)
+  //store.dispatch(directMessagesHandlers.epics.subscribeForDirectMessageThreads)
   store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
   store.dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.signerPubKey))

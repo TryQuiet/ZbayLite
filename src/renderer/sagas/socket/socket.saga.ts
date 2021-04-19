@@ -131,8 +131,8 @@ export function* getPublicChannels(socket): Generator {
 
 export function* subscribeForDirectMessageThread(socket): Generator {
   while (true) {
-    const payload = yield* take(`${directMessagesActions.subscribeForDirectMessageThread}`)
-    socket.emit(socketsActions.SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD)
+    const { payload } = yield* take(`${directMessagesActions.subscribeForDirectMessageThread}`)
+    socket.emit(socketsActions.SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD, payload)
   }
 }
 

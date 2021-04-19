@@ -132,6 +132,8 @@ const checkConversation = (id, encryptedPhrase) => (dispatch, getState) => {
   }
 }
 
+const subscribeForDirectMessagesThreads = () => async (dispatch, getState) => {}
+
 const initializeConversation = () => async (dispatch, getState) => {
   const contactPublicKey = channelSelectors.channel(getState()).id
 
