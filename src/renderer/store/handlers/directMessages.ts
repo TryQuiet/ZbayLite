@@ -202,7 +202,8 @@ export const epics = {
   getAvailableUsers,
   initializeConversation,
   getPrivateConversations,
-  checkConversation
+  checkConversation,
+  decodeMessage
 }
 
 export const reducer = handleActions<DirectMessagesStore, PayloadType<DirectMessagesActions>>(

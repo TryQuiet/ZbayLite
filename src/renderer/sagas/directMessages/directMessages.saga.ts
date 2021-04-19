@@ -6,13 +6,14 @@ import {
   usernameSchema,
   exchangeParticipant
 } from '../../zbay/messages'
+import directMessagesSelectors  from '../../store/selectors/directMessages'
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
 import { findNewMessages } from '../../store/handlers/messages'
 import { DisplayableMessage } from '../../zbay/messages.types'
 import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
 import BigNumber from 'bignumber.js'
-
+import crypto from 'crypto'
 import { actions, epics } from '../../store/handlers/directMessages'
 import {actions as contactsActions} from '../../store/handlers/contacts'
 
@@ -167,13 +168,42 @@ export function* initializeConversation(
   console.log('initialize Conversation in saga')
 }
 
+const checkConversation = (id, encryptedPhrase, privKey) => {
+  const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
+  const generator = '02'
+  const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
+  dh.setPrivateKey(privKey, 'hex')
+  const sharedSecret = dh.computeSecret(id, 'hex').toString('hex')
+  const decodedMessage = epics.decodeMessage(sharedSecret, encryptedPhrase)
+  if (decodedMessage.startsWith('no panic')) {
+    console.log('success, message decoded successfully')
+return {
+  sharedSecret,
+  contactPublicKey: decodedMessage.slice(8),
+  conversationId: id
+}
+
+  } else {
+    console.log('cannot decode message, its not for me')
+    return null
+  }
+}
+
 export function* responseGetPrivateConversations(
   action: DirectMessagesActions['responseGetPrivateConversations']
 ): Generator {
 
+  const privKey = yield* select(directMessagesSelectors.privateKey)
+
   for (const [key, value] of Object.entries(action.payload)) {
 
-    epics.checkConversation(key, value)
+    const conversation = checkConversation(key, value, privKey)
+
+    if (conversation) {
+      yield put(
+        actions.addConversation(conversation)
+      )
+    }
 
     console.log(`${key}`)
     yield put(
