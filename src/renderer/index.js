@@ -17,6 +17,7 @@ import directMessagesHandlers from './store/handlers/directMessages'
 import nodeSelectors from './store/selectors/node'
 import coordinatorSelectors from './store/selectors/coordinator'
 import identityHandlers from './store/handlers/identity'
+import identitySelectors from './store/selectors/identity'
 import contactsHandlers from './store/handlers/contacts'
 
 import { errorNotification, successNotification } from './store/handlers/utils'
@@ -129,11 +130,13 @@ ipcRenderer.on('connectToWebsocket', (event) => {
 
 ipcRenderer.on('waggleInitialized', (event) => {
   console.log('Initialized waggle, subscribing to channels')
+  const publicKey = identitySelectors.signerPubKey(store.getState())
+  console.log(`waggle is initialized and publicKey is ${publicKey}`)
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())
   store.dispatch(publicChannelsHandlers.epics.subscribeForPublicChannels())
   store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
-  store.dispatch(directMessagesHandlers.epics.generateDiffieHellman())
+  store.dispatch(directMessagesHandlers.epics.generateDiffieHellman(publicKey))
 })
 
 ipcRenderer.on('newChannel', (event, { channelParams }) => {
