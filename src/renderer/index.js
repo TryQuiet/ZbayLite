@@ -129,14 +129,14 @@ ipcRenderer.on('connectToWebsocket', (event) => {
 })
 
 ipcRenderer.on('waggleInitialized', (event) => {
-  console.log('Initialized waggle, subscribing to channels')
-  const publicKey = identitySelectors.signerPubKey(store.getState())
-  console.log(`waggle is initialized and publicKey is ${publicKey}`)
+  const identity = electronStore.get('identity')
+  console.log(`waggle is initialized and publicKey is ${identity.signerPubKey}`)
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())
   store.dispatch(publicChannelsHandlers.epics.subscribeForPublicChannels())
+  //store.dispatch(directMessagesHandlers.epics)
   store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
-  store.dispatch(directMessagesHandlers.epics.generateDiffieHellman(publicKey))
+  store.dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.signerPubKey))
 })
 
 ipcRenderer.on('newChannel', (event, { channelParams }) => {

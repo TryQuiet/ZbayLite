@@ -402,7 +402,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   dispatch(setLoading(true))
   const isNewUser = electronStore.get('isNewUser')
   const useTor = appSelectors.useTor(getState())
-  const directMessagesPrivateKey = directMessagesSelectors.privateKey(getState())
+  // const users = directMessagesSelectors.users(getState())
   electronStore.set('useTor', useTor)
   try {
     const removedChannels = electronStore.get('removedChannels')
@@ -423,6 +423,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     }
     dispatch(setLoadingMessage('Fetching balance and loading channels'))
     await dispatch(initAddreses())
+    //await dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.publicKey))
     dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
     dispatch(ratesHandlers.epics.setInitialPrice())
     await dispatch(nodeHandlers.epics.getStatus())
