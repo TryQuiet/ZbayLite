@@ -117,7 +117,7 @@ const createWindow = async () => {
     autoHideMenuBar: true
   })
   mainWindow.setMinimumSize(600, 400)
-  await mainWindow.loadURL(
+  mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, './index.html'),
       protocol: 'file:',
@@ -235,12 +235,18 @@ app.on('ready', async () => {
     Menu.setApplicationMenu(null)
   }
 
+  console.log('instaling extensions')
   await installExtensions()
 
   await createWindow()
+  console.log('creatd windows')
+  mainWindow.webContents.on('did-fail-load', () => {
+    console.log('failed loading')
+  })
   mainWindow.webContents.on('did-finish-load', async () => {
     mainWindow.webContents.send('ping')
     try {
+      console.log('before spawning tor')
       tor = await spawnTor()
       createServer(mainWindow)
       mainWindow.webContents.send('onionAddress', getOnionAddress())

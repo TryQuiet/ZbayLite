@@ -19,14 +19,6 @@ import {actions as contactsActions} from '../../store/handlers/contacts'
 
 const all: any = effectsAll
 
-export function* addUser(action: DirectMessagesActions['addUser']): Generator {
-  if (action.payload) {
-    console.log(action.payload)
-  }
-  console.log('add user in saga')
-  console.log('adding user')
-}
-
 export const transferToMessage = (msg, users) => {
   let publicKey = null
   let sender = { replyTo: '', username: 'Unnamed' }
@@ -234,8 +226,6 @@ export function* getPrivateConversations(
 
 export function* directMessagesSaga(): Generator {
   yield all([
-    //takeEvery(`${directMessagesActions.getAvailableUsers}`, getAvailableUsers),
-    takeEvery(`${directMessagesActions.addUser}`, addUser),
     takeEvery(`${directMessagesActions.responseGetAvailableUsers}`, responseGetAvailableUsers),
     takeEvery(`${directMessagesActions.sendDirectMessage}`, sendDirectMessage),
     takeEvery(`${directMessagesActions.initializeConversation}`, initializeConversation),

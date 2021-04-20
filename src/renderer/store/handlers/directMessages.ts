@@ -172,11 +172,6 @@ const myPublicKey = identitySelectors.signerPubKey(getState())
     })
   )
 
-  // Add keyvalue
-  // Add entry to
-
-  // Add contact
-  // Add comversation entry
 }
 
 const sendDirectMessage = publicKey => {

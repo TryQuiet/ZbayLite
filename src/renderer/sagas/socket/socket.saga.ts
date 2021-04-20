@@ -140,7 +140,6 @@ export function* subscribeForDirectMessageThread(socket): Generator {
 export function* getAvailableUsers(socket): Generator {
   while (true) {
     yield* take(`${directMessagesActions.getAvailableUsers}`)
-    console.log('get available users in socket saga')
     socket.emit(socketsActions.GET_AVAILABLE_USERS)
   }
 }
@@ -148,8 +147,6 @@ export function* getAvailableUsers(socket): Generator {
 export function* addUser(socket): Generator {
   while (true) {
     const { payload } = yield* take(`${directMessagesActions.addUser}`)
-    console.log(`paylaod address is ${payload.address}`)
-    console.log(`paylaod diffiehellman is ${payload.halfKey}`)
     socket.emit(socketsActions.ADD_USER, payload)
   }
 }
@@ -157,13 +154,6 @@ export function* addUser(socket): Generator {
 export function* initializeConversation(socket): Generator {
   while (true) {
     const { payload } = yield* take(`${directMessagesActions.initializeConversation}`)
-    console.log('initialize converstion soscket saga')
-    console.log(
-    `in initializeCOnversation saga it is ${payload.address}`
-    )
-    console.log(
-      `in initializeCOnversation saga it is ${payload.encryptedPhrase}`
-      )
     socket.emit(socketsActions.INITIALIZE_CONVERSATION, payload)
   }
 }
@@ -171,7 +161,6 @@ export function* initializeConversation(socket): Generator {
 export function* getPrivateConversations(socket): Generator {
   while (true) {
     yield* take(`${directMessagesActions.getPrivateConversations}`)
-    console.log('get private conversations in socket sagas')
     socket.emit(socketsActions.GET_PRIVATE_CONVERSATIONS)
   }
 }
