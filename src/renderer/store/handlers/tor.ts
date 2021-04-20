@@ -1,12 +1,8 @@
 import { produce, immerable } from 'immer'
 import net from 'net'
-import { ipcRenderer } from 'electron'
 
 import { createAction, handleActions } from 'redux-actions'
 import torSelectors from '../selectors/tor'
-import { successNotification } from './utils'
-import notificationsHandlers from './notifications'
-import electronStore from '../../../shared/electronStore'
 import { actionTypes } from '../../../shared/static'
 
 import { ActionsType, PayloadType } from './types'
