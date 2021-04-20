@@ -121,15 +121,6 @@ const createWindow = () => {
   })
   mainWindow.setMinimumSize(600, 400)
 
-  // const { URL } = require('url');
-  // const myURL = new URL();
-  // myURL.pathname = path.join(__dirname, './index.html')
-  // myURL.protocol = 'file:'
-  // myURL.slashes = true
-  // myURL.hash = '/zcashNode'
-
-  // mainWindow.loadURL(myURL)
-
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, './index.html'),
