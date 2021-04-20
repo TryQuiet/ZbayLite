@@ -177,6 +177,7 @@ const checkConversation = (id, encryptedPhrase, privKey) => {
   const decodedMessage = epics.decodeMessage(sharedSecret, encryptedPhrase)
   if (decodedMessage.startsWith('no panic')) {
     console.log('success, message decoded successfully')
+   
 return {
   sharedSecret,
   contactPublicKey: decodedMessage.slice(8),
@@ -201,6 +202,9 @@ export function* responseGetPrivateConversations(
     
     if (conversation) {
       const user = yield* select(usersSelectors.registeredUser(key))
+      yield put(
+        directMessagesActions.subscribeForDirectMessageThread(conversation.conversationId)
+      )
       yield put(
         actions.addConversation(conversation)
         )
