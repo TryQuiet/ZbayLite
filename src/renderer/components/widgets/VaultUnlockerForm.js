@@ -88,7 +88,7 @@ export const VaultUnlockerForm = ({
   guideStatus,
   mainChannelLoaded
 }) => {
-  //const isSynced = currentBlock.plus(2000).gt(latestBlock)
+  // const isSynced = currentBlock.plus(2000).gt(latestBlock)
   const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production'
   const [done, setDone] = useState(true)
   const [syncingStart, setSyncingStart] = useState(false)
