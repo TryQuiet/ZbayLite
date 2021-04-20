@@ -45,7 +45,7 @@ export const ChannelInputAction = ({
     >
 
       {/* Disable post offer button until it works */}
-      {/* {channelData && !channelData.offerId ? ( 
+      {/* {channelData && !channelData.offerId ? (
         <MenuActionItem onClick={onPostOffer} title='Post an offer' />
       ) : (
         <></>
