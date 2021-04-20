@@ -36,7 +36,7 @@ let running = false
 
 const gotTheLock = app.requestSingleInstanceLock()
 
-const extensionsFolderPath = `${app.getPath("userData")}/extensions`
+const extensionsFolderPath = `${app.getPath('userData')}/extensions`
 const extensionsData = [
   {
     name: REACT_DEVELOPER_TOOLS,
