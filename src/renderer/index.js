@@ -138,7 +138,7 @@ ipcRenderer.on('waggleInitialized', (event) => {
   //store.dispatch(directMessagesHandlers.epics.subscribeForDirectMessageThreads)
   store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
-  store.dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.signerPubKey))
+  //store.dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.signerPubKey))
 })
 
 ipcRenderer.on('newChannel', (event, { channelParams }) => {

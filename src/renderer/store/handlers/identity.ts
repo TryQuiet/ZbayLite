@@ -41,6 +41,7 @@ import { clearPublicChannels, PublicChannel } from './publicChannels'
 
 import { ActionsType, PayloadType } from './types'
 import { DisplayableMessage } from '../../zbay/messages.types'
+import { direct } from '../../../shared/sounds'
 interface IShippingData {
   firstName: string
   lastName: string
@@ -399,6 +400,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   const myUser = usersSelectors.myUser(getState())
   const hasNewOnionAddress = (identityOnionAddress !== myUser.onionAddress) && myUser.onionAddress
   const identity = identityToSet
+  const isPublicKeyBroadcasted = directMessagesSelectors.publicKey(getState())
   dispatch(setLoading(true))
   const isNewUser = electronStore.get('isNewUser')
   const useTor = appSelectors.useTor(getState())
@@ -430,6 +432,10 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(fetchBalance())
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
+    if (!isPublicKeyBroadcasted){
+      console.log('BROADCASITING TO WAAGLE')
+      await dispatch(directMessagesHandlers.epics.generateDiffieHellman(identityToSet.signerPubKey))
+    }
     await dispatch(prepareUpgradedVersion())
     if (!useTor) {
       ipcRenderer.send('killTor')
