@@ -130,6 +130,7 @@ ipcRenderer.on('connectToWebsocket', (event) => {
 })
 
 ipcRenderer.on('waggleInitialized', (event) => {
+  console.log(` Waggle is INITIALIZED`)
   const identity = electronStore.get('identity')
   console.log(`waggle is initialized and publicKey is ${identity.signerPubKey}`)
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())
