@@ -7,3 +7,5 @@
 ### Removed
 
 * Checkmarks in channel and contact messages.
+
+-
