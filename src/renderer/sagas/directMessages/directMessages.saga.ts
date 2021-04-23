@@ -68,6 +68,7 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
   const message = transferToMessage(action.payload.message, users)
+  console.log('RECEIVED MESSAGE I SENT')
   if (myUser.nickname !== message.sender.username) {
     displayDirectMessageNotification({
       username: message.sender.username,
