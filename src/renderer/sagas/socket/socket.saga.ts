@@ -40,6 +40,7 @@ export const connect = async () => {
 export function subscribe(socket) {
   return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions>>(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
+      console.log('PUBLIC CHANNEL MESSAGE')
       emit(publicChannelsActions.loadMessage(payload))
     })
     socket.on(socketsActions.RESPONSE_FETCH_ALL_MESSAGES, payload => {
@@ -50,6 +51,7 @@ export function subscribe(socket) {
     })
     // Direct messages
     socket.on(socketsActions.DIRECT_MESSAGE, payload => {
+      console.log('received DIRECT MESSAGE FROM WAFFLE')
       emit(directMessagesActions.loadDirectMessage(payload))
     })
     socket.on(socketsActions.RESPONSE_FETCH_ALL_DIRECT_MESSAGES, payload => {
@@ -217,9 +219,7 @@ export function* sendDirectMessage(socket): Generator {
 }
 
 export function* loadInitialState (socket): Generator {
-  // start loading state...
 while (true) {
-  console.log('eluwinka')
   yield all([
     take(`SET_IDENTITY`),
     take(`SET_IS_WAGGLE_CONNECTED`),
