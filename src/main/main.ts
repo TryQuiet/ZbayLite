@@ -115,7 +115,7 @@ const createWindow = async () => {
     autoHideMenuBar: true
   })
   mainWindow.setMinimumSize(600, 400)
-
+  
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, './index.html'),
@@ -142,7 +142,7 @@ const createWindow = async () => {
   })
   electronLocalshortcut.register(mainWindow, 'F12', () => {
     mainWindow.webContents.openDevTools()
-});
+  })
 }
 
 let isUpdatedStatusCheckingStarted = false
