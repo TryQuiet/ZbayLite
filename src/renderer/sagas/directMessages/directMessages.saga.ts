@@ -166,8 +166,13 @@ const checkConversation = (id, encryptedPhrase, privKey) => {
   const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
   dh.setPrivateKey(privKey, 'hex')
   const sharedSecret = dh.computeSecret(id, 'hex').toString('hex')
-  const decodedMessage = epics.decodeMessage(sharedSecret, encryptedPhrase)
-  if (decodedMessage.startsWith('no panic')) {
+  let decodedMessage =  null
+  try {
+    decodedMessage = epics.decodeMessage(sharedSecret, encryptedPhrase)
+  } catch (err) {
+    console.log(err)
+  }
+  if (decodedMessage && decodedMessage.startsWith('no panic')) {
     console.log('success, message decoded successfully')
    
 return {
@@ -209,7 +214,6 @@ export function* responseGetPrivateConversations(
       )
     }
 
-    console.log(`${key}`)
     yield put(
       actions.fetchConversations({
         conversationsList: {

@@ -10,11 +10,9 @@ import history from '../../../shared/history'
 import client from '../../zcash'
 import channels from '../../zcash/channels'
 import identitySelectors from '../selectors/identity'
-import directMessagesSelectors  from '../selectors/directMessages'
 import appSelectors from '../selectors/app'
 import txnTimestampsSelector from '../selectors/txnTimestamps'
 import usersSelectors from '../selectors/users'
-import directMessagesHandlers from './directMessages'
 import coordinatorHandlers from './coordinator'
 import whitelistHandlers from './whitelist'
 import ownedChannelsHandlers from './ownedChannels'
@@ -42,6 +40,9 @@ import { clearPublicChannels, PublicChannel } from './publicChannels'
 import { ActionsType, PayloadType } from './types'
 import { DisplayableMessage } from '../../zbay/messages.types'
 import { direct } from '../../../shared/sounds'
+import directMessagesHandlers from './directMessages'
+import directMessagesSelectors from '../selectors/directMessages'
+
 interface IShippingData {
   firstName: string
   lastName: string
@@ -376,6 +377,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
 export const loadIdentity = () => async dispatch => {
   const identity = electronStore.get('identity')
   if (identity) {
+    console.log('loadIdentity')
     await dispatch(setIdentity(identity))
   }
 }
@@ -396,11 +398,11 @@ export const prepareUpgradedVersion = () => async (dispatch, getState) => {
 export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   console.log('FIRE SET IDENTITY EPIC')
   const nickname = identitySelectors.name(getState())
+  const hasWaggleIdentity = directMessagesSelectors.publicKey(getState())
   const identityOnionAddress = identitySelectors.onionAddress(getState())
   const myUser = usersSelectors.myUser(getState())
   const hasNewOnionAddress = (identityOnionAddress !== myUser.onionAddress) && myUser.onionAddress
   const identity = identityToSet
-  const isPublicKeyBroadcasted = directMessagesSelectors.publicKey(getState())
   dispatch(setLoading(true))
   const isNewUser = electronStore.get('isNewUser')
   const useTor = appSelectors.useTor(getState())
@@ -418,24 +420,25 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(whitelistHandlers.epics.initWhitelist())
     await dispatch(notificationCenterHandlers.epics.init())
     dispatch(setLoadingMessage('Setting identity'))
+    console.log('setIdentityEpic')
+    console.log('STARTED SETTING IDENTITY')
     await dispatch(setIdentity(identity))
+  console.log('FINISHED SETTING IDENTITY')
     const shippingAddress = electronStore.get('identity.shippingData')
     if (shippingAddress) {
       dispatch(setShippingData(shippingAddress))
     }
     dispatch(setLoadingMessage('Fetching balance and loading channels'))
     await dispatch(initAddreses())
-    //await dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.publicKey))
+    if (!hasWaggleIdentity) {
+      await dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.publicKey))
+    }
     dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
     dispatch(ratesHandlers.epics.setInitialPrice())
     await dispatch(nodeHandlers.epics.getStatus())
     await dispatch(fetchBalance())
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
-    if (!isPublicKeyBroadcasted){
-      console.log('BROADCASITING TO WAAGLE')
-      await dispatch(directMessagesHandlers.epics.generateDiffieHellman(identityToSet.signerPubKey))
-    }
     await dispatch(prepareUpgradedVersion())
     if (!useTor) {
       ipcRenderer.send('killTor')

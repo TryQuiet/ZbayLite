@@ -33,6 +33,7 @@ import notificationCenterHandlers from './handlers/notificationCenter'
 import operationsHandlers from './handlers/operations'
 import ownedChannels from './handlers/ownedChannels'
 import directMessages from './handlers/directMessages'
+import waggleHandlers from './handlers/waggle'
 
 const reduxStorage = createElectronStorage()
 const persistConfig = {
@@ -61,6 +62,7 @@ const persistConfig = {
 
 const reducers = {
   users: usersHandlers.reducer,
+  waggle: waggleHandlers.reducer,
   directMessages: directMessages.reducer,
   app: appHandlers.reducer,
   operations: operationsHandlers.reducer,

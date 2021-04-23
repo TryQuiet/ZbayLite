@@ -1,4 +1,3 @@
-import { SignalWifi3BarLockTwoTone } from '@material-ui/icons'
 import { createAction } from '@reduxjs/toolkit'
 
 import { ActionsType, Socket } from '../const/actionsTypes'

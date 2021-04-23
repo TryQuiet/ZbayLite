@@ -11,13 +11,13 @@ import updateHandlers from './store/handlers/update'
 import invitationHandlers from './store/handlers/invitation'
 import importChannelHandlers from './store/handlers/importedChannel'
 import coordinatorHandlers from './store/handlers/coordinator'
+import waggleHandlers from './store/handlers/waggle'
 import publicChannelsHandlers from './store/handlers/publicChannels'
 import messagesHandlers from './store/handlers/messages'
 import directMessagesHandlers from './store/handlers/directMessages'
 import nodeSelectors from './store/selectors/node'
 import coordinatorSelectors from './store/selectors/coordinator'
 import identityHandlers from './store/handlers/identity'
-import identitySelectors from './store/selectors/identity'
 import contactsHandlers from './store/handlers/contacts'
 
 import { errorNotification, successNotification } from './store/handlers/utils'
@@ -130,9 +130,8 @@ ipcRenderer.on('connectToWebsocket', (event) => {
 })
 
 ipcRenderer.on('waggleInitialized', (event) => {
-  console.log(` Waggle is INITIALIZED`)
-  const identity = electronStore.get('identity')
-  console.log(`waggle is initialized and publicKey is ${identity.signerPubKey}`)
+  console.log('waggle Initialized')
+  store.dispatch(waggleHandlers.actions.setIsWaggleConnected(true))
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())
   store.dispatch(publicChannelsHandlers.epics.subscribeForPublicChannels())
   //store.dispatch(directMessagesHandlers.epics.subscribeForDirectMessageThreads)

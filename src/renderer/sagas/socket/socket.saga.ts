@@ -11,7 +11,7 @@ import {
 } from '../directMessages/directMessages.reducer'
 import { eventChannel } from 'redux-saga'
 import { transferToMessage } from '../publicChannels/publicChannels.saga'
-import { fork } from 'redux-saga/effects'
+import { fork, all, actionChannel } from 'redux-saga/effects'
 import { call, take, select, put } from 'typed-redux-saga'
 import { ActionFromMapping, Socket as socketsActions } from '../const/actionsTypes'
 import channelSelectors from '../../store/selectors/channel'
@@ -22,6 +22,9 @@ import { messages } from '../../zbay'
 import config from '../../config'
 import { messageType } from '../../../shared/static'
 import { ipcRenderer } from 'electron'
+
+import identityHandlers from '../../store/handlers/identity'
+import waggleHandlers from '../../store/handlers/waggle'
 
 export const connect = async () => {
   const socket = io(config.socket.address)
@@ -147,7 +150,14 @@ export function* getAvailableUsers(socket): Generator {
 export function* addUser(socket): Generator {
   while (true) {
     const { payload } = yield* take(`${directMessagesActions.addUser}`)
-    socket.emit(socketsActions.ADD_USER, payload)
+    //socket.emit(socketsActions.ADD_USER, payload)
+  }
+}
+
+export function* takeOneAtMost(): Generator {
+  const chan = yield actionChannel('SET_IS_WAGGLE_CONNECTED')
+  while (true) {
+    
   }
 }
 
@@ -205,6 +215,26 @@ export function* sendDirectMessage(socket): Generator {
   }
 }
 
+export function* loadInitialState (socket): Generator {
+  // start loading state...
+while (true) {
+  console.log('eluwinka')
+  yield all([
+    take(`SET_IDENTITY`),
+    take(`SET_IS_WAGGLE_CONNECTED`),
+    take(`SET_PUBLIC_KEY`)
+  ]);
+  
+const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
+const signerPublicKey = yield select(identitySelectors.signerPubKey)
+
+console.log(wagglePublicKey)
+console.log(signerPublicKey)
+  console.log('ONLY AFTER THREE ACTIONS')
+  socket.emit(socketsActions.ADD_USER, {publicKey: signerPublicKey, halfKey: wagglePublicKey})
+}
+}
+
 export function* useIO(socket): Generator {
   yield fork(handleActions, socket)
   yield fork(sendMessage, socket)
@@ -217,6 +247,7 @@ export function* useIO(socket): Generator {
   yield fork(initializeConversation, socket)
   yield fork(sendDirectMessage, socket)
   yield fork(getPrivateConversations, socket)
+  yield fork(loadInitialState, socket)
 }
 
 export function* startConnection(): Generator {

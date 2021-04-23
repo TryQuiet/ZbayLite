@@ -65,7 +65,6 @@ export const actions = {
 export type DirectMessagesActions = ActionsType<typeof actions>
 
 const generateDiffieHellman = signerPublicKey => async (dispatch, getState) => {
-  console.log(`signer public key is ${signerPublicKey}`)
 
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
@@ -79,7 +78,7 @@ const generateDiffieHellman = signerPublicKey => async (dispatch, getState) => {
   await dispatch(actions.setPublicKey(publicKey))
 
   // Add me to users key value store
-  await dispatch(directMessagesActions.addUser({ publicKey: signerPublicKey, halfKey: publicKey }))
+  //await dispatch(directMessagesActions.addUser({ publicKey: signerPublicKey, halfKey: publicKey }))
 }
 
 export const getPrivateConversations = () => (dispatch, getState) => {
@@ -116,7 +115,6 @@ const checkConversation = (id, encryptedPhrase) => (dispatch, getState) => {
   const sharedSecret = dh.computeSecret(id, 'hex').toString('hex')
   const decodedMessage = decodeMessage(sharedSecret, encryptedPhrase)
   if (decodedMessage.startsWith('no panic')) {
-    console.log('success, message decoded successfully')
 
     actions.addConversation({
       sharedSecret,
@@ -125,7 +123,6 @@ const checkConversation = (id, encryptedPhrase) => (dispatch, getState) => {
     })
     return
   } else {
-    console.log('cannot decode message, its not for me')
     return
   }
 }
@@ -139,8 +136,6 @@ const myPublicKey = identitySelectors.signerPubKey(getState())
 
   const halfKey = directMessagesSelectors.user(contactPublicKey)(getState()).halfKey
 
-  console.log(`half key is ${halfKey}`)
-
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
 
@@ -151,11 +146,7 @@ const myPublicKey = identitySelectors.signerPubKey(getState())
 
   const sharedSecret = dh.computeSecret(halfKey, 'hex').toString('hex')
 
-  console.log(`shared secret is ${sharedSecret}`)
-
   const encryptedPhrase = encodeMessage(sharedSecret, `no panic${myPublicKey}`)
-
-  console.log(` encrypted phrase is ${encryptedPhrase}`)
 
   dispatch(
     actions.addConversation({
@@ -183,7 +174,6 @@ const sendDirectMessage = publicKey => {
 const addMessage = publicKey => {}
 
 const getAvailableUsers = () => async (dispatch, getState) => {
-  console.log('get available users')
   await dispatch(directMessagesActions.getAvailableUsers())
 }
 
