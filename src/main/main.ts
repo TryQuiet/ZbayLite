@@ -43,6 +43,16 @@ const extensionsData = [
   }
 ]
 
+const applyDevTools = async extensionsData => {
+  await Promise.all(extensionsData.map(async (extension) => {
+    await installExtension(extension.name)
+  }))
+  await Promise.all(extensionsData.map(async (extension) => {
+    await session.defaultSession.loadExtension(extension.path, { allowFileAccess: true })
+  }))
+}
+
+
 if (!gotTheLock) {
   app.quit()
 } else {
@@ -115,7 +125,7 @@ const createWindow = async () => {
     autoHideMenuBar: true
   })
   mainWindow.setMinimumSize(600, 400)
-  
+
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, './index.html'),
@@ -392,11 +402,3 @@ app.on('activate', async () => {
   }
 })
 
-const applyDevTools = async extensionsData => {
-  await Promise.all(extensionsData.map(async (extension) => {
-    await installExtension(extension.name)
-  }))
-  await Promise.all(extensionsData.map(async (extension) => {
-    await session.defaultSession.loadExtension(extension.path, { allowFileAccess: true })
-  }))
-}
