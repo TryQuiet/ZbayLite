@@ -136,6 +136,7 @@ export function* getPublicChannels(socket): Generator {
 export function* subscribeForDirectMessageThread(socket): Generator {
   while (true) {
     const { payload } = yield* take(`${directMessagesActions.subscribeForDirectMessageThread}`)
+    console.log('subscribing for direct message thread')
     socket.emit(socketsActions.SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD, payload)
   }
 }
@@ -248,6 +249,7 @@ export function* useIO(socket): Generator {
   yield fork(sendDirectMessage, socket)
   yield fork(getPrivateConversations, socket)
   yield fork(loadInitialState, socket)
+  yield fork(subscribeForDirectMessageThread, socket)
 }
 
 export function* startConnection(): Generator {
