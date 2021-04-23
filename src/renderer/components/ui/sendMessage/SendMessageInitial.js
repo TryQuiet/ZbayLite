@@ -266,7 +266,6 @@ export const SendMessageInitial = ({
         color='primary'
         size='large'
         type='submit'
-        disabled={!isValid}
       >
         Continue
       </Button>
