@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Scrollbars } from 'react-custom-scrollbars'
+import { Scrollbars } from 'rc-scrollbars'
 import { DateTime } from 'luxon'
 import * as R from 'ramda'
 import List from '@material-ui/core/List'
