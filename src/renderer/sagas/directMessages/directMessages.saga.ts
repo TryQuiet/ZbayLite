@@ -10,6 +10,7 @@ import directMessagesSelectors  from '../../store/selectors/directMessages'
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
 import { findNewMessages } from '../../store/handlers/messages'
+import contactsHandlers from '../../store/handlers/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
 import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
 import BigNumber from 'bignumber.js'
@@ -127,17 +128,25 @@ console.log(`contact is ${contact}`)
   if (username) {
     console.log(`action messages are ${action.payload.messages}`)
     const displayableMessages = action.payload.messages.map(msg => transferToMessage(msg, users))
-    for (const msg of displayableMessages) {
-      console.log(`msg is ${msg}`)
-      yield put(
-        directMessagesActions.addDirectMessage({
-          key: contactPublicKey,
-          message: { [msg.id]: msg }
-        })
-      )
-    }
+    yield put(
+      contactsHandlers.actions.setAllMessages({
+        key: contactPublicKey,
+        username: username,
+        contactAddress: contactPublicKey,
+        messages: displayableMessages
+      })
+    )
+    // for (const msg of displayableMessages) {
+    //   console.log(`msg is ${msg}`)
+    //   yield put(
+    //     directMessagesActions.addDirectMessage({
+    //       key: contactPublicKey,
+    //       message: { [msg.id]: msg }
+    //     })
+    //   )
+    // }
     const state = yield* select()
-    const newMsgs = findNewMessages(action.payload.channelAddress, displayableMessages, state)
+    const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state)
     newMsgs.forEach(msg => {
       if (msg.sender.username !== myUser.nickname) {
         displayMessageNotification({
@@ -198,7 +207,7 @@ return {
 }
 
   } else {
-    console.log('cannot decode message, its not for me')
+    console.log('cannot decode message, its not for me or I am the author')
     return null
   }
 }
