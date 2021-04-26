@@ -159,6 +159,18 @@ export function* getPrivateConversations(socket): Generator {
   }
 }
 
+const encodeMessage = (sharedSecret, message) => {
+  const IVO = '5183666c72eec9e45183666c72eec9e4'
+  const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
+  const IV = Buffer.from(IVO, 'hex')
+
+  let cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV)
+  const stringifiedMessage = JSON.stringify(message)
+  let encrypted = cipher.update(stringifiedMessage, 'utf8', 'base64')
+  encrypted += cipher.final('base64')
+  return encrypted
+}
+
 export function* sendDirectMessage(socket): Generator {
   while (true) {
     yield* take(`${directMessagesActions.sendDirectMessage}`)
@@ -166,6 +178,7 @@ export function* sendDirectMessage(socket): Generator {
     const { id } = yield* select(channelSelectors.channel)
     const conversations = yield* select(directMessagesSelectors.conversations)
     const conversationId = conversations[id].conversationId
+    const sharedSecret = conversations[id].sharedSecret
 console.log('1')
     const messageToSend = yield* select(channelSelectors.message)
     const users = yield* select(usersSelectors.users)
@@ -196,9 +209,11 @@ console.log('1')
         message: { [preparedMessage.id]: displayableMessage }
       })
     )
+    const encryptedMessage = encodeMessage( sharedSecret, preparedMessage)
+    console.log(`encrypted ${encodeMessage}`)
     console.log(`ZBAYLITE SOCKET SAGA: id is ${id}`)
     console.log(`ZBAYLITE SOCKET SAGA: prepared message is ${preparedMessage}`)
-    socket.emit(socketsActions.SEND_DIRECT_MESSAGE, { channelAddress: conversationId, message: preparedMessage })
+    socket.emit(socketsActions.SEND_DIRECT_MESSAGE, { channelAddress: conversationId, message: encryptedMessage })
   }
 }
 

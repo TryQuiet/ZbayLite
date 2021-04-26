@@ -9,6 +9,7 @@ import {
 import directMessagesSelectors  from '../../store/selectors/directMessages'
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
+import channelSelectors from '../../store/selectors/channel'
 import { findNewMessages } from '../../store/handlers/messages'
 import contactsHandlers from '../../store/handlers/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
@@ -65,10 +66,25 @@ export const transferToMessage = (msg, users) => {
   return displayableMessage
 }
 
+const decodeMessage = (sharedSecret, message) => {
+  const IVO = '5183666c72eec9e45183666c72eec9e4'
+  const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
+  const IV = Buffer.from(IVO, 'hex')
+
+  let decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
+  const stringifiedMessage = JSON.stringify(message)
+  let decrypted = decipher.update(stringifiedMessage, 'base64', 'utf8')
+  return decrypted + decipher.final('utf8')
+}
+
 export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMessage']): Generator {
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
-  const message = transferToMessage(action.payload.message, users)
+  const { id } = yield* select(channelSelectors.channel)
+    const conversations = yield* select(directMessagesSelectors.conversations)
+    const sharedSecret = conversations[id].sharedSecret
+  const decodedMessage = decodeMessage(sharedSecret, action.payload.message)
+  const message = transferToMessage(JSON.parse(decodedMessage), users)
   console.log('RECEIVED MESSAGE I SENT')
   if (myUser.nickname !== message.sender.username) {
     displayDirectMessageNotification({
