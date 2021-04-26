@@ -174,15 +174,15 @@ console.log(`contact is ${contact}`)
         messages: displayableMessages
       })
     )
-    for (const msg of displayableMessages) {
-      console.log(`msg is ${msg}`)
-      yield put(
-        directMessagesActions.addDirectMessage({
-          key: contactPublicKey,
-          message: { [msg.id]: msg }
-        })
-      )
-    }
+    // for (const msg of displayableMessages) {
+    //   console.log(`msg is ${msg}`)
+    //   yield put(
+    //     directMessagesActions.addDirectMessage({
+    //       key: contactPublicKey,
+    //       message: { [msg.id]: msg }
+    //     })
+    //   )
+    // }
     const state = yield* select()
     const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state)
     newMsgs.forEach(msg => {
