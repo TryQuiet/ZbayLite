@@ -50,7 +50,8 @@ export function subscribe(socket) {
     })
     // Direct messages
     socket.on(socketsActions.DIRECT_MESSAGE, payload => {
-      emit(directMessagesActions.loadDirectMessage(payload))
+      console.log('respnse direct message')
+      emit(directMessagesActions.responseLoadDirectMessage(payload))
     })
     socket.on(socketsActions.RESPONSE_FETCH_ALL_DIRECT_MESSAGES, payload => {
       emit(directMessagesActions.responseLoadAllDirectMessages(payload))
@@ -202,17 +203,15 @@ console.log('1')
       signature: message.signature.toString('base64')
     }
     console.log('3')
-    const displayableMessage = transferToMessage(preparedMessage, users)
-    yield put(
-      directMessagesActions.addMessage({
-        key: id,
-        message: { [preparedMessage.id]: displayableMessage }
-      })
-    )
+    //const displayableMessage = transferToMessage(preparedMessage, users)
+    // yield put(
+    //   directMessagesActions.addMessage({
+    //     key: id,
+    //     message: { [preparedMessage.id]: displayableMessage }
+    //   })
+    // )
     const encryptedMessage = encodeMessage( sharedSecret, preparedMessage)
     console.log(`encrypted ${encryptedMessage}`)
-    console.log(`ZBAYLITE SOCKET SAGA: id is ${id}`)
-    console.log(`ZBAYLITE SOCKET SAGA: prepared message is ${preparedMessage}`)
     socket.emit(socketsActions.SEND_DIRECT_MESSAGE, { channelAddress: conversationId, message: encryptedMessage })
   }
 }

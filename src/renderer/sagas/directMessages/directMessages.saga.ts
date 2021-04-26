@@ -74,17 +74,36 @@ const decodeMessage = (sharedSecret, message) => {
   let decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
   const stringifiedMessage = JSON.stringify(message)
   let decrypted = decipher.update(stringifiedMessage, 'base64', 'utf8')
-  return decrypted + decipher.final('base64')
+  return decrypted + decipher.final('utf8')
 }
 
 export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMessage']): Generator {
+console.log('received message in load direct message')
+console.log(action.payload.message)
+console.log(`action payload chanel addresss is ${action.payload.channelAddress}`)
+  const conversations = yield* select(directMessagesSelectors.conversations)
+  console.log(`conversations are ${conversations}`)
+  const conversation = Array.from(Object.values(conversations)).filter(conv => {
+    console.log(`conv.conversationId ${conv.conversationId}`)
+
+    return conv.conversationId == action.payload.channelAddress
+  })
+  console.log(`conversation is ${conversation}`)
+
+  const contact = conversation[0]
+
+console.log(`contact is ${contact}`)
+
+  const contactPublicKey = contact.contactPublicKey
+
+  console.log(`contact publickey is ${contactPublicKey}`)
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
   const { id } = yield* select(channelSelectors.channel)
-    const conversations = yield* select(directMessagesSelectors.conversations)
     const sharedSecret = conversations[id].sharedSecret
   const decodedMessage = decodeMessage(sharedSecret, action.payload.message)
   const message = transferToMessage(JSON.parse(decodedMessage), users)
+  console.log(message)
   console.log('RECEIVED MESSAGE I SENT')
   if (myUser.nickname !== message.sender.username) {
     displayDirectMessageNotification({
@@ -93,14 +112,14 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
     })
     yield put(
       contactsActions.appendNewMessages({
-        contactAddress: action.payload.channelAddress,
+        contactAddress: contactPublicKey,
         messagesIds: [message.id]
       })
     )
   }
   yield put(
     directMessagesActions.addDirectMessage({
-      key: action.payload.channelAddress,
+      key: contactPublicKey,
       message: { [message.id]: message }
     })
   )
@@ -110,9 +129,6 @@ export function* loadAllDirectMessages(
   action: DirectMessagesActions['responseLoadAllDirectMessages']
 ): Generator {
   console.log('loading direct messages')
-  // Find out what contact should have message added
-  // check if exist
-  // also add logic to not add message if write to db was unsuccessfull
 
   console.log(`action payload chanel addresss is ${action.payload.channelAddress}`)
   const conversations = yield* select(directMessagesSelectors.conversations)
@@ -144,7 +160,11 @@ console.log(`contact is ${contact}`)
   const { username } = channel
   if (username) {
     console.log(`action messages are ${action.payload.messages}`)
-    const decodedMessages = action.payload.messages.map(msg => JSON.parse(decodeMessage(sharedSecret, msg)))
+    console.log(`payload messages are ${action.payload.messages}`)
+    const decodedMessages = action.payload.messages.map(msg => {
+      console.log(msg)
+      JSON.parse(decodeMessage(sharedSecret, msg))
+    })
     const displayableMessages = decodedMessages.map(msg => transferToMessage(msg, users))
     yield put(
       contactsHandlers.actions.setAllMessages({
@@ -154,15 +174,15 @@ console.log(`contact is ${contact}`)
         messages: displayableMessages
       })
     )
-    // for (const msg of displayableMessages) {
-    //   console.log(`msg is ${msg}`)
-    //   yield put(
-    //     directMessagesActions.addDirectMessage({
-    //       key: contactPublicKey,
-    //       message: { [msg.id]: msg }
-    //     })
-    //   )
-    // }
+    for (const msg of displayableMessages) {
+      console.log(`msg is ${msg}`)
+      yield put(
+        directMessagesActions.addDirectMessage({
+          key: contactPublicKey,
+          message: { [msg.id]: msg }
+        })
+      )
+    }
     const state = yield* select()
     const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state)
     newMsgs.forEach(msg => {
@@ -274,6 +294,7 @@ export function* directMessagesSaga(): Generator {
       `${directMessagesActions.responseGetPrivateConversations}`,
       responseGetPrivateConversations
     ),
-    takeEvery(`${directMessagesActions.responseLoadAllDirectMessages}`, loadAllDirectMessages)
+    takeEvery(`${directMessagesActions.responseLoadAllDirectMessages}`, loadAllDirectMessages),
+    takeEvery(`${directMessagesActions.responseLoadDirectMessage}`, loadDirectMessage)
   ])
 }

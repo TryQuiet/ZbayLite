@@ -32,6 +32,7 @@ export const directMessagesActions = {
     channelAddress: string
     messages: any[]
   }>(Socket.RESPONSE_FETCH_ALL_DIRECT_MESSAGES),
+  responseLoadDirectMessage: createAction<Libp2pMessage>(Socket.RESPONSE_DIRECT_MESSAGE),
   addDirectMessage: createAction<{
     key: string
     message: { [key: string]: DisplayableMessage }
