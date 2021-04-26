@@ -162,10 +162,11 @@ export function* getPrivateConversations(socket): Generator {
 export function* sendDirectMessage(socket): Generator {
   while (true) {
     yield* take(`${directMessagesActions.sendDirectMessage}`)
+    console.log('entered sending DM')
     const { id } = yield* select(channelSelectors.channel)
     const conversations = yield* select(directMessagesSelectors.conversations)
     const conversationId = conversations[id].conversationId
-
+console.log('1')
     const messageToSend = yield* select(channelSelectors.message)
     const users = yield* select(usersSelectors.users)
     let message = null
@@ -177,6 +178,7 @@ export function* sendDirectMessage(socket): Generator {
       },
       privKey: privKey
     })
+    console.log('2')
     const messageDigest = crypto.createHash('sha256')
     const messageEssentials = R.pick(['createdAt', 'message'])(message)
     const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
@@ -186,6 +188,7 @@ export function* sendDirectMessage(socket): Generator {
       typeIndicator: false,
       signature: message.signature.toString('base64')
     }
+    console.log('3')
     const displayableMessage = transferToMessage(preparedMessage, users)
     yield put(
       directMessagesActions.addMessage({

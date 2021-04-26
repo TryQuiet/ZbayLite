@@ -97,10 +97,13 @@ export function* loadAllDirectMessages(
   // check if exist
   // also add logic to not add message if write to db was unsuccessfull
 
+  console.log(`action payload chanel addresss is ${action.payload.channelAddress}`)
   const conversations = yield* select(directMessagesSelectors.conversations)
   console.log(`conversations are ${conversations}`)
   const conversation = Array.from(Object.values(conversations)).filter(conv => {
-    conv.conversationId == action.payload.channelAddress
+    console.log(`conv.conversationId ${conv.conversationId}`)
+
+    return conv.conversationId == action.payload.channelAddress
   })
   console.log(`conversation is ${conversation}`)
 
@@ -109,6 +112,8 @@ export function* loadAllDirectMessages(
 console.log(`contact is ${contact}`)
 
   const contactPublicKey = contact.contactPublicKey
+
+  console.log(`contact publickey is ${contactPublicKey}`)
 
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
@@ -120,11 +125,13 @@ console.log(`contact is ${contact}`)
 
   const { username } = channel
   if (username) {
+    console.log(`action messages are ${action.payload.messages}`)
     const displayableMessages = action.payload.messages.map(msg => transferToMessage(msg, users))
     for (const msg of displayableMessages) {
+      console.log(`msg is ${msg}`)
       yield put(
         directMessagesActions.addDirectMessage({
-          key: action.payload.channelAddress,
+          key: contactPublicKey,
           message: { [msg.id]: msg }
         })
       )
@@ -142,7 +149,7 @@ console.log(`contact is ${contact}`)
     })
     yield put(
       contactsActions.appendNewMessages({
-        contactAddress: action.payload.channelAddress,
+        contactAddress: contactPublicKey,
         messagesIds: newMsgs
       })
     )

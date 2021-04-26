@@ -238,12 +238,14 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
     const conversations = directMessagesSelectors.conversations(getState())
     const conversation = conversations[id]
 
+    console.log(`conversation is ${conversation}`)
     if (!conversation) {
       await dispatch(directMessagesHandlers.epics.initializeConversation())
     }
     //dispatch(directMessagesActions.getPrivateConversations())
     //dispatch(directMessagesActions.getAvailableUsers())
     // If conversation exist
+    console.log('before sending message')
     dispatch(directMessagesActions.sendDirectMessage())
     return
   }
