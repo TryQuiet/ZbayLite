@@ -40,7 +40,6 @@ export const connect = async () => {
 export function subscribe(socket) {
   return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions>>(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
-      console.log('PUBLIC CHANNEL MESSAGE')
       emit(publicChannelsActions.loadMessage(payload))
     })
     socket.on(socketsActions.RESPONSE_FETCH_ALL_MESSAGES, payload => {
@@ -51,7 +50,6 @@ export function subscribe(socket) {
     })
     // Direct messages
     socket.on(socketsActions.DIRECT_MESSAGE, payload => {
-      console.log('received DIRECT MESSAGE FROM WAFFLE')
       emit(directMessagesActions.loadDirectMessage(payload))
     })
     socket.on(socketsActions.RESPONSE_FETCH_ALL_DIRECT_MESSAGES, payload => {
@@ -61,8 +59,6 @@ export function subscribe(socket) {
       emit(directMessagesActions.responseGetAvailableUsers(payload))
     })
     socket.on(socketsActions.RESPONSE_GET_PRIVATE_CONVERSATIONS, payload => {
-      console.log('get answer from waggle')
-      console.log(`payload is ${payload}`)
       emit(directMessagesActions.responseGetPrivateConversations(payload))
     })
     return () => {}
@@ -138,7 +134,6 @@ export function* getPublicChannels(socket): Generator {
 export function* subscribeForDirectMessageThread(socket): Generator {
   while (true) {
     const { payload } = yield* take(`${directMessagesActions.subscribeForDirectMessageThread}`)
-    console.log('subscribing for direct message thread')
     socket.emit(socketsActions.SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD, payload)
   }
 }
@@ -147,20 +142,6 @@ export function* getAvailableUsers(socket): Generator {
   while (true) {
     yield* take(`${directMessagesActions.getAvailableUsers}`)
     socket.emit(socketsActions.GET_AVAILABLE_USERS)
-  }
-}
-
-export function* addUser(socket): Generator {
-  while (true) {
-    const { payload } = yield* take(`${directMessagesActions.addUser}`)
-    //socket.emit(socketsActions.ADD_USER, payload)
-  }
-}
-
-export function* takeOneAtMost(): Generator {
-  const chan = yield actionChannel('SET_IS_WAGGLE_CONNECTED')
-  while (true) {
-    
   }
 }
 
@@ -229,9 +210,6 @@ while (true) {
 const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
 const signerPublicKey = yield select(identitySelectors.signerPubKey)
 
-console.log(wagglePublicKey)
-console.log(signerPublicKey)
-  console.log('ONLY AFTER THREE ACTIONS')
   socket.emit(socketsActions.ADD_USER, {publicKey: signerPublicKey, halfKey: wagglePublicKey})
 }
 }
@@ -243,7 +221,6 @@ export function* useIO(socket): Generator {
   yield fork(subscribeForTopic, socket)
   yield fork(getPublicChannels, socket)
   // Direct Messages
-  yield fork(addUser, socket)
   yield fork(getAvailableUsers, socket)
   yield fork(initializeConversation, socket)
   yield fork(sendDirectMessage, socket)

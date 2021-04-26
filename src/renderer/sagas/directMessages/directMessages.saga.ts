@@ -92,9 +92,27 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
 export function* loadAllDirectMessages(
   action: DirectMessagesActions['responseLoadAllDirectMessages']
 ): Generator {
+  console.log('loading direct messages')
+  // Find out what contact should have message added
+  // check if exist
+  // also add logic to not add message if write to db was unsuccessfull
+
+  const conversations = yield* select(directMessagesSelectors.conversations)
+  console.log(`conversations are ${conversations}`)
+  const conversation = Array.from(Object.values(conversations)).filter(conv => {
+    conv.conversationId = action.payload.channelAddress
+  })
+  console.log(`conversation is ${conversation}`)
+
+  const contact = conversation[0]
+
+console.log(`contact is ${contact}`)
+
+  const contactPublicKey = contact.contactPublicKey
+
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
-  const channel = yield* select(contactsSelectors.contact(action.payload.channelAddress))
+  const channel = yield* select(contactsSelectors.contact(contactPublicKey))
   if (!channel) {
     console.log(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
     return
@@ -149,16 +167,6 @@ export function* responseGetAvailableUsers(
       })
     )
   }
-}
-
-export function* sendDirectMessage(action: DirectMessagesActions['sendDirectMessage']): Generator {
-  console.log('sending direct message')
-}
-
-export function* initializeConversation(
-  action: DirectMessagesActions['initializeConversation']
-): Generator {
-  console.log('initialize Conversation in saga')
 }
 
 const checkConversation = (id, encryptedPhrase, privKey) => {
@@ -225,19 +233,13 @@ export function* responseGetPrivateConversations(
   }
 }
 
-export function* getPrivateConversations(
-  action: DirectMessagesActions['getPrivateConversations']
-): Generator {}
-
 export function* directMessagesSaga(): Generator {
   yield all([
     takeEvery(`${directMessagesActions.responseGetAvailableUsers}`, responseGetAvailableUsers),
-    takeEvery(`${directMessagesActions.sendDirectMessage}`, sendDirectMessage),
-    takeEvery(`${directMessagesActions.initializeConversation}`, initializeConversation),
     takeEvery(
       `${directMessagesActions.responseGetPrivateConversations}`,
       responseGetPrivateConversations
     ),
-    takeEvery(`${directMessagesActions.getPrivateConversations}`, getPrivateConversations)
+    takeEvery(`${directMessagesActions.responseLoadAllDirectMessages}`, loadAllDirectMessages)
   ])
 }

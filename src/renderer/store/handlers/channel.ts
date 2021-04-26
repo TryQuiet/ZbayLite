@@ -225,6 +225,9 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
   }
   const isPublicChannel = channelSelectors.isPublicChannel(getState())
   const isDirectMessageChannel = true
+
+  console.log(`IT IS public channel? ${isPublicChannel}`)
+
   // const isDirectMessageChannel = channelSelectors.isDirectMessageChannel(getState())
   if (isPublicChannel) {
     dispatch(publicChannelsActions.sendMessage())
