@@ -74,7 +74,7 @@ const decodeMessage = (sharedSecret, message) => {
   let decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
   const stringifiedMessage = JSON.stringify(message)
   let decrypted = decipher.update(stringifiedMessage, 'base64', 'utf8')
-  return decrypted + decipher.final('utf8')
+  return decrypted + decipher.final('base64')
 }
 
 export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMessage']): Generator {
@@ -129,6 +129,7 @@ export function* loadAllDirectMessages(
 console.log(`contact is ${contact}`)
 
   const contactPublicKey = contact.contactPublicKey
+  const sharedSecret = contact.sharedSecret
 
   console.log(`contact publickey is ${contactPublicKey}`)
 
@@ -143,7 +144,8 @@ console.log(`contact is ${contact}`)
   const { username } = channel
   if (username) {
     console.log(`action messages are ${action.payload.messages}`)
-    const displayableMessages = action.payload.messages.map(msg => transferToMessage(msg, users))
+    const decodedMessages = action.payload.messages.map(msg => JSON.parse(decodeMessage(sharedSecret, msg)))
+    const displayableMessages = decodedMessages.map(msg => transferToMessage(msg, users))
     yield put(
       contactsHandlers.actions.setAllMessages({
         key: contactPublicKey,
