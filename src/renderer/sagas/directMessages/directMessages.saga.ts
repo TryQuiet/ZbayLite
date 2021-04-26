@@ -100,7 +100,7 @@ export function* loadAllDirectMessages(
   const conversations = yield* select(directMessagesSelectors.conversations)
   console.log(`conversations are ${conversations}`)
   const conversation = Array.from(Object.values(conversations)).filter(conv => {
-    conv.conversationId = action.payload.channelAddress
+    conv.conversationId == action.payload.channelAddress
   })
   console.log(`conversation is ${conversation}`)
 
