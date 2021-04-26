@@ -163,7 +163,7 @@ console.log(`contact is ${contact}`)
     console.log(`payload messages are ${action.payload.messages}`)
     const decodedMessages = action.payload.messages.map(msg => {
       console.log(msg)
-      JSON.parse(decodeMessage(sharedSecret, msg))
+      return JSON.parse(decodeMessage(sharedSecret, msg))
     })
     const displayableMessages = decodedMessages.map(msg => transferToMessage(msg, users))
     yield put(
