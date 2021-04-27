@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, ipcMain } from 'electron'
+import { app, BrowserWindow, Menu, ipcMain, session } from 'electron'
 import electronLocalshortcut from 'electron-localshortcut'
 import path from 'path'
 import url from 'url'
@@ -13,23 +13,6 @@ electronStore.set('appDataPath', app.getPath('appData'))
 electronStore.set('waggleInitialized', false)
 
 export const isDev = process.env.NODE_ENV === 'development'
-const installExtensions = async () => {
-  if (!isDev) return
-  // eslint-disable-next-line
-  require('electron-debug')({
-    showDevTools: true
-  })
-  // eslint-disable-next-line
-  const installer = require('electron-devtools-installer')
-  const forceDownload = Boolean(process.env.UPGRADE_EXTENSIONS)
-  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS']
-
-  try {
-    await Promise.all(extensions.map(ext => installer.default(installer[ext], forceDownload)))
-  } catch (err) {
-    console.error("Couldn't install devtools.")
-  }
-}
 
 interface IWindowSize {
   width: number
@@ -44,6 +27,36 @@ const windowSize: IWindowSize = {
 let mainWindow: BrowserWindow
 
 const gotTheLock = app.requestSingleInstanceLock()
+
+const extensionsFolderPath = `${app.getPath('userData')}/extensions`
+
+
+const applyDevTools = async () => {
+  if (!isDev) return
+  require('electron-debug')({
+    showDevTools: true
+  })
+  const installer = require('electron-devtools-installer')
+  const { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer')
+
+  const extensionsData = [
+    {
+      name: REACT_DEVELOPER_TOOLS,
+      path: `${extensionsFolderPath}/${REACT_DEVELOPER_TOOLS.id}`
+    },
+    {
+      name: REDUX_DEVTOOLS,
+      path: `${extensionsFolderPath}/${REDUX_DEVTOOLS.id}`
+    }
+  ]
+  await Promise.all(extensionsData.map(async (extension) => {
+    await installer.default(extension.name)
+  }))
+  await Promise.all(extensionsData.map(async (extension) => {
+    await session.defaultSession.loadExtension(extension.path, { allowFileAccess: true })
+  }))
+}
+
 
 if (!gotTheLock) {
   app.quit()
@@ -110,11 +123,14 @@ const createWindow = async () => {
     height: windowUserSize ? windowUserSize.height : windowSize.height,
     titleBarStyle: 'hidden',
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
     },
     autoHideMenuBar: true
   })
   mainWindow.setMinimumSize(600, 400)
+
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, './index.html'),
@@ -139,9 +155,9 @@ const createWindow = async () => {
   electronLocalshortcut.register(mainWindow, 'CommandOrControl+L', () => {
     mainWindow.webContents.send('openLogs')
   })
-  // electronLocalshortcut.register(mainWindow, 'F12', () => {
-  //   mainWindow.toggleDevTools()
-  // })
+  electronLocalshortcut.register(mainWindow, 'F12', () => {
+    mainWindow.webContents.openDevTools()
+  })
 }
 
 let isUpdatedStatusCheckingStarted = false
@@ -233,8 +249,7 @@ app.on('ready', async () => {
     Menu.setApplicationMenu(null)
   }
 
-  console.log('instaling extensions')
-  await installExtensions()
+  await applyDevTools()
 
   await createWindow()
   console.log('creatd windows')
@@ -349,3 +364,4 @@ app.on('activate', async () => {
     await createWindow()
   }
 })
+
