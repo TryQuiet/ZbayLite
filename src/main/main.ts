@@ -7,8 +7,6 @@ import { autoUpdater } from 'electron-updater'
 import config from './config'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
-import websockets, { clearConnections } from './websockets/client'
-import { createServer } from './websockets/server'
 import { getOnionAddress, spawnTor, runWaggle } from './waggleManager'
 
 electronStore.set('appDataPath', app.getPath('appData'))
@@ -248,9 +246,7 @@ app.on('ready', async () => {
     try {
       console.log('before spawning tor')
       tor = await spawnTor()
-      createServer(mainWindow)
       mainWindow.webContents.send('onionAddress', getOnionAddress())
-      mainWindow.webContents.send('connectWsContacts')
       await runWaggle(mainWindow.webContents)
     } catch (error) {
       console.log(error)
@@ -274,7 +270,6 @@ app.on('ready', async () => {
       tor = await spawnTor()
       await runWaggle(mainWindow.webContents)
       electronStore.set('isTorActive', true)
-      mainWindow.webContents.send('connectWsContacts')
     }
   })
 
@@ -297,48 +292,6 @@ app.on('ready', async () => {
     }
   })
 
-  ipcMain.on('sendWebsocket', async (_event, arg) => {
-    const request = JSON.parse(arg)
-    const response = await websockets.handleSend(request)
-    // const response = await client.postMessage(request.id, request.method, request.args)
-    if (mainWindow) {
-      mainWindow.webContents.send(
-        'sendWebsocket',
-        JSON.stringify({ id: request.id, response: response })
-      )
-    }
-  })
-
-  ipcMain.on('initWsConnection', async (_event, arg) => {
-    const request = JSON.parse(arg)
-    try {
-      const socket = await websockets.connect(request.address)
-      if (mainWindow) {
-        mainWindow.webContents.send(
-          'initWsConnection',
-          JSON.stringify({ id: request.id, connected: true })
-        )
-      }
-      // socket
-      socket.on('close', function () {
-        if (mainWindow) {
-          mainWindow.webContents.send(
-            'initWsConnection',
-            JSON.stringify({ id: request.id, connected: false })
-          )
-        }
-      })
-    } catch (error) {
-      console.log(error)
-      if (mainWindow) {
-        mainWindow.webContents.send(
-          'initWsConnection',
-          JSON.stringify({ id: request.id, connected: false })
-        )
-      }
-    }
-    // const response = await client.postMessage(request.id, request.method, request.args)
-  })
 
   ipcMain.on('vault-created', () => {
     electronStore.set('vaultStatus', config.VAULT_STATUSES.CREATED)
@@ -367,8 +320,6 @@ export const sleep = async (time = 1000) =>
 
 app.on('before-quit', async e => {
   e.preventDefault()
-  clearConnections()
-  await sleep(2000)
   if (tor !== null) {
     await tor.kill()
   }

@@ -12,13 +12,25 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
   isUnregistered,
   createNewContact,
   history,
-  users
+  users,
+  waggleUsers
 }) => {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
   const registeredUsername = Array.from(Object.values(users)).filter(
     (obj) => obj.address === address
   )[0]
+  let waggleIdentity = false
+  if (waggleUsers) {
+    console.log(address)
+    console.log(Array.from(Object.values(waggleUsers)))
+    const arr = Array.from(Object.keys(waggleUsers))
+    if (registeredUsername) {
+      if (arr.includes(registeredUsername.publicKey)) {
+        waggleIdentity = true
+      }
+    }
+  }
   return (
     <Popover
       id={id}
@@ -39,7 +51,7 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
         buttonName="Send message"
         handleClose={handleClose}
         warrning={
-          isUnregistered ? 'Unregistered users cannot receive messages.' : null
+          isUnregistered || !waggleIdentity ? 'Unregistered users cannot receive messages.' : null
         }
         onClick={() => {
           createNewContact({

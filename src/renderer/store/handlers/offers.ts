@@ -20,7 +20,6 @@ import usersSelectors from '../selectors/users'
 import operationsHandlers from './operations'
 import client from '../../zcash'
 import { packMemo } from '../../zbay/transit'
-import { sendMessage } from '../../zcash/websocketClient'
 
 import { ActionsType } from './types'
 import { History } from 'history'
@@ -158,11 +157,11 @@ const sendItemMessageOnEnter = event => async (dispatch, getState) => {
       )[0]
       if (useTor && user && user.onionAddress) {
         try {
-          const memo = await packMemo(message, false)
-          const result = await sendMessage(memo, user.onionAddress)
-          if (result === -1) {
-            throw new Error('unable to connect')
-          }
+          // const memo = await packMemo(message, false)
+          // const result = await sendMessage(memo, user.onionAddress)
+          // if (result === -1) {
+          //   throw new Error('unable to connect')
+          // }
           return
         } catch (error) {
           console.log(error)

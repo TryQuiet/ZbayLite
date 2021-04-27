@@ -174,23 +174,14 @@ console.log(`contact is ${contact}`)
         messages: displayableMessages
       })
     )
-    // for (const msg of displayableMessages) {
-    //   console.log(`msg is ${msg}`)
-    //   yield put(
-    //     directMessagesActions.addDirectMessage({
-    //       key: contactPublicKey,
-    //       message: { [msg.id]: msg }
-    //     })
-    //   )
-    // }
+
     const state = yield* select()
     const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state)
     newMsgs.forEach(msg => {
       if (msg.sender.username !== myUser.nickname) {
-        displayMessageNotification({
-          senderName: msg.sender.username,
-          message: msg.message,
-          channelName: username
+        displayDirectMessageNotification({
+          username: msg.sender.username,
+          message: msg
         })
       }
     })

@@ -10,5 +10,6 @@ export interface ISendMessagePopoverProps {
   isUnregistered?: boolean
   createNewContact?: (contact: any) => void
   history?: History<LocationState>
-  users?: object
+  users?: object,
+  waggleUsers?: object
 }

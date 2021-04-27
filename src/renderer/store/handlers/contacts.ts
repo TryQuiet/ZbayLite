@@ -197,55 +197,6 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
   }
 }
 
-export const connectWsContacts = (key?: string) => async (dispatch, getState) => {
-  const contacts = selectors.contacts(getState())
-  const users = usersSelector.users(getState())
-  var mapping = new Map()
-  const connect = async (key, address) => {
-    const promise = new Promise(resolve => {
-      mapping.set(key, {
-        resolve: resolve,
-        data: JSON.stringify({
-          id: key,
-          address: `ws://${address}.onion`
-        })
-      })
-    })
-    ipcRenderer.send(
-      'initWsConnection',
-      JSON.stringify({
-        id: key,
-        address: `ws://${address}.onion`
-      })
-    )
-    return promise
-  }
-
-  ipcRenderer.on('initWsConnection', (_e, d) => {
-    const data = JSON.parse(d)
-    dispatch(setContactConnected({ key: data.id, connected: data.connected }))
-    mapping.get(data.id)?.resolve(data.response)
-    mapping.delete(data.id)
-  })
-
-  const contactsToConnect = []
-  if (key) {
-    const user = users[key]
-    if (user?.onionAddress) {
-      contactsToConnect.push({ key: key, onionAddress: user?.onionAddress })
-    }
-  } else {
-    for (const contact of Object.values(contacts)) {
-      const user = users[contact.key]
-      if (user?.onionAddress) {
-        contactsToConnect.push({ key: contact.key, onionAddress: user?.onionAddress })
-      }
-    }
-  }
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
-  await Promise.all(contactsToConnect.map(contact => connect(contact.key, contact.onionAddress)))
-}
-
 export const deleteChannel = ({ address, history }) => async dispatch => {
   history.push('/main/channel/general')
   dispatch(removeContact(address))
@@ -257,8 +208,7 @@ export const epics = {
   loadContact,
   createVaultContact,
   deleteChannel,
-  linkUserRedirect,
-  connectWsContacts
+  linkUserRedirect
 }
 
 export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>(

@@ -224,7 +224,7 @@ export const ChannelInput = ({
 
   React.useEffect(() => {
     if (!isContactConnected) return
-    sendTypingIndicator(typingIndicator)
+    //sendTypingIndicator(typingIndicator)
   }, [typingIndicator])
 
   const findMentions = text => {
@@ -359,8 +359,8 @@ export const ChannelInput = ({
       container
       className={classNames({
         [classes.root]: true,
-        [classes.displayNone]:
-          inputState === INPUT_STATE.DISABLE || inputState === INPUT_STATE.LOCKED
+        [classes.displayNone]: false,
+         // inputState === INPUT_STATE.DISABLE || inputState === INPUT_STATE.LOCKED
       })}
       direction='column'
       justify='center'>
