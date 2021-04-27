@@ -4,7 +4,7 @@ name: CI
 on:
   push:
     branches:
-      - fix/electron-build-3
+      - merge-master-orbitdb
 
 jobs:
   build_on_mac:
