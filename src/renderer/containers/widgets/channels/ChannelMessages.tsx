@@ -23,6 +23,7 @@ export const ChannelMessages = ({ tab, contentRect }) => {
 
   const [scrollPosition, setScrollPosition] = React.useState(-1)
   const [_isRescanned, setIsRescanned] = React.useState(true)
+  const [newMessagesLoading, setNewMessagesLoading] = React.useState(false)
 
   const dispatch = useDispatch()
   const qMessages = useSelector(queueMessages.queue)
@@ -64,9 +65,12 @@ export const ChannelMessages = ({ tab, contentRect }) => {
   }, [triggerScroll])
   useEffect(() => {
     if (scrollPosition === 0 && displayableMessageLimit < messagesLength) {
-      setDisplayableLimit(displayableMessageLimit + 5)
+      console.log('SET new limit, load more messages')
+      setDisplayableLimit(displayableMessageLimit + 20)
+      setNewMessagesLoading(true)
     }
   }, [scrollPosition])
+
   const oldestMessage = messages ? messages[messages.length - 1] : null
   let usersRegistration = []
   let _publicChannelsRegistration = []
@@ -91,6 +95,8 @@ export const ChannelMessages = ({ tab, contentRect }) => {
     <ChannelMessagesComponent
       scrollPosition={scrollPosition}
       setScrollPosition={setScrollPosition}
+      newMessagesLoading={newMessagesLoading}
+      setNewMessagesLoading={setNewMessagesLoading}
       isNewUser={isNewUser}
       onRescan={onRescan}
       channelId={channelId}
