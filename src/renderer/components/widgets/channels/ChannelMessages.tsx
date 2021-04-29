@@ -17,6 +17,7 @@ import ChannelRegisteredMessage from './ChannelRegisteredMessage'
 import { UsersStore } from './../../../store/handlers/users'
 
 import { DisplayableMessage } from './../../../zbay/messages.types'
+import { loadNextMessagesLimit } from '../../../../shared/static'
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -77,12 +78,13 @@ interface IChannelMessagesProps {
 }
 
 // const renderView = props => {
+// Note: flex breaks scroll handle position
 //   const style = {
 //     ...props.style,
 //     display: 'flex',
 //     flexDirection: 'column-reverse'
 //   }
-//   return <div {...props} style={style} />
+// return <div {...props} style={style} />
 // }
 
 // TODO: scrollbar smart pagination
@@ -108,6 +110,7 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   const msgRef = React.useRef<HTMLUListElement>()
   const scrollbarRef = React.useRef<Scrollbars>()
   const [offset, setOffset] = React.useState(0)
+  const [pinToBottom, setPinToBottom] = React.useState(false)
   const [previousScrollHeight, setPreviousScrollHeight] = React.useState(0)
 
   // TODO work on scroll behavior
@@ -161,15 +164,15 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   }, [channelId, groupedMessages, scrollbarRef])
 
   useEffect(() => {
+    /** Set initial scroll height on entering the channel */
     if (scrollbarRef.current) {
-      // set init scroll height
       setPreviousScrollHeight(scrollbarRef.current.getScrollHeight())
-      console.log('getScrollHeight', scrollbarRef.current.getScrollHeight())
-      console.log('getClientHeight', scrollbarRef.current.getClientHeight())
     }
   }, [contactId])
 
   useEffect(() => {
+    /** Note: This pulls the messages to the bottom but enlarges rendering view in scrollbar 
+     * creating empty space above already loaded messages */
     if (msgRef.current && scrollbarRef.current) {
       const margin =
         msgRef.current.offsetHeight < scrollbarRef.current.getClientHeight()
@@ -182,18 +185,12 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   useEffect(() => {
     /** Set new position of a scrollbar handle */
     if (scrollbarRef.current && newMessagesLoading) {
-      console.log('NEW SETTING')
-      console.log('> previousScrollHeight', previousScrollHeight)
-      console.log('>> currentScrollHeight', scrollbarRef.current.getScrollHeight())
       const oneMessageHeight = scrollbarRef.current.getScrollHeight() / messages.length
-      console.log('=> oneMessageHeight', oneMessageHeight)
-      const newMessagesBlockHeight = oneMessageHeight * 20
-      console.log('==> newMessagesBlockHeight', newMessagesBlockHeight)
+      const newMessagesBlockHeight = oneMessageHeight * loadNextMessagesLimit
       setTimeout(() => {
         scrollbarRef.current.scrollTop(newMessagesBlockHeight)
       })
-      
-      setNewMessagesLoading(false)
+      setNewMessagesLoading(false) 
       setPreviousScrollHeight(scrollbarRef.current.getScrollHeight())
     }
   }, [newMessagesLoading])
@@ -202,13 +199,14 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
     <Scrollbars
       ref={scrollbarRef}
       autoHideTimeout={500}
+      // renderView={renderView}
       onScrollFrame={onScrollFrame}>
       <List 
         disablePadding
         ref={msgRef}
         id='messages-scroll'
-        className={classes.list}
-        style={{ marginTop: offset }}>
+        className={classes.list}>
+        {/* // style={{ marginTop: offset }}> */}
         {isOwner && <WelcomeMessage message={welcomeMessages.main} />}
         {/* {isOffer && !showLoader && (
           <WelcomeMessage message={welcomeMessages['offer'](tag, username)} />

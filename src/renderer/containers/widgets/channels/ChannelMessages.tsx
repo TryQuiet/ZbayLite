@@ -17,6 +17,7 @@ import zcashChannels from '../../../zcash/channels'
 import channelHandlers from '../../../store/handlers/channel'
 import appHandlers from '../../../store/handlers/app'
 import electronStore from '../../../../shared/electronStore'
+import { loadNextMessagesLimit } from '../../../../shared/static'
 
 export const ChannelMessages = ({ tab, contentRect }) => {
   const isDev = process.env.NODE_ENV === 'development'
@@ -65,8 +66,7 @@ export const ChannelMessages = ({ tab, contentRect }) => {
   }, [triggerScroll])
   useEffect(() => {
     if (scrollPosition === 0 && displayableMessageLimit < messagesLength) {
-      console.log('SET new limit, load more messages')
-      setDisplayableLimit(displayableMessageLimit + 20)
+      setDisplayableLimit(displayableMessageLimit + loadNextMessagesLimit)
       setNewMessagesLoading(true)
     }
   }, [scrollPosition])
