@@ -116,7 +116,6 @@
     "@types/luxon": "^1.25.0",
     "@types/ramda": "^0.27.31",
     "@types/react": "^16.9.54",
-    "@types/rc-scrollbars": "^4.0.7",
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.6",
