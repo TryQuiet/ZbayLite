@@ -109,9 +109,7 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   const classes = useStyles({})
   const msgRef = React.useRef<HTMLUListElement>()
   const scrollbarRef = React.useRef<Scrollbars>()
-  const [offset, setOffset] = React.useState(0)
-  const [pinToBottom, setPinToBottom] = React.useState(false)
-  const [previousScrollHeight, setPreviousScrollHeight] = React.useState(0)
+  // const [offset, setOffset] = React.useState(0)
 
   // TODO work on scroll behavior
   // React.useEffect(() => {
@@ -163,24 +161,17 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
     return () => window.removeEventListener('resize', eventListener)
   }, [channelId, groupedMessages, scrollbarRef])
 
-  useEffect(() => {
-    /** Set initial scroll height on entering the channel */
-    if (scrollbarRef.current) {
-      setPreviousScrollHeight(scrollbarRef.current.getScrollHeight())
-    }
-  }, [contactId])
-
-  useEffect(() => {
-    /** Note: This pulls the messages to the bottom but enlarges rendering view in scrollbar 
-     * creating empty space above already loaded messages */
-    if (msgRef.current && scrollbarRef.current) {
-      const margin =
-        msgRef.current.offsetHeight < scrollbarRef.current.getClientHeight()
-          ? scrollbarRef.current.getClientHeight() - msgRef.current.offsetHeight
-          : 0
-      setOffset(margin)
-    }
-  }, [msgRef, scrollbarRef])
+  // useEffect(() => {
+  //   /** Note: This was used before (it pulls messages to the bottom of channel) but currently it enlarges rendering view in scrollbar
+  //    * creating empty space above already loaded messages */
+  //   if (msgRef.current && scrollbarRef.current) {
+  //     const margin =
+  //       msgRef.current.offsetHeight < scrollbarRef.current.getClientHeight()
+  //         ? scrollbarRef.current.getClientHeight() - msgRef.current.offsetHeight
+  //         : 0
+  //     setOffset(margin)
+  //   }
+  // }, [msgRef, scrollbarRef])
 
   useEffect(() => {
     /** Set new position of a scrollbar handle */
@@ -190,8 +181,7 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
       setTimeout(() => {
         scrollbarRef.current.scrollTop(newMessagesBlockHeight)
       })
-      setNewMessagesLoading(false) 
-      setPreviousScrollHeight(scrollbarRef.current.getScrollHeight())
+      setNewMessagesLoading(false)
     }
   }, [newMessagesLoading])
 
@@ -201,7 +191,7 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
       autoHideTimeout={500}
       // renderView={renderView}
       onScrollFrame={onScrollFrame}>
-      <List 
+      <List
         disablePadding
         ref={msgRef}
         id='messages-scroll'
