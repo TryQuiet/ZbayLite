@@ -50,7 +50,7 @@ export const ChannelsPanel = ({
       <Grid item>
         <BaseChannelsList {...props} />
       </Grid>
-      {/* 
+      {/*
       <Grid item>
         <QuickActionButton
           text='Create Channel'
