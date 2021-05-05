@@ -207,11 +207,11 @@ export const SettingsModal = ({
 SettingsModal.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  modalTabToOpen: PropTypes.string,
+  //modalTabToOpen: PropTypes.boolean,
   clearCurrentOpenTab: PropTypes.func.isRequired,
   currentTab: PropTypes.string,
   setCurrentTab: PropTypes.func.isRequired,
-  blockedUsers: PropTypes.object.isRequired
+  blockedUsers: PropTypes.array.isRequired
 }
 
 export default withStyles(styles)(SettingsModal)

@@ -249,6 +249,8 @@ export const SendMessageInitial = ({
       <Button
         className={classes.button}
         onClick={() => {
+          console.log('clickeds')
+          console.log(submitForm)
           submitForm()
           handleClose()
           if (values.sendAnonymously === true) {
@@ -267,7 +269,7 @@ export const SendMessageInitial = ({
         size='large'
         type='submit'
       >
-        Continue
+        Continuereo
       </Button>
     </Grid>
   )

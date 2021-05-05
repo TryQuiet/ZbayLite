@@ -112,7 +112,7 @@ AddModerator.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   addModerator: PropTypes.func.isRequired,
-  members: PropTypes.instanceOf(Set).isRequired,
+  members: PropTypes.instanceOf(Array).isRequired,
   users: PropTypes.object.isRequired
 }
 export default R.compose(React.memo, withStyles(styles))(AddModerator)

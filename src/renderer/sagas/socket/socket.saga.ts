@@ -180,7 +180,7 @@ export function* sendDirectMessage(socket): Generator {
     const conversations = yield* select(directMessagesSelectors.conversations)
     const conversationId = conversations[id].conversationId
     const sharedSecret = conversations[id].sharedSecret
-console.log('1')
+    console.log('1')
     const messageToSend = yield* select(channelSelectors.message)
     const users = yield* select(usersSelectors.users)
     let message = null
@@ -210,25 +210,37 @@ console.log('1')
     //     message: { [preparedMessage.id]: displayableMessage }
     //   })
     // )
-    const encryptedMessage = encodeMessage( sharedSecret, preparedMessage)
+    const encryptedMessage = encodeMessage(sharedSecret, preparedMessage)
     console.log(`encrypted ${encryptedMessage}`)
-    socket.emit(socketsActions.SEND_DIRECT_MESSAGE, { channelAddress: conversationId, message: encryptedMessage })
+    socket.emit(socketsActions.SEND_DIRECT_MESSAGE, {
+      channelAddress: conversationId,
+      message: encryptedMessage
+    })
   }
 }
 
-export function* loadInitialState (socket): Generator {
-while (true) {
-  yield all([
-    take(`SET_IDENTITY`),
-    take(`SET_IS_WAGGLE_CONNECTED`),
-    take(`SET_PUBLIC_KEY`)
-  ]);
-  
-const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
-const signerPublicKey = yield select(identitySelectors.signerPubKey)
+export function* loadInitialState(socket): Generator {
+  while (true) {
+    console.log('INSIDE LOAD INITIAL STATE ADD USERs')
+    //yield all([take('SET_PUBLIC_KEY')])
+    yield take('SET_IS_WAGGLE_CONNECTED')
 
-  socket.emit(socketsActions.ADD_USER, {publicKey: signerPublicKey, halfKey: wagglePublicKey})
-}
+    const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
+    const signerPublicKey = yield select(identitySelectors.signerPubKey)
+
+    if (wagglePublicKey && signerPublicKey) {
+      socket.emit(socketsActions.ADD_USER, { publicKey: signerPublicKey, halfKey: wagglePublicKey })
+    }
+
+    //console.log('took all things')
+
+    // const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
+    // const signerPublicKey = yield select(identitySelectors.signerPubKey)
+
+    //console.log('BEFORE EMITTING NEW USER TO WAGGLE ')
+
+    //socket.emit(socketsActions.ADD_USER, { publicKey: signerPublicKey, halfKey: wagglePublicKey })
+  }
 }
 
 export function* useIO(socket): Generator {
@@ -249,6 +261,7 @@ export function* useIO(socket): Generator {
 export function* startConnection(): Generator {
   while (true) {
     yield take(socketsActions.CONNECT_TO_WEBSOCKET_SERVER)
+    console.log('before initializing forrk useIO')
     const socket = yield call(connect)
     yield fork(useIO, socket)
   }

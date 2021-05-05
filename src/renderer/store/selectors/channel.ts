@@ -179,25 +179,30 @@ export const inputLocked = createSelector(
   identitySelectors.balance('zec'),
   channelId,
   contacts,
+directMessagesSelectors.users,
+  waggleSelectors.isConnected,
+  isPublicChannel,
   (
     available,
     channelId,
-    contacts
+    contacts,
+    waggleContacts,
+    waggle,
+    publicChannel
   ) => {
-    const contactsData = Object.values(contacts)
+    const contactsData = Object.values(waggleContacts)
     const currentContactArray = contactsData.filter(item => {
-      return item.key === channelId && (item.connected === (false || true))
+      return item.publicKey === channelId
     })
 
-    if (currentContactArray[0]) {
-      if (currentContactArray[0].connected) {
-        return INPUT_STATE.LOCKED
+    console.log(`PUB CHAN ${publicChannel}`)
+//return INPUT_STATE.AVAILABLE
+    if (waggle) {
+      if (currentContactArray[0] || publicChannel) {
+        console.log('state available')
+        return INPUT_STATE.AVAILABLE
       } else {
-        if (available.gt(networkFee)) {
-          return INPUT_STATE.LOCKED
-        } else {
-          return INPUT_STATE.LOCKED
-        }
+          return INPUT_STATE.LOCKED  
       }
     } else {
       return INPUT_STATE.LOCKED

@@ -249,7 +249,7 @@ app.on('ready', async () => {
     Menu.setApplicationMenu(null)
   }
 
-  await applyDevTools()
+  // await applyDevTools()
 
   await createWindow()
   console.log('creatd windows')

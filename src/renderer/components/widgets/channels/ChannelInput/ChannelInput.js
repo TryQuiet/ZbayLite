@@ -139,7 +139,7 @@ const inputStateToMessage = {
   [INPUT_STATE.DISABLE]:
     'Sending messages is locked due to insufficient funds - this may be resolved by topping up your account',
   [INPUT_STATE.LOCKED]:
-    'All of your funds are locked - please wait for network confirmation or deposit more ZEC to your account',
+    'You are not fully synced with waggle, it may take few minutes',
   [INPUT_STATE.UNREGISTERED]:
     'You can not reply to this message because you are not registered yet, please wait.'
 }
@@ -180,6 +180,8 @@ export const ChannelInput = ({
   const [htmlMessage, setHtmlMessage] = React.useState(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
   const typingIndicator = !!message
+
+console.log(` input statate is ${inputState}`)
 
   const showTypingIndicator = isDM && isContactTyping && isContactConnected
 
@@ -290,51 +292,74 @@ export const ChannelInput = ({
     },
     [setAnchorEl, onChange, setHtmlMessage]
   )
+const inputStateRef = React.useRef()
+React.useEffect(() => {
+  inputStateRef.current = inputState
+})
+
   const onKeyDownCb = useCallback(
     e => {
+      console.log('keydown callback fired')
       if (refMentionsToSelect.current.length) {
+        console.log('1')
         if (e.nativeEvent.keyCode === 40) {
+          console.log('2')
           if (parseInt(refSelected.current) + 1 >= refMentionsToSelect.current.length) {
+            console.log('3')
             setSelected(0)
           } else {
+            console.log('4')
+        
             setSelected(parseInt(refSelected.current) + 1)
           }
           e.preventDefault()
         }
+        console.log('5')
         if (e.nativeEvent.keyCode === 38) {
+          console.log('6')
           if (parseInt(refSelected.current) - 1 < 0) {
+            console.log('7')
             setSelected(refMentionsToSelect.current.length - 1)
           } else {
+            console.log('8')
             setSelected(refSelected.current - 1)
           }
           e.preventDefault()
         }
         if (e.nativeEvent.keyCode === 13 || e.nativeEvent.keyCode === 9) {
+          console.log('9')
           const currentMsg = message
             .replace(/ /g, String.fromCharCode(160))
             .split(String.fromCharCode(160))
-          currentMsg[currentMsg.length - 1] =
+            currentMsg[currentMsg.length - 1] =
             '@' + refMentionsToSelect.current[refSelected.current].nickname
-          currentMsg.push(String.fromCharCode(160))
-          setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
-          e.preventDefault()
+            currentMsg.push(String.fromCharCode(160))
+            setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
+            e.preventDefault()
+          }
+          return
         }
-        return
-      }
-      if (
-        inputState === INPUT_STATE.AVAILABLE &&
-        e.nativeEvent.keyCode === 13 &&
-        e.target.innerText !== ''
-      ) {
-        onChange(e.target.innerText)
-        onKeyPress(e)
-        setMessage('')
-        setHtmlMessage('')
-        scrollToBottom()
-      } else {
-        if (e.nativeEvent.keyCode === 13) {
-          e.preventDefault()
-          if (infoClass !== classNames(classes.backdrop, classes.blinkAnimation)) {
+        console.log(`inputState is ${inputStateRef.current}`)
+        console.log(`enative event code is ${e.nativeEvent.keyCode}`)
+        console.log(`e.target.innerText is ${e.target.innerText}`)
+        console.log(` is first render current ${isFirstRenderRef.current}`)
+        if (
+          inputStateRef.current === INPUT_STATE.AVAILABLE &&
+          e.nativeEvent.keyCode === 13 &&
+          e.target.innerText !== ''
+          ) {
+            console.log('10')
+            onChange(e.target.innerText)
+            onKeyPress(e)
+            setMessage('')
+            setHtmlMessage('')
+            scrollToBottom()
+          } else {
+            console.log('11')
+            if (e.nativeEvent.keyCode === 13) {
+              e.preventDefault()
+              if (infoClass !== classNames(classes.backdrop, classes.blinkAnimation)) {
+                console.log('12')
             setInfoClass(classNames(classes.backdrop, classes.blinkAnimation))
             setTimeout(() => setInfoClass(classNames(classes.backdrop)), 1000)
           }
@@ -351,7 +376,8 @@ export const ChannelInput = ({
       infoClass,
       setInfoClass,
       message,
-      setSelected
+      setSelected,
+      inputState
     ]
   )
   return (
@@ -525,7 +551,7 @@ ChannelInput.propTypes = {
   anchorEl: PropTypes.object,
   mentionsToSelect: PropTypes.array.isRequired,
   members: PropTypes.instanceOf(Set),
-  isMessageTooLong: PropTypes.bool.isRequired
+  isMessageTooLong: PropTypes.bool
 }
 
 ChannelInput.defaultProps = {

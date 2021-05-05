@@ -22,8 +22,6 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
   )[0]
   let waggleIdentity = false
   if (waggleUsers) {
-    console.log(address)
-    console.log(Array.from(Object.values(waggleUsers)))
     const arr = Array.from(Object.keys(waggleUsers))
     if (registeredUsername) {
       if (arr.includes(registeredUsername.publicKey)) {

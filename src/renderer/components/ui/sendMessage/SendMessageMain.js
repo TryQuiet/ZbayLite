@@ -79,8 +79,13 @@ export const SendMessageMain = ({
       onSubmit={(values, { resetForm }) => {
         console.log('form submitted')
         const { recipient, sendAnonymously } = values
-        console.log(recipient)
-        console.log(sendAnonymously)
+        console.log(`recipient ${recipient}`)
+        console.log(`send Anonymously ${sendAnonymously}`)
+        const contact = {
+          nickname: recipient.nickname,
+          publicKey: recipient.publicKey,
+          address: ''
+        }
         const includesNickname =
         Array.from(Object.values(users))
           .filter(obj => obj.nickname === recipient)[0] ||
@@ -93,12 +98,16 @@ export const SendMessageMain = ({
             history
           })
         } else {
-          const transferData = {
-            amount: values.amountZec,
-            destination: includesNickname ? includesNickname.address : values.recipient,
-            memo: values.memo
-          }
-          sendPlainTransfer(transferData)
+          createNewContact({
+            contact,
+            history
+          })
+          // const transferData = {
+          //   amount: values.amountZec,
+          //   destination: includesNickname ? includesNickname.address : values.recipient,
+          //   memo: values.memo
+          // }
+          // sendPlainTransfer(transferData)
         }
         resetForm()
       }}

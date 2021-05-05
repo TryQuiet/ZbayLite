@@ -75,6 +75,7 @@ const generateDiffieHellman = signerPublicKey => async (dispatch, getState) => {
   const publicKey = dh.getPublicKey('hex')
 
   await dispatch(actions.setPrivateKey(privateKey))
+  console.log('before dispatching set public key')
   await dispatch(actions.setPublicKey(publicKey))
 
   // Add me to users key value store
