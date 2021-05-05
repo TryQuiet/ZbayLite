@@ -49,7 +49,7 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
         buttonName="Send message"
         handleClose={handleClose}
         warrning={
-          isUnregistered || !waggleIdentity ? 'Unregistered users cannot receive messages.' : null
+          !waggleIdentity ? 'Unregistered users cannot receive messages.' : null
         }
         onClick={() => {
           createNewContact({
