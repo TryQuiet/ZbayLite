@@ -183,7 +183,7 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
   console.log(contacts[contact.publicKey])
   if (!contacts[contact.publicKey]) {
     console.log('inside IF IF IF IF IF')
-    //directMessagesHandlers.epics.initializeConversation(contact.publicKey)
+    // directMessagesHandlers.epics.initializeConversation(contact.publicKey)
     await dispatch(
       addContact({
         key: contact.publicKey,

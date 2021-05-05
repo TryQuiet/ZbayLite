@@ -116,7 +116,7 @@ export const MentionPoper = ({ classes, anchorEl, children, selected }) => {
 }
 MentionPoper.propTypes = {
   classes: PropTypes.object.isRequired,
-  //anchorEl: PropTypes.object.isRequired,
+  // anchorEl: PropTypes.object.isRequired,
   children: PropTypes.array,
   selected: PropTypes.number
 }

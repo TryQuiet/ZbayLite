@@ -207,7 +207,7 @@ export const SettingsModal = ({
 SettingsModal.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  //modalTabToOpen: PropTypes.boolean,
+  // modalTabToOpen: PropTypes.boolean,
   clearCurrentOpenTab: PropTypes.func.isRequired,
   currentTab: PropTypes.string,
   setCurrentTab: PropTypes.func.isRequired,

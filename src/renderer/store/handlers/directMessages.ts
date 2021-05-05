@@ -65,7 +65,6 @@ export const actions = {
 export type DirectMessagesActions = ActionsType<typeof actions>
 
 const generateDiffieHellman = signerPublicKey => async (dispatch, getState) => {
-
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
 
@@ -79,7 +78,7 @@ const generateDiffieHellman = signerPublicKey => async (dispatch, getState) => {
   await dispatch(actions.setPublicKey(publicKey))
 
   // Add me to users key value store
-  //await dispatch(directMessagesActions.addUser({ publicKey: signerPublicKey, halfKey: publicKey }))
+  // await dispatch(directMessagesActions.addUser({ publicKey: signerPublicKey, halfKey: publicKey }))
 }
 
 export const getPrivateConversations = () => (dispatch, getState) => {
@@ -91,7 +90,7 @@ const encodeMessage = (sharedSecret, message) => {
   const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
   const IV = Buffer.from(IVO, 'hex')
 
-  let cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV)
+  const cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV)
   let encrypted = cipher.update(message, 'utf8', 'base64')
   encrypted += cipher.final('base64')
   return encrypted
@@ -102,8 +101,8 @@ const decodeMessage = (sharedSecret, message) => {
   const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
   const IV = Buffer.from(IVO, 'hex')
 
-  let decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
-  let decrypted = decipher.update(message, 'base64', 'utf8')
+  const decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
+  const decrypted = decipher.update(message, 'base64', 'utf8')
   return decrypted + decipher.final('utf8')
 }
 
@@ -116,15 +115,13 @@ const checkConversation = (id, encryptedPhrase) => (dispatch, getState) => {
   const sharedSecret = dh.computeSecret(id, 'hex').toString('hex')
   const decodedMessage = decodeMessage(sharedSecret, encryptedPhrase)
   if (decodedMessage.startsWith('no panic')) {
-
     actions.addConversation({
       sharedSecret,
       contactPublicKey: decodedMessage.slice(8),
       conversationId: id
     })
-    return
   } else {
-    return
+
   }
 }
 
@@ -133,7 +130,7 @@ const subscribeForDirectMessagesThreads = () => async (dispatch, getState) => {}
 const initializeConversation = () => async (dispatch, getState) => {
   const contactPublicKey = channelSelectors.channel(getState()).id
 
-const myPublicKey = identitySelectors.signerPubKey(getState())
+  const myPublicKey = identitySelectors.signerPubKey(getState())
 
   const halfKey = directMessagesSelectors.user(contactPublicKey)(getState()).halfKey
 
@@ -163,7 +160,6 @@ const myPublicKey = identitySelectors.signerPubKey(getState())
       encryptedPhrase
     })
   )
-
 }
 
 const sendDirectMessage = publicKey => {
@@ -177,7 +173,6 @@ const addMessage = publicKey => {}
 const getAvailableUsers = () => async (dispatch, getState) => {
   await dispatch(directMessagesActions.getAvailableUsers())
 }
-
 
 export const epics = {
   generateDiffieHellman,

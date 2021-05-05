@@ -189,7 +189,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
 
   console.log(`IT IS public channel? ${isPublicChannel}`)
   console.log(`IT IS DM channel? ${isDirectMessageChannel}`)
-  
+
   if (isPublicChannel) {
     dispatch(publicChannelsActions.sendMessage())
     return
@@ -205,9 +205,7 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
     }
     console.log('before sending message')
     dispatch(directMessagesActions.sendDirectMessage())
-    return
   }
-
 }
 const sendChannelSettingsMessage = ({ address, minFee = '0', onlyRegistered = '0' }) => async (
   dispatch,

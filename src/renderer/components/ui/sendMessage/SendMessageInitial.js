@@ -269,7 +269,7 @@ export const SendMessageInitial = ({
         size='large'
         type='submit'
       >
-        Continuereo
+        Continue
       </Button>
     </Grid>
   )

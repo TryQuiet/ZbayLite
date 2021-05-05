@@ -30,7 +30,6 @@ const gotTheLock = app.requestSingleInstanceLock()
 
 const extensionsFolderPath = `${app.getPath('userData')}/extensions`
 
-
 const applyDevTools = async () => {
   if (!isDev) return
   require('electron-debug')({
@@ -56,7 +55,6 @@ const applyDevTools = async () => {
     await session.defaultSession.loadExtension(extension.path, { allowFileAccess: true })
   }))
 }
-
 
 if (!gotTheLock) {
   app.quit()
@@ -307,7 +305,6 @@ app.on('ready', async () => {
     }
   })
 
-
   ipcMain.on('vault-created', () => {
     electronStore.set('vaultStatus', config.VAULT_STATUSES.CREATED)
   })
@@ -364,4 +361,3 @@ app.on('activate', async () => {
     await createWindow()
   }
 })
-

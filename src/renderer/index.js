@@ -123,10 +123,10 @@ ipcRenderer.on('waggleInitialized', (event) => {
   store.dispatch(waggleHandlers.actions.setIsWaggleConnected(true))
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())
   store.dispatch(publicChannelsHandlers.epics.subscribeForPublicChannels())
-  //store.dispatch(directMessagesHandlers.epics.subscribeForDirectMessageThreads)
+  // store.dispatch(directMessagesHandlers.epics.subscribeForDirectMessageThreads)
   store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
-  //store.dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.signerPubKey))
+  // store.dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.signerPubKey))
 })
 
 ipcRenderer.on('newChannel', (event, { channelParams }) => {

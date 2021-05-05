@@ -95,7 +95,7 @@ export const VaultUnlockerForm = ({
   React.useEffect(() => {
     if (isRescanning === true) {
       setSyncingStart(true)
-      }
+    }
   }, [isRescanning])
 
   React.useEffect(() => {

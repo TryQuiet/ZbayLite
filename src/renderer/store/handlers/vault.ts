@@ -84,7 +84,7 @@ const createVaultEpic = (fromMigrationFile = false) => async dispatch => {
       })
     )
     await dispatch(nodeHandlers.actions.setIsRescanning(true))
-console.log('createVaultEpic')
+    console.log('createVaultEpic')
     await dispatch(identityHandlers.epics.setIdentity(identity))
     await dispatch(identityHandlers.epics.loadIdentity())
     await dispatch(setVaultStatus(true))

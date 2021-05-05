@@ -81,7 +81,7 @@ MenuAction.propTypes = {
   icon: PropTypes.string.isRequired,
   iconHover: PropTypes.string.isRequired,
   // Sometimes we pass array, sometimes obeject
-  //children: PropTypes.array,
+  // children: PropTypes.array,
   offset: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   disabled: PropTypes.bool.isRequired,
   placement: PropTypes.string,

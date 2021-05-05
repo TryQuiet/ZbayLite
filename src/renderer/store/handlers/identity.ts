@@ -423,7 +423,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     console.log('setIdentityEpic')
     console.log('STARTED SETTING IDENTITY')
     await dispatch(setIdentity(identity))
-  console.log('FINISHED SETTING IDENTITY')
+    console.log('FINISHED SETTING IDENTITY')
     const shippingAddress = electronStore.get('identity.shippingData')
     if (shippingAddress) {
       dispatch(setShippingData(shippingAddress))

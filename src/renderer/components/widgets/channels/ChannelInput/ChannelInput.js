@@ -180,9 +180,6 @@ export const ChannelInput = ({
   const [htmlMessage, setHtmlMessage] = React.useState(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
   const typingIndicator = !!message
-
-console.log(` input statate is ${inputState}`)
-
   const showTypingIndicator = isDM && isContactTyping && isContactConnected
 
   window.onfocus = () => {
@@ -226,7 +223,7 @@ console.log(` input statate is ${inputState}`)
 
   React.useEffect(() => {
     if (!isContactConnected) return
-    //sendTypingIndicator(typingIndicator)
+    // sendTypingIndicator(typingIndicator)
   }, [typingIndicator])
 
   const findMentions = text => {
@@ -292,74 +289,57 @@ console.log(` input statate is ${inputState}`)
     },
     [setAnchorEl, onChange, setHtmlMessage]
   )
-const inputStateRef = React.useRef()
-React.useEffect(() => {
-  inputStateRef.current = inputState
-})
+  const inputStateRef = React.useRef()
+  React.useEffect(() => {
+    inputStateRef.current = inputState
+  })
 
   const onKeyDownCb = useCallback(
     e => {
-      console.log('keydown callback fired')
       if (refMentionsToSelect.current.length) {
-        console.log('1')
         if (e.nativeEvent.keyCode === 40) {
-          console.log('2')
           if (parseInt(refSelected.current) + 1 >= refMentionsToSelect.current.length) {
-            console.log('3')
             setSelected(0)
           } else {
-            console.log('4')
-        
+
             setSelected(parseInt(refSelected.current) + 1)
           }
           e.preventDefault()
         }
-        console.log('5')
         if (e.nativeEvent.keyCode === 38) {
-          console.log('6')
           if (parseInt(refSelected.current) - 1 < 0) {
-            console.log('7')
             setSelected(refMentionsToSelect.current.length - 1)
           } else {
-            console.log('8')
             setSelected(refSelected.current - 1)
           }
           e.preventDefault()
         }
         if (e.nativeEvent.keyCode === 13 || e.nativeEvent.keyCode === 9) {
-          console.log('9')
           const currentMsg = message
             .replace(/ /g, String.fromCharCode(160))
             .split(String.fromCharCode(160))
-            currentMsg[currentMsg.length - 1] =
+          currentMsg[currentMsg.length - 1] =
             '@' + refMentionsToSelect.current[refSelected.current].nickname
-            currentMsg.push(String.fromCharCode(160))
-            setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
-            e.preventDefault()
-          }
-          return
+          currentMsg.push(String.fromCharCode(160))
+          setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
+          e.preventDefault()
         }
-        console.log(`inputState is ${inputStateRef.current}`)
-        console.log(`enative event code is ${e.nativeEvent.keyCode}`)
-        console.log(`e.target.innerText is ${e.target.innerText}`)
-        console.log(` is first render current ${isFirstRenderRef.current}`)
-        if (
-          inputStateRef.current === INPUT_STATE.AVAILABLE &&
+        return
+      }
+      if (
+        inputStateRef.current === INPUT_STATE.AVAILABLE &&
           e.nativeEvent.keyCode === 13 &&
           e.target.innerText !== ''
-          ) {
-            console.log('10')
-            onChange(e.target.innerText)
-            onKeyPress(e)
-            setMessage('')
-            setHtmlMessage('')
-            scrollToBottom()
-          } else {
-            console.log('11')
-            if (e.nativeEvent.keyCode === 13) {
-              e.preventDefault()
-              if (infoClass !== classNames(classes.backdrop, classes.blinkAnimation)) {
-                console.log('12')
+      ) {
+        onChange(e.target.innerText)
+        onKeyPress(e)
+        setMessage('')
+        setHtmlMessage('')
+        scrollToBottom()
+      } else {
+        if (e.nativeEvent.keyCode === 13) {
+          e.preventDefault()
+          if (infoClass !== classNames(classes.backdrop, classes.blinkAnimation)) {
             setInfoClass(classNames(classes.backdrop, classes.blinkAnimation))
             setTimeout(() => setInfoClass(classNames(classes.backdrop)), 1000)
           }
@@ -385,8 +365,8 @@ React.useEffect(() => {
       container
       className={classNames({
         [classes.root]: true,
-        [classes.displayNone]: false,
-         // inputState === INPUT_STATE.DISABLE || inputState === INPUT_STATE.LOCKED
+        [classes.displayNone]: false
+        // inputState === INPUT_STATE.DISABLE || inputState === INPUT_STATE.LOCKED
       })}
       direction='column'
       justify='center'>

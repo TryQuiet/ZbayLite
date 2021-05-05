@@ -35,16 +35,16 @@ const isPublicChannel = createSelector(
 )
 
 const isDirectMessage = createSelector(
-directMessagesSelectors.users, channel, (users, channel) => {
-  if (users && channel) {
-    const { id } = channel
-    const usersIds = Array.from(Object.keys(users))
-    console.log(`checking if it is DM ${id}, ${usersIds}`)
-    return usersIds.includes(id)
-  } else {
-    return false
+  directMessagesSelectors.users, channel, (users, channel) => {
+    if (users && channel) {
+      const { id } = channel
+      const usersIds = Array.from(Object.keys(users))
+      console.log(`checking if it is DM ${id}, ${usersIds}`)
+      return usersIds.includes(id)
+    } else {
+      return false
+    }
   }
-}
 )
 
 export const spentFilterValue = createSelector(channel, c =>
@@ -179,7 +179,7 @@ export const inputLocked = createSelector(
   identitySelectors.balance('zec'),
   channelId,
   contacts,
-directMessagesSelectors.users,
+  directMessagesSelectors.users,
   waggleSelectors.isConnected,
   isPublicChannel,
   (
@@ -196,13 +196,13 @@ directMessagesSelectors.users,
     })
 
     console.log(`PUB CHAN ${publicChannel}`)
-//return INPUT_STATE.AVAILABLE
+    // return INPUT_STATE.AVAILABLE
     if (waggle) {
       if (currentContactArray[0] || publicChannel) {
         console.log('state available')
         return INPUT_STATE.AVAILABLE
       } else {
-          return INPUT_STATE.LOCKED  
+        return INPUT_STATE.LOCKED
       }
     } else {
       return INPUT_STATE.LOCKED

@@ -165,7 +165,7 @@ const encodeMessage = (sharedSecret, message) => {
   const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
   const IV = Buffer.from(IVO, 'hex')
 
-  let cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV)
+  const cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV)
   const stringifiedMessage = JSON.stringify(message)
   let encrypted = cipher.update(stringifiedMessage, 'utf8', 'base64')
   encrypted += cipher.final('base64')
@@ -203,7 +203,7 @@ export function* sendDirectMessage(socket): Generator {
       signature: message.signature.toString('base64')
     }
     console.log('3')
-    //const displayableMessage = transferToMessage(preparedMessage, users)
+    // const displayableMessage = transferToMessage(preparedMessage, users)
     // yield put(
     //   directMessagesActions.addMessage({
     //     key: id,
@@ -222,7 +222,7 @@ export function* sendDirectMessage(socket): Generator {
 export function* loadInitialState(socket): Generator {
   while (true) {
     console.log('INSIDE LOAD INITIAL STATE ADD USERs')
-    //yield all([take('SET_PUBLIC_KEY')])
+    // yield all([take('SET_PUBLIC_KEY')])
     yield take('SET_IS_WAGGLE_CONNECTED')
 
     const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
@@ -232,14 +232,14 @@ export function* loadInitialState(socket): Generator {
       socket.emit(socketsActions.ADD_USER, { publicKey: signerPublicKey, halfKey: wagglePublicKey })
     }
 
-    //console.log('took all things')
+    // console.log('took all things')
 
     // const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
     // const signerPublicKey = yield select(identitySelectors.signerPubKey)
 
-    //console.log('BEFORE EMITTING NEW USER TO WAGGLE ')
+    // console.log('BEFORE EMITTING NEW USER TO WAGGLE ')
 
-    //socket.emit(socketsActions.ADD_USER, { publicKey: signerPublicKey, halfKey: wagglePublicKey })
+    // socket.emit(socketsActions.ADD_USER, { publicKey: signerPublicKey, halfKey: wagglePublicKey })
   }
 }
 

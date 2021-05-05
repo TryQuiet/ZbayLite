@@ -6,18 +6,17 @@ import {
   usernameSchema,
   exchangeParticipant
 } from '../../zbay/messages'
-import directMessagesSelectors  from '../../store/selectors/directMessages'
+import directMessagesSelectors from '../../store/selectors/directMessages'
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
 import channelSelectors from '../../store/selectors/channel'
 import { findNewMessages } from '../../store/handlers/messages'
-import contactsHandlers from '../../store/handlers/contacts'
+import contactsHandlers, { actions as contactsActions } from '../../store/handlers/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
 import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
 import BigNumber from 'bignumber.js'
 import crypto from 'crypto'
 import { actions, epics } from '../../store/handlers/directMessages'
-import {actions as contactsActions} from '../../store/handlers/contacts'
 
 const all: any = effectsAll
 
@@ -71,16 +70,16 @@ const decodeMessage = (sharedSecret, message) => {
   const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
   const IV = Buffer.from(IVO, 'hex')
 
-  let decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
+  const decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
   const stringifiedMessage = JSON.stringify(message)
-  let decrypted = decipher.update(stringifiedMessage, 'base64', 'utf8')
+  const decrypted = decipher.update(stringifiedMessage, 'base64', 'utf8')
   return decrypted + decipher.final('utf8')
 }
 
 export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMessage']): Generator {
-console.log('received message in load direct message')
-console.log(action.payload.message)
-console.log(`action payload chanel addresss is ${action.payload.channelAddress}`)
+  console.log('received message in load direct message')
+  console.log(action.payload.message)
+  console.log(`action payload chanel addresss is ${action.payload.channelAddress}`)
   const conversations = yield* select(directMessagesSelectors.conversations)
   console.log(`conversations are ${conversations}`)
   const conversation = Array.from(Object.values(conversations)).filter(conv => {
@@ -92,7 +91,7 @@ console.log(`action payload chanel addresss is ${action.payload.channelAddress}`
 
   const contact = conversation[0]
 
-console.log(`contact is ${contact}`)
+  console.log(`contact is ${contact}`)
 
   const contactPublicKey = contact.contactPublicKey
 
@@ -100,7 +99,7 @@ console.log(`contact is ${contact}`)
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
   const { id } = yield* select(channelSelectors.channel)
-    const sharedSecret = conversations[id].sharedSecret
+  const sharedSecret = conversations[id].sharedSecret
   const decodedMessage = decodeMessage(sharedSecret, action.payload.message)
   const message = transferToMessage(JSON.parse(decodedMessage), users)
   console.log(message)
@@ -142,7 +141,7 @@ export function* loadAllDirectMessages(
 
   const contact = conversation[0]
 
-console.log(`contact is ${contact}`)
+  console.log(`contact is ${contact}`)
 
   const contactPublicKey = contact.contactPublicKey
   const sharedSecret = contact.sharedSecret
@@ -220,7 +219,7 @@ const checkConversation = (id, encryptedPhrase, privKey) => {
   const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
   dh.setPrivateKey(privKey, 'hex')
   const sharedSecret = dh.computeSecret(id, 'hex').toString('hex')
-  let decodedMessage =  null
+  let decodedMessage = null
   try {
     decodedMessage = epics.decodeMessage(sharedSecret, encryptedPhrase)
   } catch (err) {
@@ -228,13 +227,12 @@ const checkConversation = (id, encryptedPhrase, privKey) => {
   }
   if (decodedMessage && decodedMessage.startsWith('no panic')) {
     console.log('success, message decoded successfully')
-   
-return {
-  sharedSecret,
-  contactPublicKey: decodedMessage.slice(8),
-  conversationId: id
-}
 
+    return {
+      sharedSecret,
+      contactPublicKey: decodedMessage.slice(8),
+      conversationId: id
+    }
   } else {
     console.log('cannot decode message, its not for me or I am the author')
     return null
@@ -244,13 +242,11 @@ return {
 export function* responseGetPrivateConversations(
   action: DirectMessagesActions['responseGetPrivateConversations']
 ): Generator {
-
   const privKey = yield* select(directMessagesSelectors.privateKey)
 
   for (const [key, value] of Object.entries(action.payload)) {
-    
     const conversation = checkConversation(key, value, privKey)
-    
+
     if (conversation) {
       const user = yield* select(usersSelectors.registeredUser(key))
       yield put(
@@ -258,11 +254,11 @@ export function* responseGetPrivateConversations(
       )
       yield put(
         actions.addConversation(conversation)
-        )
+      )
       yield put(
         contactsActions.addContact({
           key: conversation.contactPublicKey,
-          username: user?.nickname || `anon${conversation.contactPublicKey.substring(0,8)}`,
+          username: user?.nickname || `anon${conversation.contactPublicKey.substring(0, 8)}`,
           contactAddress: user?.address || ''
         })
       )
