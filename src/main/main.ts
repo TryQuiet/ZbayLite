@@ -45,10 +45,6 @@ const applyDevTools = async () => {
     {
       name: REACT_DEVELOPER_TOOLS,
       path: `${extensionsFolderPath}/${REACT_DEVELOPER_TOOLS.id}`
-    },
-    {
-      name: REDUX_DEVTOOLS,
-      path: `${extensionsFolderPath}/${REDUX_DEVTOOLS.id}`
     }
   ]
   await Promise.all(extensionsData.map(async (extension) => {

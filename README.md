@@ -13,6 +13,19 @@ Getting started hacking on Zcash is easy. Be sure to have [Rust](https://www.rus
 npm install
 npm install --global neon-cli
 npm run neon
+
+{for Linux} 
+export SOURCE_PATH=linux
+npm run pullBinaries
+
+{for macOS} 
+export SOURCE_PATH=darwin
+npm run pullBinaries
+
+{for Windows} 
+export SOURCE_PATH=win32
+npm run pullBinariesWin
+
 npm run start
 ```
 

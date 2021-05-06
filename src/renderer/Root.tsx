@@ -12,7 +12,7 @@ import store from './store'
 import Index from './containers/windows/Index'
 import Main from './containers/windows/Main'
 import Vault from './containers/windows/Vault'
-import Loading from './containers//windows/Loading'
+import Loading from './containers/windows/Loading'
 import Notifier from './containers/ui/Notifier'
 import ErrorModal from './containers/ui/ErrorModal'
 import MigrationModal from './containers/ui/MigrationModal'
@@ -37,6 +37,7 @@ import BlockchainLocationModal from './containers/widgets/blockchainLocation/Blo
 import FailedUsernameRegister from './containers/ui/FailedUsernameRegister'
 import SendMoney from './containers/ui/sendMoneySeparate/sendMoney'
 import theme from './theme'
+import DevTools from './DevTools';
 
 export default () => {
   const persistor = persistStore(store)
@@ -75,6 +76,7 @@ export default () => {
               <Route path='/zcashNode' component={Index} />
               <Route path='/loading' component={Loading} />
             </SnackbarProvider>
+            <DevTools />
           </PersistGate>
         </Provider>
       </HashRouter>
