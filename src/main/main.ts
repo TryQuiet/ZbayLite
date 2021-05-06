@@ -9,10 +9,11 @@ import electronStore from '../shared/electronStore'
 import Client from './cli/client'
 import websockets, { clearConnections } from './websockets/client'
 import { createServer } from './websockets/server'
-import { getOnionAddress, spawnTor, runWaggle } from './waggleManager'
+import { getOnionAddress, spawnTor, runWaggle, waggleVersion } from './waggleManager'
 
 electronStore.set('appDataPath', app.getPath('appData'))
 electronStore.set('waggleInitialized', false)
+electronStore.set('waggleVersion', waggleVersion)
 
 export const isDev = process.env.NODE_ENV === 'development'
 
