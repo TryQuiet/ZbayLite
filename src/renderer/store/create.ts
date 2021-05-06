@@ -12,13 +12,20 @@ import { errorsMiddleware } from './middlewares'
 const sagaMiddleware = createSagaMiddleware()
 
 export default (initialState = {}) => {
-  const store = createStore(
-    reducers,
-    initialState,
-    compose(
+  let composeStore
+  process.env.NODE_ENV === 'development'
+    ? composeStore = compose(
       applyMiddleware(...[errorsMiddleware, createDebounce(), sagaMiddleware, thunk, promise()]),
       DevTools.instrument()
     )
+    : composeStore = compose(
+      applyMiddleware(...[errorsMiddleware, createDebounce(), sagaMiddleware, thunk, promise()])
+    )
+
+  const store = createStore(
+    reducers,
+    initialState,
+    composeStore
   )
   sagaMiddleware.run(rootSaga)
   return store
