@@ -5,7 +5,7 @@ import createDebounce from 'redux-debounced'
 import createSagaMiddleware from 'redux-saga'
 import rootSaga from '../sagas/index.saga'
 
-import DevTools from '../DevTools';
+import DevTools from '../DevTools'
 import reducers from './reducers'
 import { errorsMiddleware } from './middlewares'
 

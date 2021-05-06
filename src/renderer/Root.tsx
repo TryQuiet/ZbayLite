@@ -37,7 +37,7 @@ import BlockchainLocationModal from './containers/widgets/blockchainLocation/Blo
 import FailedUsernameRegister from './containers/ui/FailedUsernameRegister'
 import SendMoney from './containers/ui/sendMoneySeparate/sendMoney'
 import theme from './theme'
-import DevTools from './DevTools';
+import DevTools from './DevTools'
 
 export default () => {
   const persistor = persistStore(store)
@@ -76,7 +76,7 @@ export default () => {
               <Route path='/zcashNode' component={Index} />
               <Route path='/loading' component={Loading} />
             </SnackbarProvider>
-            <DevTools />
+            {process.env.NODE_ENV === 'development' ? <DevTools /> : <></>}
           </PersistGate>
         </Provider>
       </HashRouter>
