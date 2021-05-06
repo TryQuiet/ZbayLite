@@ -13,7 +13,7 @@ import channelSelectors from '../../store/selectors/channel'
 import { findNewMessages } from '../../store/handlers/messages'
 import contactsHandlers, { actions as contactsActions } from '../../store/handlers/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
-import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
+import { displayDirectMessageNotification } from '../../notifications'
 import BigNumber from 'bignumber.js'
 import crypto from 'crypto'
 import { actions, epics } from '../../store/handlers/directMessages'
@@ -77,33 +77,19 @@ const decodeMessage = (sharedSecret, message) => {
 }
 
 export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMessage']): Generator {
-  console.log('received message in load direct message')
-  console.log(action.payload.message)
-  console.log(`action payload chanel addresss is ${action.payload.channelAddress}`)
   const conversations = yield* select(directMessagesSelectors.conversations)
-  console.log(`conversations are ${conversations}`)
   const conversation = Array.from(Object.values(conversations)).filter(conv => {
-    console.log(`conv.conversationId ${conv.conversationId}`)
-
-    return conv.conversationId == action.payload.channelAddress
+    return conv.conversationId === action.payload.channelAddress
   })
-  console.log(`conversation is ${conversation}`)
 
   const contact = conversation[0]
-
-  console.log(`contact is ${contact}`)
-
   const contactPublicKey = contact.contactPublicKey
-
-  console.log(`contact publickey is ${contactPublicKey}`)
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
   const { id } = yield* select(channelSelectors.channel)
   const sharedSecret = conversations[id].sharedSecret
   const decodedMessage = decodeMessage(sharedSecret, action.payload.message)
   const message = transferToMessage(JSON.parse(decodedMessage), users)
-  console.log(message)
-  console.log('RECEIVED MESSAGE I SENT')
   if (myUser.nickname !== message.sender.username) {
     displayDirectMessageNotification({
       username: message.sender.username,
@@ -127,27 +113,14 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
 export function* loadAllDirectMessages(
   action: DirectMessagesActions['responseLoadAllDirectMessages']
 ): Generator {
-  console.log('loading direct messages')
-
-  console.log(`action payload chanel addresss is ${action.payload.channelAddress}`)
   const conversations = yield* select(directMessagesSelectors.conversations)
-  console.log(`conversations are ${conversations}`)
   const conversation = Array.from(Object.values(conversations)).filter(conv => {
-    console.log(`conv.conversationId ${conv.conversationId}`)
-
-    return conv.conversationId == action.payload.channelAddress
+    return conv.conversationId === action.payload.channelAddress
   })
-  console.log(`conversation is ${conversation}`)
-
   const contact = conversation[0]
-
-  console.log(`contact is ${contact}`)
 
   const contactPublicKey = contact.contactPublicKey
   const sharedSecret = contact.sharedSecret
-
-  console.log(`contact publickey is ${contactPublicKey}`)
-
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
@@ -158,8 +131,6 @@ export function* loadAllDirectMessages(
 
   const { username } = channel
   if (username) {
-    console.log(`action messages are ${action.payload.messages}`)
-    console.log(`payload messages are ${action.payload.messages}`)
     const decodedMessages = action.payload.messages.map(msg => {
       console.log(msg)
       return JSON.parse(decodeMessage(sharedSecret, msg))
@@ -225,7 +196,7 @@ const checkConversation = (id, encryptedPhrase, privKey) => {
   } catch (err) {
     console.log(err)
   }
-  if (decodedMessage && decodedMessage.startsWith('no panic')) {
+  if (decodedMessage?.startsWith('no panic')) {
     console.log('success, message decoded successfully')
 
     return {

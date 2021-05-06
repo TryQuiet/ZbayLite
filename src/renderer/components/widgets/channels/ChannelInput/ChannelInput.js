@@ -221,10 +221,10 @@ export const ChannelInput = ({
     messageRef.current = message
   }, [message])
 
-  React.useEffect(() => {
-    if (!isContactConnected) return
-    // sendTypingIndicator(typingIndicator)
-  }, [typingIndicator])
+  // React.useEffect(() => {
+  //   if (!isContactConnected) return
+  //    sendTypingIndicator(typingIndicator)
+  // }, [typingIndicator])
 
   const findMentions = text => {
     const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))

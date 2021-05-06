@@ -11,7 +11,7 @@ import {
 } from '../directMessages/directMessages.reducer'
 import { eventChannel } from 'redux-saga'
 import { transferToMessage } from '../publicChannels/publicChannels.saga'
-import { fork, all, actionChannel } from 'redux-saga/effects'
+import { fork } from 'redux-saga/effects'
 import { call, take, select, put } from 'typed-redux-saga'
 import { ActionFromMapping, Socket as socketsActions } from '../const/actionsTypes'
 import channelSelectors from '../../store/selectors/channel'
@@ -22,9 +22,6 @@ import { messages } from '../../zbay'
 import config from '../../config'
 import { messageType } from '../../../shared/static'
 import { ipcRenderer } from 'electron'
-
-import identityHandlers from '../../store/handlers/identity'
-import waggleHandlers from '../../store/handlers/waggle'
 
 export const connect = async () => {
   const socket = io(config.socket.address)
@@ -175,14 +172,11 @@ const encodeMessage = (sharedSecret, message) => {
 export function* sendDirectMessage(socket): Generator {
   while (true) {
     yield* take(`${directMessagesActions.sendDirectMessage}`)
-    console.log('entered sending DM')
     const { id } = yield* select(channelSelectors.channel)
     const conversations = yield* select(directMessagesSelectors.conversations)
     const conversationId = conversations[id].conversationId
     const sharedSecret = conversations[id].sharedSecret
-    console.log('1')
     const messageToSend = yield* select(channelSelectors.message)
-    const users = yield* select(usersSelectors.users)
     let message = null
     const privKey = yield* select(identitySelectors.signerPrivKey)
     message = messages.createMessage({
@@ -192,7 +186,6 @@ export function* sendDirectMessage(socket): Generator {
       },
       privKey: privKey
     })
-    console.log('2')
     const messageDigest = crypto.createHash('sha256')
     const messageEssentials = R.pick(['createdAt', 'message'])(message)
     const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
@@ -202,16 +195,7 @@ export function* sendDirectMessage(socket): Generator {
       typeIndicator: false,
       signature: message.signature.toString('base64')
     }
-    console.log('3')
-    // const displayableMessage = transferToMessage(preparedMessage, users)
-    // yield put(
-    //   directMessagesActions.addMessage({
-    //     key: id,
-    //     message: { [preparedMessage.id]: displayableMessage }
-    //   })
-    // )
     const encryptedMessage = encodeMessage(sharedSecret, preparedMessage)
-    console.log(`encrypted ${encryptedMessage}`)
     socket.emit(socketsActions.SEND_DIRECT_MESSAGE, {
       channelAddress: conversationId,
       message: encryptedMessage
@@ -221,8 +205,6 @@ export function* sendDirectMessage(socket): Generator {
 
 export function* loadInitialState(socket): Generator {
   while (true) {
-    console.log('INSIDE LOAD INITIAL STATE ADD USERs')
-    // yield all([take('SET_PUBLIC_KEY')])
     yield take('SET_IS_WAGGLE_CONNECTED')
 
     let wagglePublicKey = yield select(directMessagesSelectors.publicKey)

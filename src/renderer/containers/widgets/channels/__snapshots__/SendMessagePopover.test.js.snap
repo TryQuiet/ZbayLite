@@ -11,5 +11,6 @@ Object {
   "address": "zbay://uri/",
   "identityId": undefined,
   "users": Object {},
+  "waggleUsers": Object {},
 }
 `;

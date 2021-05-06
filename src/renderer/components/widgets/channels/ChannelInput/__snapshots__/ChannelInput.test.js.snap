@@ -2,7 +2,7 @@
 
 exports[`ChannelInput renders component input Disable  1`] = `
 <WithStyles(ForwardRef(Grid))
-  className="root-mock displayNone-mock"
+  className="root-mock"
   container={true}
   direction="column"
   justify="center"
@@ -93,7 +93,7 @@ exports[`ChannelInput renders component input Disable  1`] = `
 
 exports[`ChannelInput renders component input Locked  1`] = `
 <WithStyles(ForwardRef(Grid))
-  className="root-mock displayNone-mock"
+  className="root-mock"
   container={true}
   direction="column"
   justify="center"
@@ -118,7 +118,7 @@ exports[`ChannelInput renders component input Locked  1`] = `
         align="center"
         variant="caption"
       >
-        All of your funds are locked - please wait for network confirmation or deposit more ZEC to your account
+        You are not fully synced with waggle, it may take few minutes
       </WithStyles(ForwardRef(Typography))>
     </WithStyles(ForwardRef(Grid))>
   </ForwardRef(Fade)>

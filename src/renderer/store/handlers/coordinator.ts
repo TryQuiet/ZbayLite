@@ -6,7 +6,6 @@ import nodeHandlers from './node'
 import identityHandlers from './identity'
 import { actionTypes } from '../../../shared/static'
 import nodeSelectors from '../selectors/node'
-import directMessages from './directMessages'
 
 class Coordinator {
   running: boolean

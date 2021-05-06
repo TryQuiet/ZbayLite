@@ -39,7 +39,6 @@ import { clearPublicChannels, PublicChannel } from './publicChannels'
 
 import { ActionsType, PayloadType } from './types'
 import { DisplayableMessage } from '../../zbay/messages.types'
-import { direct } from '../../../shared/sounds'
 import directMessagesHandlers from './directMessages'
 import directMessagesSelectors from '../selectors/directMessages'
 

@@ -5,7 +5,6 @@ Object {
   "onChange": [Function],
   "resetDebounce": [Function],
   "sendDirectMessageOnEnter": [Function],
-  "sendTypingIndicator": [Function],
 }
 `;
 

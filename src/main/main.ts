@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, ipcMain, session } from 'electron'
+import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import electronLocalshortcut from 'electron-localshortcut'
 import path from 'path'
 import url from 'url'
@@ -28,33 +28,33 @@ let mainWindow: BrowserWindow
 
 const gotTheLock = app.requestSingleInstanceLock()
 
-const extensionsFolderPath = `${app.getPath('userData')}/extensions`
+// const extensionsFolderPath = `${app.getPath('userData')}/extensions`
 
-const applyDevTools = async () => {
-  if (!isDev) return
-  require('electron-debug')({
-    showDevTools: true
-  })
-  const installer = require('electron-devtools-installer')
-  const { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer')
+// const applyDevTools = async () => {
+//   if (!isDev) return
+//   require('electron-debug')({
+//     showDevTools: true
+//   })
+//   const installer = require('electron-devtools-installer')
+//   const { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer')
 
-  const extensionsData = [
-    {
-      name: REACT_DEVELOPER_TOOLS,
-      path: `${extensionsFolderPath}/${REACT_DEVELOPER_TOOLS.id}`
-    },
-    {
-      name: REDUX_DEVTOOLS,
-      path: `${extensionsFolderPath}/${REDUX_DEVTOOLS.id}`
-    }
-  ]
-  await Promise.all(extensionsData.map(async (extension) => {
-    await installer.default(extension.name)
-  }))
-  await Promise.all(extensionsData.map(async (extension) => {
-    await session.defaultSession.loadExtension(extension.path, { allowFileAccess: true })
-  }))
-}
+//   const extensionsData = [
+//     {
+//       name: REACT_DEVELOPER_TOOLS,
+//       path: `${extensionsFolderPath}/${REACT_DEVELOPER_TOOLS.id}`
+//     },
+//     {
+//       name: REDUX_DEVTOOLS,
+//       path: `${extensionsFolderPath}/${REDUX_DEVTOOLS.id}`
+//     }
+//   ]
+//   await Promise.all(extensionsData.map(async (extension) => {
+//     await installer.default(extension.name)
+//   }))
+//   await Promise.all(extensionsData.map(async (extension) => {
+//     await session.defaultSession.loadExtension(extension.path, { allowFileAccess: true })
+//   }))
+// }
 
 if (!gotTheLock) {
   app.quit()
@@ -128,7 +128,7 @@ const createWindow = async () => {
     autoHideMenuBar: true
   })
   mainWindow.setMinimumSize(600, 400)
-
+  // eslint-disable-next-line
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, './index.html'),

@@ -49,7 +49,6 @@ exports[`SendMessageSeparateInitial renders component 1`] = `
   <WithStyles(ForwardRef(Button))
     className="button-mock"
     color="primary"
-    disabled={false}
     onClick={[Function]}
     size="large"
     type="submit"

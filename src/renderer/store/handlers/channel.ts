@@ -180,7 +180,7 @@ const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
   history.push(`/main/channel/${targetChannel.address}`)
 }
 
-const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
+const sendOnEnter = (_event, resetTab) => async (dispatch, getState) => {
   if (resetTab) {
     resetTab(0)
   }

@@ -1,10 +1,9 @@
 import { produce, immerable } from 'immer'
-import crypto, { createSecretKey } from 'crypto'
+import crypto from 'crypto'
 import { createAction, handleActions } from 'redux-actions'
 
 import directMessagesSelectors from '../selectors/directMessages'
 import identitySelectors from '../selectors/identity'
-import usersSelectors from '../selectors/users'
 import channelSelectors from '../selectors/channel'
 
 import { actionTypes } from '../../../shared/static'
@@ -64,7 +63,7 @@ export const actions = {
 
 export type DirectMessagesActions = ActionsType<typeof actions>
 
-const generateDiffieHellman = () => async (dispatch, getState) => {
+const generateDiffieHellman = () => async (dispatch) => {
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
 
@@ -77,7 +76,7 @@ const generateDiffieHellman = () => async (dispatch, getState) => {
   await dispatch(actions.setPublicKey(publicKey))
 }
 
-export const getPrivateConversations = () => (dispatch, getState) => {
+export const getPrivateConversations = () => (dispatch) => {
   dispatch(directMessagesActions.getPrivateConversations())
 }
 
@@ -102,7 +101,7 @@ const decodeMessage = (sharedSecret, message) => {
   return decrypted + decipher.final('utf8')
 }
 
-const checkConversation = (id, encryptedPhrase) => (dispatch, getState) => {
+const checkConversation = (id, encryptedPhrase) => (_dispatch, getState) => {
   const privKey = directMessagesSelectors.privateKey(getState())
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
@@ -120,8 +119,6 @@ const checkConversation = (id, encryptedPhrase) => (dispatch, getState) => {
 
   }
 }
-
-const subscribeForDirectMessagesThreads = () => async (dispatch, getState) => {}
 
 const initializeConversation = () => async (dispatch, getState) => {
   const contactPublicKey = channelSelectors.channel(getState()).id
@@ -158,7 +155,7 @@ const initializeConversation = () => async (dispatch, getState) => {
   )
 }
 
-const getAvailableUsers = () => async (dispatch, getState) => {
+const getAvailableUsers = () => async (dispatch) => {
   await dispatch(directMessagesActions.getAvailableUsers())
 }
 

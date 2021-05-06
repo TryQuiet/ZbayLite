@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import identitySelectors from './identity'
 import messagesQueueSelectors from './messagesQueue'
-import { networkFee, messageType } from '../../../shared/static'
+import { messageType } from '../../../shared/static'
 import publicChannels from './publicChannels'
 import directMessagesSelectors from './directMessages'
 import waggleSelectors from './waggle'
@@ -176,16 +176,12 @@ export const shareableUri = createSelector(channel, c => c.shareableUri)
 export const channelId = createSelector(channel, ch => ch.id)
 
 export const inputLocked = createSelector(
-  identitySelectors.balance('zec'),
   channelId,
-  contacts,
   directMessagesSelectors.users,
   waggleSelectors.isConnected,
   isPublicChannel,
   (
-    available,
     channelId,
-    contacts,
     waggleContacts,
     waggle,
     publicChannel

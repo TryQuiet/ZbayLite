@@ -2,7 +2,7 @@ import { produce, immerable } from 'immer'
 import { DateTime } from 'luxon'
 import { createAction, handleActions } from 'redux-actions'
 import BigNumber from 'bignumber.js'
-import { remote, ipcRenderer } from 'electron'
+import { remote } from 'electron'
 
 import history from '../../../shared/history'
 import { actionTypes } from '../../../shared/static'
@@ -15,8 +15,6 @@ import { messages as zbayMessages } from '../../zbay'
 import { _checkMessageSize } from './messages'
 import directMessagesQueueHandlers from './directMessagesQueue'
 import { ActionsType, PayloadType } from './types'
-import usersSelector from '../selectors/users'
-import directMessagesHandlers from './directMessages'
 
 const sendDirectMessage = (payload, redirect = true) => async (dispatch, getState) => {
   const { spent, type, message: messageData } = payload
