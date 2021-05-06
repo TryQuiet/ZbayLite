@@ -89,22 +89,22 @@ const createVaultEpic = (fromMigrationFile = false) => async dispatch => {
     await dispatch(identityHandlers.epics.loadIdentity())
     await dispatch(setVaultStatus(true))
     ipcRenderer.send('vault-created')
-    try {
-      await axios.get(REQUEST_MONEY_ENDPOINT, {
-        params: {
-          address: identity.address
-        }
-      })
-    } catch (error) {
-      console.log('error', error)
-      dispatch(
-        notificationsHandlers.actions.enqueueSnackbar(
-          errorNotification({
-            message: 'Request to faucet failed.'
-          })
-        )
-      )
-    }
+    // try {
+    //   await axios.get(REQUEST_MONEY_ENDPOINT, {
+    //     params: {
+    //       address: identity.address
+    //     }
+    //   })
+    // } catch (error) {
+    //   console.log('error', error)
+    //   dispatch(
+    //     notificationsHandlers.actions.enqueueSnackbar(
+    //       errorNotification({
+    //         message: 'Request to faucet failed.'
+    //       })
+    //     )
+    //   )
+    // }
     return identity
   } catch (error) {
     dispatch(

@@ -191,11 +191,8 @@ export const inputLocked = createSelector(
       return item.publicKey === channelId
     })
 
-    console.log(`PUB CHAN ${publicChannel}`)
-    // return INPUT_STATE.AVAILABLE
     if (waggle) {
       if (currentContactArray[0] || publicChannel) {
-        console.log('state available')
         return INPUT_STATE.AVAILABLE
       } else {
         return INPUT_STATE.LOCKED

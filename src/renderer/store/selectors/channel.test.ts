@@ -45,6 +45,9 @@ describe('Channel selectors', () => {
   })
 
   const initialState = {
+    waggle: {
+
+    },
     identity: {
       data: {
         id: '',

@@ -76,40 +76,41 @@ export const SendMessageMain = ({
   return (
     <Formik
       enableReinitialize
-      onSubmit={(values, { resetForm }) => {
-        console.log('form submitted')
-        const { recipient, sendAnonymously } = values
-        console.log(`recipient ${recipient}`)
-        console.log(`send Anonymously ${sendAnonymously}`)
-        const contact = {
-          nickname: recipient.nickname,
-          publicKey: recipient.publicKey,
-          address: ''
-        }
-        const includesNickname =
-        Array.from(Object.values(users))
-          .filter(obj => obj.nickname === recipient)[0] ||
-          Array.from(Object.values(users))
-            .filter(obj => obj.address === recipient)[0]
-        console.log(includesNickname)
-        if (includesNickname && !sendAnonymously) {
-          createNewContact({
-            contact: includesNickname,
-            history
-          })
-        } else {
-          createNewContact({
-            contact,
-            history
-          })
-          // const transferData = {
-          //   amount: values.amountZec,
-          //   destination: includesNickname ? includesNickname.address : values.recipient,
-          //   memo: values.memo
-          // }
-          // sendPlainTransfer(transferData)
-        }
-        resetForm()
+      onSubmit={() => {
+        console.log('dupa submit doesnt work')
+        // console.log('form submitted')
+        // const { recipient, sendAnonymously } = values
+        // console.log(`recipient ${recipient}`)
+        // console.log(`send Anonymously ${sendAnonymously}`)
+        // const contact = {
+        //   nickname: recipient.nickname,
+        //   publicKey: recipient.publicKey,
+        //   address: ''
+        // }
+        // const includesNickname =
+        // Array.from(Object.values(users))
+        //   .filter(obj => obj.nickname === recipient)[0] ||
+        //   Array.from(Object.values(users))
+        //     .filter(obj => obj.address === recipient)[0]
+        // console.log(includesNickname)
+        // if (includesNickname && !sendAnonymously) {
+        //   createNewContact({
+        //     contact: includesNickname,
+        //     history
+        //   })
+        // } else {
+        //   createNewContact({
+        //     contact,
+        //     history
+        //   })
+        //   // const transferData = {
+        //   //   amount: values.amountZec,
+        //   //   destination: includesNickname ? includesNickname.address : values.recipient,
+        //   //   memo: values.memo
+        //   // }
+        //   // sendPlainTransfer(transferData)
+        // }
+        // resetForm()
       }}
       validationSchema={formSchema(users)}
       initialValues={{

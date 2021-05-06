@@ -250,7 +250,7 @@ export const SendMessageInitial = ({
         className={classes.button}
         onClick={() => {
           console.log('clickeds')
-          console.log(submitForm)
+          console.log(JSON.stringify(submitForm))
           submitForm()
           handleClose()
           if (values.sendAnonymously === true) {
