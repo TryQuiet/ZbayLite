@@ -187,9 +187,6 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
   const isPublicChannel = channelSelectors.isPublicChannel(getState())
   const isDirectMessageChannel = channelSelectors.isDirectMessage(getState())
 
-  console.log(`IT IS public channel? ${isPublicChannel}`)
-  console.log(`IT IS DM channel? ${isDirectMessageChannel}`)
-
   if (isPublicChannel) {
     dispatch(publicChannelsActions.sendMessage())
     return
@@ -199,11 +196,9 @@ const sendOnEnter = (event, resetTab) => async (dispatch, getState) => {
     const conversations = directMessagesSelectors.conversations(getState())
     const conversation = conversations[id]
 
-    console.log(`conversation is ${conversation}`)
     if (!conversation) {
       await dispatch(directMessagesHandlers.epics.initializeConversation())
     }
-    console.log('before sending message')
     dispatch(directMessagesActions.sendDirectMessage())
   }
 }

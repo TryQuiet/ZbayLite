@@ -6,7 +6,8 @@ const directMessages = (s: Store) => s.directMessages
 
 export const users = createSelector(directMessages, d => {
   console.log(d.users)
-  return d.users})
+  return d.users
+})
 
 export const user = (publicKey) => createSelector(users, d => d[publicKey])
 

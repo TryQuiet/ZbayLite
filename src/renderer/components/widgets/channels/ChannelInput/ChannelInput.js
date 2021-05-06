@@ -301,7 +301,6 @@ export const ChannelInput = ({
           if (parseInt(refSelected.current) + 1 >= refMentionsToSelect.current.length) {
             setSelected(0)
           } else {
-
             setSelected(parseInt(refSelected.current) + 1)
           }
           e.preventDefault()

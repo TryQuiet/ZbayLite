@@ -377,7 +377,6 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
 export const loadIdentity = () => async dispatch => {
   const identity = electronStore.get('identity')
   if (identity) {
-    console.log('loadIdentity')
     await dispatch(setIdentity(identity))
   }
 }
@@ -389,14 +388,12 @@ export const prepareUpgradedVersion = () => async (dispatch, getState) => {
     const appVersionNumber = Number(appVersion.split('-')[0].split('.')[0])
     if (appVersionNumber >= 3) {
       dispatch(clearPublicChannels())
-      console.log('Cleared public channels')
       electronStore.set('appUpgraded', true)
     }
   }
 }
 
 export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
-  console.log('FIRE SET IDENTITY EPIC')
   const nickname = identitySelectors.name(getState())
   const hasWaggleIdentity = directMessagesSelectors.publicKey(getState())
   const identityOnionAddress = identitySelectors.onionAddress(getState())
@@ -406,7 +403,6 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   dispatch(setLoading(true))
   const isNewUser = electronStore.get('isNewUser')
   const useTor = appSelectors.useTor(getState())
-  // const users = directMessagesSelectors.users(getState())
   electronStore.set('useTor', useTor)
   try {
     const removedChannels = electronStore.get('removedChannels')
@@ -420,10 +416,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(whitelistHandlers.epics.initWhitelist())
     await dispatch(notificationCenterHandlers.epics.init())
     dispatch(setLoadingMessage('Setting identity'))
-    console.log('setIdentityEpic')
-    console.log('STARTED SETTING IDENTITY')
     await dispatch(setIdentity(identity))
-    console.log('FINISHED SETTING IDENTITY')
     const shippingAddress = electronStore.get('identity.shippingData')
     if (shippingAddress) {
       dispatch(setShippingData(shippingAddress))
@@ -431,7 +424,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     dispatch(setLoadingMessage('Fetching balance and loading channels'))
     await dispatch(initAddreses())
     if (!hasWaggleIdentity) {
-      await dispatch(directMessagesHandlers.epics.generateDiffieHellman(identity.publicKey))
+      await dispatch(directMessagesHandlers.epics.generateDiffieHellman())
     }
     dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
     dispatch(ratesHandlers.epics.setInitialPrice())

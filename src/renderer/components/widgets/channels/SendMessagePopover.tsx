@@ -9,7 +9,7 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
   address,
   anchorEl,
   handleClose,
-  isUnregistered,
+  message,
   createNewContact,
   history,
   users,
@@ -24,7 +24,7 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
   if (waggleUsers) {
     const arr = Array.from(Object.keys(waggleUsers))
     if (registeredUsername) {
-      if (arr.includes(registeredUsername.publicKey)) {
+      if (arr.includes(message.publicKey)) {
         waggleIdentity = true
       }
     }
@@ -56,9 +56,7 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
             contact: {
               address,
               nickname: username,
-              publicKey: registeredUsername
-                ? registeredUsername.publicKey
-                : null
+              publicKey: message.publicKey
             },
             history
           })

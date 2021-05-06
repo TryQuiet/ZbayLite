@@ -64,7 +64,7 @@ export const actions = {
 
 export type DirectMessagesActions = ActionsType<typeof actions>
 
-const generateDiffieHellman = signerPublicKey => async (dispatch, getState) => {
+const generateDiffieHellman = () => async (dispatch, getState) => {
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
 
@@ -74,11 +74,7 @@ const generateDiffieHellman = signerPublicKey => async (dispatch, getState) => {
   const publicKey = dh.getPublicKey('hex')
 
   await dispatch(actions.setPrivateKey(privateKey))
-  console.log('before dispatching set public key')
   await dispatch(actions.setPublicKey(publicKey))
-
-  // Add me to users key value store
-  // await dispatch(directMessagesActions.addUser({ publicKey: signerPublicKey, halfKey: publicKey }))
 }
 
 export const getPrivateConversations = () => (dispatch, getState) => {
@@ -161,14 +157,6 @@ const initializeConversation = () => async (dispatch, getState) => {
     })
   )
 }
-
-const sendDirectMessage = publicKey => {
-  // Check if contact exists
-  // Add message
-  // Append message to database
-}
-
-const addMessage = publicKey => {}
 
 const getAvailableUsers = () => async (dispatch, getState) => {
   await dispatch(directMessagesActions.getAvailableUsers())

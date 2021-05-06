@@ -225,8 +225,17 @@ export function* loadInitialState(socket): Generator {
     // yield all([take('SET_PUBLIC_KEY')])
     yield take('SET_IS_WAGGLE_CONNECTED')
 
-    const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
-    const signerPublicKey = yield select(identitySelectors.signerPubKey)
+    let wagglePublicKey = yield select(directMessagesSelectors.publicKey)
+    let signerPublicKey = yield select(identitySelectors.signerPubKey)
+
+    if (wagglePublicKey && signerPublicKey) {
+      socket.emit(socketsActions.ADD_USER, { publicKey: signerPublicKey, halfKey: wagglePublicKey })
+    }
+
+    yield take('SET_PUBLIC_KEY')
+
+    wagglePublicKey = yield select(directMessagesSelectors.publicKey)
+    signerPublicKey = yield select(identitySelectors.signerPubKey)
 
     if (wagglePublicKey && signerPublicKey) {
       socket.emit(socketsActions.ADD_USER, { publicKey: signerPublicKey, halfKey: wagglePublicKey })

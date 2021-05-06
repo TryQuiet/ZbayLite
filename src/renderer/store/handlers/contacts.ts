@@ -178,12 +178,7 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
   getState
 ) => {
   const contacts = selectors.contacts(getState())
-  // Create temp user
-  console.log('inside create vault contact')
-  console.log(contacts[contact.publicKey])
   if (!contacts[contact.publicKey]) {
-    console.log('inside IF IF IF IF IF')
-    // directMessagesHandlers.epics.initializeConversation(contact.publicKey)
     await dispatch(
       addContact({
         key: contact.publicKey,

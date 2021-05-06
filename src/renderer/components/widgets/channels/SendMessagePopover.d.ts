@@ -12,4 +12,5 @@ export interface ISendMessagePopoverProps {
   history?: History<LocationState>
   users?: object
   waggleUsers?: object
+  message?: any
 }
