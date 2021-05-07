@@ -33,15 +33,15 @@ const gotTheLock = app.requestSingleInstanceLock()
 
 const extensionsFolderPath = `${app.getPath('userData')}/extensions`
 
-
 const applyDevTools = async () => {
   if (!isDev) return
+  /* eslint-disable */
   require('electron-debug')({
     showDevTools: true
   })
   const installer = require('electron-devtools-installer')
   const { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer')
-
+  /* eslint-enable */
   const extensionsData = [
     {
       name: REACT_DEVELOPER_TOOLS,
@@ -59,7 +59,6 @@ const applyDevTools = async () => {
     await session.defaultSession.loadExtension(extension.path, { allowFileAccess: true })
   }))
 }
-
 
 if (!gotTheLock) {
   app.quit()
@@ -133,7 +132,7 @@ const createWindow = async () => {
     autoHideMenuBar: true
   })
   mainWindow.setMinimumSize(600, 400)
-
+  /* eslint-disable */
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, './index.html'),
@@ -142,7 +141,7 @@ const createWindow = async () => {
       hash: '/zcashNode'
     })
   )
-
+  /* eslint-enable */
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
     mainWindow = null
@@ -409,4 +408,3 @@ app.on('activate', async () => {
     await createWindow()
   }
 })
-

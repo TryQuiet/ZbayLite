@@ -96,7 +96,7 @@
     "neon-rebuild": "rm native/index.node && rm -rf native/target && rm native/Cargo.lock && npm run neon"
   },
   "author": {
-    "name": "Bartlomiej Lisiecki/Norbert Bodziony",
+    "name": "Zbay LLC",
     "email": "rumblefish@rumblefish.pl"
   },
   "license": "ISC",

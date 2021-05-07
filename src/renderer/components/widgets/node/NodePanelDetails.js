@@ -17,6 +17,7 @@ import helpIcon from '../../../static/images/help.svg'
 import helpGrayIcon from '../../../static/images/helpGray.svg'
 import Tooltip from '../../ui/Tooltip'
 import electronStore from '../../../../shared/electronStore'
+import { author } from '../../../../../package.json'
 
 const styles = theme => ({
   details: {
@@ -73,8 +74,8 @@ export const NodePanelDetails = ({ classes, expanded }) => {
                       about_page_dir: `${process.cwd()}/node_modules/about-window`,
                       description: `Waggle ${waggleVesrion}`,
                       use_version_info: true,
-                    });
-
+                      copyright: `Copyright (C) 2021 ${author.name}`
+                    })
                   }}
                   onMouseOver={() => {
                     setHover(true)
