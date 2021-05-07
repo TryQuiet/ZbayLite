@@ -1,22 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import * as R from 'ramda'
 import classNames from 'classnames'
 
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { Typography, Grid } from '@material-ui/core'
 
-// import ZcashIcon from '../../ui/ZcashIcon'
 import Icon from '../../ui/Icon'
 import onlineIcon from '../../../static/images/online.svg'
 import offlineIcon from '../../../static/images/offline.svg'
+import history from '../../../../shared/history'
 
 import avatarAnonMask from '../../../static/images/avatarAnonMask.svg'
-// import { unknownUserId } from '../../../../shared/static'
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     padding: 0
   },
@@ -25,14 +23,6 @@ const styles = theme => ({
     '&:hover': {
       backgroundColor: theme.palette.colors.lushSky
     }
-  },
-  badge: {
-    padding: 6,
-    top: '50%',
-    right: theme.spacing(-3),
-    fontSize: 10,
-    background: 'rgb(0,0,0,0.3)',
-    color: '#fff'
   },
   primary: {
     display: 'flex'
@@ -50,10 +40,6 @@ const styles = theme => ({
   newMessages: {
     opacity: 1
   },
-  icon: {
-    marginTop: 6,
-    fill: theme.palette.colors.green
-  },
   connectedIcon: {
     marginLeft: 16,
     marginRight: -8,
@@ -69,27 +55,17 @@ const styles = theme => ({
   },
   itemText: {
     margin: 0
-  },
-  nameSpacing: {
-    marginLeft: 4
   }
-})
+}))
 
 export const ChannelsListItem = ({
-  classes,
   channel,
-  history,
   directMessages,
   selected
 }) => {
+  const classes = useStyles({})
   const isFromZbay = channel.username !== 'Unknown'
-  // const size = 15
   const highlight = selected.id === channel.key
-  // const recievedMoney =
-  //   directMessages &&
-  //   channelObj.messages.find(
-  //     msg => msg.type === messageType.TRANSFER && channelObj.newMessages.includes(msg.id)
-  //   )
   return (
     <ListItem
       button
@@ -134,11 +110,6 @@ export const ChannelsListItem = ({
                   : `# ${channel.username}`}
               </Typography>
             </Grid>
-            {/* {recievedMoney && (
-              <Grid item>
-                <ZcashIcon size={size} className={classes.icon} />
-              </Grid>
-            )} */}
           </Grid>
         }
         classes={{
@@ -155,11 +126,10 @@ ChannelsListItem.propTypes = {
   selected: PropTypes.object.isRequired,
   directMessages: PropTypes.bool,
   history: PropTypes.object.isRequired,
-  isRegisteredUsername: PropTypes.bool
 }
 
 ChannelsListItem.defaultProps = {
   directMessages: false
 }
 
-export default R.compose(React.memo, withStyles(styles))(ChannelsListItem)
+export default ChannelsListItem
