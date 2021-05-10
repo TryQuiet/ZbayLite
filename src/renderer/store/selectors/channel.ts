@@ -6,11 +6,14 @@ import publicChannels from './publicChannels'
 
 import { Store } from '../reducers'
 import { DisplayableMessage } from '../../zbay/messages.types'
+import { Channel } from '../handlers/channel'
 
 const channel = (s: Store) => s.channel
 const contacts = (s: Store) => s.contacts
 
-export const channelInfo = createSelector(channel, ch => {
+export type ChannelInfo = Omit<Channel, "message">
+
+export const channelInfo = createSelector(channel, (ch): ChannelInfo => {
   const channel = {
     ...ch
   }

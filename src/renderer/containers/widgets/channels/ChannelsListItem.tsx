@@ -1,14 +1,19 @@
 import React from 'react'
 
-import ChannelsListItemComponent from '../../../components/widgets/channels/ChannelsListItem'
+import ChannelsListItemComponent, { ChannelsListItemComponentProps } from '../../../components/widgets/channels/ChannelsListItem'
 
-export const ChannelsListItem = ({ channel, selected, key, directMessages }) => {
+type ChannelsListItemContainerProps = ChannelsListItemComponentProps
+
+export const ChannelsListItem: React.FC<ChannelsListItemContainerProps> = ({
+  channel,
+  selected,
+  directMessages
+}) => {
   return (
     <ChannelsListItemComponent
       selected={selected}
       directMessages={directMessages}
       channel={channel}
-      history={key}
     />
   )
 }

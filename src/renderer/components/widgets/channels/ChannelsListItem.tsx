@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -13,6 +12,8 @@ import offlineIcon from '../../../static/images/offline.svg'
 import history from '../../../../shared/history'
 
 import avatarAnonMask from '../../../static/images/avatarAnonMask.svg'
+import { Contact } from '../../../store/handlers/contacts'
+import { ChannelInfo } from '../../../store/selectors/channel'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -58,7 +59,13 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export const ChannelsListItem = ({
+export type ChannelsListItemComponentProps = {
+  channel: Contact;
+  directMessages: boolean;
+  selected: ChannelInfo;
+}
+
+export const ChannelsListItem: React.FC<ChannelsListItemComponentProps> = ({
   channel,
   directMessages,
   selected
@@ -119,17 +126,6 @@ export const ChannelsListItem = ({
       />
     </ListItem>
   )
-}
-ChannelsListItem.propTypes = {
-  classes: PropTypes.object.isRequired,
-  channel: PropTypes.object.isRequired,
-  selected: PropTypes.object.isRequired,
-  directMessages: PropTypes.bool,
-  history: PropTypes.object.isRequired,
-}
-
-ChannelsListItem.defaultProps = {
-  directMessages: false
 }
 
 export default ChannelsListItem
