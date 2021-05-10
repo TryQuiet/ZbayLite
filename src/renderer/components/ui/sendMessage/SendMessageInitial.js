@@ -127,6 +127,7 @@ export const SendMessageInitial = ({
   memo,
   openSentFundsModal
 }) => {
+  console.log(JSON.stringify(submitForm))
   const title = 'Message sent'
   const usersArray = Array.from(Object.values(users))
   const { recipient } = values
@@ -249,9 +250,9 @@ export const SendMessageInitial = ({
       <Button
         className={classes.button}
         onClick={() => {
+          submitForm()
           console.log('clickeds')
           console.log(JSON.stringify(submitForm))
-          submitForm()
           handleClose()
           if (values.sendAnonymously === true) {
             openSentFundsModal({
