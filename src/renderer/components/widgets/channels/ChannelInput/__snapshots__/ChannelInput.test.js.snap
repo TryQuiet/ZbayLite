@@ -66,6 +66,9 @@ exports[`ChannelInput renders component input Disable  1`] = `
       </WithStyles(ForwardRef(Grid))>
     </ForwardRef(ClickAwayListener)>
   </WithStyles(ForwardRef(Grid))>
+  <ChannelInputInfoMessage
+    showInfoMessage={false}
+  />
 </WithStyles(ForwardRef(Grid))>
 `;
 
@@ -135,6 +138,9 @@ exports[`ChannelInput renders component input Locked  1`] = `
       </WithStyles(ForwardRef(Grid))>
     </ForwardRef(ClickAwayListener)>
   </WithStyles(ForwardRef(Grid))>
+  <ChannelInputInfoMessage
+    showInfoMessage={false}
+  />
 </WithStyles(ForwardRef(Grid))>
 `;
 
@@ -204,5 +210,8 @@ exports[`ChannelInput renders component input available  1`] = `
       </WithStyles(ForwardRef(Grid))>
     </ForwardRef(ClickAwayListener)>
   </WithStyles(ForwardRef(Grid))>
+  <ChannelInputInfoMessage
+    showInfoMessage={false}
+  />
 </WithStyles(ForwardRef(Grid))>
 `;
