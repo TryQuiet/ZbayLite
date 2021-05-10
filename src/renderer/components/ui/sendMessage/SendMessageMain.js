@@ -74,11 +74,7 @@ export const SendMessageMain = ({
     <Formik
       enableReinitialize
       onSubmit={(values, { resetForm }) => {
-        console.log('dupa submit doesnt work')
-        console.log('form submitted')
         const { recipient, sendAnonymously } = values
-        console.log(`recipient ${recipient}`)
-        console.log(`send Anonymously ${sendAnonymously}`)
         const contact = {
           nickname: recipient.nickname,
           publicKey: recipient.publicKey,
@@ -89,7 +85,6 @@ export const SendMessageMain = ({
           .filter(obj => obj.nickname === recipient)[0] ||
           Array.from(Object.values(users))
             .filter(obj => obj.address === recipient)[0]
-        console.log(includesNickname)
         if (includesNickname && !sendAnonymously) {
           createNewContact({
             contact: includesNickname,

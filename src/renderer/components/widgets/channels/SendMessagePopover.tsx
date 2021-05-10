@@ -50,7 +50,7 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
           !waggleIdentity ? 'Unregistered users cannot receive messages.' : null
         }
         onClick={() => {
-          if (message?.publicKey) {
+          if (message?.publicKey || registeredUsername?.publicKey) {
             createNewContact({
               contact: {
                 address,

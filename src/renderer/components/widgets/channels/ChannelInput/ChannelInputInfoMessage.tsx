@@ -17,20 +17,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-const TypingIndicator = ({ showTypingIndicator }) => {
+const ChannelInputInfoMessage = () => {
   const classes = useStyles({})
 
   return (
     <Grid container className={classes.boot}>
       <Grid item xs>
-        {showTypingIndicator && (
-          <Typography variant='caption' className={classes.info}>
-            {'Loading messages and connecting. This may take a few minutes...'}
-          </Typography>
-        )}
+        <Typography variant='caption' className={classes.info}>
+          {'Loading messages and connecting. This may take a few minutes...'}
+        </Typography>
       </Grid>
     </Grid>
   )
 }
 
-export default TypingIndicator
+export default ChannelInputInfoMessage

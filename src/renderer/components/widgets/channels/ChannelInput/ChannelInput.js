@@ -16,7 +16,7 @@ import { shell } from 'electron'
 
 import MentionPoper from './MentionPoper'
 import ChannelInputAction from '../../../../containers/widgets/channels/ChannelInputAction'
-import TypingIndicator from './TypingIndicator'
+import ChannelInputInfoMessage from './ChannelInputInfoMessage'
 import { INPUT_STATE } from '../../../../store/selectors/channel'
 import MentionElement from './MentionElement'
 import Icon from '../../../ui/Icon'
@@ -174,7 +174,7 @@ export const ChannelInput = ({
   const [htmlMessage, setHtmlMessage] = React.useState(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
   const typingIndicator = !!message
-  const showTypingIndicator = inputState !== INPUT_STATE.AVAILABLE
+  const showInfoMessage = inputState !== INPUT_STATE.AVAILABLE
 
   window.onfocus = () => {
     inputRef.current.el.current.focus()
@@ -316,8 +316,8 @@ export const ChannelInput = ({
       }
       if (
         inputStateRef.current === INPUT_STATE.AVAILABLE &&
-          e.nativeEvent.keyCode === 13 &&
-          e.target.innerText !== ''
+        e.nativeEvent.keyCode === 13 &&
+        e.target.innerText !== ''
       ) {
         onChange(e.target.innerText)
         onKeyPress(e)
@@ -479,12 +479,7 @@ export const ChannelInput = ({
           </Grid>
         </Grid>
       )}
-      <TypingIndicator
-        contactUsername={contactUsername}
-        showTypingIndicator={showTypingIndicator}
-        message={inputStateToMessage[inputState]}
-        inputState={inputState}
-      />
+      {showInfoMessage && <ChannelInputInfoMessage />}
     </Grid>
   )
 }

@@ -203,7 +203,7 @@ export function* sendDirectMessage(socket): Generator {
   }
 }
 
-export function* loadInitialState(socket): Generator {
+export function* addWaggleIdentity(socket): Generator {
   while (true) {
     yield take('SET_IS_WAGGLE_CONNECTED')
 
@@ -236,7 +236,7 @@ export function* useIO(socket): Generator {
   yield fork(initializeConversation, socket)
   yield fork(sendDirectMessage, socket)
   yield fork(getPrivateConversations, socket)
-  yield fork(loadInitialState, socket)
+  yield fork(addWaggleIdentity, socket)
   yield fork(subscribeForDirectMessageThread, socket)
 }
 
