@@ -136,12 +136,10 @@ const styles = theme => {
 }
 
 const inputStateToMessage = {
-  [INPUT_STATE.DISABLE]:
+  [INPUT_STATE.NOT_CONNECTED]:
     'Sending messages is locked due to insufficient funds - this may be resolved by topping up your account',
-  [INPUT_STATE.LOCKED]:
-    'You are not fully synced with waggle, it may take few minutes',
-  [INPUT_STATE.UNREGISTERED]:
-    'You can not reply to this message because you are not registered yet, please wait.'
+  [INPUT_STATE.USER_NOT_REGISTERED]:
+    'To receive direct messages, holmes must update to the latest version of Zbay.'
 }
 
 export const ChannelInput = ({
@@ -161,12 +159,8 @@ export const ChannelInput = ({
   members,
   inputPlaceholder,
   isMessageTooLong,
-  sendTypingIndicator,
   id,
-  isContactConnected,
-  isContactTyping,
-  contactUsername,
-  isDM
+  contactUsername
 }) => {
   const messageRef = React.useRef()
   const refSelected = React.useRef()
@@ -180,7 +174,7 @@ export const ChannelInput = ({
   const [htmlMessage, setHtmlMessage] = React.useState(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
   const typingIndicator = !!message
-  const showTypingIndicator = isDM && isContactTyping && isContactConnected
+  const showTypingIndicator = inputState !==INPUT_STATE.AVAILABLE
 
   window.onfocus = () => {
     inputRef.current.el.current.focus()
@@ -220,11 +214,6 @@ export const ChannelInput = ({
   React.useEffect(() => {
     messageRef.current = message
   }, [message])
-
-  // React.useEffect(() => {
-  //   if (!isContactConnected) return
-  //    sendTypingIndicator(typingIndicator)
-  // }, [typingIndicator])
 
   const findMentions = text => {
     const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))
@@ -395,21 +384,6 @@ export const ChannelInput = ({
           />
         ))}
       </MentionPoper>
-      {inputState !== INPUT_STATE.AVAILABLE && (
-        <Fade in>
-          <Grid
-            container
-            direction='column'
-            justify='center'
-            alignItems='center'
-            className={infoClass || classes.backdrop}>
-            <WarningIcon className={classes.warningIcon} />
-            <Typography variant='caption' align='center'>
-              {inputStateToMessage[inputState]}
-            </Typography>
-          </Grid>
-        </Fade>
-      )}
       <Grid
         container
         direction='row'
@@ -505,10 +479,12 @@ export const ChannelInput = ({
           </Grid>
         </Grid>
       )}
-      <TypingIndicator
+        <TypingIndicator
         contactUsername={contactUsername}
         showTypingIndicator={showTypingIndicator}
-      />
+        message={inputStateToMessage[inputState]}
+        inputState={inputState}
+        />
     </Grid>
   )
 }

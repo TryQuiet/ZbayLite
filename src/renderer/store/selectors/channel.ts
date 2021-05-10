@@ -192,22 +192,25 @@ export const inputLocked = createSelector(
     })
 
     if (waggle) {
-      if (currentContactArray[0] || publicChannel) {
+      if (publicChannel) {
+        return INPUT_STATE.AVAILABLE
+      }
+      if (currentContactArray[0]) {
         return INPUT_STATE.AVAILABLE
       } else {
-        return INPUT_STATE.LOCKED
+        return INPUT_STATE.USER_NOT_REGISTERED
       }
+      
     } else {
-      return INPUT_STATE.LOCKED
+      return INPUT_STATE.NOT_CONNECTED
     }
   }
 )
 
-export const INPUT_STATE = {
-  DISABLE: 0,
-  AVAILABLE: 1,
-  LOCKED: 2,
-  UNREGISTERED: 3
+export const INPUT_STATE ={ 
+  NOT_CONNECTED: 0,
+  USER_NOT_REGISTERED: 1,
+  AVAILABLE: 2
 }
 
 export const members = createSelector(contacts, id, (c, channelId) => {

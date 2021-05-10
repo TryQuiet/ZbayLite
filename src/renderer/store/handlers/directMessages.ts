@@ -38,7 +38,13 @@ export class DirectMessages {
 export type DirectMessagesStore = DirectMessages
 
 export const initialState: DirectMessagesStore = {
-  users: {},
+  users: {
+    '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2': {
+      nickname: 'holmes',
+      publicKey: '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2',
+      halfKey: '279e40e4ad5bc84f6cfcdb90465317e61255ba7ee78600179ea129a77e1bcef4'
+    }
+  },
   conversations: {},
   conversationsList: {},
   privateKey: '',
@@ -63,7 +69,7 @@ export const actions = {
 
 export type DirectMessagesActions = ActionsType<typeof actions>
 
-const generateDiffieHellman = () => async (dispatch) => {
+const generateDiffieHellman = () => async dispatch => {
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
 
@@ -76,7 +82,7 @@ const generateDiffieHellman = () => async (dispatch) => {
   await dispatch(actions.setPublicKey(publicKey))
 }
 
-export const getPrivateConversations = () => (dispatch) => {
+export const getPrivateConversations = () => dispatch => {
   dispatch(directMessagesActions.getPrivateConversations())
 }
 
@@ -116,7 +122,6 @@ const checkConversation = (id, encryptedPhrase) => (_dispatch, getState) => {
       conversationId: id
     })
   } else {
-
   }
 }
 
@@ -155,7 +160,7 @@ const initializeConversation = () => async (dispatch, getState) => {
   )
 }
 
-const getAvailableUsers = () => async (dispatch) => {
+const getAvailableUsers = () => async dispatch => {
   await dispatch(directMessagesActions.getAvailableUsers())
 }
 

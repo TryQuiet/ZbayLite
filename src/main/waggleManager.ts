@@ -148,7 +148,6 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
 
   webContents.send('connectToWebsocket')
   ipcMain.on('connectionReady', () => {
-    console.log('connection ready wchodzi')
     if (!electronStore.get('waggleInitialized')) {
       connectionsManager
         .initializeNode()

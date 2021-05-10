@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-const TypingIndicator = ({ contactUsername, showTypingIndicator }) => {
+const TypingIndicator = ({ showTypingIndicator }) => {
   const classes = useStyles({})
 
   return (
@@ -25,7 +25,7 @@ const TypingIndicator = ({ contactUsername, showTypingIndicator }) => {
       <Grid item xs>
         {showTypingIndicator && (
           <Typography variant='caption' className={classes.info}>
-            <span className={classes.bold}>{contactUsername}</span> is typing...
+            {'Loading messages and connecting. This may take a few minutes...'}
           </Typography>
         )}
       </Grid>
