@@ -222,15 +222,6 @@ export function* loadInitialState(socket): Generator {
     if (wagglePublicKey && signerPublicKey) {
       socket.emit(socketsActions.ADD_USER, { publicKey: signerPublicKey, halfKey: wagglePublicKey })
     }
-
-    // console.log('took all things')
-
-    // const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
-    // const signerPublicKey = yield select(identitySelectors.signerPubKey)
-
-    // console.log('BEFORE EMITTING NEW USER TO WAGGLE ')
-
-    // socket.emit(socketsActions.ADD_USER, { publicKey: signerPublicKey, halfKey: wagglePublicKey })
   }
 }
 
