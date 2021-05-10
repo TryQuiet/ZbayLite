@@ -8,6 +8,10 @@ import config from './config'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
 import { getOnionAddress, spawnTor, runWaggle } from './waggleManager'
+import debug from 'debug'
+const log = Object.assign(debug('zbay:main'), {
+  error: debug('zbay:main:err')
+})
 
 electronStore.set('appDataPath', app.getPath('appData'))
 electronStore.set('waggleInitialized', false)
@@ -181,24 +185,24 @@ export const checkForUpdate = async win => {
       await autoUpdater.checkForUpdates()
     } catch (error) {
       if (isNetworkError(error)) {
-        console.log('Network Error')
+        log.error('Network Error')
       } else {
-        console.log('Unknown Error')
-        console.log(error == null ? 'unknown' : (error.stack || error).toString())
+        log.error('Unknown Error')
+        log.error(error == null ? 'unknown' : (error.stack || error).toString())
       }
     }
     autoUpdater.on('checking-for-update', () => {
-      console.log('checking for updates...')
+      log('checking for updates...')
     })
     autoUpdater.on('error', error => {
-      console.log(error)
+      log(error)
     })
     autoUpdater.on('update-not-available', () => {
-      console.log('event no update')
+      log('event no update')
       electronStore.set('updateStatus', config.UPDATE_STATUSES.NO_UPDATE)
     })
     autoUpdater.on('update-available', info => {
-      console.log(info)
+      log(info)
       electronStore.set('updateStatus', config.UPDATE_STATUSES.PROCESSING_UPDATE)
     })
 
@@ -211,10 +215,10 @@ export const checkForUpdate = async win => {
     await autoUpdater.checkForUpdates()
   } catch (error) {
     if (isNetworkError(error)) {
-      console.log('Network Error')
+      log.error('Network Error')
     } else {
-      console.log('Unknown Error')
-      console.log(error == null ? 'unknown' : (error.stack || error).toString())
+      log.error('Unknown Error')
+      log.error(error == null ? 'unknown' : (error.stack || error).toString())
     }
   }
 }
@@ -256,7 +260,7 @@ app.on('ready', async () => {
   await createWindow()
   console.log('creatd windows')
   mainWindow.webContents.on('did-fail-load', () => {
-    console.log('failed loading')
+    log('failed loading')
   })
   mainWindow.webContents.on('did-finish-load', async () => {
     mainWindow.webContents.send('ping')
@@ -266,7 +270,7 @@ app.on('ready', async () => {
       mainWindow.webContents.send('onionAddress', getOnionAddress())
       await runWaggle(mainWindow.webContents)
     } catch (error) {
-      console.log(error)
+      log.error(error)
     }
     if (process.platform === 'win32' && process.argv) {
       const payload = process.argv[1]
