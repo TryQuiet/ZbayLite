@@ -200,14 +200,13 @@ export const inputLocked = createSelector(
       } else {
         return INPUT_STATE.USER_NOT_REGISTERED
       }
-      
     } else {
       return INPUT_STATE.NOT_CONNECTED
     }
   }
 )
 
-export const INPUT_STATE ={ 
+export const INPUT_STATE = {
   NOT_CONNECTED: 0,
   USER_NOT_REGISTERED: 1,
   AVAILABLE: 2

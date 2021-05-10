@@ -5,17 +5,16 @@ import { Store } from '../reducers'
 const directMessages = (s: Store) => s.directMessages
 
 export const users = createSelector(directMessages, usersSelectors.users, (d, users) => {
-  let usrs: typeof d.users = {}
+  const usrs: typeof d.users = {}
   Object.entries(d.users).map((user) => {
     const [publicKey, userData] = user
-    usrs[publicKey] = 
+    usrs[publicKey] =
       {
         publicKey,
         halfKey: userData.halfKey,
         nickname: users[publicKey]?.nickname || userData.nickname
-      
-    }
-    return
+
+      }
   })
   return usrs
 })

@@ -10,27 +10,6 @@ exports[`ChannelInput renders component input Disable  1`] = `
   <Memo(WithStyles(MentionPoper))
     selected={0}
   />
-  <ForwardRef(Fade)
-    in={true}
-  >
-    <WithStyles(ForwardRef(Grid))
-      alignItems="center"
-      className="backdrop-mock"
-      container={true}
-      direction="column"
-      justify="center"
-    >
-      <WarningIcon
-        className="warningIcon-mock"
-      />
-      <WithStyles(ForwardRef(Typography))
-        align="center"
-        variant="caption"
-      >
-        Sending messages is locked due to insufficient funds - this may be resolved by topping up your account
-      </WithStyles(ForwardRef(Typography))>
-    </WithStyles(ForwardRef(Grid))>
-  </ForwardRef(Fade)>
   <WithStyles(ForwardRef(Grid))
     alignItems="center"
     className="inputsDiv-mock"
@@ -73,7 +52,7 @@ exports[`ChannelInput renders component input Disable  1`] = `
             justify="center"
           >
             <Connect(Component)
-              disabled={true}
+              disabled={false}
             />
             <Component
               className="emoji-mock"
@@ -87,7 +66,10 @@ exports[`ChannelInput renders component input Disable  1`] = `
       </WithStyles(ForwardRef(Grid))>
     </ForwardRef(ClickAwayListener)>
   </WithStyles(ForwardRef(Grid))>
-  <TypingIndicator />
+  <TypingIndicator
+    inputState={2}
+    showTypingIndicator={false}
+  />
 </WithStyles(ForwardRef(Grid))>
 `;
 
@@ -101,27 +83,6 @@ exports[`ChannelInput renders component input Locked  1`] = `
   <Memo(WithStyles(MentionPoper))
     selected={0}
   />
-  <ForwardRef(Fade)
-    in={true}
-  >
-    <WithStyles(ForwardRef(Grid))
-      alignItems="center"
-      className="backdrop-mock"
-      container={true}
-      direction="column"
-      justify="center"
-    >
-      <WarningIcon
-        className="warningIcon-mock"
-      />
-      <WithStyles(ForwardRef(Typography))
-        align="center"
-        variant="caption"
-      >
-        You are not fully synced with waggle, it may take few minutes
-      </WithStyles(ForwardRef(Typography))>
-    </WithStyles(ForwardRef(Grid))>
-  </ForwardRef(Fade)>
   <WithStyles(ForwardRef(Grid))
     alignItems="center"
     className="inputsDiv-mock"
@@ -164,7 +125,7 @@ exports[`ChannelInput renders component input Locked  1`] = `
             justify="center"
           >
             <Connect(Component)
-              disabled={true}
+              disabled={false}
             />
             <Component
               className="emoji-mock"
@@ -178,7 +139,10 @@ exports[`ChannelInput renders component input Locked  1`] = `
       </WithStyles(ForwardRef(Grid))>
     </ForwardRef(ClickAwayListener)>
   </WithStyles(ForwardRef(Grid))>
-  <TypingIndicator />
+  <TypingIndicator
+    inputState={2}
+    showTypingIndicator={false}
+  />
 </WithStyles(ForwardRef(Grid))>
 `;
 
@@ -248,6 +212,9 @@ exports[`ChannelInput renders component input available  1`] = `
       </WithStyles(ForwardRef(Grid))>
     </ForwardRef(ClickAwayListener)>
   </WithStyles(ForwardRef(Grid))>
-  <TypingIndicator />
+  <TypingIndicator
+    inputState={2}
+    showTypingIndicator={false}
+  />
 </WithStyles(ForwardRef(Grid))>
 `;

@@ -174,7 +174,7 @@ export const ChannelInput = ({
   const [htmlMessage, setHtmlMessage] = React.useState(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
   const typingIndicator = !!message
-  const showTypingIndicator = inputState !==INPUT_STATE.AVAILABLE
+  const showTypingIndicator = inputState !== INPUT_STATE.AVAILABLE
 
   window.onfocus = () => {
     inputRef.current.el.current.focus()
@@ -479,12 +479,12 @@ export const ChannelInput = ({
           </Grid>
         </Grid>
       )}
-        <TypingIndicator
+      <TypingIndicator
         contactUsername={contactUsername}
         showTypingIndicator={showTypingIndicator}
         message={inputStateToMessage[inputState]}
         inputState={inputState}
-        />
+      />
     </Grid>
   )
 }

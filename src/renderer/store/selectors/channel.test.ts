@@ -128,7 +128,7 @@ describe('Channel selectors', () => {
     const store = create({
       ...initialState
     })
-    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.LOCKED)
+    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.NOT_CONNECTED)
   })
 
   it('- input_when_waggle_connected_but_channel_is_not_DM_or_public_channel', async () => {
@@ -138,7 +138,7 @@ describe('Channel selectors', () => {
         isWaggleConnected: true
       }
     })
-    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.LOCKED)
+    expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.USER_NOT_REGISTERED)
   })
 
   it('- input_when_waggle_is_connected_and_is_dm_channel', async () => {

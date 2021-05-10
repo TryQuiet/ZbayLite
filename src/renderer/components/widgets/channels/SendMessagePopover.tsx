@@ -23,9 +23,9 @@ export const SendMessagePopover: React.FC<ISendMessagePopoverProps> = ({
   let waggleIdentity = false
   if (waggleUsers) {
     const arr = Array.from(Object.keys(waggleUsers))
-      if (arr.includes(message?.publicKey) || arr.includes(registeredUsername?.publicKey)) {
-        waggleIdentity = true
-      }
+    if (arr.includes(message?.publicKey) || arr.includes(registeredUsername?.publicKey)) {
+      waggleIdentity = true
+    }
   }
   return (
     <Popover
