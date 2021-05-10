@@ -479,7 +479,7 @@ export const ChannelInput = ({
           </Grid>
         </Grid>
       )}
-      {showInfoMessage && <ChannelInputInfoMessage />}
+      <ChannelInputInfoMessage showInfoMessage={showInfoMessage} />
     </Grid>
   )
 }

@@ -25,7 +25,6 @@ import { ipcRenderer } from 'electron'
 
 export const connect = async () => {
   const socket = io(config.socket.address)
-  console.log(socket)
   return await new Promise(resolve => {
     socket.on('connect', async () => {
       ipcRenderer.send('connectionReady')
@@ -243,7 +242,6 @@ export function* useIO(socket): Generator {
 export function* startConnection(): Generator {
   while (true) {
     yield take(socketsActions.CONNECT_TO_WEBSOCKET_SERVER)
-    console.log('before initializing forrk useIO')
     const socket = yield call(connect)
     yield fork(useIO, socket)
   }

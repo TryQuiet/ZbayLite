@@ -17,15 +17,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-const ChannelInputInfoMessage = () => {
+const ChannelInputInfoMessage = ({ showInfoMessage }) => {
   const classes = useStyles({})
 
   return (
     <Grid container className={classes.boot}>
       <Grid item xs>
-        <Typography variant='caption' className={classes.info}>
-          {'Loading messages and connecting. This may take a few minutes...'}
-        </Typography>
+        {showInfoMessage && (
+          <Typography variant='caption' className={classes.info}>
+            {'Loading messages and connecting. This may take a few minutes...'}
+          </Typography>
+        )}
       </Grid>
     </Grid>
   )
