@@ -17,6 +17,11 @@ import contactsSelectors from '../../store/selectors/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
 import publicChannelsSelectors from '../../store/selectors/publicChannels'
 import electronStore from '../../../shared/electronStore'
+import debug from 'debug'
+
+const log = Object.assign(debug('zbay:channels'), {
+  error: debug('zbay:channels:err')
+})
 
 const all: any = effectsAll
 
@@ -90,13 +95,13 @@ export function* loadMessage(action: PublicChannelsActions['loadMessage']): Gene
 }
 
 export function* getPublicChannels(action: PublicChannelsActions['responseGetPublicChannels']): Generator {
-  console.log('loading public channels')
+  log('loading public channels')
   if (action.payload) {
     yield put(setPublicChannels(action.payload))
 
     const mainChannel = yield* select(publicChannelsSelectors.publicChannelsByName('zbay'))
     if (mainChannel && !electronStore.get('generalChannelInitialized')) {
-      console.log('Setting main channel')
+      log('Setting main channel')
       yield put(
         contactsHandlers.actions.addContact({
           key: mainChannel.address,
@@ -119,7 +124,7 @@ export function* loadAllMessages(
 
   const channel = yield* select(contactsSelectors.contact(action.payload.channelAddress))
   if (!channel) {
-    console.log(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
+    log(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
     return
   }
 

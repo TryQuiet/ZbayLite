@@ -258,14 +258,14 @@ app.on('ready', async () => {
   await applyDevTools()
 
   await createWindow()
-  console.log('creatd windows')
+  log('creatd windows')
   mainWindow.webContents.on('did-fail-load', () => {
     log('failed loading')
   })
   mainWindow.webContents.on('did-finish-load', async () => {
     mainWindow.webContents.send('ping')
     try {
-      console.log('before spawning tor')
+      log('before spawning tor')
       tor = await spawnTor()
       mainWindow.webContents.send('onionAddress', getOnionAddress())
       await runWaggle(mainWindow.webContents)

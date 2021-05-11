@@ -17,6 +17,10 @@ import { displayDirectMessageNotification } from '../../notifications'
 import BigNumber from 'bignumber.js'
 import crypto from 'crypto'
 import { actions, epics } from '../../store/handlers/directMessages'
+import debug from 'debug'
+const log = Object.assign(debug('zbay:dm'), {
+  error: debug('zbay:dm:err')
+})
 
 const all: any = effectsAll
 
@@ -194,10 +198,10 @@ const checkConversation = (id, encryptedPhrase, privKey) => {
   try {
     decodedMessage = epics.decodeMessage(sharedSecret, encryptedPhrase)
   } catch (err) {
-    console.log(err)
+    log.error(err)
   }
   if (decodedMessage?.startsWith('no panic')) {
-    console.log('success, message decoded successfully')
+    log('success, message decoded successfully')
 
     return {
       sharedSecret,
@@ -205,7 +209,7 @@ const checkConversation = (id, encryptedPhrase, privKey) => {
       conversationId: id
     }
   } else {
-    console.log('cannot decode message, its not for me or I am the author')
+    log('cannot decode message, its not for me or I am the author')
     return null
   }
 }
