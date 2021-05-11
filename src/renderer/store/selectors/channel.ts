@@ -11,7 +11,7 @@ import { Channel } from '../handlers/channel'
 const channel = (s: Store) => s.channel
 const contacts = (s: Store) => s.contacts
 
-export type ChannelInfo = Omit<Channel, "message">
+export type ChannelInfo = Omit<Channel, 'message'>
 
 export const channelInfo = createSelector(channel, (ch): ChannelInfo => {
   const channel = {

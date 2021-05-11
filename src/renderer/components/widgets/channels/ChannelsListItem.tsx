@@ -60,9 +60,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export type ChannelsListItemComponentProps = {
-  channel: Contact;
-  directMessages: boolean;
-  selected: ChannelInfo;
+  channel: Contact
+  directMessages: boolean
+  selected: ChannelInfo
 }
 
 export const ChannelsListItem: React.FC<ChannelsListItemComponentProps> = ({

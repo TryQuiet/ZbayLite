@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
@@ -7,7 +7,6 @@ import Page from '../ui/page/Page'
 import PageHeader from '../ui/page/PageHeader'
 import { channelTypeToHeader, channelTypeToInput } from './ChannelMapping'
 import ChannelContent from '../../containers/widgets/channels/ChannelContent'
-import { useState } from 'react'
 import { CHANNEL_TYPE } from './ChannelTypes'
 
 const useStyles = makeStyles(() => ({
@@ -18,13 +17,13 @@ const useStyles = makeStyles(() => ({
 }))
 
 type ChannelComponentProps = {
-  channelType: CHANNEL_TYPE;
-  contactId?: string;
-  offer?: string;
+  channelType: CHANNEL_TYPE
+  contactId?: string
+  offer?: string
 }
 
-type InputProps = Omit<ChannelComponentProps, "channelType"> & {
-  setTab: (arg: number) => void; //for now
+type InputProps = Omit<ChannelComponentProps, 'channelType'> & {
+  setTab: (arg: number) => void // for now
 }
 
 export const Channel: React.FC<ChannelComponentProps> = ({ channelType, ...props }) => {
@@ -32,7 +31,7 @@ export const Channel: React.FC<ChannelComponentProps> = ({ channelType, ...props
   const [tab, setTab] = useState(0)
 
   const Header = channelTypeToHeader[channelType]
-  const Input = channelTypeToInput[channelType] as React.FC<InputProps> //for now
+  const Input = channelTypeToInput[channelType] as React.FC<InputProps> // for now
 
   return (
     <Page>
