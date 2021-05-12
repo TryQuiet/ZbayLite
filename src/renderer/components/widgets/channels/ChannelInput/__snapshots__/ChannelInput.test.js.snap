@@ -3,215 +3,230 @@
 exports[`ChannelInput renders component input Disable  1`] = `
 <WithStyles(ForwardRef(Grid))
   className="root-mock"
-  container={true}
-  direction="column"
-  justify="center"
 >
-  <Memo(WithStyles(MentionPoper))
-    selected={0}
-  />
   <WithStyles(ForwardRef(Grid))
-    alignItems="center"
-    className="inputsDiv-mock"
+    className="root-mock"
     container={true}
-    direction="row"
+    direction="column"
     justify="center"
-    spacing={0}
   >
-    <ForwardRef(ClickAwayListener)
-      onClickAway={[Function]}
+    <Memo(WithStyles(MentionPoper))
+      selected={0}
+    />
+    <WithStyles(ForwardRef(Grid))
+      alignItems="center"
+      className="inputsDiv-mock"
+      container={true}
+      direction="row"
+      justify="center"
+      spacing={0}
     >
-      <WithStyles(ForwardRef(Grid))
-        alignItems="center"
-        className="textfield-mock"
-        container={true}
-        item={true}
-        justify="center"
-        xs={true}
+      <ForwardRef(ClickAwayListener)
+        onClickAway={[Function]}
       >
         <WithStyles(ForwardRef(Grid))
+          alignItems="center"
+          className="textfield-mock"
+          container={true}
           item={true}
+          justify="center"
           xs={true}
         >
-          <ContentEditable
-            className="input-mock"
-            html="this is just a test message"
-            onChange={[Function]}
-            onClick={[Function]}
-            onKeyDown={[Function]}
-            placeholder="Message test"
-          />
-        </WithStyles(ForwardRef(Grid))>
-        <WithStyles(ForwardRef(Grid))
-          className="actions-mock"
-          item={true}
-        >
           <WithStyles(ForwardRef(Grid))
-            alignItems="center"
-            container={true}
-            justify="center"
+            item={true}
+            xs={true}
           >
-            <Connect(Component)
-              disabled={false}
-            />
-            <Component
-              className="emoji-mock"
-              onClickHandler={[Function]}
-              onMouseEnterHandler={[Function]}
-              onMouseLeaveHandler={[Function]}
-              src="test-file-stub"
+            <ContentEditable
+              className="input-mock"
+              html="this is just a test message"
+              onChange={[Function]}
+              onClick={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Message test"
             />
           </WithStyles(ForwardRef(Grid))>
+          <WithStyles(ForwardRef(Grid))
+            className="actions-mock"
+            item={true}
+          >
+            <WithStyles(ForwardRef(Grid))
+              alignItems="center"
+              container={true}
+              justify="center"
+            >
+              <Connect(Component)
+                disabled={false}
+              />
+              <Component
+                className="emoji-mock"
+                onClickHandler={[Function]}
+                onMouseEnterHandler={[Function]}
+                onMouseLeaveHandler={[Function]}
+                src="test-file-stub"
+              />
+            </WithStyles(ForwardRef(Grid))>
+          </WithStyles(ForwardRef(Grid))>
         </WithStyles(ForwardRef(Grid))>
-      </WithStyles(ForwardRef(Grid))>
-    </ForwardRef(ClickAwayListener)>
+      </ForwardRef(ClickAwayListener)>
+    </WithStyles(ForwardRef(Grid))>
+    <ChannelInputInfoMessage
+      inputState={2}
+      showInfoMessage={false}
+    />
   </WithStyles(ForwardRef(Grid))>
-  <ChannelInputInfoMessage
-    showInfoMessage={false}
-  />
 </WithStyles(ForwardRef(Grid))>
 `;
 
 exports[`ChannelInput renders component input Locked  1`] = `
 <WithStyles(ForwardRef(Grid))
   className="root-mock"
-  container={true}
-  direction="column"
-  justify="center"
 >
-  <Memo(WithStyles(MentionPoper))
-    selected={0}
-  />
   <WithStyles(ForwardRef(Grid))
-    alignItems="center"
-    className="inputsDiv-mock"
+    className="root-mock"
     container={true}
-    direction="row"
+    direction="column"
     justify="center"
-    spacing={0}
   >
-    <ForwardRef(ClickAwayListener)
-      onClickAway={[Function]}
+    <Memo(WithStyles(MentionPoper))
+      selected={0}
+    />
+    <WithStyles(ForwardRef(Grid))
+      alignItems="center"
+      className="inputsDiv-mock"
+      container={true}
+      direction="row"
+      justify="center"
+      spacing={0}
     >
-      <WithStyles(ForwardRef(Grid))
-        alignItems="center"
-        className="textfield-mock"
-        container={true}
-        item={true}
-        justify="center"
-        xs={true}
+      <ForwardRef(ClickAwayListener)
+        onClickAway={[Function]}
       >
         <WithStyles(ForwardRef(Grid))
+          alignItems="center"
+          className="textfield-mock"
+          container={true}
           item={true}
+          justify="center"
           xs={true}
         >
-          <ContentEditable
-            className="input-mock"
-            html="this is just a test message"
-            onChange={[Function]}
-            onClick={[Function]}
-            onKeyDown={[Function]}
-            placeholder="Message test"
-          />
-        </WithStyles(ForwardRef(Grid))>
-        <WithStyles(ForwardRef(Grid))
-          className="actions-mock"
-          item={true}
-        >
           <WithStyles(ForwardRef(Grid))
-            alignItems="center"
-            container={true}
-            justify="center"
+            item={true}
+            xs={true}
           >
-            <Connect(Component)
-              disabled={false}
-            />
-            <Component
-              className="emoji-mock"
-              onClickHandler={[Function]}
-              onMouseEnterHandler={[Function]}
-              onMouseLeaveHandler={[Function]}
-              src="test-file-stub"
+            <ContentEditable
+              className="input-mock"
+              html="this is just a test message"
+              onChange={[Function]}
+              onClick={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Message test"
             />
           </WithStyles(ForwardRef(Grid))>
+          <WithStyles(ForwardRef(Grid))
+            className="actions-mock"
+            item={true}
+          >
+            <WithStyles(ForwardRef(Grid))
+              alignItems="center"
+              container={true}
+              justify="center"
+            >
+              <Connect(Component)
+                disabled={false}
+              />
+              <Component
+                className="emoji-mock"
+                onClickHandler={[Function]}
+                onMouseEnterHandler={[Function]}
+                onMouseLeaveHandler={[Function]}
+                src="test-file-stub"
+              />
+            </WithStyles(ForwardRef(Grid))>
+          </WithStyles(ForwardRef(Grid))>
         </WithStyles(ForwardRef(Grid))>
-      </WithStyles(ForwardRef(Grid))>
-    </ForwardRef(ClickAwayListener)>
+      </ForwardRef(ClickAwayListener)>
+    </WithStyles(ForwardRef(Grid))>
+    <ChannelInputInfoMessage
+      inputState={2}
+      showInfoMessage={false}
+    />
   </WithStyles(ForwardRef(Grid))>
-  <ChannelInputInfoMessage
-    showInfoMessage={false}
-  />
 </WithStyles(ForwardRef(Grid))>
 `;
 
 exports[`ChannelInput renders component input available  1`] = `
 <WithStyles(ForwardRef(Grid))
   className="root-mock"
-  container={true}
-  direction="column"
-  justify="center"
 >
-  <Memo(WithStyles(MentionPoper))
-    selected={0}
-  />
   <WithStyles(ForwardRef(Grid))
-    alignItems="center"
-    className="inputsDiv-mock"
+    className="root-mock"
     container={true}
-    direction="row"
+    direction="column"
     justify="center"
-    spacing={0}
   >
-    <ForwardRef(ClickAwayListener)
-      onClickAway={[Function]}
+    <Memo(WithStyles(MentionPoper))
+      selected={0}
+    />
+    <WithStyles(ForwardRef(Grid))
+      alignItems="center"
+      className="inputsDiv-mock"
+      container={true}
+      direction="row"
+      justify="center"
+      spacing={0}
     >
-      <WithStyles(ForwardRef(Grid))
-        alignItems="center"
-        className="textfield-mock"
-        container={true}
-        item={true}
-        justify="center"
-        xs={true}
+      <ForwardRef(ClickAwayListener)
+        onClickAway={[Function]}
       >
         <WithStyles(ForwardRef(Grid))
+          alignItems="center"
+          className="textfield-mock"
+          container={true}
           item={true}
+          justify="center"
           xs={true}
         >
-          <ContentEditable
-            className="input-mock"
-            html="this is just a test message"
-            onChange={[Function]}
-            onClick={[Function]}
-            onKeyDown={[Function]}
-            placeholder="Message test"
-          />
-        </WithStyles(ForwardRef(Grid))>
-        <WithStyles(ForwardRef(Grid))
-          className="actions-mock"
-          item={true}
-        >
           <WithStyles(ForwardRef(Grid))
-            alignItems="center"
-            container={true}
-            justify="center"
+            item={true}
+            xs={true}
           >
-            <Connect(Component)
-              disabled={false}
-            />
-            <Component
-              className="emoji-mock"
-              onClickHandler={[Function]}
-              onMouseEnterHandler={[Function]}
-              onMouseLeaveHandler={[Function]}
-              src="test-file-stub"
+            <ContentEditable
+              className="input-mock"
+              html="this is just a test message"
+              onChange={[Function]}
+              onClick={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Message test"
             />
           </WithStyles(ForwardRef(Grid))>
+          <WithStyles(ForwardRef(Grid))
+            className="actions-mock"
+            item={true}
+          >
+            <WithStyles(ForwardRef(Grid))
+              alignItems="center"
+              container={true}
+              justify="center"
+            >
+              <Connect(Component)
+                disabled={false}
+              />
+              <Component
+                className="emoji-mock"
+                onClickHandler={[Function]}
+                onMouseEnterHandler={[Function]}
+                onMouseLeaveHandler={[Function]}
+                src="test-file-stub"
+              />
+            </WithStyles(ForwardRef(Grid))>
+          </WithStyles(ForwardRef(Grid))>
         </WithStyles(ForwardRef(Grid))>
-      </WithStyles(ForwardRef(Grid))>
-    </ForwardRef(ClickAwayListener)>
+      </ForwardRef(ClickAwayListener)>
+    </WithStyles(ForwardRef(Grid))>
+    <ChannelInputInfoMessage
+      inputState={2}
+      showInfoMessage={false}
+    />
   </WithStyles(ForwardRef(Grid))>
-  <ChannelInputInfoMessage
-    showInfoMessage={false}
-  />
 </WithStyles(ForwardRef(Grid))>
 `;

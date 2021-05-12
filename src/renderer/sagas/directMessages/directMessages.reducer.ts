@@ -26,7 +26,7 @@ export const directMessagesActions = {
   responseGetAvailableUsers: createAction<{[key: string]: { halfKey: string}}>(Socket.RESPONSE_GET_AVAILABLE_USERS),
   // Messages
   sendDirectMessage: createAction<string>(Socket.SEND_DIRECT_MESSAGE),
-  loadDirectMessage: createAction<Libp2pMessage>(Socket.DIRECT_MESSAGE),
+  loadDirectMessage: createAction<any>(Socket.DIRECT_MESSAGE),
   loadAllDirectMessages: createAction(Socket.LOAD_ALL_DIRECT_MESSAGES),
   responseLoadAllDirectMessages: createAction<{
     channelAddress: string

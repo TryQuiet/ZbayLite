@@ -5,6 +5,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles'
 const useStyles = makeStyles((theme: Theme) => ({
   info: {
     color: theme.palette.colors.trueBlack,
+    width: '100px',
     letterSpacing: '0.4px'
   },
   bold: {
@@ -17,15 +18,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-const ChannelInputInfoMessage = ({ showInfoMessage }) => {
+const ChannelInputInfoMessage = ({ showInfoMessage, inputState }) => {
   const classes = useStyles({})
+
+  console.log(`input state is ${inputState}`)
 
   return (
     <Grid container className={classes.boot}>
       <Grid item xs>
         {showInfoMessage && (
           <Typography variant='caption' className={classes.info}>
-            {'Loading messages and connecting. This may take a few minutes...'}
+            {inputState === 0
+              ? 'Loading messages and connecting. This may take a few minutes...'
+              : 'This user needs to update Zbay to receive direct messages.'}
           </Typography>
         )}
       </Grid>

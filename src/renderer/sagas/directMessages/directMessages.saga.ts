@@ -65,7 +65,7 @@ export const transferToMessage = (msg, users) => {
   return displayableMessage
 }
 
-const decodeMessage = (sharedSecret, message) => {
+const decodeMessage = (sharedSecret: string, message: string) => {
   const IVO = '5183666c72eec9e45183666c72eec9e4'
   const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
   const IV = Buffer.from(IVO, 'hex')
@@ -78,6 +78,7 @@ const decodeMessage = (sharedSecret, message) => {
 
 export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMessage']): Generator {
   const conversations = yield* select(directMessagesSelectors.conversations)
+  console.log(`actions paylaod is ${action.payload}`)
   const conversation = Array.from(Object.values(conversations)).filter(conv => {
     return conv.conversationId === action.payload.channelAddress
   })
@@ -137,7 +138,7 @@ export function* loadAllDirectMessages(
     })
     const displayableMessages = decodedMessages.map(msg => transferToMessage(msg, users))
     yield put(
-      contactsHandlers.actions.setAllMessages({
+      contactsHandlers.actions.setMessages({
         key: contactPublicKey,
         username: username,
         contactAddress: contactPublicKey,
@@ -146,7 +147,7 @@ export function* loadAllDirectMessages(
     )
 
     const state = yield* select()
-    const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state)
+    const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state, true)
     newMsgs.forEach(msg => {
       if (msg.sender.username !== myUser.nickname) {
         displayDirectMessageNotification({
@@ -184,7 +185,7 @@ export function* responseGetAvailableUsers(
   }
 }
 
-const checkConversation = (id, encryptedPhrase, privKey) => {
+const checkConversation = (id: string, encryptedPhrase: string, privKey: string) => {
   const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
   const generator = '02'
   const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
