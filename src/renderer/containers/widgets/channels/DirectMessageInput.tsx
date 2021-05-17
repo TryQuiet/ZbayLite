@@ -22,7 +22,7 @@ const useChannelInputData = contactId => {
     signerPubey: signerPubey,
     inputLocked: inputLocked,
     inputState: useSelector(usersSelectors.registeredUser(signerPubey)) ? inputLocked : INPUT_STATE.UNREGISTERED,
-    channelName: useSelector(contactsSelectors.contact(contactId)).username,
+    channelName: contact.username,
     users: useSelector(usersSelectors.users),
     myUser: useSelector(usersSelectors.myUser),
     isMessageTooLong: useSelector(channelSelectors.messageSizeStatus),

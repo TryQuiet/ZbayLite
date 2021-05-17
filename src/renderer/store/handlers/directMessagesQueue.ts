@@ -50,8 +50,8 @@ export type DirectMessagesQueueStore = DirectMessagesQueue[]
 export const initialState: DirectMessagesQueueStore = []
 
 const addDirectMessage = createAction<
-{ message: DisplayableMessage; recipientAddress: string; recipientUsername: string; key: string },
-{ message: DisplayableMessage; recipientAddress: string; recipientUsername: string }
+  { message: DisplayableMessage; recipientAddress: string; recipientUsername: string; key: string },
+  { message: DisplayableMessage; recipientAddress: string; recipientUsername: string }
 >(actionTypes.ADD_PENDING_DIRECT_MESSAGE, ({ message, recipientAddress, recipientUsername }) => {
   const messageDigest = crypto.createHash('sha256')
   const messageEssentials = R.pick(['type', 'sender', 'signature'])(message)
@@ -246,14 +246,14 @@ const _sendPendingDirectMessages = (redirect): ZbayThunkAction<void> => async (
   await dispatch(appHandlers.actions.unlockDmQueue())
 }
 
-export const sendPendingDirectMessages = (debounce, redirect) => {
+export const sendPendingDirectMessages = (debounce?: number, redirect?: boolean) => {
   const thunk = _sendPendingDirectMessages(redirect)
   thunk.meta = {
     debounce: {
       time:
         debounce !== null
           ? debounce
-          : process.env.ZBAY_DEBOUNCE_MESSAGE_INTERVAL || DEFAULT_DEBOUNCE_INTERVAL,
+          : Number(process.env.ZBAY_DEBOUNCE_MESSAGE_INTERVAL) || DEFAULT_DEBOUNCE_INTERVAL,
       key: 'SEND_PENDING_DRIRECT_MESSAGES'
     }
   }
@@ -274,8 +274,8 @@ export const epics = {
 }
 
 export const reducer = handleActions<
-DirectMessagesQueueStore,
-PayloadType<DirectMessagesQueueActions>
+  DirectMessagesQueueStore,
+  PayloadType<DirectMessagesQueueActions>
 >(
   {
     [addDirectMessage.toString()]: (

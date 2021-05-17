@@ -18,3 +18,18 @@
 * Performance improvement - set pulled messages to store at once
 
 * Pull public channels only after websocket is initialized
+
+
+# [3.2.9] - 27 april 2021
+
+### Changed
+
+* Electron version
+
+### Removed
+
+* Snackbar Notifications
+
+* Post offers
+
+* Continoue button after app start

@@ -10,13 +10,14 @@ import usersSelectors from '../../../store/selectors/users'
 import { User } from '../../../store/handlers/users'
 
 const useChannelInputData = () => {
+  const channelSelectorsData = useSelector(channelSelectors.data)
   const data = {
     message: useSelector(channelSelectors.message),
     id: useSelector(channelSelectors.id),
     inputState: useSelector(channelSelectors.inputLocked),
     members: useSelector(channelSelectors.members),
     channelName: useSelector(channelSelectors.data)
-      ? useSelector(channelSelectors.data).username
+      ? channelSelectorsData.username
       : ' Unnamed',
     users: useSelector(usersSelectors.users),
     myUser: useSelector(usersSelectors.myUser),
