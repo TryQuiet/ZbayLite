@@ -16,17 +16,17 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-type ChannelComponentProps = {
+interface IChannelComponentProps {
   channelType: CHANNEL_TYPE
   contactId?: string
   offer?: string
 }
 
-type InputProps = Omit<ChannelComponentProps, 'channelType'> & {
+type InputProps = Omit<IChannelComponentProps, 'channelType'> & {
   setTab: (arg: number) => void // for now
 }
 
-export const Channel: React.FC<ChannelComponentProps> = ({ channelType, ...props }) => {
+export const Channel: React.FC<IChannelComponentProps> = ({ channelType, ...props }) => {
   const classes = useStyles({})
   const [tab, setTab] = useState(0)
 

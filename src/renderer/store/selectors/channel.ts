@@ -199,21 +199,21 @@ export const inputLocked = createSelector(
   }
 )
 
-export const INPUT_STATE = {
-  DISABLE: 0,
-  AVAILABLE: 1,
-  LOCKED: 2,
-  UNREGISTERED: 3
+export enum INPUT_STATE {
+  DISABLE = 0,
+  AVAILABLE = 1,
+  LOCKED = 2,
+  UNREGISTERED = 3
 }
 
 export const members = createSelector(contacts, id, (c, channelId) => {
   const contact = c[channelId]
   if (!contact) {
-    return new Set()
+    return new Set<string>()
   }
   return Array.from(Object.values(contact.messages)).reduce((acc, msg) => {
     return acc.add(msg.sender.replyTo)
-  }, new Set())
+  }, new Set<string>())
 })
 
 export const channelParticipiants = createSelector(contacts, id, (c, i) => {
