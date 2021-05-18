@@ -172,23 +172,4 @@ describe('Channel selectors', () => {
     })
     expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.AVAILABLE)
   })
-
-//   it('- input_avilable_without_money_with_online_contact', async () => {
-//     const store = create({
-//       ...initialState,
-//       channel: {
-//         ...initialState.channel,
-//         id: 'klucz'
-//       },
-//       contacts: {
-//         ...initialState.contacts,
-//         kumpel: {
-//           ...initialState.contacts.kumpel,
-//           key: 'klucz',
-//           connected: true
-//         }
-//       }
-//     })
-//     expect(channelSelectors.inputLocked(store.getState())).toEqual(INPUT_STATE.AVAILABLE)
-//   })
 })

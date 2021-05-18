@@ -274,7 +274,7 @@ export const ChannelInput = ({
     },
     [setAnchorEl, onChange, setHtmlMessage]
   )
-  const inputStateRef = React.useRef()
+  const inputStateRef = React.useRef(inputState)
   React.useEffect(() => {
     inputStateRef.current = inputState
   })

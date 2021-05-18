@@ -192,6 +192,7 @@ const sendOnEnter = (_event, resetTab) => async (dispatch, getState) => {
     return
   }
   if (isDirectMessageChannel) {
+    console.log('inside direct message')
     const id = channelSelectors.id(getState())
     const conversations = directMessagesSelectors.conversations(getState())
     const conversation = conversations[id]

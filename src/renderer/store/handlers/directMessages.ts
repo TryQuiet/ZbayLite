@@ -10,13 +10,15 @@ import { actionTypes } from '../../../shared/static'
 import { ActionsType, PayloadType } from './types'
 import { directMessagesActions } from '../../sagas/directMessages/directMessages.reducer'
 
+import { encodeMessage, constants } from '../../cryptography/cryptography'
+
 interface IUser {
   nickname: string
   publicKey: string
   halfKey: string
 }
 
-interface IConversation {
+export interface IConversation {
   sharedSecret: string
   contactPublicKey: string
   conversationId: string
@@ -70,10 +72,7 @@ export const actions = {
 export type DirectMessagesActions = ActionsType<typeof actions>
 
 const generateDiffieHellman = () => async dispatch => {
-  const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
-  const generator = '02'
-
-  const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
+  const dh = crypto.createDiffieHellman(constants.prime, 'hex', constants.generator, 'hex')
   dh.generateKeys()
   const privateKey = dh.getPrivateKey('hex')
   const publicKey = dh.getPublicKey('hex')
@@ -83,46 +82,8 @@ const generateDiffieHellman = () => async dispatch => {
 }
 
 export const getPrivateConversations = () => dispatch => {
+  console.log('getPRivateConversationsEpic')
   dispatch(directMessagesActions.getPrivateConversations())
-}
-
-const encodeMessage = (sharedSecret, message) => {
-  const IVO = '5183666c72eec9e45183666c72eec9e4'
-  const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
-  const IV = Buffer.from(IVO, 'hex')
-
-  const cipher = crypto.createCipheriv('aes-256-cbc', ENC_KEY, IV)
-  let encrypted = cipher.update(message, 'utf8', 'base64')
-  encrypted += cipher.final('base64')
-  return encrypted
-}
-
-const decodeMessage = (sharedSecret, message) => {
-  const IVO = '5183666c72eec9e45183666c72eec9e4'
-  const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
-  const IV = Buffer.from(IVO, 'hex')
-
-  const decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
-  const decrypted = decipher.update(message, 'base64', 'utf8')
-  return decrypted + decipher.final('utf8')
-}
-
-const checkConversation = (id, encryptedPhrase) => (_dispatch, getState) => {
-  const privKey = directMessagesSelectors.privateKey(getState())
-  const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
-  const generator = '02'
-  const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
-  dh.setPrivateKey(privKey, 'hex')
-  const sharedSecret = dh.computeSecret(id, 'hex').toString('hex')
-  const decodedMessage = decodeMessage(sharedSecret, encryptedPhrase)
-  if (decodedMessage.startsWith('no panic')) {
-    actions.addConversation({
-      sharedSecret,
-      contactPublicKey: decodedMessage.slice(8),
-      conversationId: id
-    })
-  } else {
-  }
 }
 
 const initializeConversation = () => async (dispatch, getState) => {
@@ -132,10 +93,7 @@ const initializeConversation = () => async (dispatch, getState) => {
 
   const halfKey = directMessagesSelectors.user(contactPublicKey)(getState()).halfKey
 
-  const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
-  const generator = '02'
-
-  const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
+  const dh = crypto.createDiffieHellman(constants.prime, 'hex', constants.generator, 'hex')
   dh.generateKeys()
 
   const pubKey = dh.getPublicKey('hex')
@@ -161,6 +119,7 @@ const initializeConversation = () => async (dispatch, getState) => {
 }
 
 const getAvailableUsers = () => async dispatch => {
+  console.log('EPICS GET AVAILABLE USERS')
   await dispatch(directMessagesActions.getAvailableUsers())
 }
 
@@ -168,9 +127,7 @@ export const epics = {
   generateDiffieHellman,
   getAvailableUsers,
   initializeConversation,
-  getPrivateConversations,
-  checkConversation,
-  decodeMessage
+  getPrivateConversations
 }
 
 export const reducer = handleActions<DirectMessagesStore, PayloadType<DirectMessagesActions>>(

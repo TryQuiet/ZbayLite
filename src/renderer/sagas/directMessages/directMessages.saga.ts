@@ -1,5 +1,5 @@
 import { all as effectsAll, takeEvery } from 'redux-saga/effects'
-import { put, select } from 'typed-redux-saga'
+import { put, select, call } from 'typed-redux-saga'
 import { directMessagesActions, DirectMessagesActions } from './directMessages.reducer'
 import {
   getPublicKeysFromSignature,
@@ -15,8 +15,9 @@ import contactsHandlers, { actions as contactsActions } from '../../store/handle
 import { DisplayableMessage } from '../../zbay/messages.types'
 import { displayDirectMessageNotification } from '../../notifications'
 import BigNumber from 'bignumber.js'
-import crypto from 'crypto'
-import { actions, epics } from '../../store/handlers/directMessages'
+import { actions } from '../../store/handlers/directMessages'
+
+import { checkConversation, decodeMessage } from '../../cryptography/cryptography'
 
 const all: any = effectsAll
 
@@ -65,17 +66,6 @@ export const transferToMessage = (msg, users) => {
   return displayableMessage
 }
 
-const decodeMessage = (sharedSecret: string, message: string) => {
-  const IVO = '5183666c72eec9e45183666c72eec9e4'
-  const ENC_KEY = Buffer.from(sharedSecret.substring(0, 64), 'hex')
-  const IV = Buffer.from(IVO, 'hex')
-
-  const decipher = crypto.createDecipheriv('aes-256-cbc', ENC_KEY, IV)
-  const stringifiedMessage = JSON.stringify(message)
-  const decrypted = decipher.update(stringifiedMessage, 'base64', 'utf8')
-  return decrypted + decipher.final('utf8')
-}
-
 export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMessage']): Generator {
   const conversations = yield* select(directMessagesSelectors.conversations)
   console.log(`actions paylaod is ${action.payload}`)
@@ -89,10 +79,11 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
   const myUser = yield* select(usersSelectors.myUser)
   const { id } = yield* select(channelSelectors.channel)
   const sharedSecret = conversations[id].sharedSecret
-  const decodedMessage = decodeMessage(sharedSecret, action.payload.message)
+  const msg = JSON.stringify(action.payload.message)
+  const decodedMessage = decodeMessage(sharedSecret, msg)
   const message = transferToMessage(JSON.parse(decodedMessage), users)
   if (myUser.nickname !== message.sender.username) {
-    displayDirectMessageNotification({
+    yield call(displayDirectMessageNotification, {
       username: message.sender.username,
       message: message
     })
@@ -126,36 +117,39 @@ export function* loadAllDirectMessages(
   const myUser = yield* select(usersSelectors.myUser)
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
   if (!channel) {
-    console.log(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
+    console.log(
+      `Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`
+    )
     return
   }
 
   const { username } = channel
   if (username) {
     const decodedMessages = action.payload.messages.map(msg => {
-      console.log(msg)
-      return JSON.parse(decodeMessage(sharedSecret, msg))
+      const message = JSON.stringify(msg)
+      return JSON.parse(decodeMessage(sharedSecret, message))
     })
     const displayableMessages = decodedMessages.map(msg => transferToMessage(msg, users))
+    const state = yield* select()
+    const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state, true)
     yield put(
       contactsHandlers.actions.setMessages({
         key: contactPublicKey,
         username: username,
         contactAddress: contactPublicKey,
-        messages: displayableMessages
+        messages: newMsgs
       })
     )
 
-    const state = yield* select()
-    const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state, true)
-    newMsgs.forEach(msg => {
-      if (msg.sender.username !== myUser.nickname) {
-        displayDirectMessageNotification({
-          username: msg.sender.username,
-          message: msg
-        })
-      }
-    })
+    const latestMessage = newMsgs[newMsgs.length - 1]
+
+    if (latestMessage && latestMessage.sender.username !== myUser.nickname) {
+      yield call(displayDirectMessageNotification, {
+        username: latestMessage.sender.username,
+        message: latestMessage
+      })
+    }
+
     yield put(
       contactsActions.appendNewMessages({
         contactAddress: contactPublicKey,
@@ -168,6 +162,7 @@ export function* loadAllDirectMessages(
 export function* responseGetAvailableUsers(
   action: DirectMessagesActions['responseGetAvailableUsers']
 ): Generator {
+  console.log('RESPONSE GET AVAILABLE USERS')
   for (const [key, value] of Object.entries(action.payload)) {
     const user = yield* select(usersSelectors.registeredUser(key))
 
@@ -185,35 +180,17 @@ export function* responseGetAvailableUsers(
   }
 }
 
-const checkConversation = (id: string, encryptedPhrase: string, privKey: string) => {
-  const prime = 'b25dbea8c5f6c0feff269f88924a932639f8d8f937d19fa5874188258a63a373'
-  const generator = '02'
-  const dh = crypto.createDiffieHellman(prime, 'hex', generator, 'hex')
-  dh.setPrivateKey(privKey, 'hex')
-  const sharedSecret = dh.computeSecret(id, 'hex').toString('hex')
-  let decodedMessage = null
-  try {
-    decodedMessage = epics.decodeMessage(sharedSecret, encryptedPhrase)
-  } catch (err) {
-    console.log(err)
-  }
-  if (decodedMessage?.startsWith('no panic')) {
-    console.log('success, message decoded successfully')
-
-    return {
-      sharedSecret,
-      contactPublicKey: decodedMessage.slice(8),
-      conversationId: id
-    }
-  } else {
-    console.log('cannot decode message, its not for me or I am the author')
-    return null
-  }
-}
+/**
+  checkConversation: checks if you are participant of private conversation. Returns null if we not participate in conversation.
+  @param id conversation id, half of dh key, we use our private key to calculate shared secret
+  @param encryptedPhrase encrypted phrase, if we are recipient of the message, we will be able to use shared secret to decode message
+  @param privKey our private key, others are using public part of this key to create encryptedPhrase
+ */
 
 export function* responseGetPrivateConversations(
   action: DirectMessagesActions['responseGetPrivateConversations']
 ): Generator {
+  console.log('RESPONSE GET PRIVATE CONVERSATIONS')
   const privKey = yield* select(directMessagesSelectors.privateKey)
 
   for (const [key, value] of Object.entries(action.payload)) {
@@ -221,12 +198,8 @@ export function* responseGetPrivateConversations(
 
     if (conversation) {
       const user = yield* select(usersSelectors.registeredUser(key))
-      yield put(
-        directMessagesActions.subscribeForDirectMessageThread(conversation.conversationId)
-      )
-      yield put(
-        actions.addConversation(conversation)
-      )
+      yield put(directMessagesActions.subscribeForDirectMessageThread(conversation.conversationId))
+      yield put(actions.addConversation(conversation))
       yield put(
         contactsActions.addContact({
           key: conversation.contactPublicKey,
