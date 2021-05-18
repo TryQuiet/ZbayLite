@@ -59,13 +59,13 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export type ChannelsListItemComponentProps = {
+export interface IChannelsListItemComponentProps {
   channel: Contact
   directMessages: boolean
   selected: ChannelInfo
 }
 
-export const ChannelsListItem: React.FC<ChannelsListItemComponentProps> = ({
+export const ChannelsListItem: React.FC<IChannelsListItemComponentProps> = ({
   channel,
   directMessages,
   selected

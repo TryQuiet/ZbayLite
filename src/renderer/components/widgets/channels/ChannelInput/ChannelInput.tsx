@@ -491,7 +491,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
                   }}>
                   <div className={classes.picker}>
                     <Picker
-                      onEmojiClick={(e, emoji) => {
+                      onEmojiClick={(_, emoji) => {
                         setHtmlMessage(message + emoji.emoji)
                         setMessage(message + emoji.emoji)
                         setOpenEmoji(false)
@@ -513,8 +513,8 @@ export const ChannelInput: React.FC<IChannelInput> = ({
             <Typography className={classes.errorText} variant={'caption'}>
               {'Your message is over the size limit. '}
               <span
-                onClick={() =>
-                  shell.openExternal('https://www.zbay.app/faq.html#message-size-info')
+                onClick={async () =>
+                  await shell.openExternal('https://www.zbay.app/faq.html#message-size-info')
                 }
                 className={classes.linkBlue}>
                 Learn More
@@ -538,4 +538,3 @@ ChannelInput.defaultProps = {
 }
 
 export default ChannelInput
-

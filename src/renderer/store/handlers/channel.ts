@@ -30,7 +30,7 @@ import { packMemo } from '../../zbay/transit'
 
 import { ActionsType, PayloadType } from './types'
 import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
-import { KeyboardEvent, KeyboardEventHandler } from 'react'
+import { KeyboardEvent } from 'react'
 
 // TODO: to remove, but must be replaced in all the tests
 export const ChannelState = {
@@ -228,7 +228,7 @@ const sendOnEnter = (event: KeyboardEvent, resetTab?: (arg: number) => void) => 
     return
   }
   const enterPressed = event.nativeEvent.keyCode === 13
-  const shiftPressed = event.nativeEvent.shiftKey === true
+  const shiftPressed = event.nativeEvent.shiftKey
   const channel = channelSelectors.channel(getState())
   const messageToSend = channelSelectors.message(getState())
   const users = usersSelectors.users(getState())

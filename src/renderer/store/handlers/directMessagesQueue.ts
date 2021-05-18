@@ -50,8 +50,8 @@ export type DirectMessagesQueueStore = DirectMessagesQueue[]
 export const initialState: DirectMessagesQueueStore = []
 
 const addDirectMessage = createAction<
-  { message: DisplayableMessage; recipientAddress: string; recipientUsername: string; key: string },
-  { message: DisplayableMessage; recipientAddress: string; recipientUsername: string }
+{ message: DisplayableMessage; recipientAddress: string; recipientUsername: string; key: string },
+{ message: DisplayableMessage; recipientAddress: string; recipientUsername: string }
 >(actionTypes.ADD_PENDING_DIRECT_MESSAGE, ({ message, recipientAddress, recipientUsername }) => {
   const messageDigest = crypto.createHash('sha256')
   const messageEssentials = R.pick(['type', 'sender', 'signature'])(message)
@@ -274,8 +274,8 @@ export const epics = {
 }
 
 export const reducer = handleActions<
-  DirectMessagesQueueStore,
-  PayloadType<DirectMessagesQueueActions>
+DirectMessagesQueueStore,
+PayloadType<DirectMessagesQueueActions>
 >(
   {
     [addDirectMessage.toString()]: (

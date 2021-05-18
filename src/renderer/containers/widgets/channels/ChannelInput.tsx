@@ -30,7 +30,7 @@ const useChannelInputData = () => {
 const useChannelInputActions = () => {
   const dispatch = useDispatch()
 
-  const onChange = useCallback((arg: { value: string, id: string }) => {
+  const onChange = useCallback((arg: { value: string; id: string }) => {
     dispatch(channelHandlers.actions.setMessage(arg))
   }, [dispatch])
 
@@ -51,6 +51,7 @@ const useChannelInputActions = () => {
 
 export const ChannelInput = ({ setTab }) => {
   const [infoClass, setInfoClass] = React.useState<string>(null)
+  // eslint-disable-next-line
   const [anchorEl, setAnchorEl] = React.useState({} as HTMLElement)
   const [mentionsToSelect, setMentionsToSelect] = React.useState<User[]>([])
 
