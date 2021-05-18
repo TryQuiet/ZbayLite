@@ -38,7 +38,7 @@ export const directMessagesActions = {
     message: { [key: string]: DisplayableMessage }
   }, 'ADD_MESSAGE'>('ADD_MESSAGE'),
   // Private conversatinos
-  initializeConversation: createAction<{address: string; encryptedPhrase: string},Socket.INITIALIZE_CONVERSATION >(Socket.INITIALIZE_CONVERSATION),
+  initializeConversation: createAction<{address: string; encryptedPhrase: string}, Socket.INITIALIZE_CONVERSATION >(Socket.INITIALIZE_CONVERSATION),
   getPrivateConversations: createAction(Socket.GET_PRIVATE_CONVERSATIONS),
   responseGetPrivateConversations: createAction<{[key: string]: string}, Socket.RESPONSE_GET_PRIVATE_CONVERSATIONS>(Socket.RESPONSE_GET_PRIVATE_CONVERSATIONS),
   subscribeForDirectMessageThread: createAction<string, Socket.SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD>(Socket.SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD),

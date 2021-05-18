@@ -75,7 +75,6 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
   const contact = conversation[0]
   const contactPublicKey = contact.contactPublicKey
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
-  const { username } = channel
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
   const { id } = yield* select(channelSelectors.channel)
@@ -83,7 +82,8 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
   const msg = JSON.stringify(action.payload.message)
   const decodedMessage = decodeMessage(sharedSecret, msg)
   const message = transferToMessage(JSON.parse(decodedMessage), users)
-  //const username = users[contactPublicKey]?.nickname || `anon${contactPublicKey}`
+
+  const messageId = Array.from(Object.keys(channel.messages)).length
   if (myUser.nickname !== message.sender.username) {
     yield call(displayDirectMessageNotification, {
       username: message.sender.username,
@@ -95,21 +95,13 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
         messagesIds: [message.id]
       })
     )
-    yield put(
-      contactsHandlers.actions.setMessages({
-        key: contactPublicKey,
-        username: username,
-        contactAddress: contactPublicKey,
-        messages: [message]
-      })
-    )
   }
-  // yield put(
-  //   directMessagesActions.addDirectMessage({
-  //     key: contactPublicKey,
-  //     message: { [message.id]: message }
-  //   })
-  // )
+  yield put(
+    directMessagesActions.addDirectMessage({
+      key: contactPublicKey,
+      message: { [messageId]: message }
+    })
+  )
 }
 
 export function* loadAllDirectMessages(
@@ -191,13 +183,6 @@ export function* responseGetAvailableUsers(
     )
   }
 }
-
-/**
-  checkConversation: checks if you are participant of private conversation. Returns null if we not participate in conversation.
-  @param id conversation id, half of dh key, we use our private key to calculate shared secret
-  @param encryptedPhrase encrypted phrase, if we are recipient of the message, we will be able to use shared secret to decode message
-  @param privKey our private key, others are using public part of this key to create encryptedPhrase
- */
 
 export function* responseGetPrivateConversations(
   action: DirectMessagesActions['responseGetPrivateConversations']

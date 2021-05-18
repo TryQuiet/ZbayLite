@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - feature/dm-over-waggle
+      - master
 
 jobs:
   build_on_windows:
