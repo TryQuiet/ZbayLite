@@ -82,7 +82,6 @@ const generateDiffieHellman = () => async dispatch => {
 }
 
 export const getPrivateConversations = () => dispatch => {
-  console.log('getPRivateConversationsEpic')
   dispatch(directMessagesActions.getPrivateConversations())
 }
 
@@ -118,8 +117,11 @@ const initializeConversation = () => async (dispatch, getState) => {
   )
 }
 
+const subscribeForAllConversations = ()=>async dispatch => {
+await dispatch(directMessagesActions.subscribeForAllConversations())
+}
+
 const getAvailableUsers = () => async dispatch => {
-  console.log('EPICS GET AVAILABLE USERS')
   await dispatch(directMessagesActions.getAvailableUsers())
 }
 
@@ -127,7 +129,8 @@ export const epics = {
   generateDiffieHellman,
   getAvailableUsers,
   initializeConversation,
-  getPrivateConversations
+  getPrivateConversations,
+  subscribeForAllConversations
 }
 
 export const reducer = handleActions<DirectMessagesStore, PayloadType<DirectMessagesActions>>(
@@ -173,7 +176,7 @@ export const reducer = handleActions<DirectMessagesStore, PayloadType<DirectMess
       produce(state, draft => {
         draft.conversations = {
           ...draft.conversations,
-          [conversation.contactPublicKey]: conversation
+          [conversation.conversationId]: conversation
         }
       })
   },
