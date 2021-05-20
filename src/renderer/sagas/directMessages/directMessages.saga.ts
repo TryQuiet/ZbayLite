@@ -149,6 +149,8 @@ export function* loadAllDirectMessages(
       })
     )
 
+console.log(`nes messages are ${newMsgs}`)
+
     const latestMessage = newMsgs[newMsgs.length - 1]
 
     if (latestMessage && latestMessage.sender.username !== myUser.nickname) {

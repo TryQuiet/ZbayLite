@@ -41,10 +41,10 @@ export type DirectMessagesStore = DirectMessages
 
 export const initialState: DirectMessagesStore = {
   users: {
-    '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2': {
-      nickname: 'holmes',
-      publicKey: '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2',
-      halfKey: '279e40e4ad5bc84f6cfcdb90465317e61255ba7ee78600179ea129a77e1bcef4'
+    '03ff9c51456b6e239d92b152561b9f9ae4e7d40f8ad1ff0d1f5b93aa2ff3915dd4': {
+      nickname: 'dev99babjagasdf',
+      publicKey: '03ff9c51456b6e239d92b152561b9f9ae4e7d40f8ad1ff0d1f5b93aa2ff3915dd4',
+      halfKey: '5d008b6c25a7cb3804d32788b6cf7a5273a2c80bc69f64479dc4756ff72b577c'
     }
   },
   conversations: {},
