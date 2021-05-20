@@ -209,3 +209,5 @@ export const soundType = {
   BANG: 2,
   SPLAT: 3
 }
+
+export const loadNextMessagesLimit = 20

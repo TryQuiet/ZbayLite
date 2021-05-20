@@ -36,10 +36,13 @@ const extensionsFolderPath = `${app.getPath('userData')}/extensions`
 
 const applyDevTools = async () => {
   if (!isDev) return
+  // eslint-disable-next-line
   require('electron-debug')({
     showDevTools: true
   })
+  // eslint-disable-next-line
   const installer = require('electron-devtools-installer')
+  // eslint-disable-next-line
   const { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer')
 
   const extensionsData = [

@@ -5,9 +5,7 @@ const log = Object.assign(debug('zbay:channels'), {
   error: debug('zbay:channels:err')
 })
 const publicLiteNodes = [
-  'https://lightwalletd.zecwallet.co:1443',
-  'https://lightd-main.zecwallet.co:443',
-  'https://lightd-main.zecwallet.co:443'
+  'https://lwdv3.zecwallet.co:443'
 ]
 
 class RPC {

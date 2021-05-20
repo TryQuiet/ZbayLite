@@ -6,7 +6,7 @@ import AppBar from '@material-ui/core/AppBar'
 import { withStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
 import { AutoSizer } from 'react-virtualized'
-import { Scrollbars } from 'react-custom-scrollbars'
+import { Scrollbars } from 'rc-scrollbars'
 
 import Modal from '../../../ui/Modal'
 import Tab from '../../../ui/Tab'

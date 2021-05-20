@@ -1,9 +1,10 @@
 
-import { createAction, handleActions } from 'redux-actions'
 import { actionTypes } from '../../../shared/static'
-import { produce, immerable } from 'immer'
+import { immerable } from 'immer'
 
-import { ActionsType, PayloadType } from './types'
+import { createAction, createReducer } from '@reduxjs/toolkit'
+
+import { ActionsType } from './types'
 
 export class Waggle {
   isWaggleConnected: boolean
@@ -29,19 +30,11 @@ export const actions = {
 export type WaggleActions = ActionsType<typeof actions>
 
 export const epics = {}
-
-export const reducer = handleActions<WaggleStore, PayloadType<WaggleActions>>(
-  {
-    [setIsWaggleConnected.toString()]: (
-      state,
-      { payload: isWaggleConnected }: WaggleActions['setIsWaggleConnected']
-    ) =>
-      produce(state, draft => {
-        draft.isWaggleConnected = isWaggleConnected
-      })
-  },
-  initialState
-)
+export const reducer = createReducer<WaggleStore>(initialState, (builder) => {
+  builder.addCase(setIsWaggleConnected, (state, action: WaggleActions['setIsWaggleConnected']) => {
+    state.isWaggleConnected = action.payload
+  })
+})
 
 export default {
   actions,

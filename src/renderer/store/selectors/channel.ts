@@ -34,18 +34,16 @@ const isPublicChannel = createSelector(
   }
 )
 
-const isDirectMessage = createSelector(
-  directMessagesSelectors.users, channel, (users, channel) => {
-    if (users && channel) {
-      const { id } = channel
-      const usersIds = Array.from(Object.keys(users))
-      console.log(`checking if it is DM ${id}, ${usersIds}`)
-      return usersIds.includes(id)
-    } else {
-      return false
-    }
+const isDirectMessage = createSelector(directMessagesSelectors.users, channel, (users, channel) => {
+  if (users && channel) {
+    const { id } = channel
+    const usersIds = Array.from(Object.keys(users))
+    console.log(`checking if it is DM ${id}, ${usersIds}`)
+    return usersIds.includes(id)
+  } else {
+    return false
   }
-)
+})
 
 export const spentFilterValue = createSelector(channel, c =>
   c.spentFilterValue ? spentFilterValue : -1
@@ -180,34 +178,32 @@ export const inputLocked = createSelector(
   directMessagesSelectors.users,
   waggleSelectors.isConnected,
   isPublicChannel,
-  (
-    channelId,
-    waggleContacts,
-    waggle,
-    publicChannel
-  ) => {
+  (channelId, waggleContacts, waggle, publicChannel) => {
     const contactsData = Object.values(waggleContacts)
     const currentContactArray = contactsData.filter(item => {
       return item.publicKey === channelId
     })
 
-    if (waggle) {
-      if (currentContactArray[0] || publicChannel) {
-        return INPUT_STATE.AVAILABLE
-      } else {
-        return INPUT_STATE.LOCKED
-      }
-    } else {
-      return INPUT_STATE.LOCKED
+    if (!waggle) {
+      return INPUT_STATE.NOT_CONNECTED
     }
+
+    if (publicChannel || currentContactArray[0]) {
+      return INPUT_STATE.AVAILABLE
+    }
+
+    if (!currentContactArray[0]) {
+      return INPUT_STATE.USER_NOT_REGISTERED
+    }
+
+    return INPUT_STATE.NOT_CONNECTED
   }
 )
 
 export const INPUT_STATE = {
-  DISABLE: 0,
-  AVAILABLE: 1,
-  LOCKED: 2,
-  UNREGISTERED: 3
+  NOT_CONNECTED: 0,
+  USER_NOT_REGISTERED: 1,
+  AVAILABLE: 2
 }
 
 export const members = createSelector(contacts, id, (c, channelId) => {
