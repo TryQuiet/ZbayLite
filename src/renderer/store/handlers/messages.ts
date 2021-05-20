@@ -220,7 +220,7 @@ export const findNewMessages = (key, messages, state, isDM = false) => {
   if (messages) {
     console.log(`findNewMessagses: 1`)
     const currentChannel = channelSelectors.channel(state)
-    if (key === currentChannel.address) {
+    if (key === currentChannel.id) {
       console.log(`findNewMessagses: 2`)
       return []
     }
