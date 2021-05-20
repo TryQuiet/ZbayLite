@@ -123,7 +123,7 @@ export function* loadAllDirectMessages(
   const myUser = yield* select(usersSelectors.myUser)
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
   if (!channel) {
-    console.log(
+    log.error(
       `Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`
     )
     return
@@ -136,10 +136,10 @@ export function* loadAllDirectMessages(
       return JSON.parse(decodeMessage(sharedSecret, message))
     })
     const displayableMessages = decodedMessages.map(msg => transferToMessage(msg, users))
-    console.log(displayableMessages)
+    log(displayableMessages)
     const state = yield* select()
     const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state, true)
-    console.log(newMsgs)
+    log(newMsgs)
     yield put(
       contactsHandlers.actions.setMessages({
         key: contactPublicKey,
@@ -170,7 +170,7 @@ export function* loadAllDirectMessages(
 export function* responseGetAvailableUsers(
   action: DirectMessagesActions['responseGetAvailableUsers']
 ): Generator {
-  console.log('RESPONSE GET AVAILABLE USERS')
+  log('RESPONSE GET AVAILABLE USERS')
   for (const [key, value] of Object.entries(action.payload)) {
     const user = yield* select(usersSelectors.registeredUser(key))
 
@@ -191,7 +191,7 @@ export function* responseGetAvailableUsers(
 export function* responseGetPrivateConversations(
   action: DirectMessagesActions['responseGetPrivateConversations']
 ): Generator {
-  console.log('RESPONSE GET PRIVATE CONVERSATIONS')
+  log('RESPONSE GET PRIVATE CONVERSATIONS')
   const privKey = yield* select(directMessagesSelectors.privateKey)
 
   for (const [key, value] of Object.entries(action.payload)) {

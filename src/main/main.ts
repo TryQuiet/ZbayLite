@@ -261,7 +261,7 @@ app.on('ready', async () => {
   await applyDevTools()
 
   await createWindow()
-  log('creatd windows')
+  log('created windows')
   mainWindow.webContents.on('did-fail-load', () => {
     log('failed loading')
   })

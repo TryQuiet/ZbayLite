@@ -49,7 +49,7 @@ export function subscribe(socket) {
     })
     // Direct messages
     socket.on(socketsActions.DIRECT_MESSAGE, payload => {
-      console.log('respnse direct message')
+      log('response direct message')
       emit(directMessagesActions.responseLoadDirectMessage(payload))
     })
     socket.on(socketsActions.RESPONSE_FETCH_ALL_DIRECT_MESSAGES, payload => {
