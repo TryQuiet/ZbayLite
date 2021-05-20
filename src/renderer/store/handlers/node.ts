@@ -16,7 +16,6 @@ const log = Object.assign(debug('zbay:node'), {
   error: debug('zbay:node:err')
 })
 
-
 const DEFAULT_ADDRESS_TYPE = 'sapling'
 
 export class Node {

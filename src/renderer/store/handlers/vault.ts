@@ -17,7 +17,6 @@ const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
 })
 
-
 export const VaultState = {
   exists: null,
   creating: false,
