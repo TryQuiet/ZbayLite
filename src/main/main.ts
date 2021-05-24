@@ -7,10 +7,11 @@ import { autoUpdater } from 'electron-updater'
 import config from './config'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
-import { getOnionAddress, spawnTor, runWaggle } from './waggleManager'
+import { getOnionAddress, spawnTor, runWaggle, waggleVersion } from './waggleManager'
 
 electronStore.set('appDataPath', app.getPath('appData'))
 electronStore.set('waggleInitialized', false)
+electronStore.set('waggleVersion', waggleVersion)
 
 export const isDev = process.env.NODE_ENV === 'development'
 
@@ -32,15 +33,13 @@ const extensionsFolderPath = `${app.getPath('userData')}/extensions`
 
 const applyDevTools = async () => {
   if (!isDev) return
-  // eslint-disable-next-line
+  /* eslint-disable */
   require('electron-debug')({
     showDevTools: true
   })
-  // eslint-disable-next-line
   const installer = require('electron-devtools-installer')
-  // eslint-disable-next-line
   const { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer')
-
+  /* eslint-enable */
   const extensionsData = [
     {
       name: REACT_DEVELOPER_TOOLS,
@@ -135,7 +134,7 @@ const createWindow = async () => {
     autoHideMenuBar: true
   })
   mainWindow.setMinimumSize(600, 400)
-  // eslint-disable-next-line
+  /* eslint-disable */
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, './index.html'),
@@ -144,7 +143,7 @@ const createWindow = async () => {
       hash: '/zcashNode'
     })
   )
-
+  /* eslint-enable */
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
     mainWindow = null

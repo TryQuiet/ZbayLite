@@ -96,7 +96,7 @@
     "neon-rebuild": "rm native/index.node && rm -rf native/target && rm native/Cargo.lock && npm run neon"
   },
   "author": {
-    "name": "Bartlomiej Lisiecki/Norbert Bodziony",
+    "name": "Zbay LLC",
     "email": "rumblefish@rumblefish.pl"
   },
   "license": "ISC",
@@ -121,6 +121,7 @@
     "@types/react-router-dom": "^5.1.6",
     "@types/redux-actions": "^2.6.1",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "about-window": "^1.14.0",
     "awesome-typescript-loader": "^5.2.1",
     "axios-mock-adapter": "^1.16.0",
     "babel-eslint": "^10.0.1",
@@ -222,6 +223,7 @@
     "country-region-data": "^1.4.7",
     "custom-electron-titlebar": "^3.2.2-hotfix62",
     "dotenv": "^8.2.0",
+    "electron-about-window": "^1.13.2",
     "electron-debug": "^3.0.1",
     "electron-localshortcut": "^3.2.1",
     "electron-store": "^5.2.0",

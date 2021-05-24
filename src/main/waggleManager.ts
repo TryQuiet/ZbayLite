@@ -164,4 +164,6 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
   })
 }
 
-export default { spawnTor, getOnionAddress, getPorts, runWaggle }
+export const waggleVersion = TlgManager.version
+
+export default { spawnTor, getOnionAddress, getPorts, runWaggle, waggleVersion }
