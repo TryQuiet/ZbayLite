@@ -193,7 +193,6 @@ const sendOnEnter = (_event, resetTab) => async (dispatch, getState) => {
   }
   console.log(`isDM? ${isDirectMessageChannel}`)
   if (isDirectMessageChannel) {
-    
     const id = channelSelectors.id(getState())
     const conversations = directMessagesSelectors.conversations(getState())
 

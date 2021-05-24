@@ -141,15 +141,15 @@ export function* loadAllMessages(
     return item.name === username
   })
   console.log(`New messages are ${newMsgs}`)
-  const msg = newMsgs[newMsgs.length-1]
+  const msg = newMsgs[newMsgs.length - 1]
   console.log(`MSG IS ${msg}`)
   if (msg && msg?.sender?.username !== myUser.nickname) {
-      displayMessageNotification({
-        senderName: msg.sender.username,
-        message: msg.message,
-        channelName: username,
-        address: contact[0].address
-      })
+    displayMessageNotification({
+      senderName: msg.sender.username,
+      message: msg.message,
+      channelName: username,
+      address: contact[0].address
+    })
   }
   // newMsgs.forEach(msg => {
   //   if (newMsgs.length > 0 && msg.sender.replyTo && msg.sender.username !== myUser.nickname) {

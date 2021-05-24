@@ -117,8 +117,8 @@ const initializeConversation = () => async (dispatch, getState) => {
   )
 }
 
-const subscribeForAllConversations = ()=>async dispatch => {
-await dispatch(directMessagesActions.subscribeForAllConversations())
+const subscribeForAllConversations = () => async dispatch => {
+  await dispatch(directMessagesActions.subscribeForAllConversations())
 }
 
 const getAvailableUsers = () => async dispatch => {
