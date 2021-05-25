@@ -129,7 +129,7 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
   const { libp2pHiddenService } = electronStore.get('hiddenServices')
 
   const [dataServerPort] = await fp(4677)
-  const dataServer = new TlgManager.DataServer(dataServerPort)
+  const dataServer = new TlgManager.DataServer()
   dataServer.listen()
 
   const connectionsManager = new TlgManager.ConnectionsManager({
