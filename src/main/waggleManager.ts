@@ -5,6 +5,10 @@ import os from 'os'
 import * as fs from 'fs'
 import { ipcMain, BrowserWindow } from 'electron'
 import electronStore from '../shared/electronStore'
+import debug from 'debug'
+const log = Object.assign(debug('zbay:waggle'), {
+  error: debug('zbay:waggle:err')
+})
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -48,7 +52,7 @@ export const spawnTor = async () => {
       )
       directMessagesHiddenService = await tor.addNewService(80, ports.directMessagesHiddenService)
     } catch (e) {
-      console.log(`tlgManager ERROR: can't add new onion service ${e}`)
+      log.error(`tlgManager ERROR: can't add new onion service ${e}`)
     }
 
     const services = {
@@ -74,7 +78,7 @@ export const spawnTor = async () => {
           privKey: hiddenServices[service].privateKey
         })
       } catch (e) {
-        console.log(`can't add onion services ${e}`)
+        log.error(`can't add onion services ${e}`)
       }
     }
   }
@@ -86,11 +90,11 @@ export const spawnTor = async () => {
   }
 
   tor.process.stderr.on('data', data => {
-    console.error(`grep stderr: ${data}`)
+    log.error(`grep stderr: ${data}`)
   })
   tor.process.on('close', code => {
     if (code !== 0) {
-      console.log(`ps process exited with code ${code}`)
+      log(`ps process exited with code ${code}`)
     }
   })
   return tor
@@ -158,7 +162,7 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
           electronStore.set('waggleInitialized', true)
         })
         .catch(error => {
-          console.error(`Couldn't initialize waggle: ${error.message}`)
+          log.error(`Couldn't initialize waggle: ${error.message}`)
         })
     }
   })

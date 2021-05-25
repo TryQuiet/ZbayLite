@@ -1,3 +1,8 @@
+# [3.2.16] - WIP
+
+### Added
+* Added logger
+
 # [3.2.15] - 25 May 2021
 
 ### Changed

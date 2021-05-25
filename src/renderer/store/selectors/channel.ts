@@ -9,6 +9,11 @@ import waggleSelectors from './waggle'
 import { Store } from '../reducers'
 import { DisplayableMessage } from '../../zbay/messages.types'
 
+import debug from 'debug'
+const log = Object.assign(debug('zbay:channel'), {
+  error: debug('zbay:channel:err')
+})
+
 const channel = (s: Store) => s.channel
 const contacts = (s: Store) => s.contacts
 
@@ -38,7 +43,7 @@ const isDirectMessage = createSelector(directMessagesSelectors.users, channel, (
   if (users && channel) {
     const { id } = channel
     const usersIds = Array.from(Object.keys(users))
-    console.log(`checking if it is DM ${id}, ${usersIds}`)
+    log(`checking if it is DM ${id}, ${usersIds}`)
     return usersIds.includes(id)
   } else {
     return false

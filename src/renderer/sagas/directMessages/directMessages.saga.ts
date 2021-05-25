@@ -17,6 +17,10 @@ import BigNumber from 'bignumber.js'
 import { actions } from '../../store/handlers/directMessages'
 
 import { checkConversation, decodeMessage } from '../../cryptography/cryptography'
+import debug from 'debug'
+const log = Object.assign(debug('zbay:dm'), {
+  error: debug('zbay:dm:err')
+})
 
 const all: any = effectsAll
 
@@ -116,7 +120,7 @@ export function* loadAllDirectMessages(
   const myUser = yield* select(usersSelectors.myUser)
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
   if (!channel) {
-    console.log(
+    log.error(
       `Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`
     )
     return
