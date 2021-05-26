@@ -12,7 +12,7 @@ import { directMessagesActions } from '../../sagas/directMessages/directMessages
 
 import { encodeMessage, constants } from '../../cryptography/cryptography'
 import debug from 'debug'
-const log = Object.assign(debug('zbay:dm'), {
+const _log = Object.assign(debug('zbay:dm'), {
   error: debug('zbay:dm:err')
 })
 

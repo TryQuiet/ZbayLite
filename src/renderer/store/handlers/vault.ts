@@ -13,7 +13,7 @@ import electronStore from '../../../shared/electronStore'
 import { ActionsType, PayloadType } from './types'
 
 import debug from 'debug'
-const log = Object.assign(debug('zbay:main'), {
+const _log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
 })
 

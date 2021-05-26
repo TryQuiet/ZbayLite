@@ -3,11 +3,9 @@ import classNames from 'classnames'
 import { renderToString } from 'react-dom/server'
 import ContentEditable from 'react-contenteditable'
 import Picker from 'emoji-picker-react'
-import Fade from '@material-ui/core/Fade'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
-import WarningIcon from '@material-ui/icons/Warning'
 import orange from '@material-ui/core/colors/orange'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import { shell } from 'electron'
@@ -175,12 +173,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
   mentionsToSelect,
   setMentionsToSelect,
   members,
-  isMessageTooLong,
-  isDM,
-  sendTypingIndicator,
-  isContactConnected,
-  isContactTyping,
-  contactUsername
+  isMessageTooLong
 }) => {
   const classes = useStyles({})
 
@@ -196,7 +189,6 @@ export const ChannelInput: React.FC<IChannelInput> = ({
   const [openEmoji, setOpenEmoji] = React.useState(false)
   const [htmlMessage, setHtmlMessage] = React.useState<string>(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
-  const typingIndicator = !!message
   const showInfoMessage = inputState !== INPUT_STATE.AVAILABLE
 
   window.onfocus = () => {
@@ -473,11 +465,13 @@ export const ChannelInput: React.FC<IChannelInput> = ({
                     }}>
                     <div className={classes.picker}>
                       <Picker
+                        /* eslint-disable */
                         onEmojiClick={(e, emoji) => {
                           setHtmlMessage(message + emoji.emoji)
                           setMessage(message + emoji.emoji)
                           setOpenEmoji(false)
                         }}
+                      /* eslint-enable */
                       />
                     </div>
                   </ClickAwayListener>
@@ -495,9 +489,11 @@ export const ChannelInput: React.FC<IChannelInput> = ({
               <Typography className={classes.errorText} variant={'caption'}>
                 {'Your message is over the size limit. '}
                 <span
+                  /* eslint-disable */
                   onClick={() =>
                     shell.openExternal('https://www.zbay.app/faq.html#message-size-info')
                   }
+                  /* eslint-enable */
                   className={classes.linkBlue}>
                   Learn More
                 </span>

@@ -26,7 +26,6 @@ import { channelToUri } from '../../zbay/channels'
 
 import { ActionsType, PayloadType } from './types'
 import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
-import { KeyboardEvent } from 'react'
 import { directMessagesActions } from '../../sagas/directMessages/directMessages.reducer'
 
 // TODO: to remove, but must be replaced in all the tests
@@ -181,7 +180,7 @@ const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
   history.push(`/main/channel/${targetChannel.address}`)
 }
 
-const sendOnEnter = (event: KeyboardEvent, resetTab?: (arg: number) => void) => async (dispatch, getState) => {
+const sendOnEnter = (resetTab?: (arg: number) => void) => async (dispatch, getState) => {
   if (resetTab) {
     resetTab(0)
   }
