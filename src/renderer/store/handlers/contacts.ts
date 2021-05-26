@@ -2,12 +2,13 @@ import { produce, immerable } from 'immer'
 import { DateTime } from 'luxon'
 import { createAction, handleActions } from 'redux-actions'
 import BigNumber from 'bignumber.js'
-import { remote, ipcRenderer } from 'electron'
+import { remote } from 'electron'
 
 import history from '../../../shared/history'
 import { actionTypes } from '../../../shared/static'
 import identitySelectors from '../selectors/identity'
 import selectors from '../selectors/contacts'
+import * as _ from 'lodash'
 
 import { DisplayableMessage } from '../../zbay/messages.types'
 import { messages as zbayMessages } from '../../zbay'
@@ -15,7 +16,6 @@ import { messages as zbayMessages } from '../../zbay'
 import { _checkMessageSize } from './messages'
 import directMessagesQueueHandlers from './directMessagesQueue'
 import { ActionsType, PayloadType } from './types'
-import usersSelector from '../selectors/users'
 
 const sendDirectMessage = (payload, redirect = true) => async (dispatch, getState) => {
   const { spent, type, message: messageData } = payload
@@ -177,7 +177,6 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
   getState
 ) => {
   const contacts = selectors.contacts(getState())
-  // Create temp user
   if (!contacts[contact.publicKey]) {
     await dispatch(
       addContact({
@@ -191,54 +190,6 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
     history.push(`/main/direct-messages/${contact.publicKey}/${contact.nickname}`)
   }
 }
-export const connectWsContacts = (key?: string) => async (dispatch, getState) => {
-  const contacts = selectors.contacts(getState())
-  const users = usersSelector.users(getState())
-  var mapping = new Map()
-  const connect = async (key, address) => {
-    const promise = new Promise(resolve => {
-      mapping.set(key, {
-        resolve: resolve,
-        data: JSON.stringify({
-          id: key,
-          address: `ws://${address}.onion`
-        })
-      })
-    })
-    ipcRenderer.send(
-      'initWsConnection',
-      JSON.stringify({
-        id: key,
-        address: `ws://${address}.onion`
-      })
-    )
-    return promise
-  }
-
-  ipcRenderer.on('initWsConnection', (_e, d) => {
-    const data = JSON.parse(d)
-    dispatch(setContactConnected({ key: data.id, connected: data.connected }))
-    mapping.get(data.id)?.resolve(data.response)
-    mapping.delete(data.id)
-  })
-
-  const contactsToConnect = []
-  if (key) {
-    const user = users[key]
-    if (user?.onionAddress) {
-      contactsToConnect.push({ key: key, onionAddress: user?.onionAddress })
-    }
-  } else {
-    for (const contact of Object.values(contacts)) {
-      const user = users[contact.key]
-      if (user?.onionAddress) {
-        contactsToConnect.push({ key: contact.key, onionAddress: user?.onionAddress })
-      }
-    }
-  }
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
-  await Promise.all(contactsToConnect.map(contact => connect(contact.key, contact.onionAddress)))
-}
 
 export const deleteChannel = ({ address, history }) => async dispatch => {
   history.push('/main/channel/general')
@@ -251,8 +202,7 @@ export const epics = {
   loadContact,
   createVaultContact,
   deleteChannel,
-  linkUserRedirect,
-  connectWsContacts
+  linkUserRedirect
 }
 
 export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>(
@@ -275,9 +225,11 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
             typingIndicator: false
           }
         }
+        const arr = Array.from(Object.values(draft[key].messages)).concat(Array.from(Object.values(messages)))
+        const uniqArr = _.uniqBy(arr, 'id')
+        console.log()
         draft[key].messages = {
-          ...draft[key].messages,
-          ...messages
+          ...uniqArr
         }
       }),
     [setAllMessages.toString()]: (

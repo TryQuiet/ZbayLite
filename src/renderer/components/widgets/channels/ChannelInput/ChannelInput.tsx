@@ -14,7 +14,7 @@ import { shell } from 'electron'
 
 import MentionPoper from './MentionPoper'
 import ChannelInputAction from '../../../../containers/widgets/channels/ChannelInputAction'
-import TypingIndicator from './TypingIndicator'
+import ChannelInputInfoMessage from './ChannelInputInfoMessage'
 import { INPUT_STATE } from '../../../../store/selectors/channel'
 import MentionElement from './MentionElement'
 import Icon from '../../../ui/Icon'
@@ -129,6 +129,9 @@ const useStyles = makeStyles(theme => ({
     fontStyle: 'normal',
     cursor: 'pointer',
     color: theme.palette.colors.linkBlue
+  },
+  notAllowed: {
+    cursor: 'not-allowed'
   }
 }))
 
@@ -154,15 +157,6 @@ interface IChannelInput {
   isContactConnected?: boolean
   isContactTyping?: boolean
   contactUsername?: string
-}
-
-const inputStateToMessage = {
-  [INPUT_STATE.DISABLE]:
-    'Sending messages is locked due to insufficient funds - this may be resolved by topping up your account',
-  [INPUT_STATE.LOCKED]:
-    'All of your funds are locked - please wait for network confirmation or deposit more ZEC to your account',
-  [INPUT_STATE.UNREGISTERED]:
-    'You can not reply to this message because you are not registered yet, please wait.'
 }
 
 export const ChannelInput: React.FC<IChannelInput> = ({
@@ -202,9 +196,8 @@ export const ChannelInput: React.FC<IChannelInput> = ({
   const [openEmoji, setOpenEmoji] = React.useState(false)
   const [htmlMessage, setHtmlMessage] = React.useState<string>(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
-
   const typingIndicator = !!message
-  const showTypingIndicator = isDM && isContactTyping && isContactConnected
+  const showInfoMessage = inputState !== INPUT_STATE.AVAILABLE
 
   window.onfocus = () => {
     inputRef.current.el.current.focus()
@@ -244,11 +237,6 @@ export const ChannelInput: React.FC<IChannelInput> = ({
   React.useEffect(() => {
     messageRef.current = message
   }, [message])
-
-  React.useEffect(() => {
-    if (!isContactConnected) return
-    sendTypingIndicator(typingIndicator)
-  }, [typingIndicator])
 
   const findMentions = text => {
     const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))
@@ -313,6 +301,11 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     },
     [setAnchorEl, onChange, setHtmlMessage]
   )
+  const inputStateRef = React.useRef(inputState)
+  React.useEffect(() => {
+    inputStateRef.current = inputState
+  })
+
   const onKeyDownCb = useCallback(
     e => {
       if (refMentionsToSelect.current.length) {
@@ -345,7 +338,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
         return
       }
       if (
-        inputState === INPUT_STATE.AVAILABLE &&
+        inputStateRef.current === INPUT_STATE.AVAILABLE &&
         e.nativeEvent.keyCode === 13 &&
         e.target.innerText !== ''
       ) {
@@ -374,159 +367,146 @@ export const ChannelInput: React.FC<IChannelInput> = ({
       infoClass,
       setInfoClass,
       message,
-      setSelected
+      setSelected,
+      inputState
     ]
   )
   return (
-    <Grid
-      container
-      className={classNames({
-        [classes.root]: true,
-        [classes.displayNone]:
-          inputState === INPUT_STATE.DISABLE || inputState === INPUT_STATE.LOCKED
-      })}
-      direction='column'
-      justify='center'>
-      <MentionPoper anchorEl={anchorEl} selected={selected}>
-        {mentionsToSelect.map((target, index) => (
-          <MentionElement
-            key={index}
-            name={target.nickname}
-            highlight={index === selected}
-            onMouseEnter={() => {
-              setSelected(index)
-            }}
-            participant={members.has(target.address)}
-            channelName={channelName}
-            onClick={e => {
-              e.preventDefault()
-              const currentMsg = message
-                .replace(/ /g, String.fromCharCode(160))
-                .split(String.fromCharCode(160))
-              currentMsg[currentMsg.length - 1] =
-                '@' + refMentionsToSelect.current[refSelected.current].nickname
-              currentMsg.push(String.fromCharCode(160))
-              setMessage(currentMsg.join(String.fromCharCode(160)))
-              setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
-              inputRef.current.el.current.focus()
-            }}
-          />
-        ))}
-      </MentionPoper>
-      {inputState !== INPUT_STATE.AVAILABLE && (
-        <Fade in>
-          <Grid
-            container
-            direction='column'
-            justify='center'
-            alignItems='center'
-            className={infoClass || classes.backdrop}>
-            <WarningIcon className={classes.warningIcon} />
-            <Typography variant='caption' align='center'>
-              {inputStateToMessage[inputState]}
-            </Typography>
-          </Grid>
-        </Fade>
-      )}
+    <Grid className={classNames({
+      [classes.root]: true,
+      [classes.notAllowed]: showInfoMessage
+    })}>
       <Grid
         container
-        direction='row'
-        alignItems='center'
-        justify='center'
-        spacing={0}
         className={classNames({
-          [classes.disabledBottomMargin]: isMessageTooLong,
-          [classes.inputsDiv]: true
-        })}>
-        <ClickAwayListener
-          onClickAway={() => {
-            setFocused(false)
-          }}>
-          <Grid
-            item
-            xs
-            container
-            className={classNames({
-              [classes.textfield]: true,
-              [classes.focused]: focused
-            })}
-            justify='center'
-            alignItems='center'>
-            <Grid item xs>
-              <ContentEditable
-                ref={inputRef}
-                placeholder={`Message ${inputPlaceholder}`}
-                className={classes.input}
-                onClick={() => {
-                  if (!focused) {
-                    setFocused(true)
-                  }
-                }}
-                html={sanitizedHtml}
-                onChange={onChangeCb}
-                onKeyDown={onKeyDownCb}
-              />
-            </Grid>
-            <Grid item className={classes.actions}>
-              <Grid container justify='center' alignItems='center'>
-                <ChannelInputAction disabled={inputState !== INPUT_STATE.AVAILABLE} />
-                <Icon
-                  className={classes.emoji}
-                  src={emojiHovered ? emojiBlack : emojiGray}
-                  onClickHandler={() => {
-                    setOpenEmoji(true)
+          [classes.root]: true,
+          [classes.displayNone]: showInfoMessage
+        })}
+        direction='column'
+        justify='center'>
+        <MentionPoper anchorEl={anchorEl} selected={selected}>
+          {mentionsToSelect.map((target, index) => (
+            <MentionElement
+              key={index}
+              name={target.nickname}
+              highlight={index === selected}
+              onMouseEnter={() => {
+                setSelected(index)
+              }}
+              participant={members.has(target.address)}
+              channelName={channelName}
+              onClick={e => {
+                e.preventDefault()
+                const currentMsg = message
+                  .replace(/ /g, String.fromCharCode(160))
+                  .split(String.fromCharCode(160))
+                currentMsg[currentMsg.length - 1] =
+                  '@' + refMentionsToSelect.current[refSelected.current].nickname
+                currentMsg.push(String.fromCharCode(160))
+                setMessage(currentMsg.join(String.fromCharCode(160)))
+                setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
+                inputRef.current.el.current.focus()
+              }}
+            />
+          ))}
+        </MentionPoper>
+        <Grid
+          container
+          direction='row'
+          alignItems='center'
+          justify='center'
+          spacing={0}
+          className={classNames({
+            [classes.disabledBottomMargin]: isMessageTooLong,
+            [classes.inputsDiv]: true
+          })}>
+          <ClickAwayListener
+            onClickAway={() => {
+              setFocused(false)
+            }}>
+            <Grid
+              item
+              xs
+              container
+              className={classNames({
+                [classes.textfield]: true,
+                [classes.focused]: focused
+              })}
+              justify='center'
+              alignItems='center'>
+              <Grid item xs>
+                <ContentEditable
+                  ref={inputRef}
+                  placeholder={`Message ${inputPlaceholder}`}
+                  className={classes.input}
+                  onClick={() => {
+                    if (!focused) {
+                      setFocused(true)
+                    }
                   }}
-                  onMouseEnterHandler={() => {
-                    setEmojiHovered(true)
-                  }}
-                  onMouseLeaveHandler={() => {
-                    setEmojiHovered(false)
-                  }}
+                  html={sanitizedHtml}
+                  onChange={onChangeCb}
+                  onKeyDown={onKeyDownCb}
                 />
               </Grid>
-              {openEmoji && (
-                <ClickAwayListener
-                  onClickAway={() => {
-                    setOpenEmoji(false)
-                  }}>
-                  <div className={classes.picker}>
-                    <Picker
-                      onEmojiClick={(_, emoji) => {
-                        setHtmlMessage(message + emoji.emoji)
-                        setMessage(message + emoji.emoji)
-                        setOpenEmoji(false)
-                      }}
-                    />
-                  </div>
-                </ClickAwayListener>
-              )}
+              <Grid item className={classes.actions}>
+                <Grid container justify='center' alignItems='center'>
+                  <ChannelInputAction disabled={inputState !== INPUT_STATE.AVAILABLE} />
+                  <Icon
+                    className={classes.emoji}
+                    src={emojiHovered ? emojiBlack : emojiGray}
+                    onClickHandler={() => {
+                      setOpenEmoji(true)
+                    }}
+                    onMouseEnterHandler={() => {
+                      setEmojiHovered(true)
+                    }}
+                    onMouseLeaveHandler={() => {
+                      setEmojiHovered(false)
+                    }}
+                  />
+                </Grid>
+                {openEmoji && (
+                  <ClickAwayListener
+                    onClickAway={() => {
+                      setOpenEmoji(false)
+                    }}>
+                    <div className={classes.picker}>
+                      <Picker
+                        onEmojiClick={(e, emoji) => {
+                          setHtmlMessage(message + emoji.emoji)
+                          setMessage(message + emoji.emoji)
+                          setOpenEmoji(false)
+                        }}
+                      />
+                    </div>
+                  </ClickAwayListener>
+                )}
+              </Grid>
+            </Grid>
+          </ClickAwayListener>
+        </Grid>
+        {isMessageTooLong && (
+          <Grid container item className={classes.errorBox}>
+            <Grid className={classes.errorIcon} item>
+              <Icon src={errorIcon} />
+            </Grid>
+            <Grid item>
+              <Typography className={classes.errorText} variant={'caption'}>
+                {'Your message is over the size limit. '}
+                <span
+                  onClick={() =>
+                    shell.openExternal('https://www.zbay.app/faq.html#message-size-info')
+                  }
+                  className={classes.linkBlue}>
+                  Learn More
+                </span>
+              </Typography>
             </Grid>
           </Grid>
-        </ClickAwayListener>
+        )}
+        <ChannelInputInfoMessage showInfoMessage={showInfoMessage} inputState={inputState} />
       </Grid>
-      {isMessageTooLong && (
-        <Grid container item className={classes.errorBox}>
-          <Grid className={classes.errorIcon} item>
-            <Icon src={errorIcon} />
-          </Grid>
-          <Grid item>
-            <Typography className={classes.errorText} variant={'caption'}>
-              {'Your message is over the size limit. '}
-              <span
-                onClick={async () =>
-                  await shell.openExternal('https://www.zbay.app/faq.html#message-size-info')
-                }
-                className={classes.linkBlue}>
-                Learn More
-              </span>
-            </Typography>
-          </Grid>
-        </Grid>
-      )}
-      <TypingIndicator
-        contactUsername={contactUsername}
-        showTypingIndicator={showTypingIndicator}
-      />
     </Grid>
   )
 }

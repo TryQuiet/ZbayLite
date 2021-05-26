@@ -2,16 +2,20 @@ import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import crypto from 'crypto'
 import { ipcRenderer } from 'electron'
-import axios from 'axios'
 
 import { typeFulfilled, typeRejected, typePending, errorNotification } from './utils'
 import identityHandlers from './identity'
 import notificationsHandlers from './notifications'
 import nodeHandlers from './node'
-import { REQUEST_MONEY_ENDPOINT, actionTypes } from '../../../shared/static'
+import { actionTypes } from '../../../shared/static'
 import electronStore from '../../../shared/electronStore'
 
 import { ActionsType, PayloadType } from './types'
+
+import debug from 'debug'
+const log = Object.assign(debug('zbay:main'), {
+  error: debug('zbay:main:err')
+})
 
 export const VaultState = {
   exists: null,
@@ -84,27 +88,10 @@ const createVaultEpic = (fromMigrationFile = false) => async dispatch => {
       })
     )
     await dispatch(nodeHandlers.actions.setIsRescanning(true))
-
     await dispatch(identityHandlers.epics.setIdentity(identity))
     await dispatch(identityHandlers.epics.loadIdentity())
     await dispatch(setVaultStatus(true))
     ipcRenderer.send('vault-created')
-    try {
-      await axios.get(REQUEST_MONEY_ENDPOINT, {
-        params: {
-          address: identity.address
-        }
-      })
-    } catch (error) {
-      console.log('error', error)
-      dispatch(
-        notificationsHandlers.actions.enqueueSnackbar(
-          errorNotification({
-            message: 'Request to faucet failed.'
-          })
-        )
-      )
-    }
     return identity
   } catch (error) {
     dispatch(

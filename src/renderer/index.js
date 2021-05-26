@@ -11,17 +11,26 @@ import updateHandlers from './store/handlers/update'
 import invitationHandlers from './store/handlers/invitation'
 import importChannelHandlers from './store/handlers/importedChannel'
 import coordinatorHandlers from './store/handlers/coordinator'
+import waggleHandlers from './store/handlers/waggle'
 import publicChannelsHandlers from './store/handlers/publicChannels'
-import messagesHandlers from './store/handlers/messages'
+import directMessagesHandlers from './store/handlers/directMessages'
 import nodeSelectors from './store/selectors/node'
 import coordinatorSelectors from './store/selectors/coordinator'
 import identityHandlers from './store/handlers/identity'
-import contactsHandlers from './store/handlers/contacts'
 
 import { errorNotification, successNotification } from './store/handlers/utils'
 import notificationsHandlers from './store/handlers/notifications'
 import appSelectors from './store/selectors/app'
 import { socketsActions } from './sagas/socket/socket.saga.reducer'
+import debug from 'debug'
+
+const log = Object.assign(debug('zbay:renderer'), {
+  error: debug('zbay:renderer:err')
+})
+
+if (window) {
+  window.localStorage.setItem('debug', process.env.DEBUG)
+}
 
 Web.HashingTools.patchCorePBKDF()
 
@@ -65,14 +74,6 @@ ipcRenderer.on('onionAddress', (_, address) => {
   store.dispatch(identityHandlers.actions.setOnionAddress(address))
 })
 
-ipcRenderer.on('wsMessage', (_, data) => {
-  store.dispatch(messagesHandlers.epics.handleWebsocketMessage(data))
-})
-
-ipcRenderer.on('connectWsContacts', (event, msg) => {
-  store.dispatch(contactsHandlers.epics.connectWsContacts())
-})
-
 ipcRenderer.on('askForUsingDefaultBlockchainLocation', event => {
   store.dispatch(appHandlers.epics.askForBlockchainLocation())
 })
@@ -110,10 +111,10 @@ ipcRenderer.on('newInvitation', (event, { invitation }) => {
 ipcRenderer.on('toggleCoordinator', () => {
   if (coordinatorSelectors.running(store.getState()) === true) {
     store.dispatch(coordinatorHandlers.actions.stopCoordinator())
-    console.log('coordinator stopped')
+    log('coordinator stopped')
   } else {
     store.dispatch(coordinatorHandlers.actions.startCoordinator())
-    console.log('coordinator started')
+    log('coordinator started')
   }
 })
 
@@ -122,14 +123,18 @@ ipcRenderer.on('checkNodeStatus', (event, { status }) => {
 })
 
 ipcRenderer.on('connectToWebsocket', (event) => {
-  console.log('connecting to websocket')
+  log('connecting to websocket')
   store.dispatch(socketsActions.connect())
 })
 
 ipcRenderer.on('waggleInitialized', (event) => {
-  console.log('Initialized waggle, subscribing to channels')
+  log('waggle Initialized')
+  store.dispatch(waggleHandlers.actions.setIsWaggleConnected(true))
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())
   store.dispatch(publicChannelsHandlers.epics.subscribeForPublicChannels())
+  store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
+  store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
+  store.dispatch(directMessagesHandlers.epics.subscribeForAllConversations())
 })
 
 ipcRenderer.on('newChannel', (event, { channelParams }) => {

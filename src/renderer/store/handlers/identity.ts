@@ -39,6 +39,14 @@ import { clearPublicChannels, PublicChannel } from './publicChannels'
 
 import { ActionsType, PayloadType } from './types'
 import { DisplayableMessage } from '../../zbay/messages.types'
+import directMessagesHandlers from './directMessages'
+import directMessagesSelectors from '../selectors/directMessages'
+import debug from 'debug'
+const log = Object.assign(debug('zbay:identity'), {
+  error: debug('zbay:identity:err'),
+  warn: debug('zbay:identity:warn')
+})
+
 interface IShippingData {
   firstName: string
   lastName: string
@@ -241,7 +249,7 @@ export const fetchFreeUtxos = () => async dispatch => {
     )
     dispatch(setFreeUtxos(freeUtxos.length))
   } catch (err) {
-    console.warn(err)
+    log.warn(err)
   }
 }
 
@@ -366,7 +374,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
     }, 0)
     return electronStore.get('identity')
   } catch (err) {
-    console.log('error', err)
+    log.error('error', err)
   }
 }
 
@@ -384,7 +392,6 @@ export const prepareUpgradedVersion = () => async (dispatch, getState) => {
     const appVersionNumber = Number(appVersion.split('-')[0].split('.')[0])
     if (appVersionNumber >= 3) {
       dispatch(clearPublicChannels())
-      console.log('Cleared public channels')
       electronStore.set('appUpgraded', true)
     }
   }
@@ -392,6 +399,7 @@ export const prepareUpgradedVersion = () => async (dispatch, getState) => {
 
 export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
   const nickname = identitySelectors.name(getState())
+  const hasWaggleIdentity = directMessagesSelectors.publicKey(getState())
   const identityOnionAddress = identitySelectors.onionAddress(getState())
   const myUser = usersSelectors.myUser(getState())
   const hasNewOnionAddress = (identityOnionAddress !== myUser.onionAddress) && myUser.onionAddress
@@ -419,6 +427,9 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     }
     dispatch(setLoadingMessage('Fetching balance and loading channels'))
     await dispatch(initAddreses())
+    if (!hasWaggleIdentity) {
+      await dispatch(directMessagesHandlers.epics.generateDiffieHellman())
+    }
     dispatch(ownedChannelsHandlers.epics.getOwnedChannels())
     dispatch(ratesHandlers.epics.setInitialPrice())
     await dispatch(nodeHandlers.epics.getStatus())
