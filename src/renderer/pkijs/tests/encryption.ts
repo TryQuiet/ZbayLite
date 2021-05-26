@@ -1,4 +1,3 @@
-/* global require Buffer module */
 const { Certificate, ContentInfo, EnvelopedData, CertificateSet, OriginatorInfo } = require('pkijs')
 
 const atob = require('atob')
@@ -8,7 +7,7 @@ const { CryptoEngine, setEngine } = require('pkijs')
 const webcrypto = new (require("node-webcrypto-ossl")).Crypto
 const { stringToArrayBuffer, fromBase64, toBase64, arrayBufferToString } = require("pvutils");
 
-let oaepHashAlg = "sha-1"
+let oaepHashAlg = "sha-256"
 
 setEngine('newEngine', webcrypto, new CryptoEngine({
   name: '',
@@ -19,9 +18,12 @@ setEngine('newEngine', webcrypto, new CryptoEngine({
 const encAlg = {
   name: "AES-CBC",
   length: 128
-};
+}
 
 let valueBuffer = new ArrayBuffer(0)
+let certificateBuffer = new ArrayBuffer(0)
+let cmsEnvelopedBuffer = new ArrayBuffer(0)
+let encryptedData = ''
 
 function formatPEM(pemString) {
   const PEM_STRING_LENGTH = pemString.length, LINE_LENGTH = 64
@@ -70,7 +72,8 @@ const envelopedEncryptInternal = async () => {
 }
 
 
-const envelopedEncrypt = async (encodedCertificate, message) => {
+
+export const envelopedEncrypt = async (encodedCertificate, message) => {
   await Promise.resolve()
     .then(() => {
       const clearEncodedCertificate = encodedCertificate.replace(/(-----(BEGIN|END)( NEW)? CERTIFICATE-----|\n)/g, "")
@@ -81,10 +84,9 @@ const envelopedEncrypt = async (encodedCertificate, message) => {
       let resultString = "-----BEGIN CMS-----\r\n"
       resultString = `${resultString}${formatPEM(toBase64(arrayBufferToString(cmsEnvelopedBuffer)))}`
       resultString = `${resultString}\r\n-----END CMS-----\r\n`
-      console.log("Encryption process finished successfully : ")
-      console.log(resultString)
-      return resultString
-    });
+      encryptedData = resultString
+    })
+  return encryptedData
 }
 
 
@@ -94,57 +96,3 @@ const envelopedEncrypt = async (encodedCertificate, message) => {
 
 
 
-
-function envelopedDecryptInternal() {
-  //region Decode input certificate
-  let asn1 = asn1js.fromBER(certificateBuffer);
-  const certSimpl = new Certificate({ schema: asn1.result });
-  //endregion
-
-  //region Decode CMS Enveloped content
-  asn1 = asn1js.fromBER(cmsEnvelopedBuffer);
-  const cmsContentSimpl = new ContentInfo({ schema: asn1.result });
-  const cmsEnvelopedSimp = new EnvelopedData({ schema: cmsContentSimpl.content });
-  //endregion
-
-  return cmsEnvelopedSimp.decrypt(0,
-    {
-      recipientCertificate: certSimpl,
-      recipientPrivateKey: privateKeyBuffer
-    }).then(
-      result => result,
-      error => Promise.reject(`ERROR DURING DECRYPTION PROCESS: ${error}`)
-    );
-}
-
-
-function envelopedDecrypt(encodedCertificate, encodedPrivateKey) {
-  return Promise.resolve().then(() => {
-    const clearEncodedCertificate = encodedCertificate.replace(/(-----(BEGIN|END)( NEW)? CERTIFICATE-----|\n)/g, "");
-    certificateBuffer = stringToArrayBuffer(window.atob(clearEncodedCertificate));
-
-    // noinspection InnerHTMLJS
-    const clearPrivateKey = encodedPrivateKey.replace(/(-----(BEGIN|END)( NEW)? PRIVATE KEY-----|\n)/g, "");
-    privateKeyBuffer = stringToArrayBuffer(window.atob(clearPrivateKey));
-
-    // noinspection InnerHTMLJS
-    const encodedCMSEnveloped = document.getElementById("encrypted_content").value;
-    const clearEncodedCMSEnveloped = encodedCMSEnveloped.replace(/(-----(BEGIN|END)( NEW)? CMS-----|\n)/g, "");
-    cmsEnvelopedBuffer = stringToArrayBuffer(window.atob(clearEncodedCMSEnveloped));
-  }).then(() => envelopedDecryptInternal()).then(result => {
-    // noinspection InnerHTMLJS
-    document.getElementById("decrypted_content").innerHTML = arrayBufferToString(result);
-  });
-}
-
-
-
-
-
-
-
-
-module.exports = {
-  envelopedEncryptInternal,
-  envelopedEncrypt
-}
