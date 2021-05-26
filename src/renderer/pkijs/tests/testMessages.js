@@ -5,25 +5,27 @@ const pkijs = require('pkijs');
 const pvutils = require('pvutils')
 
 const { convertPemToBinary, printCertificate } = require('./convertPemToBinary')
-const { envelopedEncryptInternal } = require('./encryption')
+const { envelopedEncrypt } = require('./encryption')
 
 
 
 const main = async () => {
-  const data = {
-    message: 'czesc :)'
+  const user1 = {
+    reciversCertificate: fs.readFileSync(`${process.cwd()}/files/user_cert.pem`, 'utf8'),
+    message: 'siema'
   }
 
-  // -- ładowanie certyfikatu i stworzenie z niego buffera
-  let pemFile = fs.readFileSync(`${process.cwd()}/files/user_cert.pem`, 'utf8');
-  const binaryPem = convertPemToBinary(pemFile)
-  console.log(binaryPem)
+  const user2 = {
+    reciversCertificate: fs.readFileSync(`${process.cwd()}/files/user_cert.pem`, 'utf8'),
+    message: 'hejo'
+  }
 
+  //convertPemToBinary(user1.reciversCertificate) // juz nie potrzebne
 
-  // -- szyfrowanie na podstawie pub key z certyfikatu (docelowo z certyfikatu recivera wiadomosci)
-  const encrypted = envelopedEncryptInternal(binaryPem)
+  // -- szyfrowanie na podstawie public key z certyfikatu (docelowo z certyfikatu recivera wiadomosci)
+  const enc = await envelopedEncrypt(user1.reciversCertificate, user1.message)
 
-  console.log(encrypted)
+  console.log('return', enc)
 }
 
 main()

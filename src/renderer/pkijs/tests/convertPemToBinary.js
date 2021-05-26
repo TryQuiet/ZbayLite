@@ -7,7 +7,6 @@ const pkijs = require('pkijs');
 const pvutils = require('pvutils')
 
 
-
 // -- convert certyfikatu na buffer
 function convertPemToBinary(pem) {
   var lines = pem.split('\n');
