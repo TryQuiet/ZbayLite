@@ -40,3 +40,17 @@
 * Move to right channel or contact, when you click on OS notification.
 * Pull public channels only after websocket is initialized
 
+
+# [3.2.9] - 27 april 2021
+
+### Changed
+
+* Electron version
+
+### Removed
+
+* Snackbar Notifications
+
+* Post offers
+
+* Continoue button after app start

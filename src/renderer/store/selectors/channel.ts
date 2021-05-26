@@ -8,6 +8,7 @@ import waggleSelectors from './waggle'
 
 import { Store } from '../reducers'
 import { DisplayableMessage } from '../../zbay/messages.types'
+import { Channel } from '../handlers/channel'
 
 import debug from 'debug'
 const log = Object.assign(debug('zbay:channel'), {
@@ -17,7 +18,9 @@ const log = Object.assign(debug('zbay:channel'), {
 const channel = (s: Store) => s.channel
 const contacts = (s: Store) => s.contacts
 
-export const channelInfo = createSelector(channel, ch => {
+export type ChannelInfo = Omit<Channel, 'message'>
+
+export const channelInfo = createSelector(channel, (ch): ChannelInfo => {
   const channel = {
     ...ch
   }
@@ -184,7 +187,7 @@ export const inputLocked = createSelector(
   waggleSelectors.isConnected,
   isPublicChannel,
   (channelId, waggleContacts, waggle, publicChannel) => {
-    const contactsData = Object.values(waggleContacts)
+    const contactsData: Array<{ publicKey: string }> = Object.values(waggleContacts)
     const currentContactArray = contactsData.filter(item => {
       return item.publicKey === channelId
     })
@@ -205,20 +208,20 @@ export const inputLocked = createSelector(
   }
 )
 
-export const INPUT_STATE = {
-  NOT_CONNECTED: 0,
-  USER_NOT_REGISTERED: 1,
-  AVAILABLE: 2
+export enum INPUT_STATE {
+  NOT_CONNECTED = 0,
+  USER_NOT_REGISTERED = 1,
+  AVAILABLE = 2
 }
 
 export const members = createSelector(contacts, id, (c, channelId) => {
   const contact = c[channelId]
   if (!contact) {
-    return new Set()
+    return new Set<string>()
   }
   return Array.from(Object.values(contact.messages)).reduce((acc, msg) => {
     return acc.add(msg.sender.replyTo)
-  }, new Set())
+  }, new Set<string>())
 })
 
 export const channelParticipiants = createSelector(contacts, id, (c, i) => {

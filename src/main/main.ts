@@ -36,6 +36,7 @@ const gotTheLock = app.requestSingleInstanceLock()
 const extensionsFolderPath = `${app.getPath('userData')}/extensions`
 
 const applyDevTools = async () => {
+  /* eslint-disable */
   if (!isDev) return
   /* eslint-disable */
   require('electron-debug')({
