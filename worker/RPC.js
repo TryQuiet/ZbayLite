@@ -2,13 +2,14 @@ const native = require('./index.node')
 const publicLiteNodes = [
   'https://lwdv3.zecwallet.co:443'
 ]
+// TOOD: How to use 'debug' in this file? Built app has problem with importing it.
 
 class RPC {
   constructor () {
     for (const nodeUrl of publicLiteNodes) {
       const result = native.litelib_initialize_existing(nodeUrl)
       if (result.startsWith('Error: grpc-status')) {
-        console.log(`Unable to connect to ${nodeUrl}`)
+        console.error(`Unable to connect to ${nodeUrl}`)
         continue
       }
       if (result.startsWith('Error: Cannot read wallet.')) {

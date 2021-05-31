@@ -10,6 +10,11 @@ import { actionTypes } from '../../../shared/static'
 import nodeSelectors from '../selectors/node'
 
 import { ActionsType, PayloadType } from './types'
+import debug from 'debug'
+
+const log = Object.assign(debug('zbay:node'), {
+  error: debug('zbay:node:err')
+})
 
 const DEFAULT_ADDRESS_TYPE = 'sapling'
 
@@ -105,9 +110,7 @@ export const disablePowerSaveMode = () => async () => {
 let lastSavedBlock = 0
 const getStatus = () => async (dispatch, getState) => {
   try {
-    console.log('info')
     const info = await client.info()
-    console.log('info 2')
     const height = await client.height()
     if (info.latest_block_height > height) {
       client.sync()
@@ -125,7 +128,7 @@ const getStatus = () => async (dispatch, getState) => {
         if (nodeSelectors.isRescanning(getState())) {
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           setTimeout(async () => {
-            console.log(await client.syncStatus())
+            log(await client.syncStatus())
             await dispatch(setIsRescanning(false))
           }, 10000)
         }
@@ -139,7 +142,7 @@ const getStatus = () => async (dispatch, getState) => {
     )
     return info
   } catch (err) {
-    console.log(err)
+    log.error(err)
     dispatch(setStatus({ status: 'down', errors: err }))
   }
 }

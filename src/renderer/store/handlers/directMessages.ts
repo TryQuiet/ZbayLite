@@ -11,6 +11,10 @@ import { ActionsType, PayloadType } from './types'
 import { directMessagesActions } from '../../sagas/directMessages/directMessages.reducer'
 
 import { encodeMessage, constants } from '../../cryptography/cryptography'
+import debug from 'debug'
+const _log = Object.assign(debug('zbay:dm'), {
+  error: debug('zbay:dm:err')
+})
 
 interface IUser {
   nickname: string
@@ -44,7 +48,7 @@ export const initialState: DirectMessagesStore = {
     '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2': {
       nickname: 'holmes',
       publicKey: '02dc8264c555d46b3f6b16f1e751e979ebc69e6df6a02e7d4074a5df981e507da2',
-      halfKey: '279e40e4ad5bc84f6cfcdb90465317e61255ba7ee78600179ea129a77e1bcef4'
+      halfKey: '0bfb475810c0e26c9fab590d47c3d60ec533bb3c451596acc3cd4f21602e9ad9'
     }
   },
   conversations: {},
@@ -82,7 +86,6 @@ const generateDiffieHellman = () => async dispatch => {
 }
 
 export const getPrivateConversations = () => dispatch => {
-  console.log('getPRivateConversationsEpic')
   dispatch(directMessagesActions.getPrivateConversations())
 }
 
@@ -118,8 +121,11 @@ const initializeConversation = () => async (dispatch, getState) => {
   )
 }
 
+const subscribeForAllConversations = () => async dispatch => {
+  await dispatch(directMessagesActions.subscribeForAllConversations())
+}
+
 const getAvailableUsers = () => async dispatch => {
-  console.log('EPICS GET AVAILABLE USERS')
   await dispatch(directMessagesActions.getAvailableUsers())
 }
 
@@ -127,7 +133,8 @@ export const epics = {
   generateDiffieHellman,
   getAvailableUsers,
   initializeConversation,
-  getPrivateConversations
+  getPrivateConversations,
+  subscribeForAllConversations
 }
 
 export const reducer = handleActions<DirectMessagesStore, PayloadType<DirectMessagesActions>>(
@@ -173,7 +180,7 @@ export const reducer = handleActions<DirectMessagesStore, PayloadType<DirectMess
       produce(state, draft => {
         draft.conversations = {
           ...draft.conversations,
-          [conversation.contactPublicKey]: conversation
+          [conversation.conversationId]: conversation
         }
       })
   },

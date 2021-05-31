@@ -9,7 +9,6 @@ import {
 import directMessagesSelectors from '../../store/selectors/directMessages'
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
-import channelSelectors from '../../store/selectors/channel'
 import { findNewMessages } from '../../store/handlers/messages'
 import contactsHandlers, { actions as contactsActions } from '../../store/handlers/contacts'
 import { DisplayableMessage } from '../../zbay/messages.types'
@@ -18,6 +17,10 @@ import BigNumber from 'bignumber.js'
 import { actions } from '../../store/handlers/directMessages'
 
 import { checkConversation, decodeMessage } from '../../cryptography/cryptography'
+import debug from 'debug'
+const log = Object.assign(debug('zbay:dm'), {
+  error: debug('zbay:dm:err')
+})
 
 const all: any = effectsAll
 
@@ -77,8 +80,7 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
-  const { id } = yield* select(channelSelectors.channel)
-  const sharedSecret = conversations[id].sharedSecret
+  const sharedSecret = conversation[0].sharedSecret
   const msg = JSON.stringify(action.payload.message)
   const decodedMessage = decodeMessage(sharedSecret, msg)
   const message = transferToMessage(JSON.parse(decodedMessage), users)
@@ -112,14 +114,13 @@ export function* loadAllDirectMessages(
     return conv.conversationId === action.payload.channelAddress
   })
   const contact = conversation[0]
-
   const contactPublicKey = contact.contactPublicKey
   const sharedSecret = contact.sharedSecret
   const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
   if (!channel) {
-    console.log(
+    log.error(
       `Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`
     )
     return
@@ -132,10 +133,8 @@ export function* loadAllDirectMessages(
       return JSON.parse(decodeMessage(sharedSecret, message))
     })
     const displayableMessages = decodedMessages.map(msg => transferToMessage(msg, users))
-    console.log(displayableMessages)
     const state = yield* select()
     const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state, true)
-    console.log(newMsgs)
     yield put(
       contactsHandlers.actions.setMessages({
         key: contactPublicKey,
@@ -166,7 +165,6 @@ export function* loadAllDirectMessages(
 export function* responseGetAvailableUsers(
   action: DirectMessagesActions['responseGetAvailableUsers']
 ): Generator {
-  console.log('RESPONSE GET AVAILABLE USERS')
   for (const [key, value] of Object.entries(action.payload)) {
     const user = yield* select(usersSelectors.registeredUser(key))
 
@@ -187,23 +185,24 @@ export function* responseGetAvailableUsers(
 export function* responseGetPrivateConversations(
   action: DirectMessagesActions['responseGetPrivateConversations']
 ): Generator {
-  console.log('RESPONSE GET PRIVATE CONVERSATIONS')
   const privKey = yield* select(directMessagesSelectors.privateKey)
-
+  const contacts = yield* select(contactsSelectors.contacts)
   for (const [key, value] of Object.entries(action.payload)) {
     const conversation = checkConversation(key, value, privKey)
 
     if (conversation) {
-      const user = yield* select(usersSelectors.registeredUser(key))
+      const user = yield* select(usersSelectors.registeredUser(conversation.contactPublicKey))
+      if (!contacts[conversation.contactPublicKey]) {
+        yield put(
+          contactsActions.addContact({
+            key: conversation.contactPublicKey,
+            username: user?.nickname || `anon${conversation.contactPublicKey.substring(0, 8)}`,
+            contactAddress: user?.address || ''
+          })
+        )
+      }
       yield put(directMessagesActions.subscribeForDirectMessageThread(conversation.conversationId))
       yield put(actions.addConversation(conversation))
-      yield put(
-        contactsActions.addContact({
-          key: conversation.contactPublicKey,
-          username: user?.nickname || `anon${conversation.contactPublicKey.substring(0, 8)}`,
-          contactAddress: user?.address || ''
-        })
-      )
     }
 
     yield put(

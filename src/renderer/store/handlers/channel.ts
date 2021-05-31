@@ -180,24 +180,28 @@ const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
   history.push(`/main/channel/${targetChannel.address}`)
 }
 
-const sendOnEnter = (_event, resetTab) => async (dispatch, getState) => {
+const sendOnEnter = (_event, resetTab?: (arg: number) => void) => async (dispatch, getState) => {
   if (resetTab) {
     resetTab(0)
   }
   const isPublicChannel = channelSelectors.isPublicChannel(getState())
   const isDirectMessageChannel = channelSelectors.isDirectMessage(getState())
-
+  console.log(`isPublicChannel? ${isPublicChannel}`)
   if (isPublicChannel) {
     dispatch(publicChannelsActions.sendMessage())
     return
   }
+  console.log(`isDM? ${isDirectMessageChannel}`)
   if (isDirectMessageChannel) {
-    console.log('inside direct message')
     const id = channelSelectors.id(getState())
-    const conversations = directMessagesSelectors.conversations(getState())
-    const conversation = conversations[id]
+    const conversations: Array<{ contactPublicKey: string }> = directMessagesSelectors.conversations(getState())
 
-    if (!conversation) {
+    const conversation = Array.from(Object.values(conversations)).filter(conv => {
+      return conv.contactPublicKey === id
+    })
+
+    if (!conversation[0]) {
+      console.log('INITIALIZING XONVE')
       await dispatch(directMessagesHandlers.epics.initializeConversation())
     }
     dispatch(directMessagesActions.sendDirectMessage())

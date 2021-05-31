@@ -12,6 +12,11 @@ import electronStore from '../../../shared/electronStore'
 
 import { ActionsType, PayloadType } from './types'
 
+import debug from 'debug'
+const _log = Object.assign(debug('zbay:main'), {
+  error: debug('zbay:main:err')
+})
+
 export const VaultState = {
   exists: null,
   creating: false,
@@ -101,7 +106,6 @@ const createVaultEpic = (fromMigrationFile = false) => async dispatch => {
 export const setVaultIdentity = () => async dispatch => {
   try {
     const identity = electronStore.get('identity')
-    console.log('setVaultIdentity')
     await dispatch(identityHandlers.epics.setIdentity(identity))
   } catch (err) {
     console.log(err)
