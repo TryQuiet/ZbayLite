@@ -1,4 +1,3 @@
-/* global require, Buffer */
 import { PrintableString, OctetString } from 'asn1js'
 import {
   CertificationRequest, AttributeTypeAndValue, Extension, Extensions,

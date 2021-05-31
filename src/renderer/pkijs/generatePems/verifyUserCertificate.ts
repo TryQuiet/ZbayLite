@@ -1,4 +1,3 @@
-/* global require, Buffer */
 import { CertificateChainValidationEngine } from 'pkijs'
 
 import { loadCertificate } from './common'

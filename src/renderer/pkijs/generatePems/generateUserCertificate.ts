@@ -1,4 +1,3 @@
-/* global require, Buffer */
 import { Integer, BitString } from 'asn1js'
 import { Certificate, BasicConstraints, Extension } from 'pkijs'
 
