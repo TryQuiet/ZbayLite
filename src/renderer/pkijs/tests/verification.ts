@@ -7,5 +7,5 @@ export const verificationSignature = async (userPubKey, signature, message) => {
   const algorithm = getAlgorithmParameters(signAlg, 'verify')
   const messageBuffer = Buffer.from(message)
 
-  return await crypto.verify(algorithm.algorithm, userPubKey, signature, messageBuffer)
+  return crypto.verify(algorithm.algorithm, userPubKey, signature, messageBuffer)
 }

@@ -39,10 +39,10 @@ export const test = async (message) => {
     userPubKey: await extractPubKey(pemDataSrc.userCert),
     signature: await signing(message, pemDataSrc.userPrivKey)
   }
-  console.log("\n DATA MESSAGE: \n", data)
+  console.log('\n DATA MESSAGE: \n', data)
 
   const verificationResult = await verificationSignature(data.userPubKey, data.signature, data.message)
-  console.log("\n VERIFICATION MESSAGE: \n", verificationResult)
+  console.log('\n VERIFICATION MESSAGE: \n', verificationResult)
 }
 
-test('hejoo')
+void test('hejoo')

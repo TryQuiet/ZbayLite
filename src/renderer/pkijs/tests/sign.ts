@@ -7,7 +7,7 @@ import { signAlg, hashAlg } from '../generatePems/config'
 const parsePrivKey = (privKey) => {
   let privKeyBuffer = new ArrayBuffer(0)
   const userPrivKey = fs.readFileSync(privKey, 'utf-8')
-  const clearPrivateKey = userPrivKey.replace(/(-----(BEGIN|END)( NEW)? PRIVATE KEY-----|\n)/g, "")
+  const clearPrivateKey = userPrivKey.replace(/(-----(BEGIN|END)( NEW)? PRIVATE KEY-----|\n)/g, '')
   privKeyBuffer = stringToArrayBuffer(fromBase64(clearPrivateKey))
 
   return privKeyBuffer

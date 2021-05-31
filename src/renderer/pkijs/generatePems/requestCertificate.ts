@@ -44,16 +44,16 @@ async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, h
   )
   await pkcs10.subjectPublicKeyInfo.importKey(keyPair.publicKey)
   const hashedPublicKey = await getCrypto().digest(
-    { name: "SHA-1" },
+    { name: 'SHA-1' },
     pkcs10.subjectPublicKeyInfo.subjectPublicKey.valueBlock.valueHex)
   pkcs10.attributes.push(
     new Attribute({
-      type: "1.2.840.113549.1.9.14", // pkcs-9-at-extensionRequest
+      type: '1.2.840.113549.1.9.14', // pkcs-9-at-extensionRequest
       values: [
         (new Extensions({
           extensions: [
             new Extension({
-              extnID: "2.5.29.14",
+              extnID: '2.5.29.14',
               critical: false,
               extnValue: (new OctetString({ valueHex: hashedPublicKey })).toBER(false)
             })

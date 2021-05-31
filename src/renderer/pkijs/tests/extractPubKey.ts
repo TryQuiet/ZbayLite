@@ -5,7 +5,7 @@ import { fromBER } from 'asn1js'
 
 import { hashAlg, signAlg } from '../generatePems/config'
 
-const webcrypto = new (require("node-webcrypto-ossl")).Crypto
+const webcrypto = new (require('node-webcrypto-ossl')).Crypto()
 setEngine('newEngine', webcrypto, new CryptoEngine({
   name: '',
   crypto: webcrypto,
@@ -15,7 +15,7 @@ setEngine('newEngine', webcrypto, new CryptoEngine({
 const parseCertificate = (pem) => {
   let certificateBuffer = new ArrayBuffer(0)
   const userCert = fs.readFileSync(pem, 'utf-8')
-  const clearEncodedCertificate = userCert.replace(/(-----(BEGIN|END)( NEW)? CERTIFICATE-----|\n)/g, "")
+  const clearEncodedCertificate = userCert.replace(/(-----(BEGIN|END)( NEW)? CERTIFICATE-----|\n)/g, '')
   certificateBuffer = stringToArrayBuffer(fromBase64(clearEncodedCertificate))
   const asn1 = fromBER(certificateBuffer)
 

@@ -13,13 +13,12 @@ export const createUserCert = async () => {
     issuerCert: await loadCertificate(rootCACert),
     issuerKey: await loadPrivateKey(rootCAKey, signAlg, hashAlg),
     pkcs10: await loadCSR(csrFile),
-    signAlg,
     hashAlg
   })
   await dumpCertificate(userCertificate)
 }
 
-async function generateuserCertificate({ issuerCert, issuerKey, pkcs10, signAlg, hashAlg }) {
+async function generateuserCertificate({ issuerCert, issuerKey, pkcs10, hashAlg }) {
   const basicConstr = new BasicConstraints({ cA: false, pathLenConstraint: 3 })
   const keyUsage = getKeyUsage()
   const certificate = new Certificate({
