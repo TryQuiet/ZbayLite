@@ -1,30 +1,25 @@
 /* global require, Buffer */
-const asn1js = require('asn1js')
-const {
+import { PrintableString, OctetString } from 'asn1js'
+import {
   CertificationRequest, AttributeTypeAndValue, Extension, Extensions,
-  getCrypto, Attribute } = require('pkijs')
+  getCrypto, Attribute
+} from 'pkijs'
 
-const { signAlg, hashAlg } = require('./config')
-const { generateKeyPair, dumpPEM } = require('./common')
+import { signAlg, hashAlg } from './config'
+import { generateKeyPair, dumpPEM } from './common'
 
-const userData = {
-  country: 'PL',
-  name: 'damian',
-  onionAddress: 'onionAddresssjgoifgosfksdlfkjrgjspksdhdlgasdas'
-}
-
-async function main() {
+export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
   const pkcs10 = await requestCertificate({
-    countryName: userData.country,
-    commonName: userData.name,
-    address: userData.onionAddress,
+    zbayNickanem: zbayNickanem,
+    commonName: commonName,
+    peerId: peerId,
     signAlg,
     hashAlg
   })
   await dumpCertificate(pkcs10)
 }
 
-async function requestCertificate({ countryName, commonName, address, signAlg, hashAlg }) {
+async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, hashAlg }) {
   const keyPair = await generateKeyPair({ signAlg, hashAlg })
   const pkcs10 = new CertificationRequest({
     version: 0,
@@ -32,20 +27,20 @@ async function requestCertificate({ countryName, commonName, address, signAlg, h
   })
   pkcs10.subject.typesAndValues.push(
     new AttributeTypeAndValue({
-      type: '2.5.4.6', // Country name
-      value: new asn1js.PrintableString({ value: countryName })
+      type: '2.5.4.3',
+      value: new PrintableString({ value: zbayNickanem })
     })
   )
   pkcs10.subject.typesAndValues.push(
     new AttributeTypeAndValue({
-      type: '2.5.4.3', // Common name
-      value: new asn1js.PrintableString({ value: commonName })
+      type: '2.5.4.3',
+      value: new PrintableString({ value: commonName })
     })
   )
   pkcs10.subject.typesAndValues.push(
     new AttributeTypeAndValue({
-      type: '2.5.4.3', // Date Of Birth
-      value: new asn1js.CharacterString({ valueDate: address })
+      type: '2.5.4.3',
+      value: new PrintableString({ value: peerId })
     })
   )
   await pkcs10.subjectPublicKeyInfo.importKey(keyPair.publicKey)
@@ -61,7 +56,7 @@ async function requestCertificate({ countryName, commonName, address, signAlg, h
             new Extension({
               extnID: "2.5.29.14",
               critical: false,
-              extnValue: (new asn1js.OctetString({ valueHex: hashedPublicKey })).toBER(false)
+              extnValue: (new OctetString({ valueHex: hashedPublicKey })).toBER(false)
             })
           ]
         })
@@ -73,10 +68,7 @@ async function requestCertificate({ countryName, commonName, address, signAlg, h
   return { pkcs10, ...keyPair }
 }
 
-
 async function dumpCertificate({ pkcs10, privateKey }) {
   dumpPEM('CERTIFICATE REQUEST', pkcs10.toSchema().toBER(false), 'files/pkcs10.csr')
   dumpPEM('PRIVATE KEY', await getCrypto().exportKey('pkcs8', privateKey), 'files/user_key.pem')
 }
-
-main()

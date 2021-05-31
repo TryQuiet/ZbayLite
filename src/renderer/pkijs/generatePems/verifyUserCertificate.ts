@@ -1,24 +1,21 @@
 /* global require, Buffer */
-const { CertificateChainValidationEngine } = require('pkijs')
-const { loadCertificate } = require('./common')
+import { CertificateChainValidationEngine } from 'pkijs'
 
+import { loadCertificate } from './common'
 
-async function main() {
-  const rootCACert = 'files/root_ca.pem'
-  const userCert = 'files/user_cert.pem'
+export const verifyUserCert = async (rootCACert, userCert) => {
   const trustedCerts = [await loadCertificate(rootCACert)]
   const certificates = [await loadCertificate(userCert)]
   const crls = []
-  console.log(`Verifying ${userCert} using ${rootCACert} aaa`)
+  console.log(`Verifying ${userCert} using ${rootCACert}`)
   const certChainVerificationEngine = new CertificateChainValidationEngine({
     trustedCerts,
     certs: certificates,
     crls
   })
   const result = await certChainVerificationEngine.verify()
+  console.log(result)
   console.log(
     `Verification result:\n${Object.keys(result).map(key => ` ${key}: ${result[key]}`).join('\n')}`
   )
 }
-
-main()

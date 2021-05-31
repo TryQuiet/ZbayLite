@@ -1,18 +1,11 @@
-/* global require, Buffer */
+import { Integer, PrintableString, BitString } from 'asn1js'
+import { Certificate, AttributeTypeAndValue, BasicConstraints, Extension, Time, getCrypto } from 'pkijs'
 
-const asn1js = require('asn1js')
-const {
-  Certificate, AttributeTypeAndValue, BasicConstraints, Extension,
-  getAlgorithmParameters, getCrypto, setEngine, CryptoEngine, Time } = require('pkijs')
+import { signAlg, hashAlg } from './config'
+import { generateKeyPair, dumpPEM } from './common'
 
-const { signAlg, hashAlg } = require('./config')
-const { generateKeyPair, dumpPEM } = require('./common')
-
-const communityName = 'community name'
-
-async function main() {
+export const createRootCA = async (communityName) => {
   const rootCA = await generateRootCA({
-    countryName: 'UK',
     commonName: `${communityName} CA`,
     signAlg,
     hashAlg
@@ -20,11 +13,11 @@ async function main() {
   await dumpCertificate(rootCA)
 }
 
-async function generateRootCA({ countryName, commonName, signAlg, hashAlg }) {
+async function generateRootCA({ commonName, signAlg, hashAlg }) {
   const basicConstr = new BasicConstraints({ cA: true, pathLenConstraint: 3 })
   const keyUsage = getCAKeyUsage()
   const certificate = new Certificate({
-    serialNumber: new asn1js.Integer({ value: 1 }),
+    serialNumber: new Integer({ value: 1 }),
     extensions: [
       new Extension({
         extnID: '2.5.29.19',
@@ -40,35 +33,26 @@ async function generateRootCA({ countryName, commonName, signAlg, hashAlg }) {
       })
     ],
     notBefore: new Time({ type: 1, value: new Date() }),
-    notAfter: new Time({ type: 1, value: new Date(2020, 1, 1) })
+    notAfter: new Time({ type: 1, value: new Date(2022, 1, 1) })
   })
   certificate.issuer.typesAndValues.push(
     new AttributeTypeAndValue({
-      type: '2.5.4.6', // Country name
-      value: new asn1js.PrintableString({ value: countryName })
-    })
-  )
-  certificate.issuer.typesAndValues.push(
-    new AttributeTypeAndValue({
       type: '2.5.4.3', // Common name
-      value: new asn1js.PrintableString({ value: commonName })
-    })
-  )
-  certificate.subject.typesAndValues.push(
-    new AttributeTypeAndValue({
-      type: '2.5.4.6', // Country name
-      value: new asn1js.PrintableString({ value: countryName })
+      value: new PrintableString({ value: commonName })
     })
   )
   certificate.subject.typesAndValues.push(
     new AttributeTypeAndValue({
       type: '2.5.4.3', // Common name
-      value: new asn1js.PrintableString({ value: commonName })
+      value: new PrintableString({ value: commonName })
     })
   )
   const keyPair = await generateKeyPair({ signAlg, hashAlg })
+
   await certificate.subjectPublicKeyInfo.importKey(keyPair.publicKey)
   await certificate.sign(keyPair.privateKey, hashAlg)
+
+  console.log(...keyPair)
   return { certificate, ...keyPair }
 }
 
@@ -79,12 +63,10 @@ function getCAKeyUsage() {
   bitView[0] |= 0x02 // Key usage 'cRLSign' flag
   bitView[0] |= 0x04 // Key usage 'keyCertSign' flag
 
-  return new asn1js.BitString({ valueHex: bitArray })
+  return new BitString({ valueHex: bitArray })
 }
 
 async function dumpCertificate({ certificate, privateKey }) {
   dumpPEM('CERTIFICATE', certificate.toSchema(true).toBER(false), 'files/root_ca.pem')
   dumpPEM('PRIVATE KEY', await getCrypto().exportKey('pkcs8', privateKey), 'files/root_key.pem')
 }
-
-main()

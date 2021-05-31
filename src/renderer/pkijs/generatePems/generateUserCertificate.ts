@@ -1,14 +1,11 @@
 /* global require, Buffer */
-const asn1js = require('asn1js')
-const {
-  Certificate, AttributeTypeAndValue, BasicConstraints, Extension,
-  getAlgorithmParameters, getCrypto, setEngine, CryptoEngine } = require('pkijs')
+import { Integer, BitString } from 'asn1js'
+import { Certificate, BasicConstraints, Extension } from 'pkijs'
 
-const { signAlg, hashAlg } = require('./config')
-const { generateKeyPair, dumpPEM, loadCertificate, loadPrivateKey, loadCSR } = require('./common')
+import { signAlg, hashAlg } from './config'
+import { dumpPEM, loadCertificate, loadPrivateKey, loadCSR } from './common'
 
-
-async function main() {
+export const createUserCert = async () => {
   const rootCACert = 'files/root_ca.pem'
   const rootCAKey = 'files/root_key.pem'
   const csrFile = 'files/pkcs10.csr'
@@ -27,7 +24,7 @@ async function generateuserCertificate({ issuerCert, issuerKey, pkcs10, signAlg,
   const basicConstr = new BasicConstraints({ cA: false, pathLenConstraint: 3 })
   const keyUsage = getKeyUsage()
   const certificate = new Certificate({
-    serialNumber: new asn1js.Integer({ value: (new Date()).getTime() }),
+    serialNumber: new Integer({ value: (new Date()).getTime() }),
     extensions: [
       new Extension({
         extnID: '2.5.29.19',
@@ -46,12 +43,11 @@ async function generateuserCertificate({ issuerCert, issuerKey, pkcs10, signAlg,
     subject: pkcs10.subject,
     subjectPublicKeyInfo: pkcs10.subjectPublicKeyInfo
   })
-  certificate.notBefore.value = new Date()
-  certificate.notAfter.value = new Date(2020, 1, 1)
+  certificate.notBefore.value = new Date(2020, 1, 1)
+  certificate.notAfter.value = new Date(2022, 1, 1)
   await certificate.sign(issuerKey, hashAlg)
   return { certificate }
 }
-
 
 function getKeyUsage() {
   const bitArray = new ArrayBuffer(1)
@@ -60,12 +56,9 @@ function getKeyUsage() {
   bitView[0] |= 0x02 // Key usage 'cRLSign' flag
   bitView[0] |= 0x04 // Key usage 'keyCertSign' flag
 
-  return new asn1js.BitString({ valueHex: bitArray })
+  return new BitString({ valueHex: bitArray })
 }
 
-
-async function dumpCertificate({ certificate, privateKey }) {
+async function dumpCertificate({ certificate }) {
   dumpPEM('CERTIFICATE', certificate.toSchema(true).toBER(false), 'files/user_cert.pem')
 }
-
-main().then(() => null, console.error)
