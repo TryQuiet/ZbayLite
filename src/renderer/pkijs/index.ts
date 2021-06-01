@@ -9,7 +9,7 @@ import { verifyUserCert } from './generatePems/verifyUserCertificate'
 
 const createPem = async ({ rootCert, userCert }) => {
   const rootData = {
-    communityName: 'community name'
+    communityName: 'Zbay'
   }
 
   const userData = {
