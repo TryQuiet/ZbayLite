@@ -14,11 +14,8 @@ setEngine('newEngine', webcrypto, new CryptoEngine({
 
 const parseCertificate = (pem) => {
   let certificateBuffer = new ArrayBuffer(0)
-  const userCert = fs.readFileSync(pem, 'utf-8')
-  const clearEncodedCertificate = userCert.replace(/(-----(BEGIN|END)( NEW)? CERTIFICATE-----|\n)/g, '')
-  certificateBuffer = stringToArrayBuffer(fromBase64(clearEncodedCertificate))
+  certificateBuffer = stringToArrayBuffer(fromBase64(pem))
   const asn1 = fromBER(certificateBuffer)
-
   return new Certificate({ schema: asn1.result })
 }
 
@@ -41,6 +38,6 @@ const keyObjectFromString = (pubKeyString) => {
 export const extractPubKey = async (pem) => {
   const certificate = parseCertificate(pem)
   const pubKeyString = keyFromCertificate(certificate)
-
+  console.log("siema")
   return keyObjectFromString(pubKeyString)
 }

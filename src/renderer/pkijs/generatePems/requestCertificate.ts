@@ -5,7 +5,7 @@ import {
 } from 'pkijs'
 
 import { signAlg, hashAlg } from './config'
-import { generateKeyPair, dumpPEM } from './common'
+import { generateKeyPair, dumpPEM, CertFieldsTypes, formatPEM } from './common'
 
 export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
   const pkcs10 = await requestCertificate({
@@ -15,7 +15,18 @@ export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
     signAlg,
     hashAlg
   })
-  await dumpCertificate(pkcs10)
+  // await dumpCertificate(pkcs10)
+  console.log('ciekawe', pkcs10.privateKey)
+  const userData = {
+    userCsr: pkcs10.pkcs10.toSchema().toBER(false),
+    userKey: await getCrypto().exportKey('pkcs8', pkcs10.privateKey)
+  }
+
+  return {
+    userCsr: Buffer.from(userData.userCsr).toString('base64'),
+    userKey: Buffer.from(userData.userKey).toString('base64'),
+    pkcs10: pkcs10
+  }
 }
 
 async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, hashAlg }) {
@@ -26,19 +37,19 @@ async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, h
   })
   pkcs10.subject.typesAndValues.push(
     new AttributeTypeAndValue({
-      type: '2.5.4.3',
+      type: CertFieldsTypes.nickName,
       value: new PrintableString({ value: zbayNickanem })
     })
   )
   pkcs10.subject.typesAndValues.push(
     new AttributeTypeAndValue({
-      type: '2.5.4.3',
+      type: CertFieldsTypes.commonName,
       value: new PrintableString({ value: commonName })
     })
   )
   pkcs10.subject.typesAndValues.push(
     new AttributeTypeAndValue({
-      type: '2.5.4.3',
+      type: CertFieldsTypes.peerId,
       value: new PrintableString({ value: peerId })
     })
   )

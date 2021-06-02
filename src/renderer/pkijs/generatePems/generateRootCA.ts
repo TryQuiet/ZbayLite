@@ -2,15 +2,25 @@ import { Integer, PrintableString, BitString } from 'asn1js'
 import { Certificate, AttributeTypeAndValue, BasicConstraints, Extension, Time, getCrypto } from 'pkijs'
 
 import { signAlg, hashAlg } from './config'
-import { generateKeyPair, dumpPEM } from './common'
+import { generateKeyPair, dumpPEM, CertFieldsTypes, formatPEM } from './common'
 
-export const createRootCA = async (communityName) => {
+export const createRootCA = async () => {
   const rootCA = await generateRootCA({
-    commonName: `${communityName} CA`,
+    commonName: `Zbay CA`,
     signAlg,
     hashAlg
   })
-  await dumpCertificate(rootCA)
+  // await dumpCertificate(rootCA)
+
+  const rootData = {
+    rootCert: rootCA.certificate.toSchema(true).toBER(false),
+    rootKey: await getCrypto().exportKey('pkcs8', rootCA.privateKey)
+  }
+
+  return {
+    rootCert: Buffer.from(rootData.rootCert).toString('base64'),
+    rootKey: Buffer.from(rootData.rootKey).toString('base64')
+  }
 }
 
 async function generateRootCA({ commonName, signAlg, hashAlg }) {
@@ -37,13 +47,7 @@ async function generateRootCA({ commonName, signAlg, hashAlg }) {
   })
   certificate.issuer.typesAndValues.push(
     new AttributeTypeAndValue({
-      type: '2.5.4.3', // Common name
-      value: new PrintableString({ value: commonName })
-    })
-  )
-  certificate.subject.typesAndValues.push(
-    new AttributeTypeAndValue({
-      type: '2.5.4.3', // Common name
+      type: CertFieldsTypes.commonName,
       value: new PrintableString({ value: commonName })
     })
   )
@@ -52,7 +56,6 @@ async function generateRootCA({ commonName, signAlg, hashAlg }) {
   await certificate.subjectPublicKeyInfo.importKey(keyPair.publicKey)
   await certificate.sign(keyPair.privateKey, hashAlg)
 
-  console.log(...keyPair)
   return { certificate, ...keyPair }
 }
 

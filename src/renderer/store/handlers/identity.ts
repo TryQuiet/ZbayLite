@@ -209,7 +209,7 @@ export const fetchAffiliateMoney = () => async (dispatch, getState) => {
         )
       )
     }
-  } catch (err) {}
+  } catch (err) { }
 }
 export const fetchBalance = () => async (dispatch, getState) => {
   try {
@@ -442,7 +442,7 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     }
     setTimeout(() => dispatch(coordinatorHandlers.epics.coordinator()), 5000)
     dispatch(setLoadingMessage('Loading users and messages'))
-  } catch (err) {}
+  } catch (err) { }
   if (isNewUser === true) {
     await dispatch(usersHandlers.epics.fetchTakenUsernames())
     dispatch(modalsHandlers.actionCreators.openModal('createUsernameModal')())
@@ -547,8 +547,8 @@ export const updateDonation = () => async dispatch => {
   )
 }
 
-export const updateDonationAddress = () => async () => {}
-export const updateShieldingTax = () => async () => {}
+export const updateDonationAddress = () => async () => { }
+export const updateShieldingTax = () => async () => { }
 export const generateNewAddress = () => async dispatch => {
   if (!electronStore.get('addresses')) {
     electronStore.set('addresses', JSON.stringify([]))

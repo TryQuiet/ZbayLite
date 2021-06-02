@@ -7,6 +7,12 @@ import {
   SignedData
 } from 'pkijs'
 
+export enum CertFieldsTypes {
+  commonName = '2.5.4.3',
+  nickName = '1.3.6.1.4.1.50715.2.1',
+  peerId = '1.3.6.1.2.1.15.3.1.1'
+}
+
 const webcrypto = new (require('node-webcrypto-ossl')).Crypto()
 setEngine('newEngine', webcrypto, new CryptoEngine({
   name: '',
@@ -20,8 +26,8 @@ export const generateKeyPair = async ({ signAlg, hashAlg }) => {
   if ('hash' in algorithm.algorithm) {
     algorithm.algorithm.hash.name = hashAlg
   }
-  console.log(algorithm.algorithm, true, algorithm.usages)
   const keyPair = await crypto.generateKey(algorithm.algorithm, true, algorithm.usages)
+
   return keyPair
 }
 
@@ -48,10 +54,8 @@ export const formatPEM = (pemString) => {
   return resultString
 }
 
-export const loadCertificate = (filename) => {
-  const encodedCertificate = fs.read(filename)
-  const clearEncodedCertificate = encodedCertificate.replace(/(-----(BEGIN|END)( NEW)? CERTIFICATE-----|\n)/g, '')
-  const certificateBuffer = stringToArrayBuffer(fromBase64(clearEncodedCertificate))
+export const loadCertificate = (rootCert) => {
+  const certificateBuffer = stringToArrayBuffer(fromBase64(rootCert))
   const asn1 = fromBER(certificateBuffer)
   return new Certificate({ schema: asn1.result })
 }
@@ -66,9 +70,10 @@ export const loadCMS = (filename) => {
 }
 
 export const loadPrivateKey = (filename, signAlg, hashAlg) => {
-  const encodedKey = fs.read(filename)
-  const clearEncodedKey = encodedKey.replace(/(-----(BEGIN|END)( NEW)? PRIVATE KEY-----|\n)/g, '')
-  const keyBuffer = stringToArrayBuffer(fromBase64(clearEncodedKey))
+  console.log("key", filename)
+  const keyBuffer = stringToArrayBuffer(fromBase64(filename))
+  console.log("buffer", keyBuffer)
+
   const algorithm = getAlgorithmParameters(signAlg, 'generatekey')
   if ('hash' in algorithm.algorithm) {
     algorithm.algorithm.hash.name = hashAlg
@@ -76,10 +81,8 @@ export const loadPrivateKey = (filename, signAlg, hashAlg) => {
   return crypto.importKey('pkcs8', keyBuffer, algorithm.algorithm, true, algorithm.usages)
 }
 
-export const loadCSR = (filename) => {
-  const encodedCertificationRequest = fs.read(filename)
-  const clearencodedCertificationRequest = encodedCertificationRequest.replace(/(-----(BEGIN|END)( NEW)? CERTIFICATE REQUEST-----|\n)/g, '')
-  const certBuffer = stringToArrayBuffer(fromBase64(clearencodedCertificationRequest))
+export const loadCSR = (csr) => {
+  const certBuffer = stringToArrayBuffer(fromBase64(csr))
   const asn1 = fromBER(certBuffer)
   return new CertificationRequest({ schema: asn1.result })
 }

@@ -2,20 +2,22 @@ import { Integer, BitString } from 'asn1js'
 import { Certificate, BasicConstraints, Extension } from 'pkijs'
 
 import { signAlg, hashAlg } from './config'
-import { dumpPEM, loadCertificate, loadPrivateKey, loadCSR } from './common'
+import { dumpPEM, loadCertificate, loadPrivateKey, loadCSR, formatPEM } from './common'
 
-export const createUserCert = async () => {
+export const createUserCert = async (rootCA, rootKey, userCsr) => {
   const rootCACert = 'files/root_ca.pem'
   const rootCAKey = 'files/root_key.pem'
-  const csrFile = 'files/pkcs10.csr'
 
   const userCertificate = await generateuserCertificate({
-    issuerCert: await loadCertificate(rootCACert),
-    issuerKey: await loadPrivateKey(rootCAKey, signAlg, hashAlg),
-    pkcs10: await loadCSR(csrFile),
+    issuerCert: await loadCertificate(rootCA),
+    issuerKey: await loadPrivateKey(rootKey, signAlg, hashAlg),
+    pkcs10: await loadCSR(userCsr),
     hashAlg
   })
-  await dumpCertificate(userCertificate)
+  // await dumpCertificate(userCertificate)
+
+  const userCert = userCertificate.certificate.toSchema(true).toBER(false)
+  return Buffer.from(userCert).toString('base64')
 }
 
 async function generateuserCertificate({ issuerCert, issuerKey, pkcs10, hashAlg }) {
