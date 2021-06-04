@@ -24,7 +24,7 @@ exports[`SyncLoader renders component 1`] = `
         className="iconDiv-mock"
         item={true}
       >
-        <Component
+        <Icon
           className="icon-mock"
           image="test-file-stub"
           src="test-file-stub"
@@ -36,7 +36,7 @@ exports[`SyncLoader renders component 1`] = `
       container={true}
       item={true}
     >
-      <WithStyles(undefined) />
+      <WithStyles(memo(Carousel)) />
     </WithStyles(ForwardRef(Grid))>
     <WithStyles(ForwardRef(Grid))
       container={true}

@@ -31,7 +31,7 @@ exports[`ProgressFab renders disabled 1`] = `
     disabled={true}
     onClick={[MockFunction]}
   >
-    <CheckIcon />
+    <Memo(ForwardRef(CheckIcon)) />
   </WithStyles(ForwardRef(Fab))>
 </div>
 `;
@@ -71,7 +71,7 @@ exports[`ProgressFab renders success 1`] = `
     disabled={false}
     onClick={[MockFunction]}
   >
-    <CheckIcon />
+    <Memo(ForwardRef(CheckIcon)) />
   </WithStyles(ForwardRef(Fab))>
 </div>
 `;

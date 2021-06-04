@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ChannelInfoModal renders component 1`] = `
-<Component
+<Modal
   addBorder={false}
   alignCloseLeft={false}
   canGoBack={false}
@@ -21,11 +21,11 @@ exports[`ChannelInfoModal renders component 1`] = `
   >
     <Component />
   </AutoSizer>
-</Component>
+</Modal>
 `;
 
 exports[`ChannelInfoModal renders component when closed 1`] = `
-<Component
+<Modal
   addBorder={false}
   alignCloseLeft={false}
   canGoBack={false}
@@ -45,5 +45,5 @@ exports[`ChannelInfoModal renders component when closed 1`] = `
   >
     <Component />
   </AutoSizer>
-</Component>
+</Modal>
 `;

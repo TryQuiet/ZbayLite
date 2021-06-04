@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`NewMessageModal renders NewMessageModal 1`] = `
-<Component
+<Modal
   addBorder={false}
   alignCloseLeft={false}
   canGoBack={false}
@@ -26,5 +26,5 @@ exports[`NewMessageModal renders NewMessageModal 1`] = `
       <Component />
     </Formik>
   </WithStyles(ForwardRef(Grid))>
-</Component>
+</Modal>
 `;

@@ -14,10 +14,10 @@ exports[`WalletPanelActions renders component 1`] = `
     <WithStyles(ForwardRef(Grid))
       item={true}
     >
-      <Connect(WithStyles(undefined)) />
+      <Connect(WithStyles(memo(WalletPanelActions))) />
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
-  <WithStyles(undefined)
+  <WithStyles(memo(QuickActionButton))
     action={[Function]}
     text="Invite friends"
   />

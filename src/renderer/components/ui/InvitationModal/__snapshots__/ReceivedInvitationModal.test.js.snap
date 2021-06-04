@@ -14,12 +14,12 @@ exports[`ReceivedInvitationModal renders component 1`] = `
     item={true}
     justify="flex-start"
   >
-    <Component
+    <IconButton
       className="closeIcon-mock"
       onClick={[MockFunction]}
     >
-      <ClearIcon />
-    </Component>
+      <Memo(ForwardRef(ClearIcon)) />
+    </IconButton>
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
     alignItems="center"
@@ -32,7 +32,7 @@ exports[`ReceivedInvitationModal renders component 1`] = `
     <WithStyles(ForwardRef(Grid))
       item={true}
     >
-      <DoneAllIcon
+      <Memo(ForwardRef(DoneAllIcon))
         className="icon-mock"
       />
     </WithStyles(ForwardRef(Grid))>

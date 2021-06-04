@@ -103,7 +103,7 @@ exports[`SendMoneyForm renders component when valid = false 1`] = `
       item={true}
       justify="center"
     >
-      <Component
+      <Icon
         className="exchnage-mock"
         src="test-file-stub"
       />
@@ -193,7 +193,7 @@ exports[`SendMoneyForm renders component when valid = false 1`] = `
       item={true}
       justify="center"
     >
-      <Component
+      <Icon
         className="exchnage-mock"
         src="test-file-stub"
       />
@@ -410,7 +410,7 @@ exports[`SendMoneyForm renders component when valid = true 1`] = `
       item={true}
       justify="center"
     >
-      <Component
+      <Icon
         className="exchnage-mock"
         src="test-file-stub"
       />
@@ -500,7 +500,7 @@ exports[`SendMoneyForm renders component when valid = true 1`] = `
       item={true}
       justify="center"
     >
-      <Component
+      <Icon
         className="exchnage-mock"
         src="test-file-stub"
       />

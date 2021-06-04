@@ -38,7 +38,7 @@ exports[`ImportChannelForm renders component 1`] = `
       onClick={[Function]}
       success={false}
     >
-      <VpnKeyIcon />
+      <Memo(ForwardRef(VpnKeyIcon)) />
     </Memo(WithStyles(ProgressFab))>
   </WithStyles(ForwardRef(Grid))>
 </WithStyles(ForwardRef(Grid))>
@@ -84,7 +84,7 @@ exports[`ImportChannelForm renders decoding 1`] = `
       onClick={[Function]}
       success={false}
     >
-      <VpnKeyIcon />
+      <Memo(ForwardRef(VpnKeyIcon)) />
     </Memo(WithStyles(ProgressFab))>
   </WithStyles(ForwardRef(Grid))>
 </WithStyles(ForwardRef(Grid))>

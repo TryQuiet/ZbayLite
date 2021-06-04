@@ -46,7 +46,7 @@ exports[`InvitationModalFinish renders component 1`] = `
           type="submit"
           variant="contained"
         >
-          <FileCopyIcon
+          <Memo(ForwardRef(FileCopyIcon))
             className="icon-mock"
           />
           Copy to clipboard

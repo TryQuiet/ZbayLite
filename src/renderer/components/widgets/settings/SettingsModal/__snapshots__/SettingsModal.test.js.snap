@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SettingsModal renders component 1`] = `
-<Component
+<Modal
   addBorder={true}
   alignCloseLeft={false}
   canGoBack={false}
@@ -128,5 +128,5 @@ exports[`SettingsModal renders component 1`] = `
       </AutoSizer>
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
-</Component>
+</Modal>
 `;

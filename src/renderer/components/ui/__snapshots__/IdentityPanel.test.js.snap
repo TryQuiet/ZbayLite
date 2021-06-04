@@ -20,7 +20,7 @@ exports[`IdentityPanel renders component with username 1`] = `
     >
       test
     </WithStyles(ForwardRef(Typography))>
-    <ExpandMoreIcon
+    <Memo(ForwardRef(ExpandMoreIcon))
       fontSize="small"
     />
   </WithStyles(ForwardRef(Button))>
@@ -51,7 +51,7 @@ exports[`IdentityPanel renders component without username 1`] = `
     >
       test
     </WithStyles(ForwardRef(Typography))>
-    <ExpandMoreIcon
+    <Memo(ForwardRef(ExpandMoreIcon))
       fontSize="small"
     />
   </WithStyles(ForwardRef(Button))>

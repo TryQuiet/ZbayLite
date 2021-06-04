@@ -26,7 +26,7 @@ exports[`InviteMentionInfo renders component 1`] = `
             className="avatar-mock"
             item={true}
           >
-            <Unknown
+            <Icon
               className="icon-mock"
               src="test-file-stub"
             />

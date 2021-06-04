@@ -8,12 +8,12 @@ exports[`NodePanelActions renders component 1`] = `
   <WithStyles(ForwardRef(IconButton))
     onClick={[MockFunction]}
   >
-    <RefreshIcon />
+    <Memo(ForwardRef(RefreshIcon)) />
   </WithStyles(ForwardRef(IconButton))>
   <WithStyles(ForwardRef(IconButton))
     onClick={[MockFunction]}
   >
-    <PowerSettingsNewIcon />
+    <Memo(ForwardRef(PowerSettingsNewIcon)) />
   </WithStyles(ForwardRef(IconButton))>
 </WithStyles(ForwardRef(Grid))>
 `;

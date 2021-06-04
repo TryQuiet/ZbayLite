@@ -13,7 +13,7 @@ exports[`Loading renders component 1`] = `
     item={true}
     justify="center"
   >
-    <Component
+    <Icon
       className="icon-mock"
       src="test-file-stub"
     />
@@ -23,7 +23,7 @@ exports[`Loading renders component 1`] = `
     container={true}
     item={true}
   >
-    <WithStyles(undefined) />
+    <WithStyles(memo(Carousel)) />
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
     className="progressBarContainer-mock"

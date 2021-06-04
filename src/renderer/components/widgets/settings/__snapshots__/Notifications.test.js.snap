@@ -54,12 +54,12 @@ exports[`Notifications renders component 1`] = `
           <WithStyles(ForwardRef(Checkbox))
             checked={true}
             checkedIcon={
-              <Unknown
+              <Icon
                 src="test-file-stub"
               />
             }
             icon={
-              <Unknown
+              <Icon
                 src="test-file-stub"
               />
             }
@@ -107,12 +107,12 @@ exports[`Notifications renders component 1`] = `
           <WithStyles(ForwardRef(Checkbox))
             checked={false}
             checkedIcon={
-              <Unknown
+              <Icon
                 src="test-file-stub"
               />
             }
             icon={
-              <Unknown
+              <Icon
                 src="test-file-stub"
               />
             }
@@ -159,12 +159,12 @@ exports[`Notifications renders component 1`] = `
           <WithStyles(ForwardRef(Checkbox))
             checked={false}
             checkedIcon={
-              <Unknown
+              <Icon
                 src="test-file-stub"
               />
             }
             icon={
-              <Unknown
+              <Icon
                 src="test-file-stub"
               />
             }
@@ -250,12 +250,12 @@ exports[`Notifications renders component 1`] = `
             <WithStyles(ForwardRef(Checkbox))
               checked={true}
               checkedIcon={
-                <Unknown
+                <Icon
                   src="test-file-stub"
                 />
               }
               icon={
-                <Unknown
+                <Icon
                   src="test-file-stub"
                 />
               }
@@ -279,12 +279,12 @@ exports[`Notifications renders component 1`] = `
             <WithStyles(ForwardRef(Checkbox))
               checked={false}
               checkedIcon={
-                <Unknown
+                <Icon
                   src="test-file-stub"
                 />
               }
               icon={
-                <Unknown
+                <Icon
                   src="test-file-stub"
                 />
               }
@@ -308,12 +308,12 @@ exports[`Notifications renders component 1`] = `
             <WithStyles(ForwardRef(Checkbox))
               checked={false}
               checkedIcon={
-                <Unknown
+                <Icon
                   src="test-file-stub"
                 />
               }
               icon={
-                <Unknown
+                <Icon
                   src="test-file-stub"
                 />
               }

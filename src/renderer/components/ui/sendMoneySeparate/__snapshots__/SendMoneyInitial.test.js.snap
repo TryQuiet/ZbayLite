@@ -78,7 +78,7 @@ exports[`SendMoneyForm renders component 1`] = `
             className="zecIcon-mock"
             item={true}
           >
-            <Component
+            <Icon
               src="test-file-stub"
             />
           </WithStyles(ForwardRef(Grid))>
@@ -179,7 +179,7 @@ exports[`SendMoneyForm renders component 1`] = `
         item={true}
         justify="center"
       >
-        <Component
+        <Icon
           className="exchnage-mock"
           src="test-file-stub"
         />

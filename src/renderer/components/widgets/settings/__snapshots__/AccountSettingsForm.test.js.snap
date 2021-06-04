@@ -60,7 +60,7 @@ exports[`AccountSettingsForm renders component 1`] = `
           justify="flex-end"
           xs={2}
         >
-          <Component
+          <Icon
             className="usernameIcon-mock"
             src="test-file-stub"
           />

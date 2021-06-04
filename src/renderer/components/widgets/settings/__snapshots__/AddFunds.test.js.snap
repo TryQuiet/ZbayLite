@@ -16,7 +16,7 @@ exports[`AddFunds renders component 1`] = `
         <WithStyles(ForwardRef(IconButton))
           onClick={[Function]}
         >
-          <CloseIcon />
+          <Memo(ForwardRef(CloseIcon)) />
         </WithStyles(ForwardRef(IconButton))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -154,7 +154,7 @@ exports[`AddFunds renders component 1`] = `
           item={true}
           onClick={[Function]}
         >
-          <Component
+          <Icon
             src="test-file-stub"
           />
         </WithStyles(ForwardRef(Grid))>
@@ -239,7 +239,7 @@ exports[`AddFunds renders component 1`] = `
           item={true}
           onClick={[Function]}
         >
-          <Component
+          <Icon
             src="test-file-stub"
           />
         </WithStyles(ForwardRef(Grid))>

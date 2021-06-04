@@ -84,12 +84,17 @@ exports[`BasicMessage renders component 1`] = `
       },
       "palette": Object {
         "action": Object {
+          "activatedOpacity": 0.12,
           "active": "rgba(0, 0, 0, 0.54)",
           "disabled": "rgba(0, 0, 0, 0.26)",
           "disabledBackground": "rgba(0, 0, 0, 0.12)",
-          "hover": "rgba(0, 0, 0, 0.08)",
-          "hoverOpacity": 0.08,
-          "selected": "rgba(0, 0, 0, 0.14)",
+          "disabledOpacity": 0.38,
+          "focus": "rgba(0, 0, 0, 0.12)",
+          "focusOpacity": 0.12,
+          "hover": "rgba(0, 0, 0, 0.04)",
+          "hoverOpacity": 0.04,
+          "selected": "rgba(0, 0, 0, 0.08)",
+          "selectedOpacity": 0.08,
         },
         "augmentColor": [Function],
         "background": Object {
@@ -164,6 +169,12 @@ exports[`BasicMessage renders component 1`] = `
           "A400": "#303030",
           "A700": "#616161",
         },
+        "info": Object {
+          "contrastText": "#fff",
+          "dark": "#1976d2",
+          "light": "#64b5f6",
+          "main": "#2196f3",
+        },
         "primary": Object {
           "contrastText": "#fff",
           "dark": "#4a4a4a",
@@ -176,6 +187,12 @@ exports[`BasicMessage renders component 1`] = `
           "light": "#ff4081",
           "main": "#f50057",
         },
+        "success": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#388e3c",
+          "light": "#81c784",
+          "main": "#4caf50",
+        },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
           "hint": "rgba(0, 0, 0, 0.38)",
@@ -184,6 +201,12 @@ exports[`BasicMessage renders component 1`] = `
         },
         "tonalOffset": 0.2,
         "type": "light",
+        "warning": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#f57c00",
+          "light": "#ffb74d",
+          "main": "#ff9800",
+        },
       },
       "props": Object {},
       "shadows": Array [
@@ -344,7 +367,7 @@ exports[`BasicMessage renders component 1`] = `
     }
   }
 >
-  <Component
+  <BasicMessage
     actionsOpen={false}
     allowModeration={true}
     classes={null}
@@ -538,12 +561,17 @@ exports[`BasicMessage renders component when message is sent by owner 1`] = `
       },
       "palette": Object {
         "action": Object {
+          "activatedOpacity": 0.12,
           "active": "rgba(0, 0, 0, 0.54)",
           "disabled": "rgba(0, 0, 0, 0.26)",
           "disabledBackground": "rgba(0, 0, 0, 0.12)",
-          "hover": "rgba(0, 0, 0, 0.08)",
-          "hoverOpacity": 0.08,
-          "selected": "rgba(0, 0, 0, 0.14)",
+          "disabledOpacity": 0.38,
+          "focus": "rgba(0, 0, 0, 0.12)",
+          "focusOpacity": 0.12,
+          "hover": "rgba(0, 0, 0, 0.04)",
+          "hoverOpacity": 0.04,
+          "selected": "rgba(0, 0, 0, 0.08)",
+          "selectedOpacity": 0.08,
         },
         "augmentColor": [Function],
         "background": Object {
@@ -618,6 +646,12 @@ exports[`BasicMessage renders component when message is sent by owner 1`] = `
           "A400": "#303030",
           "A700": "#616161",
         },
+        "info": Object {
+          "contrastText": "#fff",
+          "dark": "#1976d2",
+          "light": "#64b5f6",
+          "main": "#2196f3",
+        },
         "primary": Object {
           "contrastText": "#fff",
           "dark": "#4a4a4a",
@@ -630,6 +664,12 @@ exports[`BasicMessage renders component when message is sent by owner 1`] = `
           "light": "#ff4081",
           "main": "#f50057",
         },
+        "success": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#388e3c",
+          "light": "#81c784",
+          "main": "#4caf50",
+        },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
           "hint": "rgba(0, 0, 0, 0.38)",
@@ -638,6 +678,12 @@ exports[`BasicMessage renders component when message is sent by owner 1`] = `
         },
         "tonalOffset": 0.2,
         "type": "light",
+        "warning": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#f57c00",
+          "light": "#ffb74d",
+          "main": "#ff9800",
+        },
       },
       "props": Object {},
       "shadows": Array [
@@ -798,7 +844,7 @@ exports[`BasicMessage renders component when message is sent by owner 1`] = `
     }
   }
 >
-  <Component
+  <BasicMessage
     actionsOpen={false}
     allowModeration={true}
     classes={null}
@@ -992,12 +1038,17 @@ exports[`BasicMessage renders component with status failed 1`] = `
       },
       "palette": Object {
         "action": Object {
+          "activatedOpacity": 0.12,
           "active": "rgba(0, 0, 0, 0.54)",
           "disabled": "rgba(0, 0, 0, 0.26)",
           "disabledBackground": "rgba(0, 0, 0, 0.12)",
-          "hover": "rgba(0, 0, 0, 0.08)",
-          "hoverOpacity": 0.08,
-          "selected": "rgba(0, 0, 0, 0.14)",
+          "disabledOpacity": 0.38,
+          "focus": "rgba(0, 0, 0, 0.12)",
+          "focusOpacity": 0.12,
+          "hover": "rgba(0, 0, 0, 0.04)",
+          "hoverOpacity": 0.04,
+          "selected": "rgba(0, 0, 0, 0.08)",
+          "selectedOpacity": 0.08,
         },
         "augmentColor": [Function],
         "background": Object {
@@ -1072,6 +1123,12 @@ exports[`BasicMessage renders component with status failed 1`] = `
           "A400": "#303030",
           "A700": "#616161",
         },
+        "info": Object {
+          "contrastText": "#fff",
+          "dark": "#1976d2",
+          "light": "#64b5f6",
+          "main": "#2196f3",
+        },
         "primary": Object {
           "contrastText": "#fff",
           "dark": "#4a4a4a",
@@ -1084,6 +1141,12 @@ exports[`BasicMessage renders component with status failed 1`] = `
           "light": "#ff4081",
           "main": "#f50057",
         },
+        "success": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#388e3c",
+          "light": "#81c784",
+          "main": "#4caf50",
+        },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
           "hint": "rgba(0, 0, 0, 0.38)",
@@ -1092,6 +1155,12 @@ exports[`BasicMessage renders component with status failed 1`] = `
         },
         "tonalOffset": 0.2,
         "type": "light",
+        "warning": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#f57c00",
+          "light": "#ffb74d",
+          "main": "#ff9800",
+        },
       },
       "props": Object {},
       "shadows": Array [
@@ -1252,7 +1321,7 @@ exports[`BasicMessage renders component with status failed 1`] = `
     }
   }
 >
-  <Component
+  <BasicMessage
     actionsOpen={false}
     allowModeration={true}
     classes={null}
@@ -1380,12 +1449,17 @@ exports[`BasicMessage renders correct time for different month 1`] = `
       },
       "palette": Object {
         "action": Object {
+          "activatedOpacity": 0.12,
           "active": "rgba(0, 0, 0, 0.54)",
           "disabled": "rgba(0, 0, 0, 0.26)",
           "disabledBackground": "rgba(0, 0, 0, 0.12)",
-          "hover": "rgba(0, 0, 0, 0.08)",
-          "hoverOpacity": 0.08,
-          "selected": "rgba(0, 0, 0, 0.14)",
+          "disabledOpacity": 0.38,
+          "focus": "rgba(0, 0, 0, 0.12)",
+          "focusOpacity": 0.12,
+          "hover": "rgba(0, 0, 0, 0.04)",
+          "hoverOpacity": 0.04,
+          "selected": "rgba(0, 0, 0, 0.08)",
+          "selectedOpacity": 0.08,
         },
         "augmentColor": [Function],
         "background": Object {
@@ -1460,6 +1534,12 @@ exports[`BasicMessage renders correct time for different month 1`] = `
           "A400": "#303030",
           "A700": "#616161",
         },
+        "info": Object {
+          "contrastText": "#fff",
+          "dark": "#1976d2",
+          "light": "#64b5f6",
+          "main": "#2196f3",
+        },
         "primary": Object {
           "contrastText": "#fff",
           "dark": "#4a4a4a",
@@ -1472,6 +1552,12 @@ exports[`BasicMessage renders correct time for different month 1`] = `
           "light": "#ff4081",
           "main": "#f50057",
         },
+        "success": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#388e3c",
+          "light": "#81c784",
+          "main": "#4caf50",
+        },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
           "hint": "rgba(0, 0, 0, 0.38)",
@@ -1480,6 +1566,12 @@ exports[`BasicMessage renders correct time for different month 1`] = `
         },
         "tonalOffset": 0.2,
         "type": "light",
+        "warning": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#f57c00",
+          "light": "#ffb74d",
+          "main": "#ff9800",
+        },
       },
       "props": Object {},
       "shadows": Array [
@@ -1640,7 +1732,7 @@ exports[`BasicMessage renders correct time for different month 1`] = `
     }
   }
 >
-  <Component
+  <BasicMessage
     actionsOpen={false}
     allowModeration={true}
     classes={null}
@@ -1834,12 +1926,17 @@ exports[`BasicMessage renders correct time for different year 1`] = `
       },
       "palette": Object {
         "action": Object {
+          "activatedOpacity": 0.12,
           "active": "rgba(0, 0, 0, 0.54)",
           "disabled": "rgba(0, 0, 0, 0.26)",
           "disabledBackground": "rgba(0, 0, 0, 0.12)",
-          "hover": "rgba(0, 0, 0, 0.08)",
-          "hoverOpacity": 0.08,
-          "selected": "rgba(0, 0, 0, 0.14)",
+          "disabledOpacity": 0.38,
+          "focus": "rgba(0, 0, 0, 0.12)",
+          "focusOpacity": 0.12,
+          "hover": "rgba(0, 0, 0, 0.04)",
+          "hoverOpacity": 0.04,
+          "selected": "rgba(0, 0, 0, 0.08)",
+          "selectedOpacity": 0.08,
         },
         "augmentColor": [Function],
         "background": Object {
@@ -1914,6 +2011,12 @@ exports[`BasicMessage renders correct time for different year 1`] = `
           "A400": "#303030",
           "A700": "#616161",
         },
+        "info": Object {
+          "contrastText": "#fff",
+          "dark": "#1976d2",
+          "light": "#64b5f6",
+          "main": "#2196f3",
+        },
         "primary": Object {
           "contrastText": "#fff",
           "dark": "#4a4a4a",
@@ -1926,6 +2029,12 @@ exports[`BasicMessage renders correct time for different year 1`] = `
           "light": "#ff4081",
           "main": "#f50057",
         },
+        "success": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#388e3c",
+          "light": "#81c784",
+          "main": "#4caf50",
+        },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
           "hint": "rgba(0, 0, 0, 0.38)",
@@ -1934,6 +2043,12 @@ exports[`BasicMessage renders correct time for different year 1`] = `
         },
         "tonalOffset": 0.2,
         "type": "light",
+        "warning": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#f57c00",
+          "light": "#ffb74d",
+          "main": "#ff9800",
+        },
       },
       "props": Object {},
       "shadows": Array [
@@ -2094,7 +2209,7 @@ exports[`BasicMessage renders correct time for different year 1`] = `
     }
   }
 >
-  <Component
+  <BasicMessage
     actionsOpen={false}
     allowModeration={true}
     classes={null}
@@ -2288,12 +2403,17 @@ exports[`BasicMessage renders correct time for same week 1`] = `
       },
       "palette": Object {
         "action": Object {
+          "activatedOpacity": 0.12,
           "active": "rgba(0, 0, 0, 0.54)",
           "disabled": "rgba(0, 0, 0, 0.26)",
           "disabledBackground": "rgba(0, 0, 0, 0.12)",
-          "hover": "rgba(0, 0, 0, 0.08)",
-          "hoverOpacity": 0.08,
-          "selected": "rgba(0, 0, 0, 0.14)",
+          "disabledOpacity": 0.38,
+          "focus": "rgba(0, 0, 0, 0.12)",
+          "focusOpacity": 0.12,
+          "hover": "rgba(0, 0, 0, 0.04)",
+          "hoverOpacity": 0.04,
+          "selected": "rgba(0, 0, 0, 0.08)",
+          "selectedOpacity": 0.08,
         },
         "augmentColor": [Function],
         "background": Object {
@@ -2368,6 +2488,12 @@ exports[`BasicMessage renders correct time for same week 1`] = `
           "A400": "#303030",
           "A700": "#616161",
         },
+        "info": Object {
+          "contrastText": "#fff",
+          "dark": "#1976d2",
+          "light": "#64b5f6",
+          "main": "#2196f3",
+        },
         "primary": Object {
           "contrastText": "#fff",
           "dark": "#4a4a4a",
@@ -2380,6 +2506,12 @@ exports[`BasicMessage renders correct time for same week 1`] = `
           "light": "#ff4081",
           "main": "#f50057",
         },
+        "success": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#388e3c",
+          "light": "#81c784",
+          "main": "#4caf50",
+        },
         "text": Object {
           "disabled": "rgba(0, 0, 0, 0.38)",
           "hint": "rgba(0, 0, 0, 0.38)",
@@ -2388,6 +2520,12 @@ exports[`BasicMessage renders correct time for same week 1`] = `
         },
         "tonalOffset": 0.2,
         "type": "light",
+        "warning": Object {
+          "contrastText": "rgba(0, 0, 0, 0.87)",
+          "dark": "#f57c00",
+          "light": "#ffb74d",
+          "main": "#ff9800",
+        },
       },
       "props": Object {},
       "shadows": Array [
@@ -2548,7 +2686,7 @@ exports[`BasicMessage renders correct time for same week 1`] = `
     }
   }
 >
-  <Component
+  <BasicMessage
     actionsOpen={false}
     allowModeration={true}
     classes={null}

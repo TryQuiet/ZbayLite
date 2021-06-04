@@ -10,18 +10,18 @@ exports[`MenuAction renders component 1`] = `
     onMouseEnter={[Function]}
     onMouseLeave={[Function]}
   >
-    <Component
+    <Icon
       className="icon-mock"
       fontSize="inherit"
       src="icon"
     />
   </ForwardRef>
-  <Component
+  <PopupMenu
     offset={0}
     open={false}
     placement="bottom-end"
   >
-    <ForwardRef(ClickAwayListener)
+    <ClickAwayListener
       onClickAway={[Function]}
     >
       <ForwardRef(MenuList)
@@ -40,8 +40,8 @@ exports[`MenuAction renders component 1`] = `
           title="test 2"
         />
       </ForwardRef(MenuList)>
-    </ForwardRef(ClickAwayListener)>
-  </Component>
+    </ClickAwayListener>
+  </PopupMenu>
 </Fragment>
 `;
 
@@ -55,18 +55,18 @@ exports[`MenuAction renders with optional props 1`] = `
     onMouseEnter={[Function]}
     onMouseLeave={[Function]}
   >
-    <Component
+    <Icon
       className="icon-mock"
       fontSize="inherit"
       src="icon"
     />
   </ForwardRef>
-  <Component
+  <PopupMenu
     offset="0 20"
     open={false}
     placement="bottom-end"
   >
-    <ForwardRef(ClickAwayListener)
+    <ClickAwayListener
       onClickAway={[Function]}
     >
       <ForwardRef(MenuList)
@@ -85,7 +85,7 @@ exports[`MenuAction renders with optional props 1`] = `
           title="test 2"
         />
       </ForwardRef(MenuList)>
-    </ForwardRef(ClickAwayListener)>
-  </Component>
+    </ClickAwayListener>
+  </PopupMenu>
 </Fragment>
 `;

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SendMessagePopover renders status broadcasted 1`] = `
-<Component
+<Modal
   addBorder={false}
   alignCloseLeft={true}
   canGoBack={false}
@@ -170,11 +170,11 @@ exports[`SendMessagePopover renders status broadcasted 1`] = `
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
-</Component>
+</Modal>
 `;
 
 exports[`SendMessagePopover renders status pending 1`] = `
-<Component
+<Modal
   addBorder={false}
   alignCloseLeft={true}
   canGoBack={false}
@@ -320,5 +320,5 @@ exports[`SendMessagePopover renders status pending 1`] = `
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
-</Component>
+</Modal>
 `;

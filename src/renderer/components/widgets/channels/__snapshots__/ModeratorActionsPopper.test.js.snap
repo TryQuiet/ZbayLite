@@ -38,7 +38,7 @@ exports[`ModeratorActionsPopper renders 1`] = `
       <WithStyles(ForwardRef(Grid))
         item={true}
       >
-        <Component
+        <Icon
           className="user-mock"
           src="test-file-stub"
         />
@@ -87,7 +87,7 @@ exports[`ModeratorActionsPopper renders 1`] = `
         <WithStyles(ForwardRef(Grid))
           item={true}
         >
-          <Component
+          <Icon
             className="banIcon-mock"
             src="test-file-stub"
           />

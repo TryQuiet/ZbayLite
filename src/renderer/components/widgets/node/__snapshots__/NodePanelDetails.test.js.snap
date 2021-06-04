@@ -27,7 +27,7 @@ exports[`NodePanelDetails renders component 1`] = `
           onMouseOut={[Function]}
           onMouseOver={[Function]}
         >
-          <Component
+          <Icon
             className="icon-mock"
             fontSize="inherit"
             src="test-file-stub"

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AdvertModal renders component AdvertModal 1`] = `
-<Component
+<Modal
   addBorder={false}
   alignCloseLeft={true}
   canGoBack={false}
@@ -26,5 +26,5 @@ exports[`AdvertModal renders component AdvertModal 1`] = `
   >
     <Component />
   </AutoSizer>
-</Component>
+</Modal>
 `;

@@ -34,8 +34,6 @@ exports[`BuyZcash renders component 1`] = `
         Object {
           "$$typeof": Symbol(react.memo),
           "compare": null,
-          "displayName": "UnfoldMoreIcon",
-          "muiName": "SvgIcon",
           "type": Object {
             "$$typeof": Symbol(react.forward_ref),
             "render": [Function],
@@ -762,6 +760,12 @@ exports[`BuyZcash renders component 1`] = `
         value="Korea, Republic of"
       >
         Korea, Republic of
+      </WithStyles(ForwardRef(MenuItem))>
+      <WithStyles(ForwardRef(MenuItem))
+        key="Kosovo"
+        value="Kosovo"
+      >
+        Kosovo
       </WithStyles(ForwardRef(MenuItem))>
       <WithStyles(ForwardRef(MenuItem))
         key="Kuwait"

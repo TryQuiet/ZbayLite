@@ -2,7 +2,7 @@
 
 exports[`UserRegisteredMessage renders component 1`] = `
 <Fragment>
-  <Component
+  <WelcomeMessage
     message={
       <React.Fragment>
         <span
@@ -18,7 +18,7 @@ exports[`UserRegisteredMessage renders component 1`] = `
     }
     timestamp={0}
   />
-  <Memo(withRouter(Connect(Component)))
+  <Memo(withRouter(Connect(SendMessagePopover)))
     address="testaddress"
     anchorEl={null}
     handleClose={[Function]}
