@@ -42,6 +42,11 @@ import { DisplayableMessage } from '../../zbay/messages.types'
 import directMessagesHandlers from './directMessages'
 import directMessagesSelectors from '../selectors/directMessages'
 import debug from 'debug'
+import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
+import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
+import { loadCertificateFromPem } from '../../pkijs/generatePems/common'
+import fs from 'fs'
+
 const log = Object.assign(debug('zbay:identity'), {
   error: debug('zbay:identity:err'),
   warn: debug('zbay:identity:warn')
@@ -74,6 +79,8 @@ export class Identity {
     freeUtxos: number
     addresses: string[]
     shieldedAddresses: string[]
+    certificate: string
+    certPrivKey: string
   }
 
   fetchingBalance: boolean
@@ -122,7 +129,9 @@ export const initialState: Identity = new Identity({
     onionAddress: '',
     freeUtxos: 0,
     addresses: [],
-    shieldedAddresses: []
+    shieldedAddresses: [],
+    certificate: '',
+    certPrivKey: ''
   },
   fetchingBalance: false,
   loader: {
@@ -315,6 +324,18 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
       signerPubKey = keys.signerPubKey
     }
 
+
+    const encodedCertificate = fs.readFileSync(`${process.cwd()}/files/root_ca.pem`).toString('utf-8')
+    const clearCert = encodedCertificate.replace(/(-----(BEGIN|END)( NEW)? CERTIFICATE-----|\n)/g, "")
+    console.log("heeeeeeej", clearCert)
+    const user = await createUserCsr('nick', 'onion', 'peer')
+    console.log('userInf', user)
+    //const userCert = await createUserCert(root.rootCert, root.rootKey, user.userCsr)
+
+
+
+
+
     electronStore.set('identity', {
       name,
       address: zAddress,
@@ -324,7 +345,9 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
       keys: {
         tpk,
         sk
-      }
+      },
+      certificate: 'br',
+      certPrivKey: 'br'
     })
     const network = 'mainnet'
 

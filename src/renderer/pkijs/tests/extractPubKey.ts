@@ -4,7 +4,9 @@ import { fromBER } from 'asn1js'
 
 import { hashAlg, signAlg } from '../generatePems/config'
 
-const webcrypto = new (require('node-webcrypto-ossl')).Crypto()
+const { Crypto } = require("@peculiar/webcrypto")
+const webcrypto = new Crypto()
+
 setEngine('newEngine', webcrypto, new CryptoEngine({
   name: '',
   crypto: webcrypto,

@@ -10,7 +10,7 @@ export const LOG_ENDPOINT = 'https://handlers.zbay.app/email'
 export const PRICE_ORACLE_PUB_KEY =
   '0225528107f2b0cd8f0a7bedfa218ee8511b1753f87c76886d0ea7dd0e813270da'
 export const REQUEST_MONEY_ENDPOINT =
-   'https://u1uxu6p870.execute-api.us-east-1.amazonaws.com/Prod/requestMoney'
+  'https://u1uxu6p870.execute-api.us-east-1.amazonaws.com/Prod/requestMoney'
 export const REQUEST_USER_REGISTRATION_ENDPOINT = 'https://9fy1bqknya.execute-api.us-east-1.amazonaws.com/Prod/handleRegistrationRequest'
 export const FETCH_USERNAMES_ENDPOINT = 'https://9fy1bqknya.execute-api.us-east-1.amazonaws.com/Prod/fetchusernames'
 
@@ -186,7 +186,9 @@ export const actionTypes = mirrorKey({
   SET_PRIVATE_KEY: undefined,
   ADD_CONVERSATION: undefined,
   FETCH_CONVERSATIONS: undefined,
-  SET_IS_WAGGLE_CONNECTED: undefined
+  SET_IS_WAGGLE_CONNECTED: undefined,
+  SET_USER_CERTIFICATE: undefined,
+  SET_USER_CERT_PRIV_KEY: undefined
 })
 
 export const moderationActionsType = {
