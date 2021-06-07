@@ -24,17 +24,12 @@ setEngine('newEngine', webcrypto, new CryptoEngine({
 const crypto = getCrypto()
 
 export const generateKeyPair = async ({ signAlg, hashAlg }) => {
-  console.log('p111')
   const algorithm = getAlgorithmParameters(signAlg, 'generatekey')
-  console.log('p222')
 
   if ('hash' in algorithm.algorithm) {
     algorithm.algorithm.hash.name = hashAlg
   }
-  console.log('p333')
-
   const keyPair = await crypto.generateKey(algorithm.algorithm, true, algorithm.usages)
-  console.log('p444')
 
   return keyPair
 }

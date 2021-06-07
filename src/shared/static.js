@@ -186,9 +186,7 @@ export const actionTypes = mirrorKey({
   SET_PRIVATE_KEY: undefined,
   ADD_CONVERSATION: undefined,
   FETCH_CONVERSATIONS: undefined,
-  SET_IS_WAGGLE_CONNECTED: undefined,
-  SET_USER_CERTIFICATE: undefined,
-  SET_USER_CERT_PRIV_KEY: undefined
+  SET_IS_WAGGLE_CONNECTED: undefined
 })
 
 export const moderationActionsType = {

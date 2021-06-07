@@ -8,7 +8,6 @@ import { signAlg, hashAlg } from './config'
 import { generateKeyPair, CertFieldsTypes } from './common'
 
 export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
-  console.log("000")
 
   const pkcs10 = await requestCertificate({
     zbayNickanem: zbayNickanem,
@@ -18,7 +17,6 @@ export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
     hashAlg
   })
   // await dumpCertificate(pkcs10)
-  console.log("11111")
   const userData = {
     userCsr: pkcs10.pkcs10.toSchema().toBER(false),
     userKey: await getCrypto().exportKey('pkcs8', pkcs10.privateKey)
@@ -32,16 +30,12 @@ export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
 }
 
 async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, hashAlg }) {
-  console.log('0101')
   const keyPair = await generateKeyPair({ signAlg, hashAlg })
-  console.log("222")
 
   const pkcs10 = new CertificationRequest({
     version: 0,
     attributes: []
   })
-
-  console.log("333")
 
   pkcs10.subject.typesAndValues.push(
     new AttributeTypeAndValue({
@@ -61,7 +55,6 @@ async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, h
       value: new PrintableString({ value: peerId })
     })
   )
-  console.log("444")
 
   await pkcs10.subjectPublicKeyInfo.importKey(keyPair.publicKey)
   const hashedPublicKey = await getCrypto().digest(
