@@ -110,7 +110,7 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
 
   const [dataServerPort] = await fp(4677)
   const dataServer = new TlgManager.DataServer(dataServerPort)
-  dataServer.listen()
+  await dataServer.listen()
 
   const connectionsManager = new TlgManager.ConnectionsManager({
     port: ports.libp2pHiddenService,
