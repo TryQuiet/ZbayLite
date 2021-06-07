@@ -2,7 +2,7 @@ import { Integer, PrintableString, BitString } from 'asn1js'
 import { Certificate, AttributeTypeAndValue, BasicConstraints, Extension, Time, getCrypto } from 'pkijs'
 
 import { signAlg, hashAlg } from './config'
-import { generateKeyPair, dumpPEM, CertFieldsTypes, formatPEM } from './common'
+import { generateKeyPair, CertFieldsTypes } from './common'
 
 export const createRootCA = async () => {
   const rootCA = await generateRootCA({
@@ -69,7 +69,7 @@ function getCAKeyUsage() {
   return new BitString({ valueHex: bitArray })
 }
 
-async function dumpCertificate({ certificate, privateKey }) {
-  dumpPEM('CERTIFICATE', certificate.toSchema(true).toBER(false), 'files/root_ca.pem')
-  dumpPEM('PRIVATE KEY', await getCrypto().exportKey('pkcs8', privateKey), 'files/root_key.pem')
-}
+// async function dumpCertificate({ certificate, privateKey }) {
+//   dumpPEM('CERTIFICATE', certificate.toSchema(true).toBER(false), 'files/root_ca.pem')
+//   dumpPEM('PRIVATE KEY', await getCrypto().exportKey('pkcs8', privateKey), 'files/root_key.pem')
+// }

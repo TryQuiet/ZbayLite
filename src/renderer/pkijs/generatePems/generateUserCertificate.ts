@@ -2,11 +2,11 @@ import { Integer, BitString } from 'asn1js'
 import { Certificate, BasicConstraints, Extension } from 'pkijs'
 
 import { signAlg, hashAlg } from './config'
-import { dumpPEM, loadCertificate, loadPrivateKey, loadCSR, formatPEM } from './common'
+import { loadCertificate, loadPrivateKey, loadCSR } from './common'
 
 export const createUserCert = async (rootCA, rootKey, userCsr) => {
-  const rootCACert = 'files/root_ca.pem'
-  const rootCAKey = 'files/root_key.pem'
+  // const rootCACert = 'files/root_ca.pem'
+  // const rootCAKey = 'files/root_key.pem'
 
   const userCertificate = await generateuserCertificate({
     issuerCert: await loadCertificate(rootCA),
@@ -59,6 +59,6 @@ function getKeyUsage() {
   return new BitString({ valueHex: bitArray })
 }
 
-async function dumpCertificate({ certificate }) {
-  dumpPEM('CERTIFICATE', certificate.toSchema(true).toBER(false), 'files/user_cert.pem')
-}
+// async function dumpCertificate({ certificate }) {
+//   dumpPEM('CERTIFICATE', certificate.toSchema(true).toBER(false), 'files/user_cert.pem')
+// }

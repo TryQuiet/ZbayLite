@@ -332,10 +332,6 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
     console.log('userInf', user)
     //const userCert = await createUserCert(root.rootCert, root.rootKey, user.userCsr)
 
-
-
-
-
     electronStore.set('identity', {
       name,
       address: zAddress,
@@ -346,8 +342,8 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
         tpk,
         sk
       },
-      certificate: 'br',
-      certPrivKey: 'br'
+      certificate: user.userCsr,
+      certPrivKey: user.userKey
     })
     const network = 'mainnet'
 
