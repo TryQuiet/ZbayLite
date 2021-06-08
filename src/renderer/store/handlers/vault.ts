@@ -2,6 +2,7 @@ import { produce, immerable } from 'immer'
 import { createAction, handleActions } from 'redux-actions'
 import crypto from 'crypto'
 import { ipcRenderer } from 'electron'
+import store from '../../store'
 
 import { typeFulfilled, typeRejected, typePending, errorNotification } from './utils'
 import identityHandlers from './identity'
@@ -11,6 +12,7 @@ import { actionTypes } from '../../../shared/static'
 import electronStore from '../../../shared/electronStore'
 
 import { ActionsType, PayloadType } from './types'
+import { socketsActions } from '../../sagas/socket/socket.saga.reducer'
 
 import debug from 'debug'
 const _log = Object.assign(debug('zbay:main'), {
@@ -88,10 +90,12 @@ const createVaultEpic = (fromMigrationFile = false) => async dispatch => {
       })
     )
     console.log('identity', identity)
+    console.log('pierwszy raz')
     await dispatch(nodeHandlers.actions.setIsRescanning(true))
     await dispatch(identityHandlers.epics.setIdentity(identity))
     await dispatch(identityHandlers.epics.loadIdentity())
     await dispatch(setVaultStatus(true))
+    //store.dispatch(socketsActions.saveCertificate())
     ipcRenderer.send('vault-created')
     return identity
   } catch (error) {

@@ -8,7 +8,6 @@ import { signAlg, hashAlg } from './config'
 import { generateKeyPair, CertFieldsTypes } from './common'
 
 export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
-
   const pkcs10 = await requestCertificate({
     zbayNickanem: zbayNickanem,
     commonName: commonName,

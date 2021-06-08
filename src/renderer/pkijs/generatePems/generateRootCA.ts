@@ -6,7 +6,7 @@ import { generateKeyPair, CertFieldsTypes } from './common'
 
 export const createRootCA = async () => {
   const rootCA = await generateRootCA({
-    commonName: `Zbay CA`,
+    commonName: 'Zbay CA',
     signAlg,
     hashAlg
   })

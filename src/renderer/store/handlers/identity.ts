@@ -44,8 +44,7 @@ import directMessagesSelectors from '../selectors/directMessages'
 import debug from 'debug'
 import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
 import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
-import { loadCertificateFromPem } from '../../pkijs/generatePems/common'
-import fs from 'fs'
+import { readRootCertFromFile, readRootKeyFromFile } from '../../../pkijs/readFromFiles'
 
 const log = Object.assign(debug('zbay:identity'), {
   error: debug('zbay:identity:err'),
@@ -325,12 +324,15 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
     }
 
 
-    const encodedCertificate = fs.readFileSync(`${process.cwd()}/files/root_ca.pem`).toString('utf-8')
-    const clearCert = encodedCertificate.replace(/(-----(BEGIN|END)( NEW)? CERTIFICATE-----|\n)/g, "")
-    console.log("heeeeeeej", clearCert)
+
+
+
+
+    const certString = readRootCertFromFile()
+    const keyString = readRootKeyFromFile()
+
     const user = await createUserCsr('nick', 'onion', 'peer')
-    console.log('userInf', user)
-    //const userCert = await createUserCert(root.rootCert, root.rootKey, user.userCsr)
+    const userCert = await createUserCert(certString, keyString, user.userCsr)
 
     electronStore.set('identity', {
       name,
@@ -342,7 +344,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
         tpk,
         sk
       },
-      certificate: user.userCsr,
+      certificate: userCert,
       certPrivKey: user.userKey
     })
     const network = 'mainnet'

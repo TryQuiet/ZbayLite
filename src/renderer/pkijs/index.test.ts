@@ -5,7 +5,7 @@ import { verificationSignature } from './tests/verification'
 import { createRootCA } from './generatePems/generateRootCA'
 import { createUserCsr } from './generatePems/requestCertificate'
 import { createUserCert } from './generatePems/generateUserCertificate'
-import { verifyUserCert } from './generatePems/verifyUserCertificate'
+// import { verifyUserCert } from './generatePems/verifyUserCertificate'
 
 export const test = async (message) => {
   const userData = {

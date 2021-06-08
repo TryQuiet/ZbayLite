@@ -59,7 +59,7 @@ export function subscribe(socket) {
     socket.on(socketsActions.RESPONSE_GET_PRIVATE_CONVERSATIONS, payload => {
       emit(directMessagesActions.responseGetPrivateConversations(payload))
     })
-    return () => {}
+    return () => { }
   })
 }
 
@@ -205,6 +205,22 @@ export function* sendDirectMessage(socket: Socket): Generator {
   ])
 }
 
+
+
+
+
+
+export function* saveCertificate(socket: Socket): Generator {
+
+  yield* apply(socket, socket.emit, [socketsActions.SAVE_CERTIFICATE])
+}
+
+
+
+
+
+
+
 export function* addWaggleIdentity(socket: Socket): Generator {
   while (true) {
     yield take('SET_IS_WAGGLE_CONNECTED')
@@ -254,6 +270,7 @@ export function* useIO(socket: Socket): Generator {
       socket
     ),
     takeEvery(directMessagesActions.sendDirectMessage.type, sendDirectMessage, socket),
+    takeEvery(directMessagesActions.saveCertificate.type, saveCertificate, socket),
     takeLeading(
       directMessagesActions.getPrivateConversations.type,
       getPrivateConversations,

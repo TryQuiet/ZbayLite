@@ -18,6 +18,7 @@ export enum Socket {
   MESSAGE = 'message',
   ERROR = 'error',
   SEND_MESSAGE = 'sendMessage',
+  SAVE_CERTIFICATE = 'saveCertificate',
   FETCH_ALL_MESSAGES = 'fetchAllMessages',
   SUBSCRIBE_FOR_TOPIC = 'subscribeForTopic',
   ADD_TOR_SERVICE = 'addTorService',
@@ -41,5 +42,4 @@ export enum Socket {
   SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD = 'subscribeForDirectMessageThread',
   SUBSCRIBE_FOR_ALL_CONVERSATIONS = 'subscribeForAllConversations',
   RESPONSE_DIRECT_MESSAGE = 'responseDirectMessage'
-
 }
