@@ -23,6 +23,7 @@ import notificationsHandlers from './store/handlers/notifications'
 import appSelectors from './store/selectors/app'
 import { socketsActions } from './sagas/socket/socket.saga.reducer'
 import debug from 'debug'
+import electronStore from '../shared/electronStore'
 
 const log = Object.assign(debug('zbay:renderer'), {
   error: debug('zbay:renderer:err')
@@ -135,6 +136,11 @@ ipcRenderer.on('waggleInitialized', (event) => {
   store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
   store.dispatch(directMessagesHandlers.epics.subscribeForAllConversations())
+  console.log(electronStore.get('isNewUser'))
+  // if (electronStore.get('isNewUser')) {
+  store.dispatch(socketsActions.saveCertificate())
+  console.log('ide dalej')
+  //}
 })
 
 ipcRenderer.on('newChannel', (event, { channelParams }) => {

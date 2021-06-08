@@ -324,10 +324,6 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
     }
 
 
-
-
-
-
     const certString = readRootCertFromFile()
     const keyString = readRootKeyFromFile()
 
