@@ -179,10 +179,32 @@ export function* loadAllMessages(
   )
 }
 
+export function* sendIds(
+  action: PublicChannelsActions['sendIds']
+): Generator {
+  console.log(`SENDIDS: action.payload.channelAddress ${action.payload.channelAddress}`)
+  console.log(`SENDIDS: action.payload.ids ${action.payload.ids}`)
+  const channel = yield* select(contactsSelectors.contact(action.payload.channelAddress))
+  if (!channel) {
+    log(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
+    return
+  }
+  const messagesToFetch = []
+ const ids = Array.from(Object.values(channel.messages)).map(msg => msg.id)
+  for (const id of action.payload.ids) {
+    if (!ids.includes(id)) {
+      messagesToFetch.push(id)
+    }
+  }
+  console.log()
+  yield put(publicChannelsActions.askForMessages({channelAddress: action.payload.channelAddress, ids: messagesToFetch}))
+}
+
 export function* publicChannelsSaga(): Generator {
   yield all([
     takeEvery(`${publicChannelsActions.loadMessage}`, loadMessage),
     takeEvery(`${publicChannelsActions.responseLoadAllMessages}`, loadAllMessages),
-    takeEvery(`${publicChannelsActions.responseGetPublicChannels}`, getPublicChannels)
+    takeEvery(`${publicChannelsActions.responseGetPublicChannels}`, getPublicChannels),
+    takeEvery(`${publicChannelsActions.sendIds}`, sendIds)
   ])
 }

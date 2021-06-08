@@ -66,5 +66,7 @@ export const publicChannelsActions = {
     key: string
   },
   'SET_DIRECT_MESSAGES'
-  >('SET_DIRECT_MESSAGES')
+  >('SET_DIRECT_MESSAGES'),
+  sendIds: createAction<{channelAddress: string, ids: string[]}>(Socket.SEND_IDS),
+  askForMessages: createAction<{channelAddress: string, ids: string[]}>(Socket.ASK_FOR_MESSAGES)
 }
