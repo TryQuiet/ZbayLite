@@ -33,15 +33,15 @@ export const generateKeyPair = async ({ signAlg, hashAlg }) => {
   return keyPair
 }
 
-export const dumpPEM = (tag, body, target) => {
-  const result = (
-    `-----BEGIN ${tag}-----\n` +
-    `${formatPEM(Buffer.from(body).toString('base64'))}\n` +
-    `-----END ${tag}-----\n`
-  )
-  // fs.writeSync(target, result)
-  console.log(`Saved ${target}`)
-}
+// export const dumpPEM = (tag, body, target) => {
+//   const result = (
+//     `-----BEGIN ${tag}-----\n` +
+//     `${formatPEM(Buffer.from(body).toString('base64'))}\n` +
+//     `-----END ${tag}-----\n`
+//   )
+//    fs.writeSync(target, result)
+//   console.log(`Saved ${target}`)
+// }
 
 export const formatPEM = (pemString) => {
   const stringLength = pemString.length

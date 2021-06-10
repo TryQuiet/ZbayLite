@@ -45,7 +45,7 @@ import debug from 'debug'
 import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
 import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
 
-const { readRootCertFromFile, readRootKeyFromFile } = require('../../../../scripts/readFromFiles')
+const { readRootCertFromFile, readRootKeyFromFile } = require('../../../../scripts/readFromFiles') // eslint-disable-line
 
 const log = Object.assign(debug('zbay:identity'), {
   error: debug('zbay:identity:err'),

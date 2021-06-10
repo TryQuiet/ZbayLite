@@ -137,10 +137,7 @@ ipcRenderer.on('waggleInitialized', (event) => {
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
   store.dispatch(directMessagesHandlers.epics.subscribeForAllConversations())
   console.log(electronStore.get('isNewUser'))
-  // if (electronStore.get('isNewUser')) {
   store.dispatch(socketsActions.saveCertificate())
-  console.log('ide dalej')
-  //}
 })
 
 ipcRenderer.on('newChannel', (event, { channelParams }) => {

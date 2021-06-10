@@ -3,7 +3,6 @@ import { createAction } from '@reduxjs/toolkit'
 import { ActionsType, Socket } from '../const/actionsTypes'
 import { DisplayableMessage } from '../../zbay/messages.types'
 export type DirectMessagesActions = ActionsType<typeof directMessagesActions>
-
 export interface BasicMessage {
   channelId: string
   type: number
@@ -26,7 +25,7 @@ export const directMessagesActions = {
   responseGetAvailableUsers: createAction<{ [key: string]: { halfKey: string } }, Socket.RESPONSE_GET_AVAILABLE_USERS>(Socket.RESPONSE_GET_AVAILABLE_USERS),
   // Messages
   sendDirectMessage: createAction<string, Socket.SEND_DIRECT_MESSAGE>(Socket.SEND_DIRECT_MESSAGE),
-  saveCertificate: createAction<string, Socket.SAVE_CERTIFICATE>(Socket.SAVE_CERTIFICATE), //for now
+  saveCertificate: createAction<string, Socket.SAVE_CERTIFICATE>(Socket.SAVE_CERTIFICATE), // for now
   loadDirectMessage: createAction<any, Socket.DIRECT_MESSAGE>(Socket.DIRECT_MESSAGE),
   loadAllDirectMessages: createAction(Socket.LOAD_ALL_DIRECT_MESSAGES),
   responseLoadAllDirectMessages: createAction<{
