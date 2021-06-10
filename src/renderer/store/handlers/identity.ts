@@ -44,7 +44,8 @@ import directMessagesSelectors from '../selectors/directMessages'
 import debug from 'debug'
 import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
 import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
-import { readRootCertFromFile, readRootKeyFromFile } from '../../../pkijs/readFromFiles'
+
+const { readRootCertFromFile, readRootKeyFromFile } = require('../../../../scripts/readFromFiles')
 
 const log = Object.assign(debug('zbay:identity'), {
   error: debug('zbay:identity:err'),
@@ -323,9 +324,8 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
       signerPubKey = keys.signerPubKey
     }
 
-
-    const certString = readRootCertFromFile()
-    const keyString = readRootKeyFromFile()
+    const certString = await readRootCertFromFile()
+    const keyString = await readRootKeyFromFile()
 
     const user = await createUserCsr('nick', 'onion', 'peer')
     const userCert = await createUserCert(certString, keyString, user.userCsr)
