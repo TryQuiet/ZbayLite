@@ -1,4 +1,3 @@
-import fs from 'fs'
 import { getCrypto, getAlgorithmParameters } from 'pkijs'
 
 import { signAlg } from '../generatePems/config'

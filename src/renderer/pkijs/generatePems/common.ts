@@ -1,11 +1,11 @@
 import { fromBER } from 'asn1js'
 import { stringToArrayBuffer, fromBase64 } from 'pvutils'
-import fs from 'fs-sync'
 import {
   getAlgorithmParameters, getCrypto, setEngine,
-  CryptoEngine, Certificate, CertificationRequest,
-  SignedData
+  CryptoEngine, Certificate, CertificationRequest
 } from 'pkijs'
+
+import { Crypto } from '@peculiar/webcrypto'
 
 export enum CertFieldsTypes {
   commonName = '2.5.4.3',
@@ -13,7 +13,8 @@ export enum CertFieldsTypes {
   peerId = '1.3.6.1.2.1.15.3.1.1'
 }
 
-const webcrypto = new (require('node-webcrypto-ossl')).Crypto()
+const webcrypto = new Crypto()
+
 setEngine('newEngine', webcrypto, new CryptoEngine({
   name: '',
   crypto: webcrypto,
@@ -23,6 +24,7 @@ const crypto = getCrypto()
 
 export const generateKeyPair = async ({ signAlg, hashAlg }) => {
   const algorithm = getAlgorithmParameters(signAlg, 'generatekey')
+
   if ('hash' in algorithm.algorithm) {
     algorithm.algorithm.hash.name = hashAlg
   }
@@ -31,15 +33,15 @@ export const generateKeyPair = async ({ signAlg, hashAlg }) => {
   return keyPair
 }
 
-export const dumpPEM = (tag, body, target) => {
-  const result = (
-    `-----BEGIN ${tag}-----\n` +
-    `${formatPEM(Buffer.from(body).toString('base64'))}\n` +
-    `-----END ${tag}-----\n`
-  )
-  fs.write(target, result)
-  console.log(`Saved ${target}`)
-}
+// export const dumpPEM = (tag, body, target) => {
+//   const result = (
+//     `-----BEGIN ${tag}-----\n` +
+//     `${formatPEM(Buffer.from(body).toString('base64'))}\n` +
+//     `-----END ${tag}-----\n`
+//   )
+//    fs.writeSync(target, result)
+//   console.log(`Saved ${target}`)
+// }
 
 export const formatPEM = (pemString) => {
   const stringLength = pemString.length
@@ -60,19 +62,8 @@ export const loadCertificate = (rootCert) => {
   return new Certificate({ schema: asn1.result })
 }
 
-export const loadCMS = (filename) => {
-  const encodedCMS = fs.read(filename)
-  const clearEncodedCMS = encodedCMS.replace(/(-----(BEGIN|END)( NEW)? CMS-----|\n)/g, '')
-  const cmsBuffer = stringToArrayBuffer(fromBase64(clearEncodedCMS))
-  const asn1 = fromBER(cmsBuffer)
-  // const cmsContentSimpl = new ContentInfo({ schema: asn1.result });
-  return new SignedData({ schema: asn1.result }) // cmsContentSimpl.content });
-}
-
 export const loadPrivateKey = (filename, signAlg, hashAlg) => {
-  console.log("key", filename)
   const keyBuffer = stringToArrayBuffer(fromBase64(filename))
-  console.log("buffer", keyBuffer)
 
   const algorithm = getAlgorithmParameters(signAlg, 'generatekey')
   if ('hash' in algorithm.algorithm) {

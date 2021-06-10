@@ -42,6 +42,11 @@ import { DisplayableMessage } from '../../zbay/messages.types'
 import directMessagesHandlers from './directMessages'
 import directMessagesSelectors from '../selectors/directMessages'
 import debug from 'debug'
+import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
+import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
+
+const { readRootCertFromFile, readRootKeyFromFile } = require('../../../../scripts/readFromFiles') // eslint-disable-line
+
 const log = Object.assign(debug('zbay:identity'), {
   error: debug('zbay:identity:err'),
   warn: debug('zbay:identity:warn')
@@ -74,6 +79,8 @@ export class Identity {
     freeUtxos: number
     addresses: string[]
     shieldedAddresses: string[]
+    certificate: string
+    certPrivKey: string
   }
 
   fetchingBalance: boolean
@@ -122,7 +129,9 @@ export const initialState: Identity = new Identity({
     onionAddress: '',
     freeUtxos: 0,
     addresses: [],
-    shieldedAddresses: []
+    shieldedAddresses: [],
+    certificate: '',
+    certPrivKey: ''
   },
   fetchingBalance: false,
   loader: {
@@ -315,6 +324,12 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
       signerPubKey = keys.signerPubKey
     }
 
+    const certString = await readRootCertFromFile()
+    const keyString = await readRootKeyFromFile()
+
+    const user = await createUserCsr('nick', 'onion', 'peer')
+    const userCert = await createUserCert(certString, keyString, user.userCsr)
+
     electronStore.set('identity', {
       name,
       address: zAddress,
@@ -324,7 +339,9 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
       keys: {
         tpk,
         sk
-      }
+      },
+      certificate: userCert,
+      certPrivKey: user.userKey
     })
     const network = 'mainnet'
 

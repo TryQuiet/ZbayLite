@@ -4,7 +4,9 @@ import { fromBER } from 'asn1js'
 
 import { hashAlg, signAlg } from '../generatePems/config'
 
-const webcrypto = new (require('node-webcrypto-ossl')).Crypto()
+import { Crypto } from '@peculiar/webcrypto'
+const webcrypto = new Crypto()
+
 setEngine('newEngine', webcrypto, new CryptoEngine({
   name: '',
   crypto: webcrypto,
@@ -37,6 +39,6 @@ const keyObjectFromString = (pubKeyString) => {
 export const extractPubKey = async (pem) => {
   const certificate = parseCertificate(pem)
   const pubKeyString = keyFromCertificate(certificate)
-  console.log("siema")
+  console.log('siema')
   return keyObjectFromString(pubKeyString)
 }

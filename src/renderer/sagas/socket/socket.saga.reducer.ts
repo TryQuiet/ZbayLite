@@ -10,5 +10,6 @@ export interface Libp2pMessage {
 }
 
 export const socketsActions = {
-  connect: createAction(Socket.CONNECT_TO_WEBSOCKET_SERVER)
+  connect: createAction(Socket.CONNECT_TO_WEBSOCKET_SERVER),
+  saveCertificate: createAction(Socket.SAVE_CERTIFICATE)
 }

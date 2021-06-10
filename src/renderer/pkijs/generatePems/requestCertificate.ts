@@ -5,7 +5,7 @@ import {
 } from 'pkijs'
 
 import { signAlg, hashAlg } from './config'
-import { generateKeyPair, dumpPEM, CertFieldsTypes, formatPEM } from './common'
+import { generateKeyPair, CertFieldsTypes } from './common'
 
 export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
   const pkcs10 = await requestCertificate({
@@ -16,7 +16,6 @@ export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
     hashAlg
   })
   // await dumpCertificate(pkcs10)
-  console.log('ciekawe', pkcs10.privateKey)
   const userData = {
     userCsr: pkcs10.pkcs10.toSchema().toBER(false),
     userKey: await getCrypto().exportKey('pkcs8', pkcs10.privateKey)
@@ -31,10 +30,12 @@ export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
 
 async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, hashAlg }) {
   const keyPair = await generateKeyPair({ signAlg, hashAlg })
+
   const pkcs10 = new CertificationRequest({
     version: 0,
     attributes: []
   })
+
   pkcs10.subject.typesAndValues.push(
     new AttributeTypeAndValue({
       type: CertFieldsTypes.nickName,
@@ -53,6 +54,7 @@ async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, h
       value: new PrintableString({ value: peerId })
     })
   )
+
   await pkcs10.subjectPublicKeyInfo.importKey(keyPair.publicKey)
   const hashedPublicKey = await getCrypto().digest(
     { name: 'SHA-1' },
@@ -78,7 +80,7 @@ async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, h
   return { pkcs10, ...keyPair }
 }
 
-async function dumpCertificate({ pkcs10, privateKey }) {
-  dumpPEM('CERTIFICATE REQUEST', pkcs10.toSchema().toBER(false), 'files/pkcs10.csr')
-  dumpPEM('PRIVATE KEY', await getCrypto().exportKey('pkcs8', privateKey), 'files/user_key.pem')
-}
+// async function dumpCertificate({ pkcs10, privateKey }) {
+//   dumpPEM('CERTIFICATE REQUEST', pkcs10.toSchema().toBER(false), 'files/pkcs10.csr')
+//   dumpPEM('PRIVATE KEY', await getCrypto().exportKey('pkcs8', privateKey), 'files/user_key.pem')
+// }
