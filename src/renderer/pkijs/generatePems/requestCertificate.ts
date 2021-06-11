@@ -28,7 +28,11 @@ export const createUserCsr = async ({ zbayNickanem, commonName, peerId }) => {
 }
 
 async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg = config.signAlg, hashAlg = config.hashAlg }: {
-  commonName: string; signAlg: string; hashAlg: string; zbayNickanem: string; peerId: string
+  zbayNickanem: string
+  commonName: string
+  peerId: string
+  signAlg: string
+  hashAlg: string
 }) {
   const keyPair = await generateKeyPair({ signAlg, hashAlg })
 
