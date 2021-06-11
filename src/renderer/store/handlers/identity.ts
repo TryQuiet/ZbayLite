@@ -167,6 +167,9 @@ export const setRegistraionStatus = createAction<{
   takenUsernames?: string[]
 }>(actionTypes.SET_REGISTRAION_STATUS)
 export const setUserShieldedAddreses = createAction<any[]>(actionTypes.SET_USER_SHIELDED_ADDRESES)
+export const setCertificate = createAction<string>(actionTypes.SET_CERTIFICATE)
+export const setCertKey = createAction<string>(actionTypes.SET_CERT_KEY)
+
 
 export const actions = {
   setIdentity,
@@ -185,7 +188,9 @@ export const actions = {
   setOnionAddress,
   setRegistraionStatus,
   setUserAddreses,
-  setUserShieldedAddreses
+  setUserShieldedAddreses,
+  setCertificate,
+  setCertKey
 }
 
 export type IdentityActions = ActionsType<typeof actions>
@@ -290,6 +295,50 @@ export const shieldBalance = ({ to, amount }) => async dispatch => {
   }, 300000)
 }
 
+
+
+
+
+
+
+
+export const createCertificates = () => async (dispatch, getState) => {
+  const certString = dataFromRootPems.certificate
+  const keyString = dataFromRootPems.privKey
+
+  const hiddenService = electronStore.get('hiddenServices')
+  const onionAddress = hiddenService.libp2pHiddenService.onionAddress
+
+  const notBeforeDate = new Date()
+  const notAfterDate = new Date(2030, 1, 1)
+
+  const userData = {
+    zbayNickanem: 'nick',
+    commonName: onionAddress,
+    peerId: 'peer'
+  }
+  console.log('userData', userData)
+
+  const user = await createUserCsr(userData)
+  const userCertData = await createUserCert(certString, keyString, user.userCsr, notBeforeDate, notAfterDate)
+
+
+  await dispatch(setCertificate(userCertData.userCertString))
+  await dispatch(setCertKey(user.userKey))
+
+  console.log(identitySelectors.data(getState()))
+
+  return userCertData.userCertString
+}
+
+
+
+
+
+
+
+
+
 export const createIdentity = ({ name, fromMigrationFile }) => async () => {
   let zAddress
   let tAddress
@@ -323,22 +372,6 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
       signerPubKey = keys.signerPubKey
     }
 
-    const certString = dataFromRootPems.certificate
-    const keyString = dataFromRootPems.privKey
-
-    const userData = {
-      zbayNickanem: 'nick',
-      commonName: 'onionAddress',
-      peerId: 'peer'
-    }
-
-    const user = await createUserCsr(userData)
-
-    const notBeforeDate = new Date()
-    const notAfterDate = new Date(2030, 1, 1)
-
-    const userCert = await createUserCert(certString, keyString, user.userCsr, notBeforeDate, notAfterDate)
-
     electronStore.set('identity', {
       name,
       address: zAddress,
@@ -349,8 +382,8 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
         tpk,
         sk
       },
-      certificate: userCert,
-      certPrivKey: user.userKey
+      certificate: '',
+      certPrivKey: ''
     })
     const network = 'mainnet'
 
@@ -619,7 +652,8 @@ const epics = {
   fetchFreeUtxos,
   loadIdentity,
   generateNewAddress,
-  generateNewShieldedAddress
+  generateNewShieldedAddress,
+  createCertificates
 }
 
 const exportFunctions = {
@@ -728,6 +762,22 @@ export const reducer = handleActions<Identity, PayloadType<IdentityActions>>(
     ) =>
       produce(state, draft => {
         draft.data.shieldedAddresses = shieldedAddresses
+      }),
+
+
+    [setCertificate.toString()]: (
+      state,
+      { payload: certificate }: IdentityActions['setCertificate']
+    ) =>
+      produce(state, draft => {
+        draft.data.certificate = certificate
+      }),
+    [setCertKey.toString()]: (
+      state,
+      { payload: certPrivKey }: IdentityActions['setCertKey']
+    ) =>
+      produce(state, draft => {
+        draft.data.certPrivKey = certPrivKey
       })
   },
   initialState

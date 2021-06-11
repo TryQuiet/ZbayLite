@@ -23,6 +23,7 @@ import notificationsHandlers from './store/handlers/notifications'
 import appSelectors from './store/selectors/app'
 import { socketsActions } from './sagas/socket/socket.saga.reducer'
 import debug from 'debug'
+import { createCertificates } from '../renderer/store/handlers/identity'
 
 const log = Object.assign(debug('zbay:renderer'), {
   error: debug('zbay:renderer:err')
@@ -127,7 +128,7 @@ ipcRenderer.on('connectToWebsocket', (event) => {
   store.dispatch(socketsActions.connect())
 })
 
-ipcRenderer.on('waggleInitialized', (event) => {
+ipcRenderer.on('waggleInitialized', async (event) => {
   log('waggle Initialized')
   store.dispatch(waggleHandlers.actions.setIsWaggleConnected(true))
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())
@@ -135,6 +136,7 @@ ipcRenderer.on('waggleInitialized', (event) => {
   store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
   store.dispatch(directMessagesHandlers.epics.subscribeForAllConversations())
+  await store.dispatch(identityHandlers.epics.createCertificates())
   store.dispatch(socketsActions.saveCertificate())
 })
 
