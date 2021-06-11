@@ -19,8 +19,9 @@ export const createRootCA = async (notBeforeDate, notAfterDate) => {
   }
 
   return {
-    rootCert: Buffer.from(rootData.rootCert).toString('base64'),
-    rootKey: Buffer.from(rootData.rootKey).toString('base64')
+    rootObject: rootCA,
+    rootCertString: Buffer.from(rootData.rootCert).toString('base64'),
+    rootKeyString: Buffer.from(rootData.rootKey).toString('base64')
   }
 }
 

@@ -20,7 +20,10 @@ export const createUserCert = async (rootCA, rootKey, userCsr, notBeforeDate, no
   // await dumpCertificate(userCertificate)
 
   const userCert = userCertificate.certificate.toSchema(true).toBER(false)
-  return Buffer.from(userCert).toString('base64')
+  return {
+    userCertObject: userCertificate,
+    userCertString: Buffer.from(userCert).toString('base64')
+  }
 }
 
 async function generateuserCertificate({

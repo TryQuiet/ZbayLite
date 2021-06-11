@@ -39,6 +39,5 @@ const keyObjectFromString = (pubKeyString) => {
 export const extractPubKey = async (pem) => {
   const certificate = parseCertificate(pem)
   const pubKeyString = keyFromCertificate(certificate)
-  console.log('siema')
   return keyObjectFromString(pubKeyString)
 }
