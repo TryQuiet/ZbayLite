@@ -10,7 +10,7 @@ import identitySelectors from '../../../store/selectors/identity'
 import contactsSelectors from '../../../store/selectors/contacts'
 import { User } from '../../../store/handlers/users'
 
-export const useChannelInputData = contactId => {
+export const useDirectMessageInputData = contactId => {
   const contact = useSelector(contactsSelectors.contact(contactId))
   const signerPubey = useSelector(identitySelectors.signerPubKey)
   const inputLocked = useSelector(channelSelectors.inputLocked)
@@ -34,7 +34,7 @@ export const useChannelInputData = contactId => {
   return data
 }
 
-export const useChannelInputActions = () => {
+export const useDirectMessageInputActions = () => {
   const dispatch = useDispatch()
 
   const onChange = useCallback((arg: { value: string; id: string }) => {
@@ -69,9 +69,9 @@ export const ChannelInput = ({ contactId }) => {
     message,
     myUser,
     users
-  } = useChannelInputData(contactId)
+  } = useDirectMessageInputData(contactId)
 
-  const { onChange, resetDebounce, sendDirectMessageOnEnter } = useChannelInputActions()
+  const { onChange, resetDebounce, sendDirectMessageOnEnter } = useDirectMessageInputActions()
 
   return (
     <ChannelInputComponent
