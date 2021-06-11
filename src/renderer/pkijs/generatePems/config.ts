@@ -1,2 +1,4 @@
-export const signAlg = 'ECDSA'
-export const hashAlg = 'sha-256'
+export default {
+  signAlg: 'ECDSA',
+  hashAlg: 'sha-256'
+}

@@ -4,16 +4,15 @@ import {
   getCrypto, Attribute
 } from 'pkijs'
 
-import { signAlg, hashAlg } from './config'
+import config from './config'
 import { generateKeyPair, CertFieldsTypes } from './common'
 
-export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
+export const createUserCsr = async ({ zbayNickanem, commonName, peerId }) => {
   const pkcs10 = await requestCertificate({
     zbayNickanem: zbayNickanem,
     commonName: commonName,
     peerId: peerId,
-    signAlg,
-    hashAlg
+    ...config
   })
   // await dumpCertificate(pkcs10)
   const userData = {
@@ -28,7 +27,9 @@ export const createUserCsr = async (zbayNickanem, commonName, peerId) => {
   }
 }
 
-async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg, hashAlg }) {
+async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg = config.signAlg, hashAlg = config.hashAlg }: {
+  commonName: string; signAlg: string; hashAlg: string; zbayNickanem: string; peerId: string
+}) {
   const keyPair = await generateKeyPair({ signAlg, hashAlg })
 
   const pkcs10 = new CertificationRequest({
