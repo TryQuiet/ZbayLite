@@ -326,23 +326,18 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
     const certString = dataFromRootPems.certificate
     const keyString = dataFromRootPems.privKey
 
-    console.log('pems', certString, keyString)
-
     const userData = {
       zbayNickanem: 'nick',
       commonName: 'onionAddress',
       peerId: 'peer'
     }
 
-    console.log('userData', userData)
     const user = await createUserCsr(userData)
-    console.log('user', user)
 
     const notBeforeDate = new Date()
     const notAfterDate = new Date(2030, 1, 1)
 
     const userCert = await createUserCert(certString, keyString, user.userCsr, notBeforeDate, notAfterDate)
-    console.log('userCert', userCert)
 
     electronStore.set('identity', {
       name,
