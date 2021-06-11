@@ -349,7 +349,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
         tpk,
         sk
       },
-      certificate: userCert,
+      certificate: userCert.userCertString,
       certPrivKey: user.userKey
     })
     const network = 'mainnet'
