@@ -6,6 +6,7 @@ import {
 } from 'pkijs'
 
 import { Crypto } from '@peculiar/webcrypto'
+import { KeyObject, KeyPairKeyObjectResult } from 'node:crypto'
 
 export enum CertFieldsTypes {
   commonName = '2.5.4.3',
@@ -22,7 +23,7 @@ setEngine('newEngine', webcrypto, new CryptoEngine({
 }))
 const crypto = getCrypto()
 
-export const generateKeyPair = async ({ signAlg, hashAlg }) => {
+export const generateKeyPair = async ({ signAlg, hashAlg }: { signAlg: string; hashAlg: string }): Promise<KeyPairKeyObjectResult> => {
   const algorithm = getAlgorithmParameters(signAlg, 'generatekey')
 
   if ('hash' in algorithm.algorithm) {
@@ -43,7 +44,7 @@ export const generateKeyPair = async ({ signAlg, hashAlg }) => {
 //   console.log(`Saved ${target}`)
 // }
 
-export const formatPEM = (pemString) => {
+export const formatPEM = (pemString: string): string => {
   const stringLength = pemString.length
   let resultString = ''
   for (let i = 0, count = 0; i < stringLength; i++, count++) {
@@ -56,13 +57,13 @@ export const formatPEM = (pemString) => {
   return resultString
 }
 
-export const loadCertificate = (rootCert) => {
+export const loadCertificate = async (rootCert: string): Promise<Certificate> => {
   const certificateBuffer = stringToArrayBuffer(fromBase64(rootCert))
   const asn1 = fromBER(certificateBuffer)
   return new Certificate({ schema: asn1.result })
 }
 
-export const loadPrivateKey = (filename, signAlg, hashAlg) => {
+export const loadPrivateKey = async (filename: string, signAlg: string, hashAlg: string): Promise<KeyObject> => {
   const keyBuffer = stringToArrayBuffer(fromBase64(filename))
 
   const algorithm = getAlgorithmParameters(signAlg, 'generatekey')
@@ -72,7 +73,7 @@ export const loadPrivateKey = (filename, signAlg, hashAlg) => {
   return crypto.importKey('pkcs8', keyBuffer, algorithm.algorithm, true, algorithm.usages)
 }
 
-export const loadCSR = (csr) => {
+export const loadCSR = async (csr: string): Promise<Certificate> => {
   const certBuffer = stringToArrayBuffer(fromBase64(csr))
   const asn1 = fromBER(certBuffer)
   return new CertificationRequest({ schema: asn1.result })

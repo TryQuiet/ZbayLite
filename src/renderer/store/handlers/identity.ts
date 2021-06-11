@@ -30,7 +30,8 @@ import {
   actionTypes,
   networkFeeSatoshi,
   satoshiMultiplier,
-  networkFee
+  networkFee,
+  dataFromRootPems
 } from '../../../shared/static'
 import electronStore, { migrationStore } from '../../../shared/electronStore'
 import staticChannelsSyncHeight from '../../static/staticChannelsSyncHeight.json'
@@ -44,8 +45,6 @@ import directMessagesSelectors from '../selectors/directMessages'
 import debug from 'debug'
 import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
 import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
-
-const { readRootCertFromFile, readRootKeyFromFile } = require('../../../../scripts/readFromFiles') // eslint-disable-line
 
 const log = Object.assign(debug('zbay:identity'), {
   error: debug('zbay:identity:err'),
@@ -324,11 +323,21 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
       signerPubKey = keys.signerPubKey
     }
 
-    const certString = await readRootCertFromFile()
-    const keyString = await readRootKeyFromFile()
+    const certString = dataFromRootPems.certificate
+    const keyString = dataFromRootPems.privKey
 
-    const user = await createUserCsr('nick', 'onion', 'peer')
-    const userCert = await createUserCert(certString, keyString, user.userCsr)
+    const userData = {
+      zbayNickanem: 'nick',
+      commonName: 'onionAddress',
+      peerId: 'peer'
+    }
+
+    const user = await createUserCsr(userData)
+
+    const notBeforeDate = new Date()
+    const notAfterDate = new Date(2030, 1, 1)
+
+    const userCert = await createUserCert(certString, keyString, user.userCsr, notBeforeDate, notAfterDate)
 
     electronStore.set('identity', {
       name,

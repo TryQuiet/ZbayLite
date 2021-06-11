@@ -2,7 +2,7 @@ import { fromBase64, stringToArrayBuffer } from 'pvutils'
 import { Certificate, getAlgorithmParameters, getCrypto, setEngine, CryptoEngine } from 'pkijs'
 import { fromBER } from 'asn1js'
 
-import { hashAlg, signAlg } from '../generatePems/config'
+import config from '../generatePems/config'
 
 import { Crypto } from '@peculiar/webcrypto'
 const webcrypto = new Crypto()
@@ -28,9 +28,9 @@ const keyObjectFromString = (pubKeyString) => {
   const crypto = getCrypto()
   let keyArray = new ArrayBuffer(0)
   keyArray = stringToArrayBuffer(fromBase64(pubKeyString))
-  const algorithm = getAlgorithmParameters(signAlg, 'generatekey')
+  const algorithm = getAlgorithmParameters(config.signAlg, 'generatekey')
   if ('hash' in algorithm.algorithm) {
-    algorithm.algorithm.hash.name = hashAlg
+    algorithm.algorithm.hash.name = config.hashAlg
   }
 
   return crypto.importKey('raw', keyArray, algorithm.algorithm, true, algorithm.usages)
@@ -39,6 +39,5 @@ const keyObjectFromString = (pubKeyString) => {
 export const extractPubKey = async (pem) => {
   const certificate = parseCertificate(pem)
   const pubKeyString = keyFromCertificate(certificate)
-  console.log('siema')
   return keyObjectFromString(pubKeyString)
 }

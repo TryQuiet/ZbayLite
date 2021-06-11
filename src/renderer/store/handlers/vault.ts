@@ -87,8 +87,6 @@ const createVaultEpic = (fromMigrationFile = false) => async dispatch => {
         fromMigrationFile
       })
     )
-    console.log('identity', identity)
-    console.log('pierwszy raz')
     await dispatch(nodeHandlers.actions.setIsRescanning(true))
     await dispatch(identityHandlers.epics.setIdentity(identity))
     await dispatch(identityHandlers.epics.loadIdentity())

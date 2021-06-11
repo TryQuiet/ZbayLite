@@ -1,14 +1,15 @@
 import { Integer, PrintableString, BitString } from 'asn1js'
-import { Certificate, AttributeTypeAndValue, BasicConstraints, Extension, Time, getCrypto } from 'pkijs'
+import { Certificate, AttributeTypeAndValue, BasicConstraints, Extension, getCrypto } from 'pkijs'
 
-import { signAlg, hashAlg } from './config'
+import config from './config'
 import { generateKeyPair, CertFieldsTypes } from './common'
 
-export const createRootCA = async () => {
+export const createRootCA = async (notBeforeDate, notAfterDate) => {
   const rootCA = await generateRootCA({
     commonName: 'Zbay CA',
-    signAlg,
-    hashAlg
+    ...config,
+    notBeforeDate,
+    notAfterDate
   })
   // await dumpCertificate(rootCA)
 
@@ -18,12 +19,19 @@ export const createRootCA = async () => {
   }
 
   return {
-    rootCert: Buffer.from(rootData.rootCert).toString('base64'),
-    rootKey: Buffer.from(rootData.rootKey).toString('base64')
+    rootObject: rootCA,
+    rootCertString: Buffer.from(rootData.rootCert).toString('base64'),
+    rootKeyString: Buffer.from(rootData.rootKey).toString('base64')
   }
 }
 
-async function generateRootCA({ commonName, signAlg, hashAlg }) {
+async function generateRootCA({
+  commonName,
+  signAlg = config.signAlg,
+  hashAlg = config.hashAlg,
+  notBeforeDate,
+  notAfterDate
+}: { commonName: string; signAlg: string; hashAlg: string; notBeforeDate: Date; notAfterDate: Date }): Promise<Certificate> {
   const basicConstr = new BasicConstraints({ cA: true, pathLenConstraint: 3 })
   const keyUsage = getCAKeyUsage()
   const certificate = new Certificate({
@@ -42,8 +50,8 @@ async function generateRootCA({ commonName, signAlg, hashAlg }) {
         parsedValue: keyUsage // Parsed value for well-known extensions
       })
     ],
-    notBefore: new Time({ type: 1, value: new Date() }),
-    notAfter: new Time({ type: 1, value: new Date(2022, 1, 1) })
+    notBefore: notBeforeDate,
+    notAfter: notAfterDate
   })
   certificate.issuer.typesAndValues.push(
     new AttributeTypeAndValue({
