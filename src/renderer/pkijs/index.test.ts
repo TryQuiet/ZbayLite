@@ -19,7 +19,7 @@ export const test = async (message) => {
   const rootCert = await createRootCA(new Time({ type: 1, value: notBeforeDate }), new Time({ type: 1, value: notAfterDate }))
   const user = await createUserCsr(userData)
   const userCert = await createUserCert(rootCert.rootCertString, rootCert.rootKeyString, user.userCsr, notBeforeDate, notAfterDate)
-  //console.log(await verifyUserCert(rootCert.rootCertString, userCert.userCertString))
+  // console.log(await verifyUserCert(rootCert.rootCertString, userCert.userCertString))
 
   const data = {
     message: message,
