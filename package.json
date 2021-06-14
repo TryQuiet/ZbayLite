@@ -61,7 +61,7 @@
   },
   "homepage": "https://gitlab.rumblefishdev.com/holmes/zbay",
   "@comment version": "To build new version for specific platform, just replace platform in version tag to one of following linux, mac, windows",
-  "version": "3.2.18-zbay-lite",
+  "version": "3.2.20-zbay-lite",
   "description": "Distributed goods and bulletin board",
   "main": "dist/main/main.js",
   "scripts": {
@@ -177,6 +177,7 @@
     "storybook-react-router": "^1.0.5",
     "style-loader": "^0.23.1",
     "ts-jest": "^26.5.2",
+    "ts-node": "^10.0.0",
     "typescript": "^4.0.5",
     "webpack": "^4.29.0",
     "webpack-build-linked-packages": "^0.4.0",

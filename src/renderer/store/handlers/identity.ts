@@ -4,7 +4,7 @@ import { createAction, handleActions } from 'redux-actions'
 import secp256k1 from 'secp256k1'
 import { randomBytes } from 'crypto'
 import { DateTime } from 'luxon'
-import { ipcRenderer, remote } from 'electron'
+import { remote } from 'electron'
 
 import history from '../../../shared/history'
 import client from '../../zcash'
@@ -440,9 +440,6 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     await dispatch(fetchFreeUtxos())
     await dispatch(messagesHandlers.epics.fetchMessages())
     await dispatch(prepareUpgradedVersion())
-    if (!useTor) {
-      ipcRenderer.send('killTor')
-    }
     setTimeout(() => dispatch(coordinatorHandlers.epics.coordinator()), 5000)
     dispatch(setLoadingMessage('Loading users and messages'))
   } catch (err) { }
