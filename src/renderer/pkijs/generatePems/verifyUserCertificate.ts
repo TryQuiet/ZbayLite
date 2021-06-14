@@ -11,5 +11,5 @@ export const verifyUserCert = async (rootCACert, userCert) => {
     certs: certificates,
     crls
   })
-  const result = await certChainVerificationEngine.verify()
+  return certChainVerificationEngine.verify()
 }

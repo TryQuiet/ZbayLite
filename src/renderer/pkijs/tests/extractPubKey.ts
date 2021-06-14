@@ -1,5 +1,5 @@
 import { fromBase64, stringToArrayBuffer } from 'pvutils'
-import { Certificate, getAlgorithmParameters, getCrypto, setEngine, CryptoEngine } from 'pkijs'
+import { Certificate, getAlgorithmParameters } from 'pkijs'
 import { fromBER } from 'asn1js'
 
 import config from '../generatePems/config'

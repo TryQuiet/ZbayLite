@@ -21,7 +21,7 @@ describe('verify sign', () => {
   })
 
   it('verification test', async () => {
-    const message = "hello"
+    const message = 'hello'
     const userData = {
       zbayNickname: 'dev99damian',
       commonName: 'nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad.onion',
