@@ -7,7 +7,7 @@ import { autoUpdater } from 'electron-updater'
 import config from './config'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
-import { spawnTor, runWaggle, waggleVersion } from './waggleManager'
+import { spawnTor, waggleVersion } from './waggleManager'
 import debug from 'debug'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
@@ -299,7 +299,6 @@ app.on('ready', async () => {
   }
 
   mainWindow.webContents.on('did-finish-load', async () => {
-    mainWindow.webContents.send('ping')
     await runAndHandleWaggle()
     if (process.platform === 'win32' && process.argv) {
       const payload = process.argv[1]
@@ -315,21 +314,6 @@ app.on('ready', async () => {
     }
   })
 
-  ipcMain.on('spawnTor', async () => {
-    if (tor === null) {
-      tor = await spawnTor()
-      await runWaggle(mainWindow.webContents)
-      electronStore.set('isTorActive', true)
-    }
-  })
-
-  ipcMain.on('killTor', async () => {
-    if (tor !== null) {
-      await tor.kill()
-      tor = null
-    }
-  })
-
   ipcMain.on('proceed-update', () => {
     autoUpdater.quitAndInstall()
   })
@@ -341,31 +325,9 @@ app.on('ready', async () => {
       mainWindow.webContents.send('rpcQuery', JSON.stringify({ id: request.id, data: response }))
     }
   })
-
-  ipcMain.on('vault-created', () => {
-    electronStore.set('vaultStatus', config.VAULT_STATUSES.CREATED)
-  })
-
-  ipcMain.on('proceed-with-syncing', (_event, userChoice) => {
-    if (userChoice === 'EXISTING') {
-      electronStore.set(
-        'blockchainConfiguration',
-        config.BLOCKCHAIN_STATUSES.DEFAULT_LOCATION_SELECTED
-      )
-    } else {
-      electronStore.set('blockchainConfiguration', config.BLOCKCHAIN_STATUSES.TO_FETCH)
-    }
-  })
 })
 
 app.setAsDefaultProtocolClient('zbay')
-
-export const sleep = async (time = 1000) =>
-  await new Promise(resolve => {
-    setTimeout(() => {
-      resolve()
-    }, time)
-  })
 
 app.on('before-quit', async e => {
   e.preventDefault()

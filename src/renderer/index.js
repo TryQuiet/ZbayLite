@@ -75,10 +75,6 @@ ipcRenderer.on('onionAddress', (_, address) => {
   store.dispatch(identityHandlers.actions.setOnionAddress(address))
 })
 
-ipcRenderer.on('askForUsingDefaultBlockchainLocation', event => {
-  store.dispatch(appHandlers.epics.askForBlockchainLocation())
-})
-
 ipcRenderer.on('checkDiskSpace', (event, msg) => {
   store.dispatch(notificationsHandlers.actions.enqueueSnackbar(errorNotification({ message: msg })))
 })
