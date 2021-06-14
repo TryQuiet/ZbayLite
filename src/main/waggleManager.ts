@@ -71,6 +71,8 @@ export const spawnTor = async () => {
     }
   }
 
+
+
   if (fs.existsSync(`${path.join.apply(null, [os.homedir(), 'zbay_tor'])}`)) {
     fs.rmdirSync(`${path.join.apply(null, [os.homedir(), 'zbay_tor'])}`, {
       recursive: true
@@ -85,21 +87,26 @@ export const spawnTor = async () => {
       log(`ps process exited with code ${code}`)
     }
   })
-  return tor
+      
+      return tor
+
 }
 
 export const getPorts = async (): Promise<{
   socksPort: number
   libp2pHiddenService: number
   controlPort: number
+  dataServer: number
 }> => {
   const [controlPort] = await fp(9151)
   const [socksPort] = await fp(9052)
   const [libp2pHiddenService] = await fp(7950)
+  const [dataServer] = await fp(4677)
   return {
     socksPort,
     libp2pHiddenService,
-    controlPort
+    controlPort,
+    dataServer
   }
 }
 
@@ -108,8 +115,7 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
   const appDataPath = electronStore.get('appDataPath')
   const { libp2pHiddenService } = electronStore.get('hiddenServices')
 
-  const [dataServerPort] = await fp(4677)
-  const dataServer = new TlgManager.DataServer(dataServerPort)
+  const dataServer = new TlgManager.DataServer(ports.dataServer)
   await dataServer.listen()
 
   const connectionsManager = new TlgManager.ConnectionsManager({
