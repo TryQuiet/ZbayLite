@@ -7,14 +7,14 @@ import {
 import config from './config'
 import { generateKeyPair, CertFieldsTypes } from './common'
 
-export const createUserCsr = async ({ zbayNickanem, commonName, peerId }) => {
+export const createUserCsr = async ({ zbayNickname, commonName, peerId }) => {
   const pkcs10 = await requestCertificate({
-    zbayNickanem: zbayNickanem,
+    zbayNickname: zbayNickname,
     commonName: commonName,
     peerId: peerId,
     ...config
   })
-  // await dumpCertificate(pkcs10)
+
   const userData = {
     userCsr: pkcs10.pkcs10.toSchema().toBER(false),
     userKey: await getCrypto().exportKey('pkcs8', pkcs10.privateKey)
@@ -27,8 +27,8 @@ export const createUserCsr = async ({ zbayNickanem, commonName, peerId }) => {
   }
 }
 
-async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg = config.signAlg, hashAlg = config.hashAlg }: {
-  zbayNickanem: string
+async function requestCertificate({ zbayNickname, commonName, peerId, signAlg = config.signAlg, hashAlg = config.hashAlg }: {
+  zbayNickname: string
   commonName: string
   peerId: string
   signAlg: string
@@ -44,7 +44,7 @@ async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg = 
   pkcs10.subject.typesAndValues.push(
     new AttributeTypeAndValue({
       type: CertFieldsTypes.nickName,
-      value: new PrintableString({ value: zbayNickanem })
+      value: new PrintableString({ value: zbayNickname })
     })
   )
   pkcs10.subject.typesAndValues.push(
@@ -84,8 +84,3 @@ async function requestCertificate({ zbayNickanem, commonName, peerId, signAlg = 
   await pkcs10.sign(keyPair.privateKey, hashAlg)
   return { pkcs10, ...keyPair }
 }
-
-// async function dumpCertificate({ pkcs10, privateKey }) {
-//   dumpPEM('CERTIFICATE REQUEST', pkcs10.toSchema().toBER(false), 'files/pkcs10.csr')
-//   dumpPEM('PRIVATE KEY', await getCrypto().exportKey('pkcs8', privateKey), 'files/user_key.pem')
-// }

@@ -327,7 +327,7 @@ export const createIdentity = ({ name, fromMigrationFile }) => async () => {
     const keyString = dataFromRootPems.privKey
 
     const userData = {
-      zbayNickanem: 'nick',
+      zbayNickname: 'nick',
       commonName: 'onionAddress',
       peerId: 'peer'
     }

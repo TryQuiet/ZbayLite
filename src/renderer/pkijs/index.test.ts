@@ -9,7 +9,7 @@ import { createUserCert } from './generatePems/generateUserCertificate'
 
 export const test = async (message) => {
   const userData = {
-    zbayNickanem: 'dev99damian',
+    zbayNickname: 'dev99damian',
     commonName: 'nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad.onion',
     peerId: 'Qmf3ySkYqLET9xtAtDzvAr5Pp3egK1H3C5iJAZm1SpLEp6'
   }
@@ -19,7 +19,6 @@ export const test = async (message) => {
   const rootCert = await createRootCA(new Time({ type: 1, value: notBeforeDate }), new Time({ type: 1, value: notAfterDate }))
   const user = await createUserCsr(userData)
   const userCert = await createUserCert(rootCert.rootCertString, rootCert.rootKeyString, user.userCsr, notBeforeDate, notAfterDate)
-  // console.log(await verifyUserCert(rootCert.rootCertString, userCert.userCertString))
 
   const data = {
     message: message,
