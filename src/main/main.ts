@@ -277,11 +277,11 @@ app.on('ready', async () => {
         waggleProcess.send('connectionReady')
       })
       waggleProcess = child_process.fork(
-      `${process.cwd()}/src/main/waggleFork.ts`, [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
+        `${process.cwd()}/src/main/waggleFork.ts`, [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
         execArgv: ['-r', 'ts-node/register']
       }
       )
-      waggleProcess.on('message', async (msg: string) => {
+      waggleProcess.on('message', async (msg: any, payload: any) => {
         if (msg === 'connectToWebsocket') {
           mainWindow.webContents.send('connectToWebsocket')
         } else if (msg === 'waggleInitialized') {
@@ -291,6 +291,8 @@ app.on('ready', async () => {
           await waggleProcess.kill()
           await client.terminate()
           process.exit()
+        } else if (msg.peerId) {
+          electronStore.set('peerId', msg.peerId)
         }
       })
     } catch (error) {

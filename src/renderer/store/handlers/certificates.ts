@@ -5,6 +5,7 @@ import { ActionsType, PayloadType } from './types'
 import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
 import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
 import electronStore from '../../../shared/electronStore'
+import identitySelectors from '../selectors/identity'
 
 export interface CertificatesStore {
   usersCertificates: string[]
@@ -32,21 +33,19 @@ export const actions = {
 }
 export type CertificatesActions = ActionsType<typeof actions>
 
-export const createOwnCertificate = () => async dispatch => {
+export const createOwnCertificate = () => async (getState, dispatch) => {
   const certString = dataFromRootPems.certificate
   const keyString = dataFromRootPems.privKey
   const notBeforeDate = new Date()
   const notAfterDate = new Date(2030, 1, 1)
-
-  const hiddenService = electronStore.get('hiddenServices')
-  const onionAddress = hiddenService.libp2pHiddenService.onionAddress
+  const username = identitySelectors.nickName(getState())
 
   const userData = {
-    zbayNickname: 'nick',
-    commonName: onionAddress,
-    peerId: 'peer'
+    zbayNickname: 'aaa',
+    commonName: electronStore.get('hiddenServices').libp2pHiddenService.onionAddress,
+    peerId: electronStore.get('peerId')
   }
-
+  console.log(username)
   const user = await createUserCsr(userData)
   const userCertData = await createUserCert(certString, keyString, user.userCsr, notBeforeDate, notAfterDate)
 

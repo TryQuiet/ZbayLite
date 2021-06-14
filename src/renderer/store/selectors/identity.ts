@@ -18,6 +18,8 @@ const lockedBalance = currency =>
 const id = createSelector(data, d => d.id)
 const name = createSelector(data, d => d.name)
 
+const nickName = createSelector(identity, i => i.registrationStatus.nickname)
+
 const donationAllow = createSelector(data, d => d.donationAllow)
 const freeUtxos = createSelector(data, d => d.freeUtxos)
 const shieldingTax = createSelector(data, d => d.shieldingTax)
@@ -70,5 +72,6 @@ export default {
   shieldedAddresses,
   removedChannels,
   onionAddress,
-  registrationStatus
+  registrationStatus,
+  nickName
 }
