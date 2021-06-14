@@ -2,16 +2,15 @@ import { app, BrowserWindow, Menu, ipcMain, session } from 'electron'
 import electronLocalshortcut from 'electron-localshortcut'
 import path from 'path'
 import url from 'url'
+import child_process from 'child_process'
 import { autoUpdater } from 'electron-updater'
 import config from './config'
-import child_process from 'child_process'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
 import { spawnTor, runWaggle, waggleVersion } from './waggleManager'
 import debug from 'debug'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
-
 })
 
 electronStore.set('appDataPath', app.getPath('appData'))
@@ -274,7 +273,6 @@ app.on('ready', async () => {
       const ports = electronStore.get('ports')
       const hiddenServices = electronStore.get('hiddenServices')
       const appDataPath = app.getPath('appData')
-      console.log(`${process.cwd()}/src/main/wagiel.ts`)
       ipcMain.on('connectionReady', () => {
         waggleProcess.send('connectionReady')
       })

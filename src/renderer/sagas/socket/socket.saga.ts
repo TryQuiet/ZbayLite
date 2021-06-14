@@ -59,9 +59,6 @@ export function subscribe(socket) {
     socket.on(socketsActions.RESPONSE_GET_PRIVATE_CONVERSATIONS, payload => {
       emit(directMessagesActions.responseGetPrivateConversations(payload))
     })
-    socket.on(socketsActions.SEND_IDS, payload => {
-      emit(publicChannelsActions.sendIds(payload))
-    })
     return () => {}
   })
 }
@@ -156,14 +153,6 @@ export function* initializeConversation(
   { payload }: PayloadAction<typeof directMessagesActions.initializeConversation>
 ): Generator {
   yield* apply(socket, socket.emit, [socketsActions.INITIALIZE_CONVERSATION, payload])
-}
-
-export function* askForMessages(
-  socket: Socket,
-  { payload }: PayloadAction<typeof publicChannelsActions.askForMessages>
-): Generator {
-  console.log('asking for messages')
-  yield* apply(socket, socket.emit, [socketsActions.ASK_FOR_MESSAGES, payload])
 }
 
 export function* getPrivateConversations(socket: Socket): Generator {
