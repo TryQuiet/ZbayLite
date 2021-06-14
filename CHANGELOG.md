@@ -1,3 +1,15 @@
+# [3.2.20] - 14 June 2021
+
+### Changed
+* Fork runWaggle process instead running in main process
+* Extracted waggle handling logic to separate function
+* Changed a way main process is terminating
+
+### Added
+* Added dataServer port to electonStore portsclosing
+* Added proper closing for dataServer
+* Added proper closing for libp2p and orbitdb
+
 # [3.2.17] - 27 May 2021
 
 ### Fixed

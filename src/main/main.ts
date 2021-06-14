@@ -2,8 +2,8 @@ import { app, BrowserWindow, Menu, ipcMain, session } from 'electron'
 import electronLocalshortcut from 'electron-localshortcut'
 import path from 'path'
 import url from 'url'
+import child_process from 'child_process'
 import { autoUpdater } from 'electron-updater'
-
 import config from './config'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
@@ -228,6 +228,7 @@ export const checkForUpdate = async win => {
 
 let client: Client
 let tor = null
+let waggleProcess = null
 app.on('ready', async () => {
   // const template = [
   //   {
@@ -265,15 +266,41 @@ app.on('ready', async () => {
   mainWindow.webContents.on('did-fail-load', () => {
     log('failed loading')
   })
-  mainWindow.webContents.on('did-finish-load', async () => {
-    mainWindow.webContents.send('ping')
+
+  const runAndHandleWaggle = async () => {
     try {
-      log('before spawning tor')
       tor = await spawnTor()
-      await runWaggle(mainWindow.webContents)
+      const ports = electronStore.get('ports')
+      const hiddenServices = electronStore.get('hiddenServices')
+      const appDataPath = app.getPath('appData')
+      ipcMain.on('connectionReady', () => {
+        waggleProcess.send('connectionReady')
+      })
+      waggleProcess = child_process.fork(
+      `${process.cwd()}/src/main/waggleFork.ts`, [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
+        execArgv: ['-r', 'ts-node/register']
+      }
+      )
+      waggleProcess.on('message', async (msg: string) => {
+        if (msg === 'connectToWebsocket') {
+          mainWindow.webContents.send('connectToWebsocket')
+        } else if (msg === 'waggleInitialized') {
+          electronStore.set('waggleInitialized', true)
+          mainWindow.webContents.send('waggleInitialized')
+        } else if (msg === 'killedWaggle') {
+          await waggleProcess.kill()
+          await client.terminate()
+          process.exit()
+        }
+      })
     } catch (error) {
       log.error(error)
     }
+  }
+
+  mainWindow.webContents.on('did-finish-load', async () => {
+    mainWindow.webContents.send('ping')
+    await runAndHandleWaggle()
     if (process.platform === 'win32' && process.argv) {
       const payload = process.argv[1]
       if (payload) {
@@ -345,15 +372,15 @@ app.on('before-quit', async e => {
   if (tor !== null) {
     await tor.kill()
   }
-  // Killing worker takes couple of sec
-  await client.terminate()
   if (browserWidth && browserHeight) {
     electronStore.set('windowSize', {
       width: browserWidth,
       height: browserHeight
     })
   }
-  process.exit()
+  if (waggleProcess !== null) {
+    waggleProcess.send('killWaggle')
+  }
 })
 
 // Quit when all windows are closed.
