@@ -40,12 +40,12 @@ const runWaggle = async ({
     try {
       await dataServer.close()
     } catch (err) {
-      log.error('Closing dataServer error' + err)
+      log.error(`Closing dataServer error ${err}`)
     }
     try {
       await connectionsManager.stopLibp2p()
     } catch (err) {
-      log.error('Closing libp2p and orbitdb error' + err)
+      log.error(`Closing libp2p and orbitdb error ${err}`)
     }
   }
 
@@ -78,4 +78,4 @@ const opts = {
   libp2pHiddenService: process.argv[6]
 }
 
-runWaggle(opts)
+void runWaggle(opts)

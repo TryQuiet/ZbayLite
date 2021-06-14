@@ -59,6 +59,7 @@ export const spawnTor = async () => {
   } else {
     const services = Array.from(Object.keys(hiddenServices))
     for (const service of services) {
+      if (!ports[service]) continue
       try {
         await tor.spawnHiddenService({
           virtPort: ports[service],
@@ -70,8 +71,6 @@ export const spawnTor = async () => {
       }
     }
   }
-
-
 
   if (fs.existsSync(`${path.join.apply(null, [os.homedir(), 'zbay_tor'])}`)) {
     fs.rmdirSync(`${path.join.apply(null, [os.homedir(), 'zbay_tor'])}`, {
@@ -87,9 +86,8 @@ export const spawnTor = async () => {
       log(`ps process exited with code ${code}`)
     }
   })
-      
-      return tor
 
+  return tor
 }
 
 export const getPorts = async (): Promise<{

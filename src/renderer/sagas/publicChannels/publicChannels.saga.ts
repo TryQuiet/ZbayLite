@@ -190,14 +190,14 @@ export function* sendIds(
     return
   }
   const messagesToFetch = []
- const ids = Array.from(Object.values(channel.messages)).map(msg => msg.id)
+  const ids = Array.from(Object.values(channel.messages)).map(msg => msg.id)
   for (const id of action.payload.ids) {
     if (!ids.includes(id)) {
       messagesToFetch.push(id)
     }
   }
   console.log()
-  yield put(publicChannelsActions.askForMessages({channelAddress: action.payload.channelAddress, ids: messagesToFetch}))
+  yield put(publicChannelsActions.askForMessages({ channelAddress: action.payload.channelAddress, ids: messagesToFetch }))
 }
 
 export function* publicChannelsSaga(): Generator {

@@ -3,7 +3,6 @@ import electronLocalshortcut from 'electron-localshortcut'
 import path from 'path'
 import url from 'url'
 import { autoUpdater } from 'electron-updater'
-import waggle from 'waggle'
 import config from './config'
 import child_process from 'child_process'
 import electronStore from '../shared/electronStore'
@@ -12,7 +11,7 @@ import { spawnTor, runWaggle, waggleVersion } from './waggleManager'
 import debug from 'debug'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
-  
+
 })
 
 electronStore.set('appDataPath', app.getPath('appData'))
@@ -269,37 +268,37 @@ app.on('ready', async () => {
     log('failed loading')
   })
 
-const runAndHandleWaggle = async () => {
-  try {
-    tor = await spawnTor()
-    const ports = electronStore.get('ports')
-    const hiddenServices = electronStore.get('hiddenServices')
-    const appDataPath = app.getPath('appData')
-    console.log(`${process.cwd()}/src/main/wagiel.ts`)
-    ipcMain.on('connectionReady', () => {
-      waggleProcess.send('connectionReady')
-    })
-    waggleProcess = child_process.fork(
-      `${process.cwd()}/src/main/waggleFork.ts`, [ports.socksPort, ports.libp2pHiddenService,ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
-          execArgv: ['-r', 'ts-node/register']
-        }
-      )
-    waggleProcess.on('message', async (msg: string) => {
-      if(msg === 'connectToWebsocket') {
-        mainWindow.webContents.send('connectToWebsocket')
-      } else if (msg === 'waggleInitialized') {
-        electronStore.set('waggleInitialized', true)
-        mainWindow.webContents.send('waggleInitialized')
-      } else if (msg ==='killedWaggle') {
-        await waggleProcess.kill()
-        await client.terminate()
-        process.exit()
+  const runAndHandleWaggle = async () => {
+    try {
+      tor = await spawnTor()
+      const ports = electronStore.get('ports')
+      const hiddenServices = electronStore.get('hiddenServices')
+      const appDataPath = app.getPath('appData')
+      console.log(`${process.cwd()}/src/main/wagiel.ts`)
+      ipcMain.on('connectionReady', () => {
+        waggleProcess.send('connectionReady')
+      })
+      waggleProcess = child_process.fork(
+      `${process.cwd()}/src/main/waggleFork.ts`, [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
+        execArgv: ['-r', 'ts-node/register']
       }
-    })
-  } catch (error) {
-    log.error(error)
+      )
+      waggleProcess.on('message', async (msg: string) => {
+        if (msg === 'connectToWebsocket') {
+          mainWindow.webContents.send('connectToWebsocket')
+        } else if (msg === 'waggleInitialized') {
+          electronStore.set('waggleInitialized', true)
+          mainWindow.webContents.send('waggleInitialized')
+        } else if (msg === 'killedWaggle') {
+          await waggleProcess.kill()
+          await client.terminate()
+          process.exit()
+        }
+      })
+    } catch (error) {
+      log.error(error)
+    }
   }
-}
 
   mainWindow.webContents.on('did-finish-load', async () => {
     mainWindow.webContents.send('ping')
@@ -369,20 +368,20 @@ export const sleep = async (time = 1000) =>
       resolve()
     }, time)
   })
-  
+
 app.on('before-quit', async e => {
   e.preventDefault()
   if (tor !== null) {
     await tor.kill()
-  }
-  if (waggleProcess !== null) {
-    waggleProcess.send('killWaggle')
   }
   if (browserWidth && browserHeight) {
     electronStore.set('windowSize', {
       width: browserWidth,
       height: browserHeight
     })
+  }
+  if (waggleProcess !== null) {
+    waggleProcess.send('killWaggle')
   }
 })
 
