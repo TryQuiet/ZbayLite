@@ -34,16 +34,6 @@ export const generateKeyPair = async ({ signAlg, hashAlg }: { signAlg: string; h
   return keyPair
 }
 
-// export const dumpPEM = (tag, body, target) => {
-//   const result = (
-//     `-----BEGIN ${tag}-----\n` +
-//     `${formatPEM(Buffer.from(body).toString('base64'))}\n` +
-//     `-----END ${tag}-----\n`
-//   )
-//    fs.writeSync(target, result)
-//   console.log(`Saved ${target}`)
-// }
-
 export const formatPEM = (pemString: string): string => {
   const stringLength = pemString.length
   let resultString = ''

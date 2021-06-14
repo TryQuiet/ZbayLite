@@ -9,6 +9,6 @@ export function* responseGetCertificates(
 
 export function* certificatesSaga(): Generator {
   yield all([
-    takeEvery(`${certificatesActions.responseGetCertificates}`, responseGetCertificates)
+    takeEvery(certificatesActions.responseGetCertificates.type, responseGetCertificates)
   ])
 }

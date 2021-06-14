@@ -313,7 +313,7 @@ export const createCertificates = () => async (dispatch, getState) => {
   const notAfterDate = new Date(2030, 1, 1)
 
   const userData = {
-    zbayNickanem: 'nick',
+    zbayNickname: 'nick',
     commonName: onionAddress,
     peerId: 'peer'
   }

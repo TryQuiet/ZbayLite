@@ -6,8 +6,6 @@ import { loadCertificate, loadPrivateKey, loadCSR } from './common'
 import { KeyObject } from 'node:crypto'
 
 export const createUserCert = async (rootCA, rootKey, userCsr, notBeforeDate, notAfterDate) => {
-  // const rootCACert = 'files/root_ca.pem'
-  // const rootCAKey = 'files/root_key.pem'
   const { hashAlg, signAlg } = config
   const userCertificate = await generateuserCertificate({
     issuerCert: await loadCertificate(rootCA),
@@ -17,7 +15,6 @@ export const createUserCert = async (rootCA, rootKey, userCsr, notBeforeDate, no
     notBeforeDate,
     notAfterDate
   })
-  // await dumpCertificate(userCertificate)
 
   const userCert = userCertificate.certificate.toSchema(true).toBER(false)
   return {
@@ -71,7 +68,3 @@ function getKeyUsage() {
 
   return new BitString({ valueHex: bitArray })
 }
-
-// async function dumpCertificate({ certificate }) {
-//   dumpPEM('CERTIFICATE', certificate.toSchema(true).toBER(false), 'files/user_cert.pem')
-// }

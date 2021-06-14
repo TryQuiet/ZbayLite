@@ -11,7 +11,6 @@ export const createRootCA = async (notBeforeDate, notAfterDate) => {
     notBeforeDate,
     notAfterDate
   })
-  // await dumpCertificate(rootCA)
 
   const rootData = {
     rootCert: rootCA.certificate.toSchema(true).toBER(false),
@@ -76,8 +75,3 @@ function getCAKeyUsage() {
 
   return new BitString({ valueHex: bitArray })
 }
-
-// async function dumpCertificate({ certificate, privateKey }) {
-//   dumpPEM('CERTIFICATE', certificate.toSchema(true).toBER(false), 'files/root_ca.pem')
-//   dumpPEM('PRIVATE KEY', await getCrypto().exportKey('pkcs8', privateKey), 'files/root_key.pem')
-// }

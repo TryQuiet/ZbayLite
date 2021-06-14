@@ -21,6 +21,7 @@ import identityHandlers from './store/handlers/identity'
 import { errorNotification, successNotification } from './store/handlers/utils'
 import notificationsHandlers from './store/handlers/notifications'
 import appSelectors from './store/selectors/app'
+import { certificatesActions } from './sagas/certificates/certificates.reducer'
 import { socketsActions } from './sagas/socket/socket.saga.reducer'
 import debug from 'debug'
 import { createCertificates } from '../renderer/store/handlers/identity'
@@ -137,7 +138,7 @@ ipcRenderer.on('waggleInitialized', async (event) => {
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
   store.dispatch(directMessagesHandlers.epics.subscribeForAllConversations())
   await store.dispatch(identityHandlers.epics.createCertificates())
-  store.dispatch(socketsActions.saveCertificate())
+  store.dispatch(certificatesActions.saveCertificate())
 })
 
 ipcRenderer.on('newChannel', (event, { channelParams }) => {
