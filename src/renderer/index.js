@@ -16,6 +16,7 @@ import publicChannelsHandlers from './store/handlers/publicChannels'
 import directMessagesHandlers from './store/handlers/directMessages'
 import nodeSelectors from './store/selectors/node'
 import coordinatorSelectors from './store/selectors/coordinator'
+import certificatesHandlers from './store/handlers/certificates'
 import identityHandlers from './store/handlers/identity'
 
 import { errorNotification, successNotification } from './store/handlers/utils'
@@ -24,7 +25,6 @@ import appSelectors from './store/selectors/app'
 import { certificatesActions } from './sagas/certificates/certificates.reducer'
 import { socketsActions } from './sagas/socket/socket.saga.reducer'
 import debug from 'debug'
-import { createCertificates } from '../renderer/store/handlers/identity'
 
 const log = Object.assign(debug('zbay:renderer'), {
   error: debug('zbay:renderer:err')
@@ -137,7 +137,7 @@ ipcRenderer.on('waggleInitialized', async (event) => {
   store.dispatch(directMessagesHandlers.epics.getAvailableUsers())
   store.dispatch(directMessagesHandlers.epics.getPrivateConversations())
   store.dispatch(directMessagesHandlers.epics.subscribeForAllConversations())
-  await store.dispatch(identityHandlers.epics.createCertificates())
+  await store.dispatch(certificatesHandlers.epics.createOwnCertificate())
   store.dispatch(certificatesActions.saveCertificate())
 })
 

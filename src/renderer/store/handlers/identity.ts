@@ -30,8 +30,7 @@ import {
   actionTypes,
   networkFeeSatoshi,
   satoshiMultiplier,
-  networkFee,
-  dataFromRootPems
+  networkFee
 } from '../../../shared/static'
 import electronStore, { migrationStore } from '../../../shared/electronStore'
 import staticChannelsSyncHeight from '../../static/staticChannelsSyncHeight.json'
@@ -43,8 +42,6 @@ import { DisplayableMessage } from '../../zbay/messages.types'
 import directMessagesHandlers from './directMessages'
 import directMessagesSelectors from '../selectors/directMessages'
 import debug from 'debug'
-import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
-import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
 
 const log = Object.assign(debug('zbay:identity'), {
   error: debug('zbay:identity:err'),
@@ -78,8 +75,6 @@ export class Identity {
     freeUtxos: number
     addresses: string[]
     shieldedAddresses: string[]
-    certificate: string
-    certPrivKey: string
   }
 
   fetchingBalance: boolean
@@ -128,9 +123,7 @@ export const initialState: Identity = new Identity({
     onionAddress: '',
     freeUtxos: 0,
     addresses: [],
-    shieldedAddresses: [],
-    certificate: '',
-    certPrivKey: ''
+    shieldedAddresses: []
   },
   fetchingBalance: false,
   loader: {
@@ -167,9 +160,6 @@ export const setRegistraionStatus = createAction<{
   takenUsernames?: string[]
 }>(actionTypes.SET_REGISTRAION_STATUS)
 export const setUserShieldedAddreses = createAction<any[]>(actionTypes.SET_USER_SHIELDED_ADDRESES)
-export const setCertificate = createAction<string>(actionTypes.SET_CERTIFICATE)
-export const setCertKey = createAction<string>(actionTypes.SET_CERT_KEY)
-
 
 export const actions = {
   setIdentity,
@@ -188,9 +178,7 @@ export const actions = {
   setOnionAddress,
   setRegistraionStatus,
   setUserAddreses,
-  setUserShieldedAddreses,
-  setCertificate,
-  setCertKey
+  setUserShieldedAddreses
 }
 
 export type IdentityActions = ActionsType<typeof actions>
@@ -294,50 +282,6 @@ export const shieldBalance = ({ to, amount }) => async dispatch => {
     shielding = false
   }, 300000)
 }
-
-
-
-
-
-
-
-
-export const createCertificates = () => async (dispatch, getState) => {
-  const certString = dataFromRootPems.certificate
-  const keyString = dataFromRootPems.privKey
-
-  const hiddenService = electronStore.get('hiddenServices')
-  const onionAddress = hiddenService.libp2pHiddenService.onionAddress
-
-  const notBeforeDate = new Date()
-  const notAfterDate = new Date(2030, 1, 1)
-
-  const userData = {
-    zbayNickname: 'nick',
-    commonName: onionAddress,
-    peerId: 'peer'
-  }
-  console.log('userData', userData)
-
-  const user = await createUserCsr(userData)
-  const userCertData = await createUserCert(certString, keyString, user.userCsr, notBeforeDate, notAfterDate)
-
-
-  await dispatch(setCertificate(userCertData.userCertString))
-  await dispatch(setCertKey(user.userKey))
-
-  console.log(identitySelectors.data(getState()))
-
-  return userCertData.userCertString
-}
-
-
-
-
-
-
-
-
 
 export const createIdentity = ({ name, fromMigrationFile }) => async () => {
   let zAddress
@@ -652,8 +596,7 @@ const epics = {
   fetchFreeUtxos,
   loadIdentity,
   generateNewAddress,
-  generateNewShieldedAddress,
-  createCertificates
+  generateNewShieldedAddress
 }
 
 const exportFunctions = {
@@ -762,22 +705,6 @@ export const reducer = handleActions<Identity, PayloadType<IdentityActions>>(
     ) =>
       produce(state, draft => {
         draft.data.shieldedAddresses = shieldedAddresses
-      }),
-
-
-    [setCertificate.toString()]: (
-      state,
-      { payload: certificate }: IdentityActions['setCertificate']
-    ) =>
-      produce(state, draft => {
-        draft.data.certificate = certificate
-      }),
-    [setCertKey.toString()]: (
-      state,
-      { payload: certPrivKey }: IdentityActions['setCertKey']
-    ) =>
-      produce(state, draft => {
-        draft.data.certPrivKey = certPrivKey
       })
   },
   initialState

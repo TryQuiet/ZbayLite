@@ -16,6 +16,7 @@ import { call, take, select, put, takeLeading, all, apply } from 'typed-redux-sa
 import { ActionFromMapping, Socket as socketsActions } from '../const/actionsTypes'
 import channelSelectors from '../../store/selectors/channel'
 import identitySelectors from '../../store/selectors/identity'
+import certificatesSelectors from '../../store/selectors/certificates'
 import directMessagesSelectors from '../../store/selectors/directMessages'
 import usersSelectors from '../../store/selectors/users'
 import { messages } from '../../zbay'
@@ -203,7 +204,7 @@ export function* sendDirectMessage(socket: Socket): Generator {
 }
 
 export function* saveCertificate(socket: Socket): Generator {
-  const toSend = yield* select(identitySelectors.certificate)
+  const toSend = yield* select(certificatesSelectors.ownCertificate)
   yield* apply(socket, socket.emit, [socketsActions.SAVE_CERTIFICATE, toSend])
 }
 
