@@ -278,10 +278,10 @@ app.on('ready', async () => {
       })
       waggleProcess = child_process.fork(
         `${process.cwd()}/src/main/waggleFork.ts`, [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
-        execArgv: ['-r', 'ts-node/register']
-      }
+          execArgv: ['-r', 'ts-node/register']
+        }
       )
-      waggleProcess.on('message', async (msg: any, payload: any) => {
+      waggleProcess.on('message', async (msg: any) => {
         if (msg === 'connectToWebsocket') {
           mainWindow.webContents.send('connectToWebsocket')
         } else if (msg === 'waggleInitialized') {
