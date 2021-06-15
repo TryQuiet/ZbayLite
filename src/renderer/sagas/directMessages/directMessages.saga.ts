@@ -187,7 +187,14 @@ export function* responseGetPrivateConversations(
 ): Generator {
   const privKey = yield* select(directMessagesSelectors.privateKey)
   const contacts = yield* select(contactsSelectors.contacts)
+  const conversationsList = yield* select(directMessagesSelectors.conversationsList)
+  const exisitngConversations = Array.from(Object.keys(conversationsList))
   for (const [key, value] of Object.entries(action.payload)) {
+    if (exisitngConversations.includes(key)) {
+      console.log('skipping decrypton')
+      continue
+    }
+    console.log(`still decrypting conv number ${key}`)
     const conversation = checkConversation(key, value, privKey)
 
     if (conversation) {
