@@ -190,11 +190,8 @@ export function* responseGetPrivateConversations(
   const conversationsList = yield* select(directMessagesSelectors.conversationsList)
   const exisitngConversations = Array.from(Object.keys(conversationsList))
   for (const [key, value] of Object.entries(action.payload)) {
-    if (exisitngConversations.includes(key)) {
-      console.log('skipping decrypton')
-      continue
-    }
-    console.log(`still decrypting conv number ${key}`)
+    if (exisitngConversations.includes(key)) continue
+
     const conversation = checkConversation(key, value, privKey)
 
     if (conversation) {
