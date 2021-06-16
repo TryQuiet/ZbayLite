@@ -28,7 +28,7 @@ const windowSize: IWindowSize = {
   width: 800,
   height: 540
 }
-
+// eslint-disable-next-line
 process.env.NODE_PATH += ':' + require('path').join(process.cwd(), 'node_modules')
 
 let mainWindow: BrowserWindow
