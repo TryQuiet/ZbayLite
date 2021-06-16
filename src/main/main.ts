@@ -29,6 +29,8 @@ const windowSize: IWindowSize = {
   height: 540
 }
 
+process.env.NODE_PATH += ':' + require('path').join(process.cwd(), 'node_modules')
+
 let mainWindow: BrowserWindow
 
 const gotTheLock = app.requestSingleInstanceLock()
@@ -278,7 +280,7 @@ app.on('ready', async () => {
       })
       waggleProcess = child_process.fork(
       `${process.cwd()}/src/main/waggleFork.ts`, [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
-        execArgv: ['-r', 'ts-node/register']
+        execArgv: ['-r', `${process.cwd()}/node_modules/ts-node/register`]
       }
       )
       waggleProcess.on('message', async (msg: string) => {
