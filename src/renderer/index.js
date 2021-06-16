@@ -123,7 +123,7 @@ ipcRenderer.on('connectToWebsocket', (event) => {
   store.dispatch(socketsActions.connect())
 })
 
-ipcRenderer.on('waggleInitialized', async (event) => {
+ipcRenderer.on('waggleInitialized', (event) => {
   log('waggle Initialized')
   store.dispatch(waggleHandlers.actions.setIsWaggleConnected(true))
   store.dispatch(publicChannelsHandlers.epics.loadPublicChannels())

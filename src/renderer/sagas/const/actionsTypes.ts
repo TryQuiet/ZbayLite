@@ -43,4 +43,5 @@ export enum Socket {
   SUBSCRIBE_FOR_ALL_CONVERSATIONS = 'subscribeForAllConversations',
   RESPONSE_DIRECT_MESSAGE = 'responseDirectMessage',
   RESPONSE_GET_CERTIFICATES = 'responseGetCertificates',
+  CREATE_OWN_CERTIFICATE = 'createOWnCertificate'
 }

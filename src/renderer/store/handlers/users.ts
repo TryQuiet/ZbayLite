@@ -23,9 +23,7 @@ import notificationsHandlers from './notifications'
 import { successNotification, errorNotification } from './utils'
 
 import { DisplayableMessage } from '../../zbay/messages.types'
-import certificatesHandlers from '../../store/handlers/certificates'
-import { certificatesActions } from '../../sagas/certificates/certificates.reducer'
-
+import { certificatesActionsSaga } from '../certificates/certificates.saga'
 import { packMemo } from '../../zbay/transit'
 
 import { ActionsType, PayloadType } from './types'
@@ -153,8 +151,7 @@ export const createOrUpdateUser = (payload: {
   const address = identitySelector.address(getState())
   const privKey = identitySelector.signerPrivKey(getState())
 
-  await dispatch(certificatesHandlers.epics.createOwnCertificate(nickname))
-  dispatch(certificatesActions.saveCertificate())
+  await dispatch(certificatesActionsSaga.creactOwnCertificate(nickname))
 
   const isDev = process.env.NODE_ENV === 'development'
 
