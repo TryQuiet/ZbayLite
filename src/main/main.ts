@@ -279,7 +279,7 @@ app.on('ready', async () => {
         waggleProcess.send('connectionReady')
       })
       waggleProcess = child_process.fork(
-      `${path.normalize(process.cwd()}/src/main/waggleFork)`, [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
+      `${path.normalize(`${process.cwd()}/src/main/waggleFork`)}`, [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
         execArgv: ['-r']
       }
       )
