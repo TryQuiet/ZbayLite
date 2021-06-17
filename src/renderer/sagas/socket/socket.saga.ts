@@ -23,12 +23,15 @@ import config from '../../config'
 import { messageType } from '../../../shared/static'
 import { ipcRenderer } from 'electron'
 import { PayloadAction } from '@reduxjs/toolkit'
+import electronStore from '../../../shared/electronStore'
 
 import { encodeMessage } from '../../cryptography/cryptography'
 import { CertificatesActions, certificatesActions } from '../certificates/certificates.reducer'
 
+const ports = electronStore.get('ports')
+
 export const connect = async (): Promise<Socket> => {
-  const socket = io(config.socket.address)
+  const socket = io(`http://localhost:${ports.dataServer}`)
   return await new Promise(resolve => {
     socket.on('connect', async () => {
       ipcRenderer.send('connectionReady')

@@ -1,5 +1,5 @@
 const socket = {
-  address: 'http://localhost:4677'
+  address: 'http://localhost:4699'
 }
 
 export default {
