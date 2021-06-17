@@ -14,9 +14,6 @@ const log = Object.assign(debug('zbay:main'), {
 })
 import ts from 'ts-node'
 
-const a = ts.register
-console.log(a)
-
 electronStore.set('appDataPath', app.getPath('appData'))
 electronStore.set('waggleInitialized', false)
 electronStore.set('waggleVersion', waggleVersion)
