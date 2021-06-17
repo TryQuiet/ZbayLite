@@ -38,8 +38,8 @@ export const connect = async (): Promise<Socket> => {
 }
 
 export function subscribe(socket) {
-  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions>
-    | ReturnType<typeof certificatesActions.responseGetCertificates>
+  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions> |
+  ReturnType<typeof certificatesActions.responseGetCertificates>
   >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
@@ -204,9 +204,10 @@ export function* sendDirectMessage(socket: Socket): Generator {
   ])
 }
 
-export function* saveCertificate(socket: Socket, action: PayloadAction<
-  ReturnType<typeof certificatesActions.saveCertificate>['payload']
->,): Generator {
+export function* saveCertificate(
+  socket: Socket,
+  action: PayloadAction<ReturnType<typeof certificatesActions.saveCertificate>['payload']>
+): Generator {
   yield* apply(socket, socket.emit, [socketsActions.SAVE_CERTIFICATE, action.payload])
 }
 

@@ -29,7 +29,7 @@ export const certificates = createSlice({
     },
     responseGetCertificates: (state, _action: PayloadAction<string[]>) => {
       return state
-    },
+    }
   }
 })
 

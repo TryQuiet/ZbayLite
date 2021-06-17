@@ -1,17 +1,13 @@
 import { expectSaga } from 'redux-saga-test-plan'
-import { apply } from 'redux-saga/effects'
 
-import { certificatesActions, certificatesReducer } from './certificates.reducer'
+import { certificatesActions, certificatesReducer, CertificatesState } from './certificates.reducer'
 import { creactOwnCertificate } from './certificates.saga'
-import { CertificatesState } from './certificates.reducer'
 import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
 import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
-import electronStore from '../../../shared/electronStore'
 
 describe('checkCertificatesSaga', () => {
-
-  test('creating own cert', () => {
-    expectSaga(creactOwnCertificate, { payload: 'name', type: certificatesActions.creactOwnCertificate.type })
+  test('creating own cert', async () => {
+    await expectSaga(creactOwnCertificate, { payload: 'name', type: certificatesActions.creactOwnCertificate.type })
       .withReducer((certificatesReducer), {
         ...new CertificatesState()
       })
