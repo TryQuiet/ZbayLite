@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export class CertificatesState {
-  usersCertificates: string[] = ['aa', 'bb']
+  usersCertificates: string[] = ['', '']
   ownCertificate = {
-    certificate: 'hejStore',
+    certificate: '',
     privateKey: ''
   }
 }
@@ -20,7 +20,16 @@ export const certificates = createSlice({
     },
     setOwnCertKey: (state, action: PayloadAction<string>) => {
       state.ownCertificate.privateKey = action.payload
-    }
+    },
+    creactOwnCertificate: (state, _action: PayloadAction<string>) => {
+      return state
+    },
+    saveCertificate: (state, _action: PayloadAction<string>) => {
+      return state
+    },
+    responseGetCertificates: (state, _action: PayloadAction<string[]>) => {
+      return state
+    },
   }
 })
 

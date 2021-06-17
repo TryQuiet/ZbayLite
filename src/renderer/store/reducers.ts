@@ -61,7 +61,7 @@ const persistConfig = {
   ]
 }
 
-const reducers = {
+export const reducers = {
   users: usersHandlers.reducer,
   waggle: waggleHandlers.reducer,
   directMessages: directMessages.reducer,

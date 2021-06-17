@@ -25,7 +25,7 @@ import { ipcRenderer } from 'electron'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { encodeMessage } from '../../cryptography/cryptography'
-import { CertificatesActions, certificatesActionsSaga } from '../../store/certificates/certificates.saga'
+import { certificatesActions } from '../../store/certificates/certificates.reducer'
 
 export const connect = async (): Promise<Socket> => {
   const socket = io(config.socket.address)
@@ -38,7 +38,9 @@ export const connect = async (): Promise<Socket> => {
 }
 
 export function subscribe(socket) {
-  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions & CertificatesActions>>(emit => {
+  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions>
+    | ReturnType<typeof certificatesActions.responseGetCertificates>
+  >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
     })
@@ -61,7 +63,7 @@ export function subscribe(socket) {
       emit(directMessagesActions.responseGetPrivateConversations(payload))
     })
     socket.on(socketsActions.RESPONSE_GET_CERTIFICATES, payload => {
-      emit(certificatesActionsSaga.responseGetCertificates(payload))
+      emit(certificatesActions.responseGetCertificates(payload))
     })
     return () => { }
   })
@@ -202,8 +204,10 @@ export function* sendDirectMessage(socket: Socket): Generator {
   ])
 }
 
-export function* saveCertificate(socket: Socket, { payload }): Generator {
-  yield* apply(socket, socket.emit, [socketsActions.SAVE_CERTIFICATE, payload])
+export function* saveCertificate(socket: Socket, action: PayloadAction<
+  ReturnType<typeof certificatesActions.saveCertificate>['payload']
+>,): Generator {
+  yield* apply(socket, socket.emit, [socketsActions.SAVE_CERTIFICATE, action.payload])
 }
 
 export function* responseGetCertificates(socket: Socket): Generator {
@@ -259,7 +263,7 @@ export function* useIO(socket: Socket): Generator {
       socket
     ),
     takeEvery(directMessagesActions.sendDirectMessage.type, sendDirectMessage, socket),
-    takeEvery(certificatesActionsSaga.saveCertificate.type, saveCertificate, socket),
+    takeEvery(certificatesActions.saveCertificate.type, saveCertificate, socket),
     takeLeading(
       directMessagesActions.getPrivateConversations.type,
       getPrivateConversations,
