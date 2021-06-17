@@ -9,10 +9,10 @@ import electronStore from '../shared/electronStore'
 import Client from './cli/client'
 import { spawnTor, waggleVersion } from './waggleManager'
 import debug from 'debug'
+import ts from 'ts-node'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
 })
-import ts from 'ts-node'
 
 electronStore.set('appDataPath', app.getPath('appData'))
 electronStore.set('waggleInitialized', false)
@@ -30,7 +30,7 @@ const windowSize: IWindowSize = {
   height: 540
 }
 // eslint-disable-next-line
-process.env.NODE_PATH += ':' + require('path').join(process.cwd(), 'node_modules')
+process.env.NODE_PATH = require('path').join(process.cwd(), 'node_modules')
 
 let mainWindow: BrowserWindow
 
@@ -280,9 +280,7 @@ app.on('ready', async () => {
         waggleProcess.send('connectionReady')
       })
       waggleProcess = child_process.fork(
-      path.normalize(path.join(__dirname, 'waggleFork.js')), [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
-        execArgv: ['-r', path.normalize(path.join(__dirname, '../../node_modules/ts-node/register'))]
-      }
+        path.normalize(path.join(__dirname, 'waggleFork.js')), [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress]
       )
       waggleProcess.on('message', async (msg: string) => {
         if (msg === 'connectToWebsocket') {
