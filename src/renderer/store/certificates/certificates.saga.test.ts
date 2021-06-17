@@ -6,8 +6,8 @@ import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
 import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
 
 describe('checkCertificatesSaga', () => {
-  test('creating own cert', async () => {
-    await expectSaga(creactOwnCertificate, { payload: 'name', type: certificatesActions.creactOwnCertificate.type })
+  test('creating own cert', () => {
+    void expectSaga(creactOwnCertificate, { payload: 'name', type: certificatesActions.creactOwnCertificate.type })
       .withReducer((certificatesReducer), {
         ...new CertificatesState()
       })
