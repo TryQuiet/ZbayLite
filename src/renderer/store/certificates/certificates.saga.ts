@@ -1,5 +1,4 @@
-import { all, takeEvery, put, apply } from 'redux-saga/effects'
-import { call } from 'typed-redux-saga'
+import { call, apply, all, takeEvery, put } from 'typed-redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { certificatesActions } from './certificates.reducer'
@@ -12,7 +11,7 @@ export function* responseGetCertificates(
   action: PayloadAction<ReturnType<typeof certificatesActions.responseGetCertificates>['payload']>
 ): Generator {
   const certificates = action.payload
-  yield put(certificatesActions.setUsersCertificates(certificates))
+  yield* put(certificatesActions.setUsersCertificates(certificates))
 }
 
 export const getDate = (date?: string) => date ? new Date(date) : new Date()
@@ -22,8 +21,8 @@ export function* creactOwnCertificate(
 ): Generator {
   const certString = dataFromRootPems.certificate
   const keyString = dataFromRootPems.privKey
-  const notBeforeDate = yield call(getDate)
-  const notAfterDate = yield call(getDate, '1/1/2031')
+  const notBeforeDate = yield* call(getDate)
+  const notAfterDate = yield* call(getDate, '1/1/2031')
 
   interface HiddenServicesType {
     libp2pHiddenService?: {
@@ -32,7 +31,7 @@ export function* creactOwnCertificate(
     }
   }
 
-  const hiddenServices: HiddenServicesType = yield apply(
+  const hiddenServices: HiddenServicesType = yield* apply(
     electronStore,
     electronStore.get,
     ['hiddenServices']
@@ -41,20 +40,20 @@ export function* creactOwnCertificate(
   const userData = {
     zbayNickname: action.payload,
     commonName: hiddenServices.libp2pHiddenService.onionAddress,
-    peerId: yield apply(electronStore, electronStore.get, ['peerId'])
+    peerId: yield* apply(electronStore, electronStore.get, ['peerId'])
   }
 
   const user = yield* call(createUserCsr, userData)
 
   const userCertData = yield* call(createUserCert, certString, keyString, user.userCsr, notBeforeDate, notAfterDate)
-  console.log({ userCertData })
-  yield put(certificatesActions.setOwnCertificate(userCertData.userCertString))
-  yield put(certificatesActions.setOwnCertKey(user.userKey))
-  yield put(certificatesActions.saveCertificate(userCertData.userCertString))
+
+  yield* put(certificatesActions.setOwnCertificate(userCertData.userCertString))
+  yield* put(certificatesActions.setOwnCertKey(user.userKey))
+  yield* put(certificatesActions.saveCertificate(userCertData.userCertString))
 }
 
 export function* certificatesSaga(): Generator {
-  yield all([
+  yield* all([
     takeEvery(certificatesActions.responseGetCertificates.type, responseGetCertificates),
     takeEvery(certificatesActions.creactOwnCertificate.type, creactOwnCertificate)
   ])
