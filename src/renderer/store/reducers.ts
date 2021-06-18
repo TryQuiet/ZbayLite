@@ -35,6 +35,7 @@ import ownedChannels from './handlers/ownedChannels'
 import directMessages from './handlers/directMessages'
 import waggleHandlers from './handlers/waggle'
 import { certificatesReducer } from './certificates/certificates.reducer'
+import { StoreKeys } from './store.keys'
 
 const reduxStorage = createElectronStorage()
 const persistConfig = {
@@ -92,7 +93,7 @@ export const reducers = {
   whitelist: whitelistHandlers.reducer,
   notificationCenter: notificationCenterHandlers.reducer,
   ownedChannels: ownedChannels.reducer,
-  certificates: certificatesReducer
+  [StoreKeys.Certificates]: certificatesReducer
 }
 
 export type Store = StoreType<typeof reducers>
