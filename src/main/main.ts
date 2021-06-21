@@ -7,7 +7,7 @@ import { autoUpdater } from 'electron-updater'
 import config from './config'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
-import { spawnTor, waggleVersion } from './waggleManager'
+import { spawnTor, waggleVersion, runWaggle } from './waggleManager'
 import debug from 'debug'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
@@ -267,39 +267,10 @@ app.on('ready', async () => {
     log('failed loading')
   })
 
-  const runAndHandleWaggle = async () => {
-    try {
-      tor = await spawnTor()
-      const ports = electronStore.get('ports')
-      const hiddenServices = electronStore.get('hiddenServices')
-      const appDataPath = app.getPath('appData')
-      ipcMain.on('connectionReady', () => {
-        waggleProcess.send('connectionReady')
-      })
-      waggleProcess = child_process.fork(
-      `${process.cwd()}/src/main/waggleFork.ts`, [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress], {
-        execArgv: ['-r', 'ts-node/register']
-      }
-      )
-      waggleProcess.on('message', async (msg: string) => {
-        if (msg === 'connectToWebsocket') {
-          mainWindow.webContents.send('connectToWebsocket')
-        } else if (msg === 'waggleInitialized') {
-          electronStore.set('waggleInitialized', true)
-          mainWindow.webContents.send('waggleInitialized')
-        } else if (msg === 'killedWaggle') {
-          await waggleProcess.kill()
-          await client.terminate()
-          process.exit()
-        }
-      })
-    } catch (error) {
-      log.error(error)
-    }
-  }
+  tor = await spawnTor()
 
   mainWindow.webContents.on('did-finish-load', async () => {
-    await runAndHandleWaggle()
+    runWaggle(mainWindow.webContents)
     if (process.platform === 'win32' && process.argv) {
       const payload = process.argv[1]
       if (payload) {

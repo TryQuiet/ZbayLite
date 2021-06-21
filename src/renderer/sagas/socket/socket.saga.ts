@@ -62,6 +62,9 @@ export function subscribe(socket) {
     })
     socket.on(socketsActions.RESPONSE_GET_CERTIFICATES, payload => {
       emit(certificatesActions.responseGetCertificates(payload))
+    }),
+    socket.on(socketsActions.SEND_IDS, payload => {
+      emit(publicChannelsActions.sendIds(payload))
     })
     return () => { }
   })
@@ -202,6 +205,14 @@ export function* sendDirectMessage(socket: Socket): Generator {
   ])
 }
 
+export function* askForMessages(
+  socket: Socket,
+  { payload }: PayloadAction<typeof publicChannelsActions.askForMessages>
+): Generator {
+  console.log('asking for messages')
+  yield* apply(socket, socket.emit, [socketsActions.ASK_FOR_MESSAGES, payload])
+}
+
 export function* saveCertificate(socket: Socket): Generator {
   const toSend = yield* select(identitySelectors.certificate)
   yield* apply(socket, socket.emit, [socketsActions.SAVE_CERTIFICATE, toSend])
@@ -253,6 +264,7 @@ export function* useIO(socket: Socket): Generator {
     takeEvery(publicChannelsActions.subscribeForTopic.type, subscribeForTopic, socket),
     takeLeading(publicChannelsActions.getPublicChannels.type, getPublicChannels, socket),
     takeLeading(directMessagesActions.getAvailableUsers.type, getAvailableUsers, socket),
+    takeEvery(publicChannelsActions.askForMessages.type, askForMessages, socket),
     takeEvery(directMessagesActions.initializeConversation.type, initializeConversation, socket),
     takeLeading(
       directMessagesActions.subscribeForAllConversations.type,
