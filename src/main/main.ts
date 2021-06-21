@@ -9,7 +9,6 @@ import electronStore from '../shared/electronStore'
 import Client from './cli/client'
 import { spawnTor, waggleVersion } from './waggleManager'
 import debug from 'debug'
-import ts from 'ts-node'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
 })
