@@ -6,9 +6,9 @@ import { autoUpdater } from 'electron-updater'
 import config from './config'
 import electronStore from '../shared/electronStore'
 import Client from './cli/client'
-import { spawnTor, waggleVersion } from './waggleManager'
+import { spawnTor, waggleVersion , runWaggle} from './waggleManager'
 import debug from 'debug'
-import ts from 'ts-node'
+import path from 'path'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
 })
@@ -17,27 +17,24 @@ electronStore.set('appDataPath', app.getPath('appData'))
 electronStore.set('waggleInitialized', false)
 electronStore.set('waggleVersion', waggleVersion)
 
-const download = require('@electron/get').download
-const extract = require('extract-zip')
-const path = require('path')
+
 
 export const isDev = process.env.NODE_ENV === 'development'
 
-const a = async () => {
-  console.log('downloading electron')
-  const zipFilePath = await download('12.0.2')
-  console.log(`downloaded electron is ${zipFilePath}`)
-  await extract(zipFilePath, { dir: path.normalize(`${process.cwd()}/extra_modules`)}, (err) => {
-    if (err){
-      console.log(`err: ${err}`)
-    }
-    console.log('yo')
-  })
-}
-
-a()
-
-process.env.NODE_PATH = require('path').normalize(require('path').join(`${process.cwd()}/extra_modules`))
+// const download = require('@electron/get').download
+// const extract = require('extract-zip')
+// const a = async () => {
+//   console.log('downloading electron')
+//   const zipFilePath = await download('12.0.2')
+//   console.log(`downloaded electron is ${zipFilePath}`)
+//   await extract(zipFilePath, { dir: path.normalize(`${process.cwd()}/extra_modules`)}, (err) => {
+//     if (err){
+//       console.log(`err: ${err}`)
+//     }
+//     console.log('yo')
+//   })
+// }
+// process.env.NODE_PATH = require('path').normalize(require('path').join(`${process.cwd()}/node_modules`))
 
 interface IWindowSize {
   width: number
@@ -322,7 +319,8 @@ app.on('ready', async () => {
   }
 
   mainWindow.webContents.on('did-finish-load', async () => {
-    await runAndHandleWaggle()
+    // await runAndHandleWaggle()
+    runWaggle(mainWindow.webContents)
     if (process.platform === 'win32' && process.argv) {
       const payload = process.argv[1]
       if (payload) {
