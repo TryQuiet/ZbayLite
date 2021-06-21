@@ -25,9 +25,6 @@ jobs:
     - name: install dependencies
       shell: bash
       run: npm install
-    - name: install electron as dependency
-      shell: bash
-      run: npm install electron@12.0.2
     - name: pull tor binary
       shell: bash
       run: curl https://zbay-binaries.s3.us-east-2.amazonaws.com/win32/tor.exe --output ./tor/tor.exe

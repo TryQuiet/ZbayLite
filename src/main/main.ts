@@ -1,6 +1,5 @@
 import { app, BrowserWindow, Menu, ipcMain, session } from 'electron'
 import electronLocalshortcut from 'electron-localshortcut'
-import path from 'path'
 import url from 'url'
 import child_process from 'child_process'
 import { autoUpdater } from 'electron-updater'
@@ -9,6 +8,7 @@ import electronStore from '../shared/electronStore'
 import Client from './cli/client'
 import { spawnTor, waggleVersion } from './waggleManager'
 import debug from 'debug'
+import ts from 'ts-node'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
 })
@@ -17,7 +17,27 @@ electronStore.set('appDataPath', app.getPath('appData'))
 electronStore.set('waggleInitialized', false)
 electronStore.set('waggleVersion', waggleVersion)
 
+const download = require('@electron/get').download
+const extract = require('extract-zip')
+const path = require('path')
+
 export const isDev = process.env.NODE_ENV === 'development'
+
+const a = async () => {
+  console.log('downloading electron')
+  const zipFilePath = await download('12.0.2')
+  console.log(`downloaded electron is ${zipFilePath}`)
+  await extract(zipFilePath, { dir: path.normalize(`${process.cwd()}/extra_modules`)}, (err) => {
+    if (err){
+      console.log(`err: ${err}`)
+    }
+    console.log('yo')
+  })
+}
+
+a()
+
+process.env.NODE_PATH = require('path').normalize(require('path').join(`${process.cwd()}/extra_modules`))
 
 interface IWindowSize {
   width: number
@@ -29,7 +49,6 @@ const windowSize: IWindowSize = {
   height: 540
 }
 // eslint-disable-next-line
-process.env.NODE_PATH = require('path').join(process.cwd(), 'node_modules')
 
 let mainWindow: BrowserWindow
 
@@ -278,9 +297,13 @@ app.on('ready', async () => {
       ipcMain.on('connectionReady', () => {
         waggleProcess.send('connectionReady')
       })
-      waggleProcess = child_process.fork(
-        path.normalize(path.join(__dirname, 'waggleFork.js')), [ports.socksPort, ports.libp2pHiddenService, ports.dataServer, appDataPath, hiddenServices.libp2pHiddenService.onionAddress]
-      )
+      waggleProcess = child_process.fork(path.normalize(path.join(__dirname, 'waggleFork.js')), [
+        ports.socksPort,
+        ports.libp2pHiddenService,
+        ports.dataServer,
+        appDataPath,
+        hiddenServices.libp2pHiddenService.onionAddress
+      ])
       waggleProcess.on('message', async (msg: string) => {
         if (msg === 'connectToWebsocket') {
           mainWindow.webContents.send('connectToWebsocket')
