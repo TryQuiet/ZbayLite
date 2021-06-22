@@ -62,7 +62,7 @@ export function subscribe(socket) {
     })
     socket.on(socketsActions.RESPONSE_GET_CERTIFICATES, payload => {
       emit(certificatesActions.responseGetCertificates(payload))
-    }),
+    })
     socket.on(socketsActions.SEND_IDS, payload => {
       emit(publicChannelsActions.sendIds(payload))
     })
@@ -209,7 +209,6 @@ export function* askForMessages(
   socket: Socket,
   { payload }: PayloadAction<typeof publicChannelsActions.askForMessages>
 ): Generator {
-  console.log('asking for messages')
   yield* apply(socket, socket.emit, [socketsActions.ASK_FOR_MESSAGES, payload])
 }
 
@@ -224,7 +223,7 @@ export function* responseGetCertificates(socket: Socket): Generator {
 
 export function* addWaggleIdentity(socket: Socket): Generator {
   while (true) {
-    yield *take('SET_IS_WAGGLE_CONNECTED')
+    yield* take('SET_IS_WAGGLE_CONNECTED')
 
     let wagglePublicKey = yield select(directMessagesSelectors.publicKey)
     let signerPublicKey = yield select(identitySelectors.signerPubKey)
@@ -239,7 +238,7 @@ export function* addWaggleIdentity(socket: Socket): Generator {
       ])
     }
 
-    yield *take('SET_PUBLIC_KEY')
+    yield* take('SET_PUBLIC_KEY')
 
     wagglePublicKey = yield select(directMessagesSelectors.publicKey)
     signerPublicKey = yield select(identitySelectors.signerPubKey)
