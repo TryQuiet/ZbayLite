@@ -6,6 +6,9 @@ import * as fs from 'fs'
 import { ipcMain, BrowserWindow } from 'electron'
 import electronStore from '../shared/electronStore'
 import debug from 'debug'
+import { CommonConnectionOptions } from 'tls'
+import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
+import { DataServer } from 'waggle/lib/socket/DataServer'
 const log = Object.assign(debug('zbay:waggle'), {
   error: debug('zbay:waggle:err')
 })
@@ -108,7 +111,7 @@ export const getPorts = async (): Promise<{
   }
 }
 
-export const runWaggle = async (webContents: BrowserWindow['webContents']): Promise<any> => {
+export const runWaggle = async (webContents: BrowserWindow['webContents']): Promise<{connectionsManager: ConnectionsManager, dataServer: DataServer}> => {
   const ports = electronStore.get('ports')
   const appDataPath = electronStore.get('appDataPath')
   const { libp2pHiddenService } = electronStore.get('hiddenServices')
@@ -122,6 +125,7 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
     agentHost: 'localhost',
     agentPort: ports.socksPort,
     io: dataServer.io,
+    isWaggleMobileMode: false,
     options: {
       env: {
         appDataPath: `${appDataPath}/Zbay`
@@ -146,6 +150,8 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
         })
     }
   })
+
+  return {connectionsManager, dataServer}
 }
 
 export const waggleVersion = TlgManager.version

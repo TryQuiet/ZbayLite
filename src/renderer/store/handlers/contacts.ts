@@ -71,7 +71,7 @@ export interface ContactsStore {
 const initialState: ContactsStore = {}
 
 const setMessages = createAction<{
-  messages: DisplayableMessage[]
+  messages: any
   contactAddress: string
   username: string
   key: string
@@ -229,7 +229,8 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
         const uniqArr = _.uniqBy(arr, 'id')
         console.log()
         draft[key].messages = {
-          ...uniqArr
+          ...draft[key].messages,
+          ...messages
         }
       }),
     [setAllMessages.toString()]: (

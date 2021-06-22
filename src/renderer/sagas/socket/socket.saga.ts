@@ -224,7 +224,7 @@ export function* responseGetCertificates(socket: Socket): Generator {
 
 export function* addWaggleIdentity(socket: Socket): Generator {
   while (true) {
-    yield take('SET_IS_WAGGLE_CONNECTED')
+    yield *take('SET_IS_WAGGLE_CONNECTED')
 
     let wagglePublicKey = yield select(directMessagesSelectors.publicKey)
     let signerPublicKey = yield select(identitySelectors.signerPubKey)
@@ -239,7 +239,7 @@ export function* addWaggleIdentity(socket: Socket): Generator {
       ])
     }
 
-    yield take('SET_PUBLIC_KEY')
+    yield *take('SET_PUBLIC_KEY')
 
     wagglePublicKey = yield select(directMessagesSelectors.publicKey)
     signerPublicKey = yield select(identitySelectors.signerPubKey)

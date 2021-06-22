@@ -127,14 +127,24 @@ export function* loadAllDirectMessages(
   }
 
   const { username } = channel
-  if (username) {
-    const decodedMessages = action.payload.messages.map(msg => {
-      const message = JSON.stringify(msg)
-      return JSON.parse(decodeMessage(sharedSecret, message))
+
+
+  let newMessages = []
+  console.time('sorting')
+  const ids = Array.from(Object.keys(channel.messages))
+  newMessages = action.payload.messages.filter(id => !ids.includes(id))
+  console.timeEnd('sorting')
+
+
+let displayableMessages = {}
+  if (username && newMessages) {
+    newMessages.map(msg => {
+      const decodedMessage = transferToMessage(JSON.parse(decodeMessage(sharedSecret, JSON.stringify(msg))), users)
+displayableMessages[msg] = decodedMessage
     })
-    const displayableMessages = decodedMessages.map(msg => transferToMessage(msg, users))
+    //const displayableMessages = decodedMessages.map(msg => transferToMessage(msg, users))
     const state = yield* select()
-    const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state, true)
+    //const newMsgs = findNewMessages(contactPublicKey, displayableMessages, state, true)
     yield put(
       contactsHandlers.actions.setMessages({
         key: contactPublicKey,
@@ -144,21 +154,21 @@ export function* loadAllDirectMessages(
       })
     )
 
-    const latestMessage = newMsgs[newMsgs.length - 1]
+    //const latestMessage = newMsgs[newMsgs.length - 1]
 
-    if (latestMessage && latestMessage.sender.username !== myUser.nickname) {
-      yield call(displayDirectMessageNotification, {
-        username: latestMessage.sender.username,
-        message: latestMessage
-      })
-    }
+    // if (latestMessage && latestMessage.sender.username !== myUser.nickname) {
+    //   yield call(displayDirectMessageNotification, {
+    //     username: latestMessage.sender.username,
+    //     message: latestMessage
+    //   })
+    // }
 
-    yield put(
-      contactsActions.appendNewMessages({
-        contactAddress: contactPublicKey,
-        messagesIds: newMsgs
-      })
-    )
+    // yield put(
+    //   contactsActions.appendNewMessages({
+    //     contactAddress: contactPublicKey,
+    //     messagesIds: newMsgs
+    //   })
+    // )
   }
 }
 

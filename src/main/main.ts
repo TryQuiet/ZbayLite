@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, ipcMain, session } from 'electron'
+import { app, BrowserWindow, Menu, ipcMain,ipcRenderer, session } from 'electron'
 import electronLocalshortcut from 'electron-localshortcut'
 import path from 'path'
 import url from 'url'
@@ -9,6 +9,9 @@ import electronStore from '../shared/electronStore'
 import Client from './cli/client'
 import { spawnTor, waggleVersion, runWaggle } from './waggleManager'
 import debug from 'debug'
+import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
+import { DataServer } from 'waggle/lib/socket/DataServer'
+import waggle from 'waggle'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
 })
@@ -75,17 +78,17 @@ if (!gotTheLock) {
       if (mainWindow.isMinimized()) mainWindow.restore()
       mainWindow.focus()
     }
-    const url = new URL(commandLine[process.platform === 'win32' ? 3 : 1])
-    if (url.searchParams.has('invitation')) {
-      mainWindow.webContents.send('newInvitation', {
-        invitation: url.searchParams.get('invitation')
-      })
-    }
-    if (url.searchParams.has('importchannel')) {
-      mainWindow.webContents.send('newChannel', {
-        channelParams: url.searchParams.get('importchannel')
-      })
-    }
+    // const url = new URL(commandLine[process.platform === 'win32' ? 3 : 1])
+    // if (url.searchParams.has('invitation')) {
+    //   mainWindow.webContents.send('newInvitation', {
+    //     invitation: url.searchParams.get('invitation')
+    //   })
+    // }
+    // if (url.searchParams.has('importchannel')) {
+    //   mainWindow.webContents.send('newChannel', {
+    //     channelParams: url.searchParams.get('importchannel')
+    //   })
+    // }
   })
 }
 app.on('open-url', (event, url) => {
@@ -228,7 +231,7 @@ export const checkForUpdate = async win => {
 
 let client: Client
 let tor = null
-let waggleProcess = null
+let waggleProcess: {connectionsManager: ConnectionsManager, dataServer: DataServer} = null
 app.on('ready', async () => {
   // const template = [
   //   {
@@ -267,10 +270,11 @@ app.on('ready', async () => {
     log('failed loading')
   })
 
-  tor = await spawnTor()
-
+  
   mainWindow.webContents.on('did-finish-load', async () => {
-    runWaggle(mainWindow.webContents)
+    //tor = await spawnTor()
+    //waggleProcess = await runWaggle(mainWindow.webContents)
+    console.log(waggleProcess)
     if (process.platform === 'win32' && process.argv) {
       const payload = process.argv[1]
       if (payload) {
@@ -302,7 +306,13 @@ app.setAsDefaultProtocolClient('zbay')
 
 app.on('before-quit', async e => {
   e.preventDefault()
+  if (waggleProcess !== null) {
+    console.log('killing waggle')
+    await waggleProcess.connectionsManager.closeStorage()
+    await waggleProcess.dataServer.close()
+  }
   if (tor !== null) {
+    console.log('killing tor')
     await tor.kill()
   }
   if (browserWidth && browserHeight) {
@@ -310,9 +320,6 @@ app.on('before-quit', async e => {
       width: browserWidth,
       height: browserHeight
     })
-  }
-  if (waggleProcess !== null) {
-    waggleProcess.send('killWaggle')
   }
 })
 
