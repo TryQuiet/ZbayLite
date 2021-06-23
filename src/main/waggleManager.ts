@@ -124,8 +124,8 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
     agentHost: 'localhost',
     agentPort: ports.socksPort,
     io: dataServer.io,
-    isWaggleMobileMode: false,
     options: {
+      isWaggleMobileMode: false,
       env: {
         appDataPath: `${appDataPath}/Zbay`
       }
