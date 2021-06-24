@@ -139,24 +139,21 @@ export function* loadAllMessages(
   if (!username) {
     return
   }
+  let messagesById = {}
   const displayableMessages = action.payload.messages.map(msg => {
-    const { r, message, signature, id, type, createdAt } = msg
-    console.log(`signature is ${signature}`)
-    console.log(`r is ${r}`)
-    console.log(`msg is ${msg}`)
-    console.log(`id is ${id}`)
-    console.log(`type is ${type}`)
-    console.log(`createdAt is ${createdAt}`)
-    return transferToMessage(msg, users)
+    const transferedMessage = transferToMessage(msg, users)
+    messagesById[msg.id] = transferedMessage
+    return transferedMessage
   })
-  // yield put(
-  //   contactsHandlers.actions.setAllMessages({
-  //     key: action.payload.channelAddress,
-  //     username: username,
-  //     contactAddress: action.payload.channelAddress,
-  //     messages: displayableMessages
-  //   })
-  // )
+  yield put(
+    contactsHandlers.actions.setMessages({
+      key: action.payload.channelAddress,
+      username: username,
+      contactAddress: action.payload.channelAddress,
+      messages: messagesById
+    })
+  )
+
   const state = yield* select()
   const newMsgs = findNewMessages(action.payload.channelAddress, displayableMessages, state)
   const pubChannelsArray = Object.values(pubChannels)
