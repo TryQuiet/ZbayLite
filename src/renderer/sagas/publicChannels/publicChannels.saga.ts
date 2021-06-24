@@ -139,7 +139,7 @@ export function* loadAllMessages(
   if (!username) {
     return
   }
-  let messagesById = {}
+  const messagesById = {}
   const displayableMessages = action.payload.messages.map(msg => {
     const transferedMessage = transferToMessage(msg, users)
     messagesById[msg.id] = transferedMessage
