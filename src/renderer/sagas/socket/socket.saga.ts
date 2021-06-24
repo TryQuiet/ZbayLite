@@ -64,7 +64,6 @@ export function subscribe(socket) {
       emit(certificatesActions.responseGetCertificates(payload))
     })
     socket.on(socketsActions.SEND_IDS, payload => {
-      console.log('received IDS')
       emit(publicChannelsActions.sendIds(payload))
     })
     return () => {}
@@ -210,7 +209,6 @@ export function* askForMessages(
   socket: Socket,
   { payload }: PayloadAction<typeof publicChannelsActions.askForMessages>
 ): Generator {
-  console.log('asking for messages')
   yield* apply(socket, socket.emit, [socketsActions.ASK_FOR_MESSAGES, payload])
 }
 

@@ -31,12 +31,6 @@ export const transferToMessage = (msg, users) => {
   let sender = { replyTo: '', username: 'Unnamed' }
   let isUnregistered = false
   const { r, message, signature, id, type, createdAt } = msg
-  console.log(`signature is ${signature}`)
-  console.log(`r is ${r}`)
-  console.log(`msg is ${msg}`)
-  console.log(`id is ${id}`)
-  console.log(`type is ${type}`)
-  console.log(`createdAt is ${createdAt}`)
   const signatureBuffer = Buffer.from(signature, 'base64')
   publicKey = getPublicKeysFromSignature({
     message,
