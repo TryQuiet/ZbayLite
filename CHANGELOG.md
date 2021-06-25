@@ -1,15 +1,25 @@
+# [WIP]
+<!-- * Added dataServer port to electonStore portsclosing
+* Added proper closing for dataServer
+* Added proper closing for libp2p and orbitdb -->
+<!-- * [Performance] Fork runWaggle process instead running in main process
+* Extracted waggle handling logic to separate function
+* Changed a way main process is terminating
+* [Performance] Removed excess decryption from checking conversations -->
+
 # [3.2.20] - 14 June 2021
 
 ### Changed
-* [Performance] Fork runWaggle process instead running in main process
-* Extracted waggle handling logic to separate function
-* Changed a way main process is terminating
-* [Performance] Removed excess decryption from checking conversations
+
+* Ask for messages by id
+* Reduced amount of cpu expensive crypto operations
+* use id as key in storage
 
 ### Added
-* Added dataServer port to electonStore portsclosing
-* Added proper closing for dataServer
-* Added proper closing for libp2p and orbitdb
+
+* new method sendIds in publicChannelSaga
+* added new socket listener sendIds in socket.saga
+* 
 
 # [3.2.17] - 27 May 2021
 
