@@ -7,7 +7,7 @@
 * Changed a way main process is terminating
 * [Performance] Removed excess decryption from checking conversations -->
 
-# [3.2.20] - 14 June 2021
+# [3.2.20] - 25 June 2021
 
 ### Changed
 
@@ -19,7 +19,6 @@
 
 * new method sendIds in publicChannelSaga
 * added new socket listener sendIds in socket.saga
-* 
 
 # [3.2.17] - 27 May 2021
 
