@@ -42,5 +42,7 @@ export enum Socket {
   SUBSCRIBE_FOR_DIRECT_MESSAGE_THREAD = 'subscribeForDirectMessageThread',
   SUBSCRIBE_FOR_ALL_CONVERSATIONS = 'subscribeForAllConversations',
   RESPONSE_DIRECT_MESSAGE = 'responseDirectMessage',
-  RESPONSE_GET_CERTIFICATES = 'responseGetCertificates'
+  RESPONSE_GET_CERTIFICATES = 'responseGetCertificates',
+  ASK_FOR_MESSAGES = 'askForMessages',
+  SEND_IDS = 'sendIds'
 }
