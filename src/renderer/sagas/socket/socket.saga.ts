@@ -39,7 +39,7 @@ export const connect = async (): Promise<Socket> => {
 
 export function subscribe(socket) {
   return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions> |
-    ReturnType<typeof certificatesActions.responseGetCertificates>
+  ReturnType<typeof certificatesActions.responseGetCertificates>
   >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
