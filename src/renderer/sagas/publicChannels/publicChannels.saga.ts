@@ -1,20 +1,14 @@
 import { all as effectsAll, takeEvery } from 'redux-saga/effects'
 import { put, select } from 'typed-redux-saga'
-import BigNumber from 'bignumber.js'
 import { publicChannelsActions, PublicChannelsActions } from './publicChannels.reducer'
-import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
+import { displayMessageNotification } from '../../notifications'
 import { setPublicChannels } from '../../store/handlers/publicChannels'
 import contactsHandlers, { actions } from '../../store/handlers/contacts'
-import {
-  getPublicKeysFromSignature,
-  usernameSchema,
-  exchangeParticipant
-} from '../../zbay/messages'
+
 import { findNewMessages } from '../../store/handlers/messages'
 
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
-import { DisplayableMessage } from '../../zbay/messages.types'
 import publicChannelsSelectors from '../../store/selectors/publicChannels'
 import electronStore from '../../../shared/electronStore'
 import debug from 'debug'
@@ -25,67 +19,9 @@ const log = Object.assign(debug('zbay:channels'), {
 
 const all: any = effectsAll
 
-export const transferToMessage = (msg, users) => {
-  let publicKey = null
-  let sender = { replyTo: '', username: 'Unnamed' }
-  let isUnregistered = false
-  const { r, message, signature, id, type, createdAt } = msg
-  const signatureBuffer = Buffer.from(signature, 'base64')
-  publicKey = getPublicKeysFromSignature({
-    message,
-    signature: signatureBuffer,
-    r
-  }).toString('hex')
-  if (users !== undefined) {
-    const fromUser = users[publicKey]
-    if (fromUser !== undefined) {
-      const isUsernameValid = usernameSchema.isValidSync(fromUser)
-      sender = {
-        ...exchangeParticipant,
-        replyTo: fromUser.address,
-        username: isUsernameValid ? fromUser.nickname : `anon${publicKey.substring(0, 10)}`
-      }
-    } else {
-      sender = {
-        ...exchangeParticipant,
-        replyTo: '',
-        username: `anon${publicKey}`
-      }
-      isUnregistered = true
-    }
-  }
-  const parsedMessage: any = {
-    id: id,
-    message,
-    r,
-    type,
-    createdAt,
-    spent: new BigNumber(0),
-    sender: sender,
-    isUnregistered,
-    publicKey,
-    blockHeight: null
-  }
-  const displayableMessage = new DisplayableMessage(parsedMessage)
-  return displayableMessage
-}
-
 export function* loadMessage(action: PublicChannelsActions['loadMessage']): Generator {
-  const users = yield* select(usersSelectors.users)
-  const myUser = yield* select(usersSelectors.myUser)
-  const message = transferToMessage(action.payload.message, users)
-  if (myUser.nickname !== message.sender.username) {
-    displayDirectMessageNotification({
-      username: message.sender.username,
-      message: message
-    })
-    yield put(
-      actions.appendNewMessages({
-        contactAddress: action.payload.channelAddress,
-        messagesIds: [message.id]
-      })
-    )
-  }
+  const message = action.payload.message
+
   yield put(
     publicChannelsActions.addMessage({
       key: action.payload.channelAddress,
@@ -116,7 +52,6 @@ export function* getPublicChannels(action: PublicChannelsActions['responseGetPub
 export function* loadAllMessages(
   action: PublicChannelsActions['responseLoadAllMessages']
 ): Generator {
-  const users = yield* select(usersSelectors.users)
   const myUser = yield* select(usersSelectors.myUser)
   const pubChannels = yield* select(publicChannelsSelectors.publicChannels)
 
@@ -130,7 +65,9 @@ export function* loadAllMessages(
   if (!username) {
     return
   }
-  const displayableMessages = action.payload.messages.map(msg => transferToMessage(msg, users))
+
+  const displayableMessages = action.payload.messages
+
   yield put(
     contactsHandlers.actions.setAllMessages({
       key: action.payload.channelAddress,

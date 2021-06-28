@@ -1,6 +1,3 @@
-import { MessageType } from '../../shared/static.types'
-import BigNumber from 'bignumber.js'
-
 export interface IOutgoingMetadata {
   memo: string
   memohex: string
@@ -24,81 +21,61 @@ export class ExchangeParticipant {
   }
 }
 export interface IMessage {
-  moderationType: string
-  moderationTarget: string
-  owner: string
-  itemId: string
-  text: string
-  tag: string
-  offerOwner: string
-  minFee?: string
-  updateMinFee?: string
-  updateChannelDescription?: string
-  updateChannelAddress?: string
+  moderationType?: string
+  moderationTarget?: string
+  id: string
+  type: number
+  message: string
+  createdAt: number
+  channelId: string
+  signature: string
+  pubKey: string
+
+  memohex?: string
+  status?: string
+  sender?: IExchangeParticipant
+  txid?: string
+  amount?: number
+  memo?: string
   updateOnlyRegistered?: number
-  channelAddress?: string
-  channelName?: string
-  channelDescription?: string
-  channelIvk?: string
+  owner?: string
+  tag?: string
+  offerOwner?: string
+  address?: string
+  itemId?: string
+
 }
 export class DisplayableMessage {
   id: string
-  keys: string[]
-  owner: string
-  name: string
-  type: MessageType = MessageType.BASIC
-  sender: IExchangeParticipant
-  receiver: IExchangeParticipant
+  type: number
+  message?: string
   createdAt: number
-  message: IMessage
-  spent: BigNumber = new BigNumber(0)
-  fromYou: boolean = false
-  status: string = 'broadcasted'
-  error?: string
-  tag: string
+  signature: string
+  pubKey: string
+  channelId: string
+  sender?: IExchangeParticipant
+  tag?: string
   offerOwner?: string
-  isUnregistered: boolean
-  publicKey?: string
-  blockHeight: number = Number.MAX_SAFE_INTEGER
-  block_height: string
-  specialType: number
-  blockTime: number
-  messageId: string
-  nickname: string
-  address: string
-  outgoing_metadata: IOutgoingMetadata[]
-  memohex: string
-  txid: string
-  amount: number
-  memo: string
-  datetime: string
+  address?: string
+  txid?: string
+  amount?: number
+  memo?: string
+  receiver?: IExchangeParticipant
+  owner?: string
+  isUnregistered?: boolean
 
   constructor(
     values: Partial<DisplayableMessage> &
     Pick<
     DisplayableMessage,
     | 'id'
-    | 'keys'
-    | 'owner'
-    | 'name'
-    | 'sender'
-    | 'receiver'
+    | 'type'
     | 'createdAt'
     | 'message'
-    | 'tag'
-    | 'isUnregistered'
-    | 'specialType'
-    | 'blockTime'
-    | 'block_height'
-    | 'messageId'
-    | 'nickname'
-    | 'address'
-    | 'outgoing_metadata'
-    | 'memohex'
-    | 'txid'
-    | 'amount'
-    | 'memo'
-    | 'datetime'
+    | 'pubKey'
+    | 'signature'
+    | 'channelId'
+    | 'sender'
     >
   ) {
     Object.assign(this, values)

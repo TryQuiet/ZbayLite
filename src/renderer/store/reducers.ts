@@ -58,7 +58,8 @@ const persistConfig = {
     'notificationCenter',
     'rates',
     'importedChannel',
-    'fees'
+    'fees',
+    'certificates'
   ]
 }
 

@@ -11,7 +11,7 @@ export function* responseGetCertificates(
   action: PayloadAction<ReturnType<typeof certificatesActions.responseGetCertificates>['payload']>
 ): Generator {
   const certificates = action.payload
-  yield* put(certificatesActions.setUsersCertificates(certificates))
+  yield* put(certificatesActions.setUsersCertificates(certificates.certificates))
 }
 
 export const getDate = (date?: string) => date ? new Date(date) : new Date()

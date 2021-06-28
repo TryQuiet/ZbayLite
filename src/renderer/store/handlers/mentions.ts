@@ -49,11 +49,10 @@ export type MentionsActions = ActionsType<typeof actions>
 const checkMentions = () => async (dispatch, getState) => {
   const channelId = channelSelectors.channelId(getState())
   const message = channelSelectors.message(getState())
-  const members = channelSelectors.members(getState())
+
   const users = usersSelectors.users(getState())
   const currentMentions = mentionsSelectors.mentionForChannel(channelId)(getState())
 
-  const usersOnChannel = Array.from(Object.values(users)).filter(user => members.has(user.address))
   const splitMessage = message
     .split(String.fromCharCode(160))
     .filter(part => part.startsWith('@'))

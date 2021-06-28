@@ -24,7 +24,6 @@ import { successNotification, errorNotification } from './utils'
 
 import { DisplayableMessage } from '../../zbay/messages.types'
 import { certificatesActions } from '../certificates/certificates.reducer'
-import { packMemo } from '../../zbay/transit'
 
 import { ActionsType, PayloadType } from './types'
 
@@ -259,6 +258,7 @@ export const fetchUsers = (messages: DisplayableMessage[]) => async (dispatch, g
   let minfee = 0
   let users = {}
   const network = nodeSelectors.network()
+
   const signerPubKey = identitySelector.signerPubKey(getState())
   for (const msg of registrationMessages) {
     if (
@@ -274,7 +274,6 @@ export const fetchUsers = (messages: DisplayableMessage[]) => async (dispatch, g
       continue
     }
     const user = ReceivedUser(msg)
-
     if (user !== null) {
       users = {
         ...users,
