@@ -25,7 +25,7 @@ import { ipcRenderer } from 'electron'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { encodeMessage } from '../../cryptography/cryptography'
-import { CertificatesActions, certificatesActions } from '../certificates/certificates.reducer'
+import { certificatesActions } from '../../store/certificates/certificates.reducer'
 
 export const connect = async (): Promise<Socket> => {
   const socket = io(config.socket.address)
@@ -38,7 +38,9 @@ export const connect = async (): Promise<Socket> => {
 }
 
 export function subscribe(socket) {
-  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions & CertificatesActions>>(emit => {
+  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions> |
+  ReturnType<typeof certificatesActions.responseGetCertificates>
+  >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
     })
@@ -66,7 +68,7 @@ export function subscribe(socket) {
     socket.on(socketsActions.SEND_IDS, payload => {
       emit(publicChannelsActions.sendIds(payload))
     })
-    return () => {}
+    return () => { }
   })
 }
 
@@ -212,9 +214,11 @@ export function* askForMessages(
   yield* apply(socket, socket.emit, [socketsActions.ASK_FOR_MESSAGES, payload])
 }
 
-export function* saveCertificate(socket: Socket): Generator {
-  const toSend = yield* select(identitySelectors.certificate)
-  yield* apply(socket, socket.emit, [socketsActions.SAVE_CERTIFICATE, toSend])
+export function* saveCertificate(
+  socket: Socket,
+  action: PayloadAction<ReturnType<typeof certificatesActions.saveCertificate>['payload']>
+): Generator {
+  yield* apply(socket, socket.emit, [socketsActions.SAVE_CERTIFICATE, action.payload])
 }
 
 export function* responseGetCertificates(socket: Socket): Generator {
@@ -271,7 +275,7 @@ export function* useIO(socket: Socket): Generator {
       socket
     ),
     takeEvery(directMessagesActions.sendDirectMessage.type, sendDirectMessage, socket),
-    takeEvery(directMessagesActions.saveCertificate.type, saveCertificate, socket),
+    takeEvery(certificatesActions.saveCertificate.type, saveCertificate, socket),
     takeLeading(
       directMessagesActions.getPrivateConversations.type,
       getPrivateConversations,

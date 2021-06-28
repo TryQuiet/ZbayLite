@@ -23,7 +23,7 @@ import notificationsHandlers from './notifications'
 import { successNotification, errorNotification } from './utils'
 
 import { DisplayableMessage } from '../../zbay/messages.types'
-
+import { certificatesActions } from '../certificates/certificates.reducer'
 import { packMemo } from '../../zbay/transit'
 
 import { ActionsType, PayloadType } from './types'
@@ -150,6 +150,8 @@ export const createOrUpdateUser = (payload: {
   const publicKey = identitySelector.signerPubKey(getState())
   const address = identitySelector.address(getState())
   const privKey = identitySelector.signerPrivKey(getState())
+
+  dispatch(certificatesActions.creactOwnCertificate(nickname))
 
   const isDev = process.env.NODE_ENV === 'development'
 
