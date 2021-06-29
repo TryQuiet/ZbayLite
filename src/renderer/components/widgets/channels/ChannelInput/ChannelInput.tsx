@@ -438,7 +438,6 @@ export const ChannelInput: React.FC<IChannelInput> = ({
               </Grid>
               <Grid item className={classes.actions}>
                 <Grid container justify='center' alignItems='center'>
-                  {/* <ChannelInputAction disabled={inputState !== INPUT_STATE.AVAILABLE} /> */}
                   <Icon
                     className={classes.emoji}
                     src={emojiHovered ? emojiBlack : emojiGray}
