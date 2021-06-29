@@ -201,13 +201,14 @@ const currentChannel = createSelector(
 const usersCertificateMapping = createSelector(
   certificatesSelector.usersCertificates,
   (certificates) => {
+    console.log('certificates', certificates)
     return certificates.reduce<{ [pubKey: string]: { username: string; onionAddress: string; peerId: string } }>((acc, current) => {
       let parsedCerficated
       let certObject
       let nickname = null
       let onionAddress = null
       let peerId = null
-      if (current !== null) {
+      if (current !== null && current) {
         parsedCerficated = extractPubKeyString(current)
         certObject = loadCertificate(current)
         if (certObject.subject.typesAndValues.length === 3) {

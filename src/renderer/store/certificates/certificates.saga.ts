@@ -37,13 +37,22 @@ export function* creactOwnCertificate(
     ['hiddenServices']
   )
 
+  let peerIdAddress = yield* apply(electronStore, electronStore.get, ['peerId'])
+  if (!peerIdAddress) {
+    peerIdAddress = 'unknown'
+  }
+
   const userData = {
     zbayNickname: action.payload,
     commonName: hiddenServices.libp2pHiddenService.onionAddress,
-    peerId: yield* apply(electronStore, electronStore.get, ['peerId'])
+    peerId: peerIdAddress
   }
 
+  console.log('userData', userData)
+
   const user = yield* call(createUserCsr, userData)
+
+  console.log('poszlo dalej')
 
   const userCertData = yield* call(createUserCert, certString, keyString, user.userCsr, notBeforeDate, notAfterDate)
 

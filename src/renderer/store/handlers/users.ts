@@ -14,13 +14,12 @@ import {
   messageType,
   actionTypes,
   unknownUserId,
-  REQUEST_USER_REGISTRATION_ENDPOINT,
   FETCH_USERNAMES_ENDPOINT
 } from '../../../shared/static'
 import { messages as zbayMessages } from '../../zbay'
 import staticChannels from '../../zcash/channels'
 import notificationsHandlers from './notifications'
-import { successNotification, errorNotification } from './utils'
+import { successNotification } from './utils'
 
 import { DisplayableMessage } from '../../zbay/messages.types'
 import { certificatesActions } from '../certificates/certificates.reducer'
@@ -145,10 +144,8 @@ export const createOrUpdateUser = (payload: {
   updateOnionAddress?: boolean
 }) => async (dispatch, getState) => {
   let { nickname } = payload
-  const { firstName = '', lastName = '' } = payload
   const publicKey = identitySelector.signerPubKey(getState())
   const address = identitySelector.address(getState())
-  const privKey = identitySelector.signerPrivKey(getState())
 
   dispatch(certificatesActions.creactOwnCertificate(nickname))
 
@@ -157,68 +154,8 @@ export const createOrUpdateUser = (payload: {
   if (isDev) {
     nickname = `dev99${nickname}`.substring(0, 20)
   }
-  const messageData = {
-    firstName,
-    lastName,
-    nickname,
-    address
-  }
 
-  const registrationMessage = zbayMessages.createMessage({
-    messageData: {
-      type: zbayMessages.messageType.USER,
-      data: messageData
-    },
-    privKey
-  })
   dispatch(actionCreators.closeModal('accountSettingsModal')())
-  const onionAddress = identitySelector.onionAddress(getState())
-  const messageDataTor = {
-    onionAddress: onionAddress.substring(0, 56)
-  }
-  const registrationMessageTor = zbayMessages.createMessage({
-    messageData: {
-      type: zbayMessages.messageType.USER_V2,
-      data: messageDataTor
-    },
-    privKey
-  })
-
-  const userMemo = await packMemo(registrationMessage)
-  const torMemo = await packMemo(registrationMessageTor)
-
-  try {
-    await axios.get(REQUEST_USER_REGISTRATION_ENDPOINT, {
-      params: {
-        userMemo: userMemo,
-        torMemo: torMemo,
-        nickname: nickname,
-        publicKey: publicKey,
-        updateOnionAddress: payload?.updateOnionAddress || false
-      }
-    })
-    if (payload.updateOnionAddress) {
-      console.log('updated onion address')
-      return
-    }
-  } catch (error) {
-    console.log('error')
-    dispatch(
-      notificationsHandlers.actions.enqueueSnackbar(
-        errorNotification({
-          message: 'Registration failed, try again in few minutes'
-        })
-      )
-    )
-    dispatch(
-      identityActions.setRegistraionStatus({
-        nickname,
-        status: 'ERROR'
-      })
-    )
-    dispatch(actionCreators.openModal('failedUsernameRegister')())
-    return
-  }
 
   try {
     dispatch(
