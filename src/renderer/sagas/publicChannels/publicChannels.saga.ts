@@ -141,7 +141,7 @@ export function* loadAllMessages(
     } catch (err) {
       console.log(err)
       return
-    }    
+    }
     messagesById[msg.id] = transferedMessage
     return transferedMessage
   })
