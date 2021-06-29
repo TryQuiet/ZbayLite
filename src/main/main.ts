@@ -304,12 +304,10 @@ app.setAsDefaultProtocolClient('zbay')
 app.on('before-quit', async e => {
   e.preventDefault()
   if (waggleProcess !== null) {
-    console.log('killing waggle')
     await waggleProcess.connectionsManager.closeStorage()
     await waggleProcess.dataServer.close()
   }
   if (tor !== null) {
-    console.log('killing tor')
     await tor.kill()
   }
   if (browserWidth && browserHeight) {
@@ -318,6 +316,7 @@ app.on('before-quit', async e => {
       height: browserHeight
     })
   }
+  process.exit()
 })
 
 // Quit when all windows are closed.
