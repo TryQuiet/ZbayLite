@@ -20,6 +20,11 @@
 * new method sendIds in publicChannelSaga
 * added new socket listener sendIds in socket.saga
 
+## Fixed
+
+* closing zbay properly
+* restore input
+
 # [3.2.19] - 8 June 2021
 
 ### Changed
