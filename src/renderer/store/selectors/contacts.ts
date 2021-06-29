@@ -169,10 +169,10 @@ export const queuedMessages = address =>
 const channelOwner = channelId =>
   createSelector(channelSettingsMessages(channelId), msgs => {
     let channelOwner = null
-    channelOwner = msgs[0] ? msgs[0].publicKey : null
+    channelOwner = msgs[0] ? msgs[0].pubKey : null
     for (const msg of msgs) {
-      if (channelOwner === msg.publicKey) {
-        channelOwner = msg.message.owner
+      if (channelOwner === msg.pubKey) {
+        channelOwner = msg.owner
       }
     }
     return channelOwner
@@ -188,9 +188,13 @@ export interface IDirectMessage {
 const currentChannel = createSelector(
   contacts,
   channelSelector.address,
-  (contracts, address) => {
-    console.log(address)
-    return contracts[address]
+  channelSelector.id,
+  (contacts, address, id) => {
+    if (contacts[address]) {
+      return contacts[address]
+    } else {
+      return contacts[id]
+    }
   }
 )
 
@@ -231,7 +235,7 @@ const messagesOfChannelWithUserInfo = createSelector(
     const messagesArray = Object.values(currentChannel.messages)
     return messagesArray.map(
       message => {
-        if (usersCertificateMapping[message.pubKey]) {
+        if (usersCertificateMapping[message.pubKey] && message.id !== '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a') {
           const userInfo = usersCertificateMapping[message.pubKey]
           if (userInfo.onionAddress !== null) {
             return ({ message, userInfo: userInfo })
@@ -301,7 +305,7 @@ export const directMessages = address => createSelector(
             moderationType === 'BLOCK_USER'
           ) {
             blockedUsers.push(moderationTarget)
-            visibleMessages = visibleMessages.filter(msg => !blockedUsers.includes(msg.publicKey))
+            visibleMessages = visibleMessages.filter(msg => !blockedUsers.includes(msg.pubKey))
           } else if (
             (channelOwner === senderPk || channelModerators.includes(senderPk)) &&
             moderationType === 'UNBLOCK_USER'

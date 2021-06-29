@@ -1,7 +1,5 @@
 import { DateTime } from 'luxon'
 import { io, Socket } from 'socket.io-client'
-import crypto from 'crypto'
-import lodash from 'lodash'
 import {
   PublicChannelsActions,
   publicChannelsActions
@@ -17,7 +15,6 @@ import { ActionFromMapping, Socket as socketsActions } from '../const/actionsTyp
 import channelSelectors from '../../store/selectors/channel'
 import identitySelectors from '../../store/selectors/identity'
 import directMessagesSelectors from '../../store/selectors/directMessages'
-import { messages } from '../../zbay'
 import config from '../../config'
 import { messageType } from '../../../shared/static'
 import { ipcRenderer } from 'electron'
@@ -86,7 +83,6 @@ export function* handleActions(socket: Socket): Generator {
 }
 
 export function* sendMessage(socket: Socket): Generator {
-  yield* put(certificatesActions.creactOwnCertificate('damian'))
   const { address } = yield* select(channelSelectors.channel)
   const messageToSend = yield* select(channelSelectors.message)
 
@@ -175,30 +171,28 @@ export function* sendDirectMessage(socket: Socket): Generator {
   const { id } = yield* select(channelSelectors.channel)
   const conversations = yield* select(directMessagesSelectors.conversations)
   const conv = Array.from(Object.values(conversations)).filter(item => {
-    console.log(item.contactPublicKey)
     return item.contactPublicKey === id
   })
   const conversationId = conv[0].conversationId
   const sharedSecret = conv[0].sharedSecret
   const messageToSend = yield* select(channelSelectors.message)
-  let message = null
-  const privKey = yield* select(identitySelectors.signerPrivKey)
-  message = messages.createMessage({
-    messageData: {
-      type: messageType.BASIC,
-      data: messageToSend
-    },
-    privKey: privKey
-  })
-  const messageDigest = crypto.createHash('sha256')
-  const messageEssentials = lodash.pick(message, ['createdAt', 'message'])
-  const key = messageDigest.update(JSON.stringify(messageEssentials)).digest('hex')
+
+  const ownCertificate = yield* select(certificatesSelectors.ownCertificate)
+  const ownPubKey = yield* call(extractPubKeyString, ownCertificate)
+  const privKey = yield* select(certificatesSelectors.ownPrivKey)
+  const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg, configCrypto.hashAlg)
+  const sign = yield* call(signing, messageToSend, keyObject)
+
   const preparedMessage = {
-    ...message,
-    id: key,
-    typeIndicator: false,
-    signature: message.signature.toString('base64')
+    id: Math.random().toString(36).substr(2, 9),
+    type: messageType.BASIC,
+    message: messageToSend,
+    createdAt: DateTime.utc().toSeconds(),
+    signature: arrayBufferToString(sign),
+    pubKey: ownPubKey,
+    channelId: conversationId
   }
+
   const stringifiedMessage = JSON.stringify(preparedMessage)
   const encryptedMessage = encodeMessage(sharedSecret, stringifiedMessage)
   yield* apply(socket, socket.emit, [
