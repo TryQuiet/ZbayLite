@@ -67,15 +67,19 @@ export function* loadAllMessages(
   if (!username) {
     return
   }
-
   const displayableMessages = action.payload.messages
+
+  const messagesById = {}
+  action.payload.messages.map(msg => {
+    messagesById[msg.id] = msg
+  })
 
   yield put(
     contactsHandlers.actions.setMessages({
       key: action.payload.channelAddress,
       username: username,
       contactAddress: action.payload.channelAddress,
-      messages: displayableMessages
+      messages: messagesById
     })
   )
 
