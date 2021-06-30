@@ -109,7 +109,6 @@ export function* sendIds(action: PublicChannelsActions['sendIds']): Generator {
     log(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
     return
   }
-  console.log(action.payload.ids)
   let messagesToFetch = []
   const ids = Array.from(Object.values(channel.messages)).map(msg => msg.id)
   messagesToFetch = action.payload.ids.filter(id => !ids.includes(id))
