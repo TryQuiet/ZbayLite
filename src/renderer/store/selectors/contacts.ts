@@ -228,7 +228,7 @@ const usersCertificateMapping = createSelector(
   }
 )
 
-const messagesOfChannelWithUserInfo = createSelector(
+export const messagesOfChannelWithUserInfo = createSelector(
   currentChannel, usersCertificateMapping,
   (currentChannel, usersCertificateMapping) => {
     if (!currentChannel) return []
@@ -359,5 +359,6 @@ export default {
   messagesLength,
   messagesSorted,
   unknownMessages,
-  allMessagesTxnId
+  allMessagesTxnId,
+  messagesOfChannelWithUserInfo
 }

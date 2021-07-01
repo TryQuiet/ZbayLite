@@ -147,13 +147,14 @@ export const createOrUpdateUser = (payload: {
   const publicKey = identitySelector.signerPubKey(getState())
   const address = identitySelector.address(getState())
 
-  dispatch(certificatesActions.creactOwnCertificate(nickname))
 
   const isDev = process.env.NODE_ENV === 'development'
 
   if (isDev) {
     nickname = `dev99${nickname}`.substring(0, 20)
   }
+
+  dispatch(certificatesActions.creactOwnCertificate(nickname))
 
   dispatch(actionCreators.closeModal('accountSettingsModal')())
 
