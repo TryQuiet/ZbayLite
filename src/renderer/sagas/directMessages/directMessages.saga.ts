@@ -1,18 +1,11 @@
 import { all as effectsAll, takeEvery } from 'redux-saga/effects'
-import { put, select, call } from 'typed-redux-saga'
+import { put, select } from 'typed-redux-saga'
 import { directMessagesActions, DirectMessagesActions } from './directMessages.reducer'
-import {
-  getPublicKeysFromSignature,
-  usernameSchema,
-  exchangeParticipant
-} from '../../zbay/messages'
 import directMessagesSelectors from '../../store/selectors/directMessages'
 import usersSelectors from '../../store/selectors/users'
 import contactsSelectors from '../../store/selectors/contacts'
 import contactsHandlers, { actions as contactsActions } from '../../store/handlers/contacts'
-import { DisplayableMessage } from '../../zbay/messages.types'
-import { displayDirectMessageNotification } from '../../notifications'
-import BigNumber from 'bignumber.js'
+
 import { actions } from '../../store/handlers/directMessages'
 
 import { checkConversation, decodeMessage } from '../../cryptography/cryptography'
@@ -23,51 +16,6 @@ const log = Object.assign(debug('zbay:dm'), {
 
 const all: any = effectsAll
 
-export const transferToMessage = (msg, users) => {
-  let publicKey = null
-  let sender = { replyTo: '', username: 'Unnamed' }
-  let isUnregistered = false
-  const { r, message, signature, id, type, createdAt } = msg
-  const signatureBuffer = Buffer.from(signature, 'base64')
-  publicKey = getPublicKeysFromSignature({
-    message,
-    signature: signatureBuffer,
-    r
-  }).toString('hex')
-  if (users !== undefined) {
-    const fromUser = users[publicKey]
-    if (fromUser !== undefined) {
-      const isUsernameValid = usernameSchema.isValidSync(fromUser)
-      sender = {
-        ...exchangeParticipant,
-        replyTo: fromUser.address,
-        username: isUsernameValid ? fromUser.nickname : `anon${publicKey.substring(0, 10)}`
-      }
-    } else {
-      sender = {
-        ...exchangeParticipant,
-        replyTo: '',
-        username: `anon${publicKey}`
-      }
-      isUnregistered = true
-    }
-  }
-  const parsedMessage: any = {
-    id: id,
-    message,
-    r,
-    type,
-    createdAt,
-    spent: new BigNumber(0),
-    sender: sender,
-    isUnregistered,
-    publicKey,
-    blockHeight: null
-  }
-  const displayableMessage = new DisplayableMessage(parsedMessage)
-  return displayableMessage
-}
-
 export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMessage']): Generator {
   const conversations = yield* select(directMessagesSelectors.conversations)
   const conversation = Array.from(Object.values(conversations)).filter(conv => {
@@ -77,26 +25,18 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
   const contact = conversation[0]
   const contactPublicKey = contact.contactPublicKey
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
-  const users = yield* select(usersSelectors.users)
-  const myUser = yield* select(usersSelectors.myUser)
   const sharedSecret = conversation[0].sharedSecret
   const msg = JSON.stringify(action.payload.message)
   const decodedMessage = decodeMessage(sharedSecret, msg)
-  const message = transferToMessage(JSON.parse(decodedMessage), users)
+  const message = JSON.parse(decodedMessage)
 
   const messageId = Array.from(Object.keys(channel.messages)).length
-  if (myUser.nickname !== message.sender.username) {
-    yield call(displayDirectMessageNotification, {
-      username: message.sender.username,
-      message: message
+  yield put(
+    contactsActions.appendNewMessages({
+      contactAddress: contactPublicKey,
+      messagesIds: [message.id]
     })
-    yield put(
-      contactsActions.appendNewMessages({
-        contactAddress: contactPublicKey,
-        messagesIds: [message.id]
-      })
-    )
-  }
+  )
   yield put(
     directMessagesActions.addDirectMessage({
       key: contactPublicKey,
@@ -115,8 +55,6 @@ export function* loadAllDirectMessages(
   const contact = conversation[0]
   const contactPublicKey = contact.contactPublicKey
   const sharedSecret = contact.sharedSecret
-  const users = yield* select(usersSelectors.users)
-  const myUser = yield* select(usersSelectors.myUser)
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
   if (!channel) {
     log.error(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
@@ -133,16 +71,10 @@ export function* loadAllDirectMessages(
 
   const displayableMessages = {}
   if (username && newMessages) {
-    let latestMessage = null
     newMessages.map(msg => {
-      const decodedMessage = transferToMessage(
-        JSON.parse(decodeMessage(sharedSecret, JSON.stringify(msg))),
-        users
-      )
+      const decodedMessage = JSON.parse(decodeMessage(sharedSecret, JSON.stringify(msg)))
       displayableMessages[msg] = decodedMessage
-      latestMessage = decodedMessage
     })
-
     yield put(
       contactsHandlers.actions.setMessages({
         key: contactPublicKey,
@@ -151,13 +83,6 @@ export function* loadAllDirectMessages(
         messages: displayableMessages
       })
     )
-
-    if (latestMessage && latestMessage.sender.username !== myUser.nickname) {
-      yield call(displayDirectMessageNotification, {
-        username: latestMessage.sender.username,
-        message: latestMessage
-      })
-    }
 
     yield put(
       contactsActions.appendNewMessages({

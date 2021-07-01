@@ -27,7 +27,7 @@ export const certificates = createSlice({
     saveCertificate: (state, _action: PayloadAction<string>) => {
       return state
     },
-    responseGetCertificates: (state, _action: PayloadAction<string[]>) => {
+    responseGetCertificates: (state, _action: PayloadAction<{ certificates: string[] }>) => {
       return state
     }
   }
