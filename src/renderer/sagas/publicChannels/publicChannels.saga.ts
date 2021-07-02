@@ -33,7 +33,7 @@ export function* loadMessage(action: PublicChannelsActions['loadMessage']): Gene
     })
   }
 
-  if (myUser.nickname !== foundMessage.userInfo.username) { ///
+  if (foundMessage && myUser.nickname !== foundMessage.userInfo.username) { ///
     console.log('siema', myUser.nickname, foundMessage.userInfo.username)
     displayDirectMessageNotification({
       username: foundMessage.userInfo.username,
@@ -109,17 +109,15 @@ export function* loadAllMessages(
   const state = yield* select()
   const newMsgs = findNewMessages(action.payload.channelAddress, displayableMessages, state)
 
-  const messagesWithInfo = yield* select(contactsSelectors.messagesOfChannelWithUserInfo)
+  const messagesWithInfo = yield* select(contactsSelectors.allMessagesOfChannelsWithUserInfo)
+  const msg = newMsgs[newMsgs.length - 1]
 
   let foundMessage
-
-  const foundMessagesWithUserInfo = newMsgs.map((oneOfNewMessages) => {
-    if (oneOfNewMessages !== null) {
-      foundMessage = messagesWithInfo.find((oneOfMessagesWithUserInfo) => {
-        return oneOfMessagesWithUserInfo.message.id === oneOfNewMessages.id
-      })
-    }
-  })
+  if (msg) {
+    foundMessage = messagesWithInfo.flat().find((item) => {
+      return item.message.id === msg.id
+    })
+  }
 
   const myUser = yield* select(usersSelectors.myUser)
   const pubChannels = yield* select(publicChannelsSelectors.publicChannels)
@@ -128,11 +126,11 @@ export function* loadAllMessages(
   const contact = pubChannelsArray.filter(item => {
     return item.name === username
   })
-  const msg = foundMessagesWithUserInfo[foundMessagesWithUserInfo.length - 1]
-  if (msg && msg?.userInfo?.username !== myUser.nickname) {
+
+  if (foundMessage?.userInfo?.username !== myUser.nickname) {
     displayMessageNotification({
-      senderName: msg.userInfo.username,
-      message: msg.message.message,
+      senderName: foundMessage.userInfo.username,
+      message: msg.message,
       channelName: username,
       address: contact[0].address
     })
