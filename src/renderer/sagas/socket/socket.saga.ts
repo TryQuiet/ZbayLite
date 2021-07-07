@@ -222,6 +222,24 @@ export function* responseGetCertificates(socket: Socket): Generator {
   yield* apply(socket, socket.emit, [socketsActions.RESPONSE_GET_CERTIFICATES])
 }
 
+export function* addCertificate(): Generator {
+  while (true) {
+    yield* take('SET_IS_WAGGLE_CONNECTED')
+    let hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
+    let nickname = yield* select(identitySelectors.nickName)
+    if (!hasCertyficate && nickname) {
+      yield* put(certificatesActions.creactOwnCertificate(nickname))
+    }
+
+    yield* take('SET_REGISTRAION_STATUS')
+    hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
+    nickname = yield* select(identitySelectors.nickName)
+    if (!hasCertyficate && nickname) {
+      yield* put(certificatesActions.creactOwnCertificate(nickname))
+    }
+  }
+}
+
 export function* addWaggleIdentity(socket: Socket): Generator {
   while (true) {
     yield* take('SET_IS_WAGGLE_CONNECTED')
@@ -283,7 +301,8 @@ export function* useIO(socket: Socket): Generator {
       subscribeForDirectMessageThread,
       socket
     ),
-    fork(addWaggleIdentity, socket)
+    fork(addWaggleIdentity, socket),
+    fork(addCertificate)
   ])
 }
 

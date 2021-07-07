@@ -22,7 +22,6 @@ import notificationsHandlers from './notifications'
 import { successNotification } from './utils'
 
 import { DisplayableMessage } from '../../zbay/messages.types'
-import { certificatesActions } from '../certificates/certificates.reducer'
 
 import { ActionsType, PayloadType } from './types'
 
@@ -152,8 +151,6 @@ export const createOrUpdateUser = (payload: {
   if (isDev) {
     nickname = `dev99${nickname}`.substring(0, 20)
   }
-
-  dispatch(certificatesActions.creactOwnCertificate(nickname))
 
   dispatch(actionCreators.closeModal('accountSettingsModal')())
 
