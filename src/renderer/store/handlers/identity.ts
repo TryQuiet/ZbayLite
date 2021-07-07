@@ -158,7 +158,7 @@ export const setRegistraionStatus = createAction<{
   nickname: string
   status: string
   takenUsernames?: string[]
-}>(actionTypes.SET_REGISTRAION_STATUS)
+}>(actionTypes.SET_REGISTRATION_STATUS)
 export const setUserShieldedAddreses = createAction<any[]>(actionTypes.SET_USER_SHIELDED_ADDRESES)
 
 export const actions = {

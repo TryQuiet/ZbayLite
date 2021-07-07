@@ -16,7 +16,7 @@ import channelSelectors from '../../store/selectors/channel'
 import identitySelectors from '../../store/selectors/identity'
 import directMessagesSelectors from '../../store/selectors/directMessages'
 import config from '../../config'
-import { messageType } from '../../../shared/static'
+import { messageType, actionTypes } from '../../../shared/static'
 import { ipcRenderer } from 'electron'
 import { PayloadAction } from '@reduxjs/toolkit'
 
@@ -28,6 +28,7 @@ import { signing } from '../../pkijs/tests/sign'
 import { loadPrivateKey } from '../../pkijs/generatePems/common'
 import configCrypto from '../../pkijs/generatePems/config'
 import { arrayBufferToString } from 'pvutils'
+import { actions as waggleActions } from '../../store/handlers/waggle'
 
 export const connect = async (): Promise<Socket> => {
   const socket = io(config.socket.address)
@@ -223,20 +224,10 @@ export function* responseGetCertificates(socket: Socket): Generator {
 }
 
 export function* addCertificate(): Generator {
-  while (true) {
-    yield* take('SET_IS_WAGGLE_CONNECTED')
-    let hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
-    let nickname = yield* select(identitySelectors.nickName)
-    if (!hasCertyficate && nickname) {
-      yield* put(certificatesActions.creactOwnCertificate(nickname))
-    }
-
-    yield* take('SET_REGISTRAION_STATUS')
-    hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
-    nickname = yield* select(identitySelectors.nickName)
-    if (!hasCertyficate && nickname) {
-      yield* put(certificatesActions.creactOwnCertificate(nickname))
-    }
+  const hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
+  const nickname = yield* select(identitySelectors.nickName)
+  if (!hasCertyficate && nickname) {
+    yield* put(certificatesActions.creactOwnCertificate(nickname))
   }
 }
 
@@ -302,7 +293,8 @@ export function* useIO(socket: Socket): Generator {
       socket
     ),
     fork(addWaggleIdentity, socket),
-    fork(addCertificate)
+    takeEvery(waggleActions.setIsWaggleConnected.type, addCertificate),
+    takeEvery(actionTypes.SET_REGISTRATION_STATUS, addCertificate)
   ])
 }
 
