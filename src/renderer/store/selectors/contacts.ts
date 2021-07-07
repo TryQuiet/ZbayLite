@@ -198,6 +198,13 @@ const currentChannel = createSelector(
   }
 )
 
+const allChannels = createSelector(
+  contacts,
+  (contacts) => {
+    return contacts
+  }
+)
+
 const usersCertificateMapping = createSelector(
   certificatesSelector.usersCertificates,
   (certificates) => {
@@ -228,14 +235,37 @@ const usersCertificateMapping = createSelector(
   }
 )
 
-const messagesOfChannelWithUserInfo = createSelector(
+export const allMessagesOfChannelsWithUserInfo = createSelector(
+  allChannels, usersCertificateMapping,
+  (allChannels, usersCertificateMapping) => {
+    if (!allChannels) return []
+
+    const channelsKeysArray = Object.keys(allChannels)
+
+    return channelsKeysArray.map((item) => {
+      const messagesArray = Object.values(allChannels[item].messages)
+      return messagesArray.map(
+        message => {
+          if (usersCertificateMapping[message.pubKey]) {
+            const userInfo = usersCertificateMapping[message.pubKey]
+            if (userInfo.onionAddress !== null) {
+              return ({ message, userInfo: userInfo })
+            }
+          }
+        }
+      ).filter((item) => item !== undefined)
+    })
+  }
+)
+
+export const messagesOfChannelWithUserInfo = createSelector(
   currentChannel, usersCertificateMapping,
   (currentChannel, usersCertificateMapping) => {
     if (!currentChannel) return []
     const messagesArray = Object.values(currentChannel.messages)
     return messagesArray.map(
       message => {
-        if (usersCertificateMapping[message.pubKey] && message.id !== '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a') {
+        if (usersCertificateMapping[message.pubKey]) {
           const userInfo = usersCertificateMapping[message.pubKey]
           if (userInfo.onionAddress !== null) {
             return ({ message, userInfo: userInfo })
@@ -359,5 +389,7 @@ export default {
   messagesLength,
   messagesSorted,
   unknownMessages,
-  allMessagesTxnId
+  allMessagesTxnId,
+  messagesOfChannelWithUserInfo,
+  allMessagesOfChannelsWithUserInfo
 }

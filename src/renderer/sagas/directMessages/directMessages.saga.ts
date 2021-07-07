@@ -1,5 +1,5 @@
 import { all as effectsAll, takeEvery } from 'redux-saga/effects'
-import { put, select } from 'typed-redux-saga'
+import { put, select, call } from 'typed-redux-saga'
 import { directMessagesActions, DirectMessagesActions } from './directMessages.reducer'
 import directMessagesSelectors from '../../store/selectors/directMessages'
 import usersSelectors from '../../store/selectors/users'
@@ -7,6 +7,7 @@ import contactsSelectors from '../../store/selectors/contacts'
 import contactsHandlers, { actions as contactsActions } from '../../store/handlers/contacts'
 
 import { actions } from '../../store/handlers/directMessages'
+import { displayDirectMessageNotification } from '../../notifications'
 
 import { checkConversation, decodeMessage } from '../../cryptography/cryptography'
 import debug from 'debug'
@@ -31,12 +32,31 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
   const message = JSON.parse(decodedMessage)
 
   const messageId = Array.from(Object.keys(channel.messages)).length
-  yield put(
-    contactsActions.appendNewMessages({
-      contactAddress: contactPublicKey,
-      messagesIds: [message.id]
+
+  const myUser = yield* select(usersSelectors.myUser)
+
+  const messagesWithInfo = yield* select(contactsSelectors.messagesOfChannelWithUserInfo)
+
+  let foundMessage
+  if (message !== null) {
+    foundMessage = messagesWithInfo.find((item) => {
+      return item.message.id === message.id
     })
-  )
+  }
+
+  if (myUser.nickname !== message.sender.username) {
+    yield call(displayDirectMessageNotification, {
+      username: foundMessage.userInfo.username,
+      message: message
+    })
+    yield put(
+      contactsActions.appendNewMessages({
+        contactAddress: contactPublicKey,
+        messagesIds: [message.id]
+      })
+    )
+  }
+
   yield put(
     directMessagesActions.addDirectMessage({
       key: contactPublicKey,
@@ -71,9 +91,11 @@ export function* loadAllDirectMessages(
 
   const displayableMessages = {}
   if (username && newMessages) {
+    let latestMessage = null
     newMessages.map(msg => {
       const decodedMessage = JSON.parse(decodeMessage(sharedSecret, JSON.stringify(msg)))
       displayableMessages[msg] = decodedMessage
+      latestMessage = decodedMessage
     })
     yield put(
       contactsHandlers.actions.setMessages({
@@ -83,6 +105,22 @@ export function* loadAllDirectMessages(
         messages: displayableMessages
       })
     )
+    const myUser = yield* select(usersSelectors.myUser)
+    const messagesWithInfo = yield* select(contactsSelectors.messagesOfChannelWithUserInfo)
+
+    let foundMessage
+    if (latestMessage !== null) {
+      foundMessage = messagesWithInfo.find((item) => {
+        return item.message.id === latestMessage.id
+      })
+    }
+
+    if (latestMessage && foundMessage.userInfo.username !== myUser.nickname) {
+      yield* call(displayDirectMessageNotification, {
+        username: foundMessage.userInfo.username,
+        message: latestMessage
+      })
+    }
 
     yield put(
       contactsActions.appendNewMessages({
@@ -98,18 +136,19 @@ export function* responseGetAvailableUsers(
 ): Generator {
   for (const [key, value] of Object.entries(action.payload)) {
     const user = yield* select(usersSelectors.registeredUser(key))
-
-    yield put(
-      actions.fetchUsers({
-        usersList: {
-          [key]: {
-            publicKey: key,
-            halfKey: value.halfKey,
-            nickname: user?.nickname || `anon${key.substring(0, 8)}`
+    if (user) {
+      yield put(
+        actions.fetchUsers({
+          usersList: {
+            [key]: {
+              publicKey: key,
+              halfKey: value.halfKey,
+              nickname: user?.nickname || `anon${key.substring(0, 8)}`
+            }
           }
-        }
-      })
-    )
+        })
+      )
+    }
   }
 }
 
