@@ -127,7 +127,7 @@ export function* loadAllMessages(
     return item.name === username
   })
 
-  if (foundMessage?.userInfo?.username !== myUser.nickname) {
+  if (foundMessage && foundMessage.userInfo.username !== myUser.nickname) {
     displayMessageNotification({
       senderName: foundMessage.userInfo.username,
       message: msg.message,
