@@ -136,7 +136,7 @@ export function* responseGetAvailableUsers(
 ): Generator {
   for (const [key, value] of Object.entries(action.payload)) {
     const user = yield* select(usersSelectors.registeredUser(key))
-    if (user && user.nickname) {
+    if (user) {
       yield put(
         actions.fetchUsers({
           usersList: {

@@ -147,7 +147,6 @@ export const createOrUpdateUser = (payload: {
   const publicKey = identitySelector.signerPubKey(getState())
   const address = identitySelector.address(getState())
 
-
   const isDev = process.env.NODE_ENV === 'development'
 
   if (isDev) {

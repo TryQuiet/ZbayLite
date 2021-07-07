@@ -246,7 +246,7 @@ export const allMessagesOfChannelsWithUserInfo = createSelector(
       const messagesArray = Object.values(allChannels[item].messages)
       return messagesArray.map(
         message => {
-          if (usersCertificateMapping[message.pubKey] && message.id !== '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a') {
+          if (usersCertificateMapping[message.pubKey]) {
             const userInfo = usersCertificateMapping[message.pubKey]
             if (userInfo.onionAddress !== null) {
               return ({ message, userInfo: userInfo })
@@ -265,7 +265,7 @@ export const messagesOfChannelWithUserInfo = createSelector(
     const messagesArray = Object.values(currentChannel.messages)
     return messagesArray.map(
       message => {
-        if (usersCertificateMapping[message.pubKey] && message.id !== '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a') {
+        if (usersCertificateMapping[message.pubKey]) {
           const userInfo = usersCertificateMapping[message.pubKey]
           if (userInfo.onionAddress !== null) {
             return ({ message, userInfo: userInfo })
