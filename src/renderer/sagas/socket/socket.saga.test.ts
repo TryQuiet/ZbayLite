@@ -8,7 +8,6 @@ import {
   CertificatesState
 } from '../../store/certificates/certificates.reducer'
 import identity, { Identity } from '../../store/handlers/identity'
-import produce from 'immer'
 
 describe('checkCertificatesSaga', () => {
   test('adds certificate if there is no certificate', async () => {
