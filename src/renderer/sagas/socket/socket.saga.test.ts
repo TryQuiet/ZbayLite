@@ -60,8 +60,6 @@ describe('checkCertificatesSaga', () => {
         }
       }
     }
-    const expectedState = produce(initialState, state => { })
-
     const runResult = await expectSaga(addCertificate)
       .withReducer(
         combineReducers({
@@ -70,7 +68,7 @@ describe('checkCertificatesSaga', () => {
         }),
         initialState
       )
-      .hasFinalState(expectedState)
+      .hasFinalState(initialState)
       .run()
 
     expect(runResult.effects.put).toBeUndefined()
