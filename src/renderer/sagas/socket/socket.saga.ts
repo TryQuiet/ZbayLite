@@ -41,8 +41,9 @@ export const connect = async (): Promise<Socket> => {
 }
 
 export function subscribe(socket) {
-  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions> |
-  ReturnType<typeof certificatesActions.responseGetCertificates>
+  return eventChannel<
+    | ActionFromMapping<PublicChannelsActions & DirectMessagesActions>
+    | ReturnType<typeof certificatesActions.responseGetCertificates>
   >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
@@ -149,9 +150,7 @@ export function* getAvailableUsers(socket: Socket): Generator {
   yield* apply(socket, socket.emit, [socketsActions.GET_AVAILABLE_USERS])
 }
 
-export function* subscribeForAllConversations(
-  socket: Socket
-): Generator {
+export function* subscribeForAllConversations(socket: Socket): Generator {
   const conversations = yield* select(directMessagesSelectors.conversations)
   const payload = Array.from(Object.keys(conversations))
   yield* apply(socket, socket.emit, [socketsActions.SUBSCRIBE_FOR_ALL_CONVERSATIONS, payload])
