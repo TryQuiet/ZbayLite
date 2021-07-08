@@ -41,8 +41,9 @@ export const connect = async (): Promise<Socket> => {
 }
 
 export function subscribe(socket) {
-  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions> |
-  ReturnType<typeof certificatesActions.responseGetCertificates>
+  return eventChannel<
+  | ActionFromMapping<PublicChannelsActions & DirectMessagesActions>
+  | ReturnType<typeof certificatesActions.responseGetCertificates>
   >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
@@ -149,9 +150,7 @@ export function* getAvailableUsers(socket: Socket): Generator {
   yield* apply(socket, socket.emit, [socketsActions.GET_AVAILABLE_USERS])
 }
 
-export function* subscribeForAllConversations(
-  socket: Socket
-): Generator {
+export function* subscribeForAllConversations(socket: Socket): Generator {
   const conversations = yield* select(directMessagesSelectors.conversations)
   const payload = Array.from(Object.keys(conversations))
   yield* apply(socket, socket.emit, [socketsActions.SUBSCRIBE_FOR_ALL_CONVERSATIONS, payload])
@@ -232,36 +231,17 @@ export function* addCertificate(): Generator {
 }
 
 export function* addWaggleIdentity(socket: Socket): Generator {
-  while (true) {
-    yield* take('SET_IS_WAGGLE_CONNECTED')
+  const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
+  const signerPublicKey = yield select(identitySelectors.signerPubKey)
 
-    let wagglePublicKey = yield select(directMessagesSelectors.publicKey)
-    let signerPublicKey = yield select(identitySelectors.signerPubKey)
-
-    if (wagglePublicKey && signerPublicKey) {
-      yield* apply(socket, socket.emit, [
-        socketsActions.ADD_USER,
-        {
-          publicKey: signerPublicKey,
-          halfKey: wagglePublicKey
-        }
-      ])
-    }
-
-    yield* take('SET_PUBLIC_KEY')
-
-    wagglePublicKey = yield select(directMessagesSelectors.publicKey)
-    signerPublicKey = yield select(identitySelectors.signerPubKey)
-
-    if (wagglePublicKey && signerPublicKey) {
-      yield* apply(socket, socket.emit, [
-        socketsActions.ADD_USER,
-        {
-          publicKey: signerPublicKey,
-          halfKey: wagglePublicKey
-        }
-      ])
-    }
+  if (wagglePublicKey && signerPublicKey) {
+    yield* apply(socket, socket.emit, [
+      socketsActions.ADD_USER,
+      {
+        publicKey: signerPublicKey,
+        halfKey: wagglePublicKey
+      }
+    ])
   }
 }
 
@@ -292,7 +272,8 @@ export function* useIO(socket: Socket): Generator {
       subscribeForDirectMessageThread,
       socket
     ),
-    fork(addWaggleIdentity, socket),
+    takeEvery(waggleActions.setIsWaggleConnected.type, addWaggleIdentity, socket),
+    takeEvery(actionTypes.SET_PUBLIC_KEY, addWaggleIdentity, socket),
     takeEvery(waggleActions.setIsWaggleConnected.type, addCertificate),
     takeEvery(actionTypes.SET_REGISTRATION_STATUS, addCertificate)
   ])
