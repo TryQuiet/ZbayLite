@@ -3,6 +3,8 @@ import { put, select } from 'typed-redux-saga'
 import { publicChannelsActions, PublicChannelsActions } from './publicChannels.reducer'
 import { setPublicChannels } from '../../store/handlers/publicChannels'
 import contactsHandlers, { actions } from '../../store/handlers/contacts'
+import { displayDirectMessageNotification, displayMessageNotification } from '../../notifications'
+import usersSelectors from '../../store/selectors/users'
 
 import { findNewMessages } from '../../store/handlers/messages'
 
@@ -20,6 +22,31 @@ const all: any = effectsAll
 
 export function* loadMessage(action: PublicChannelsActions['loadMessage']): Generator {
   const message = action.payload.message
+  const myUser = yield* select(usersSelectors.myUser)
+
+  const messagesWithInfo = yield* select(contactsSelectors.messagesOfChannelWithUserInfo)
+
+  let foundMessage
+  if (message !== null) {
+    foundMessage = messagesWithInfo.find((item) => {
+      return item.message.id === message.id
+    })
+  }
+
+  if (foundMessage && myUser.nickname !== foundMessage.userInfo.username) { ///
+    console.log('siema', myUser.nickname, foundMessage.userInfo.username)
+    displayDirectMessageNotification({
+      username: foundMessage.userInfo.username,
+      message: message
+    })
+    console.log(' action.payload.channelAddress', action.payload.channelAddress)
+    yield put(
+      actions.appendNewMessages({
+        contactAddress: action.payload.channelAddress,
+        messagesIds: [message.id]
+      })
+    )
+  }
 
   yield put(
     publicChannelsActions.addMessage({
@@ -81,19 +108,33 @@ export function* loadAllMessages(
 
   const state = yield* select()
   const newMsgs = findNewMessages(action.payload.channelAddress, displayableMessages, state)
-  // const pubChannelsArray = Object.values(pubChannels)
-  // const contact = pubChannelsArray.filter(item => {
-  //   return item.name === username
-  // })
-  // const msg = newMsgs[newMsgs.length - 1]
-  // if (msg && msg?.sender?.username !== myUser.nickname) {
-  //   displayMessageNotification({
-  //     senderName: msg.sender.username,
-  //     message: msg.message,
-  //     channelName: username,
-  //     address: contact[0].address
-  //   })
-  // }
+
+  const messagesWithInfo = yield* select(contactsSelectors.allMessagesOfChannelsWithUserInfo)
+  const msg = newMsgs[newMsgs.length - 1]
+
+  let foundMessage
+  if (msg) {
+    foundMessage = messagesWithInfo.flat().find((item) => {
+      return item.message.id === msg.id
+    })
+  }
+
+  const myUser = yield* select(usersSelectors.myUser)
+  const pubChannels = yield* select(publicChannelsSelectors.publicChannels)
+
+  const pubChannelsArray = Object.values(pubChannels)
+  const contact = pubChannelsArray.filter(item => {
+    return item.name === username
+  })
+
+  if (foundMessage && foundMessage.userInfo.username !== myUser.nickname) {
+    displayMessageNotification({
+      senderName: foundMessage.userInfo.username,
+      message: msg.message,
+      channelName: username,
+      address: contact[0].address
+    })
+  }
 
   yield put(
     actions.appendNewMessages({

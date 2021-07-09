@@ -52,8 +52,6 @@ export function* creactOwnCertificate(
 
   const user = yield* call(createUserCsr, userData)
 
-  console.log('poszlo dalej')
-
   const userCertData = yield* call(createUserCert, certString, keyString, user.userCsr, notBeforeDate, notAfterDate)
 
   yield* put(certificatesActions.setOwnCertificate(userCertData.userCertString))

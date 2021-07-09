@@ -16,7 +16,7 @@ import channelSelectors from '../../store/selectors/channel'
 import identitySelectors from '../../store/selectors/identity'
 import directMessagesSelectors from '../../store/selectors/directMessages'
 import config from '../../config'
-import { messageType } from '../../../shared/static'
+import { messageType, actionTypes } from '../../../shared/static'
 import { ipcRenderer } from 'electron'
 import { PayloadAction } from '@reduxjs/toolkit'
 
@@ -28,6 +28,7 @@ import { signing } from '../../pkijs/tests/sign'
 import { loadPrivateKey } from '../../pkijs/generatePems/common'
 import configCrypto from '../../pkijs/generatePems/config'
 import { arrayBufferToString } from 'pvutils'
+import { actions as waggleActions } from '../../store/handlers/waggle'
 
 export const connect = async (): Promise<Socket> => {
   const socket = io(config.socket.address)
@@ -40,8 +41,9 @@ export const connect = async (): Promise<Socket> => {
 }
 
 export function subscribe(socket) {
-  return eventChannel<ActionFromMapping<PublicChannelsActions & DirectMessagesActions> |
-  ReturnType<typeof certificatesActions.responseGetCertificates>
+  return eventChannel<
+  | ActionFromMapping<PublicChannelsActions & DirectMessagesActions>
+  | ReturnType<typeof certificatesActions.responseGetCertificates>
   >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
@@ -148,9 +150,7 @@ export function* getAvailableUsers(socket: Socket): Generator {
   yield* apply(socket, socket.emit, [socketsActions.GET_AVAILABLE_USERS])
 }
 
-export function* subscribeForAllConversations(
-  socket: Socket
-): Generator {
+export function* subscribeForAllConversations(socket: Socket): Generator {
   const conversations = yield* select(directMessagesSelectors.conversations)
   const payload = Array.from(Object.keys(conversations))
   yield* apply(socket, socket.emit, [socketsActions.SUBSCRIBE_FOR_ALL_CONVERSATIONS, payload])
@@ -222,37 +222,26 @@ export function* responseGetCertificates(socket: Socket): Generator {
   yield* apply(socket, socket.emit, [socketsActions.RESPONSE_GET_CERTIFICATES])
 }
 
+export function* addCertificate(): Generator {
+  const hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
+  const nickname = yield* select(identitySelectors.nickName)
+  if (!hasCertyficate && nickname) {
+    yield* put(certificatesActions.creactOwnCertificate(nickname))
+  }
+}
+
 export function* addWaggleIdentity(socket: Socket): Generator {
-  while (true) {
-    yield* take('SET_IS_WAGGLE_CONNECTED')
+  const wagglePublicKey = yield select(directMessagesSelectors.publicKey)
+  const signerPublicKey = yield select(identitySelectors.signerPubKey)
 
-    let wagglePublicKey = yield select(directMessagesSelectors.publicKey)
-    let signerPublicKey = yield select(identitySelectors.signerPubKey)
-
-    if (wagglePublicKey && signerPublicKey) {
-      yield* apply(socket, socket.emit, [
-        socketsActions.ADD_USER,
-        {
-          publicKey: signerPublicKey,
-          halfKey: wagglePublicKey
-        }
-      ])
-    }
-
-    yield* take('SET_PUBLIC_KEY')
-
-    wagglePublicKey = yield select(directMessagesSelectors.publicKey)
-    signerPublicKey = yield select(identitySelectors.signerPubKey)
-
-    if (wagglePublicKey && signerPublicKey) {
-      yield* apply(socket, socket.emit, [
-        socketsActions.ADD_USER,
-        {
-          publicKey: signerPublicKey,
-          halfKey: wagglePublicKey
-        }
-      ])
-    }
+  if (wagglePublicKey && signerPublicKey) {
+    yield* apply(socket, socket.emit, [
+      socketsActions.ADD_USER,
+      {
+        publicKey: signerPublicKey,
+        halfKey: wagglePublicKey
+      }
+    ])
   }
 }
 
@@ -283,7 +272,10 @@ export function* useIO(socket: Socket): Generator {
       subscribeForDirectMessageThread,
       socket
     ),
-    fork(addWaggleIdentity, socket)
+    takeEvery(waggleActions.setIsWaggleConnected.type, addWaggleIdentity, socket),
+    takeEvery(actionTypes.SET_PUBLIC_KEY, addWaggleIdentity, socket),
+    takeEvery(waggleActions.setIsWaggleConnected.type, addCertificate),
+    takeEvery(actionTypes.SET_REGISTRATION_STATUS, addCertificate)
   ])
 }
 

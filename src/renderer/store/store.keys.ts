@@ -1,3 +1,4 @@
 export enum StoreKeys {
-  Certificates = 'certificates'
+  Certificates = 'certificates',
+  Identity = 'identity'
 }
