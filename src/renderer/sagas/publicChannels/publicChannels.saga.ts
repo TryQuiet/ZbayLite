@@ -106,8 +106,6 @@ export function* loadAllMessages(
     })
   )
 
-  const displayableMessagesFiltered = displayableMessages.filter(entry => entry !== undefined)
-
   const state = yield* select()
   const newMsgs = findNewMessages(action.payload.channelAddress, displayableMessages, state)
 
