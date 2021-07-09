@@ -4,7 +4,7 @@ import { combineReducers } from 'redux'
 
 import { dataFromRootPems } from '../../../shared/static'
 import { certificatesActions, certificatesReducer, CertificatesState } from './certificates.reducer'
-import { creactOwnCertificate, getDate } from './certificates.saga'
+import { createOwnCertificate, getDate } from './certificates.saga'
 import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
 import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
 import { StoreKeys } from '../store.keys'
@@ -36,7 +36,7 @@ describe('checkCertificatesSaga', () => {
   const mockedDate = '01.01.2021'
 
   test('creating own cert', async () => {
-    await expectSaga(creactOwnCertificate, { payload: 'name', type: certificatesActions.creactOwnCertificate.type })
+    await expectSaga(createOwnCertificate, { payload: 'name', type: certificatesActions.createOwnCertificate.type })
       .withReducer(combineReducers({ [StoreKeys.Certificates]: certificatesReducer }), {
         [StoreKeys.Certificates]: {
           ...new CertificatesState()

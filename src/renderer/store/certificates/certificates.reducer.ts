@@ -21,7 +21,7 @@ export const certificates = createSlice({
     setOwnCertKey: (state, action: PayloadAction<string>) => {
       state.ownCertificate.privateKey = action.payload
     },
-    creactOwnCertificate: (state, _action: PayloadAction<string>) => {
+    createOwnCertificate: (state, _action: PayloadAction<string>) => {
       return state
     },
     saveCertificate: (state, _action: PayloadAction<string>) => {

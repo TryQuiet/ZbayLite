@@ -16,8 +16,8 @@ export function* responseGetCertificates(
 
 export const getDate = (date?: string) => date ? new Date(date) : new Date()
 
-export function* creactOwnCertificate(
-  action: PayloadAction<ReturnType<typeof certificatesActions.creactOwnCertificate>['payload']>
+export function* createOwnCertificate(
+  action: PayloadAction<ReturnType<typeof certificatesActions.createOwnCertificate>['payload']>
 ): Generator {
   const certString = dataFromRootPems.certificate
   const keyString = dataFromRootPems.privKey
@@ -62,6 +62,6 @@ export function* creactOwnCertificate(
 export function* certificatesSaga(): Generator {
   yield* all([
     takeEvery(certificatesActions.responseGetCertificates.type, responseGetCertificates),
-    takeEvery(certificatesActions.creactOwnCertificate.type, creactOwnCertificate)
+    takeEvery(certificatesActions.createOwnCertificate.type, createOwnCertificate)
   ])
 }

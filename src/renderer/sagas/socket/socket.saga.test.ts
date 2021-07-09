@@ -37,7 +37,7 @@ describe('checkCertificatesSaga', () => {
         }),
         initialState
       )
-      .put(certificatesActions.creactOwnCertificate('nickname'))
+      .put(certificatesActions.createOwnCertificate('nickname'))
       .hasFinalState(initialState)
       .run()
   })

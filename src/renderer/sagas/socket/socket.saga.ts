@@ -226,7 +226,7 @@ export function* addCertificate(): Generator {
   const hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
   const nickname = yield* select(identitySelectors.nickName)
   if (!hasCertyficate && nickname) {
-    yield* put(certificatesActions.creactOwnCertificate(nickname))
+    yield* put(certificatesActions.createOwnCertificate(nickname))
   }
 }
 
