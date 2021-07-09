@@ -159,9 +159,6 @@ const createWindow = async () => {
     browserHeight = height
     browserWidth = width
   })
-  electronLocalshortcut.register(mainWindow, 'F11', () => {
-    mainWindow.webContents.send('toggleCoordinator', {})
-  })
   electronLocalshortcut.register(mainWindow, 'CommandOrControl+L', () => {
     mainWindow.webContents.send('openLogs')
   })
@@ -227,7 +224,7 @@ export const checkForUpdate = async win => {
   }
 }
 
-let client: Client
+// let client: Client
 let tor = null
 let waggleProcess: { connectionsManager: ConnectionsManager; dataServer: DataServer } = null
 app.on('ready', async () => {
@@ -289,14 +286,17 @@ app.on('ready', async () => {
   ipcMain.on('proceed-update', () => {
     autoUpdater.quitAndInstall()
   })
-  client = new Client()
-  ipcMain.on('rpcQuery', async (_event, arg) => {
-    const request = JSON.parse(arg)
-    const response = await client.postMessage(request.id, request.method, request.args)
-    if (mainWindow) {
-      mainWindow.webContents.send('rpcQuery', JSON.stringify({ id: request.id, data: response }))
-    }
-  })
+
+  // Temporary disable ZCASH
+
+  // client = new Client()
+  // ipcMain.on('rpcQuery', async (_event, arg) => {
+  //   const request = JSON.parse(arg)
+  //   const response = await client.postMessage(request.id, request.method, request.args)
+  //   if (mainWindow) {
+  //     mainWindow.webContents.send('rpcQuery', JSON.stringify({ id: request.id, data: response }))
+  //   }
+  // })
 })
 
 app.setAsDefaultProtocolClient('zbay')
