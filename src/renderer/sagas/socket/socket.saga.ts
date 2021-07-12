@@ -66,6 +66,14 @@ export function subscribe(socket) {
     socket.on(socketsActions.RESPONSE_GET_PRIVATE_CONVERSATIONS, payload => {
       emit(directMessagesActions.responseGetPrivateConversations(payload))
     })
+    socket.on(socketsActions.RESPONSE_GET_CERTIFICATE, payload => {
+      console.log('RESPONSE_GET_CERTIFICATE', payload)
+      emit(certificatesActions.setOwnCertificate(payload))
+    })
+    socket.on(socketsActions.CERTIFICATE_REGISTRATION_ERROR, payload => {
+      console.log('CERTIFICATE_REGISTRATION_ERROR', payload)
+      emit(certificatesActions.setRegistrationError(payload))
+    })
     socket.on(socketsActions.RESPONSE_GET_CERTIFICATES, payload => {
       emit(certificatesActions.responseGetCertificates(payload))
     })
@@ -218,14 +226,24 @@ export function* saveCertificate(
   yield* apply(socket, socket.emit, [socketsActions.SAVE_CERTIFICATE, action.payload])
 }
 
+export function* registerUserCertificate(
+  socket: Socket,
+  action: PayloadAction<ReturnType<typeof certificatesActions.registerUserCertificate>['payload']>
+): Generator {
+  console.log('registerUserCertificate socket.saga = =', action.payload)
+  yield* apply(socket, socket.emit, [socketsActions.REGISTER_USER_CERTIFICATE, action.payload.serviceAddress, action.payload.userCsr])
+}
+
 export function* responseGetCertificates(socket: Socket): Generator {
   yield* apply(socket, socket.emit, [socketsActions.RESPONSE_GET_CERTIFICATES])
 }
 
 export function* addCertificate(): Generator {
+  console.log('Calling addCertificate')
   const hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
   const nickname = yield* select(identitySelectors.nickName)
   if (!hasCertyficate && nickname) {
+    console.log('Calling createOwnCertificate')
     yield* put(certificatesActions.createOwnCertificate(nickname))
   }
 }
@@ -262,6 +280,7 @@ export function* useIO(socket: Socket): Generator {
     ),
     takeEvery(directMessagesActions.sendDirectMessage.type, sendDirectMessage, socket),
     takeEvery(certificatesActions.saveCertificate.type, saveCertificate, socket),
+    takeLeading(certificatesActions.registerUserCertificate.type, registerUserCertificate, socket),
     takeLeading(
       directMessagesActions.getPrivateConversations.type,
       getPrivateConversations,

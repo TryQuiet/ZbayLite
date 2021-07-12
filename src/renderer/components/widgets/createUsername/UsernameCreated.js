@@ -50,7 +50,9 @@ const handleModalClose = (handleClose, setFormSent) => {
   handleClose()
 }
 
-export const UsernameCreated = ({ classes, handleClose, setFormSent }) => (
+export const UsernameCreated = ({ classes, handleClose, setFormSent }) => {
+  setFormSent(false)
+  return (
   <Grid container justify={'center'}>
     <Grid
       container
@@ -72,7 +74,7 @@ export const UsernameCreated = ({ classes, handleClose, setFormSent }) => (
     >
       <Typography variant={'h4'}>You created a username</Typography>
     </Grid>
-    <Grid
+    {/* <Grid
       container
       item
       className={classes.descConatainer}
@@ -81,7 +83,7 @@ export const UsernameCreated = ({ classes, handleClose, setFormSent }) => (
       justify='center'
     >
       <Typography variant={'body2'}>Your username will be be registered shortly.</Typography>
-    </Grid>
+    </Grid> */}
     <Grid item xs={'auto'} className={classes.buttonContainer}>
       <Button
         variant='contained'
@@ -94,7 +96,7 @@ export const UsernameCreated = ({ classes, handleClose, setFormSent }) => (
       </Button>
     </Grid>
   </Grid>
-)
+)}
 
 UsernameCreated.propTypes = {
   classes: PropTypes.object.isRequired,

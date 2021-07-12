@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
-import * as R from 'ramda'
+import * as R from 'ramda' // change to lodash
 import classNames from 'classnames'
+import config from '../../config'
+import { io, Socket } from 'socket.io-client'
+import { Socket as socketsActions } from '../const/actionsTypes'
 
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -14,6 +17,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Modal from '../../ui/Modal'
 import UsernameCreated from './UsernameCreated'
 import electronStore from '../../../../shared/electronStore'
+import { certificatesActions } from '../../store/certificates/certificates.reducer'
 
 const styles = theme => ({
   root: {},
@@ -105,40 +109,69 @@ const styles = theme => ({
   }
 })
 
-Yup.addMethod(Yup.mixed, 'validateMessage', function (username, takenUsernames) {
-  return this.test('test', 'Sorry username already taken. please choose another', function (value) {
-    const isUsernameTaken = takenUsernames.includes(username)
-    return !isUsernameTaken
+Yup.addMethod(Yup.mixed, 'validateUsername', function (certificateRegistrationError) {
+  console.log('validating username')
+  console.log(certificateRegistrationError)
+  return this.test('test', 'Sorry username already taken. please choose another', value => {
+    return !certificateRegistrationError
   })
 })
 
-const getErrorsFromValidationError = validationError => {
-  const FIRST_ERROR = 0
-  return validationError.inner.reduce((errors, error) => {
-    return {
-      ...errors,
-      [error.path]: error.errors[FIRST_ERROR]
-    }
-  }, {})
-}
+// const getErrorsFromValidationError = validationError => {
+//   const FIRST_ERROR = 0
+//   return validationError.inner.reduce((errors, error) => {
+//     return {
+//       ...errors,
+//       [error.path]: error.errors[FIRST_ERROR]
+//     }
+//   }, {})
+// }
 
 const sanitize = x => (x ? x.replace(/[^a-zA-Z0-9]+$/g, '').toLowerCase() : undefined)
 
-const validate = ({ nickname }, takenUsernames) => {
-  const sanitizedValue = sanitize(nickname)
-  const values = {
-    nickname: sanitizedValue
-  }
-  const validationSchema = getValidationSchema(values, takenUsernames)
-  try {
-    validationSchema.validateSync(values, { abortEarly: false })
-    return {}
-  } catch (error) {
-    return getErrorsFromValidationError(error)
-  }
-}
+// const validate = ({ nickname }, takenUsernames) => {
+//   const sanitizedValue = sanitize(nickname)
+//   const values = {
+//     nickname: sanitizedValue
+//   }
+//   const validationSchema = getValidationSchema(values, takenUsernames)
+//   try {
+//     validationSchema.validateSync(values, { abortEarly: false })
+//     return {}
+//   } catch (error) {
+//     return getErrorsFromValidationError(error)
+//   }
+// }
 
-const getValidationSchema = (values, takenUsernames) => {
+// const validateNew = ({nickname}) => {
+//   console.log('Validate New')
+//   const socket = io(config.socket.address)
+//   const sanitizedValue = sanitize(nickname)
+//   return new Promise(resolve => {
+//     socket.once(socketsActions.CERTIFICATE_REGISTRATION_ERRORS, (payload, callback) => resolve(payload))
+//     socket.once(certificatesActions, resolve(['some error that came with response']))
+//     // socket.emit(certificatesActions.createOwnCertificate, {})
+//   })
+// }
+
+// const validate = (values, certificateRegistrationError, certificate) => {
+
+//   console.log('VALIDATING: ', certificateRegistrationError)
+//   console.log('VALIDATING:  ', certificate)
+//   return new Promise(resolve => {
+//     if (certificateRegistrationError || certificate) {
+//       if (certificateRegistrationError) {
+//         resolve(certificateRegistrationError)
+//       }
+//     }
+//   })
+//   registrationResponseReady.then(() => {
+//     console.log('asodhaksdhkjashdkhaskdh')
+//   })
+// }
+
+const getValidationSchema = (values) => {
+  console.log('VALIDATION SCHEMA')
   return Yup.object().shape({
     nickname: Yup.string()
       .min(3)
@@ -148,7 +181,7 @@ const getValidationSchema = (values, takenUsernames) => {
           'Your username cannot have any spaces or special characters, must be lowercase letters and numbers only',
         excludeEmptyString: true
       })
-      .validateMessage(values.nickname, takenUsernames)
+      // .validateUsername(certificateRegistrationError)
       .required('Required')
   })
 }
@@ -158,10 +191,12 @@ const CustomInputComponent = ({
   field,
   isTouched,
   form: { touched, errors, values },
+  certificateRegistrationError,
   ...props
 }) => {
   const { value, ...rest } = field
   const updatedValue = sanitize(value)
+  const errors = errors.nickname || certificateRegistrationError
   return (
     <TextField
       variant={'outlined'}
@@ -169,14 +204,14 @@ const CustomInputComponent = ({
       className={classNames({
         [classes.focus]: true,
         [classes.margin]: true,
-        [classes.error]: isTouched && errors.nickname
+        [classes.error]: isTouched && errors
       })}
       placeholder={'Enter a username'}
-      error={isTouched && errors.nickname}
-      helperText={isTouched && errors.nickname}
+      error={isTouched && errors}
+      helperText={isTouched && errors}
       value={updatedValue}
-      error={isTouched && errors.nickname }
-      helperText={isTouched && errors.nickname}
+      error={isTouched && errors }
+      helperText={isTouched && errors}
       defaultValue={values.nickname || ''}
       {...rest}
       {...props}
@@ -195,15 +230,25 @@ export const CreateUsernameModal = ({
   open,
   handleClose,
   initialValues,
-  handleSubmit
+  handleSubmit,
+  certificateRegistrationError,
+  certificate 
 }) => {
   const [isTouched, setTouched] = useState(false)
   const [formSent, setFormSent] = useState(false)
+  const responseReceived = Boolean(certificateRegistrationError || certificate)
+  // if (responseReceived)
+  console.log('responseReceived', responseReceived)
+  console.log('formSent', formSent)
+  if (certificate) {
+    console.log('cerrrrt', certificate)
+    electronStore.set('isNewUser', false)
+  }
   const isNewUser = electronStore.get('isNewUser')
   return (
     <Modal open={open} handleClose={handleClose} isCloseDisabled={isNewUser}>
       <Grid container className={classes.main} direction='column'>
-        {!formSent ? (
+        {isNewUser ? (
           <React.Fragment>
             <Grid className={classes.title} item>
               <Typography variant={'h3'}>Register a username</Typography>
@@ -211,7 +256,8 @@ export const CreateUsernameModal = ({
             <Formik
               onSubmit={values => submitForm(handleSubmit, values, setFormSent)}
               initialValues={initialValues}
-              validate={values => validate(values, initialValues.takenUsernames.takenUsernames)}>
+              validationSchema={values => getValidationSchema(values, certificateRegistrationError)}>
+              {/* // validate={values => validate(values, certificateRegistrationError, certificate)}> */}
               {() => {
                 return (
                   <Form className={classes.fullWidth}>
@@ -225,6 +271,7 @@ export const CreateUsernameModal = ({
                           classes={classes}
                           component={CustomInputComponent}
                           isTouched={isTouched}
+                          certificateRegistrationError={certificateRegistrationError}
                         />
                       </Grid>
                       <Grid item xs={12} className={classes.infoDiv}>
@@ -242,6 +289,7 @@ export const CreateUsernameModal = ({
                       spacing={2}>
                       <Grid item xs={'auto'} className={classes.buttonDiv}>
                         <Button
+                          disabled={formSent && !responseReceived}
                           variant='contained'
                           size='small'
                           color='primary'
@@ -275,7 +323,9 @@ CreateUsernameModal.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   enoughMoney: PropTypes.bool.isRequired,
   usernameFee: PropTypes.number.isRequired,
-  zecRate: PropTypes.object.isRequired
+  zecRate: PropTypes.object.isRequired,
+  certificateRegistrationError: PropTypes.string.isRequired,
+  certificate: PropTypes.object.isRequired
 }
 
 export default R.compose(React.memo, withStyles(styles))(CreateUsernameModal)
