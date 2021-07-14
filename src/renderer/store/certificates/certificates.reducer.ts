@@ -18,7 +18,6 @@ export const certificates = createSlice({
       state.usersCertificates = action.payload
     },
     setOwnCertificate: (state, action: PayloadAction<string>) => {
-      electronStore.set('isNewUser', false)
       state.ownCertificate.certificate = action.payload
     },
     setOwnCertKey: (state, action: PayloadAction<string>) => {

@@ -5,7 +5,10 @@ import { certificatesActions } from './certificates.reducer'
 import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
 import electronStore from '../../../shared/electronStore'
 import { takeLeading } from 'redux-saga/effects'
+import { actions as identityActions } from '../handlers/identity'
 import { registrationServiceAddress } from '../../../shared/static'
+import notificationsHandlers from '../../store/handlers/notifications'
+import { successNotification } from '../handlers/utils'
 
 export function* responseGetCertificates(
   action: PayloadAction<ReturnType<typeof certificatesActions.responseGetCertificates>['payload']>
@@ -13,6 +16,26 @@ export function* responseGetCertificates(
   const certificates = action.payload
   console.log('RESPONSE GET CERTIFICATES', certificates)
   yield* put(certificatesActions.setUsersCertificates(certificates.certificates))
+}
+
+export function* responseGetCertificate(
+  action: PayloadAction<ReturnType<typeof certificatesActions.setOwnCertificate>['payload']>
+): Generator {
+  console.log('Response get cert saga, setting registration status')
+  electronStore.set('isNewUser', false)
+  yield put(
+    identityActions.setRegistraionStatus({
+      nickname: '',
+      status: 'SUCCESS'
+    })
+  )
+  yield put(
+    notificationsHandlers.actions.enqueueSnackbar(
+      successNotification({
+        message: 'Username registered.'
+      })
+    )
+  )
 }
 
 export function* createOwnCertificate(
@@ -60,5 +83,6 @@ export function* certificatesSaga(): Generator {
   yield* all([
     takeEvery(certificatesActions.responseGetCertificates.type, responseGetCertificates),
     takeEvery(certificatesActions.createOwnCertificate.type, createOwnCertificate),
+    takeEvery(certificatesActions.setOwnCertificate.type, responseGetCertificate)
   ])
 }
