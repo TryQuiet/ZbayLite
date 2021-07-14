@@ -2,9 +2,8 @@ import { call, apply, all, takeEvery, put } from 'typed-redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { certificatesActions } from './certificates.reducer'
-import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
+import { createUserCsr } from '@zbayapp/identity'
 import electronStore from '../../../shared/electronStore'
-import { takeLeading } from 'redux-saga/effects'
 import { actions as identityActions } from '../handlers/identity'
 import { registrationServiceAddress } from '../../../shared/static'
 import notificationsHandlers from '../../store/handlers/notifications'
@@ -14,7 +13,6 @@ export function* responseGetCertificates(
   action: PayloadAction<ReturnType<typeof certificatesActions.responseGetCertificates>['payload']>
 ): Generator {
   const certificates = action.payload
-  console.log('RESPONSE GET CERTIFICATES', certificates)
   yield* put(certificatesActions.setUsersCertificates(certificates.certificates))
 }
 

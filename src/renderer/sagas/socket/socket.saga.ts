@@ -23,10 +23,8 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { encodeMessage } from '../../cryptography/cryptography'
 import { certificatesActions } from '../../store/certificates/certificates.reducer'
 import certificatesSelectors from '../../store/certificates/certificates.selector'
-import { extractPubKeyString } from '../../pkijs/tests/extractPubKey'
-import { signing } from '../../pkijs/tests/sign'
-import { loadPrivateKey } from '../../pkijs/generatePems/common'
-import configCrypto from '../../pkijs/generatePems/config'
+import { extractPubKeyString, sign, loadPrivateKey } from '@zbayapp/identity'
+import configCrypto from '@zbayapp/identity/src/config'
 import { arrayBufferToString } from 'pvutils'
 import { actions as waggleActions } from '../../store/handlers/waggle'
 
@@ -100,14 +98,14 @@ export function* sendMessage(socket: Socket): Generator {
   const ownPubKey = yield* call(extractPubKeyString, ownCertificate)
   const privKey = yield* select(certificatesSelectors.ownPrivKey)
   const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg, configCrypto.hashAlg)
-  const sign = yield* call(signing, messageToSend, keyObject)
+  const signed = yield* call(sign, messageToSend, keyObject)
 
   const preparedMessage = {
     id: Math.random().toString(36).substr(2, 9),
     type: messageType.BASIC,
     message: messageToSend,
     createdAt: DateTime.utc().toSeconds(),
-    signature: arrayBufferToString(sign),
+    signature: arrayBufferToString(signed),
     pubKey: ownPubKey,
     channelId: address
   }

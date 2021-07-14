@@ -1,12 +1,9 @@
 import { expectSaga } from 'redux-saga-test-plan'
 import * as matchers from 'redux-saga-test-plan/matchers'
 import { combineReducers } from 'redux'
-
-import { dataFromRootPems } from '../../../shared/static'
 import { certificatesActions, certificatesReducer, CertificatesState } from './certificates.reducer'
-import { createOwnCertificate, getDate } from './certificates.saga'
-import { createUserCsr } from '../../pkijs/generatePems/requestCertificate'
-import { createUserCert } from '../../pkijs/generatePems/generateUserCertificate'
+import { createOwnCertificate } from './certificates.saga'
+import { createUserCsr } from '@zbayapp/identity'
 import { StoreKeys } from '../store.keys'
 import electronStore from '../../../shared/electronStore'
 import { Store } from '../reducers'
@@ -51,10 +48,10 @@ describe('checkCertificatesSaga', () => {
           matchers.apply(electronStore, electronStore.get, ['peerId']),
           'peerId'
         ],
-        [
-          matchers.call(getDate),
-          mockedDate
-        ],
+        // [
+        //   matchers.call(getDate),
+        //   mockedDate
+        // ],
         [
           matchers.call(createUserCsr, {
             commonName: hiddenServices.libp2pHiddenService.onionAddress,
@@ -63,13 +60,13 @@ describe('checkCertificatesSaga', () => {
           }),
           user
         ],
-        [
-          matchers.call(createUserCert, dataFromRootPems.certificate, dataFromRootPems.privKey, user.userCsr, mockedDate, new Date('1/1/2031')),
-          {
-            userCertObject: {},
-            userCertString: 'cert'
-          }
-        ]
+        // [
+        //   matchers.call(createUserCert, dataFromRootPems.certificate, dataFromRootPems.privKey, user.userCsr, mockedDate, new Date('1/1/2031')),
+        //   {
+        //     userCertObject: {},
+        //     userCertString: 'cert'
+        //   }
+        // ]
       ])
       .put(certificatesActions.setOwnCertificate('cert'))
       .put(certificatesActions.setOwnCertKey('certKey'))

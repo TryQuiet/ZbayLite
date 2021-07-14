@@ -108,7 +108,6 @@ const styles = theme => ({
 const sanitize = x => (x ? x.replace(/[^a-zA-Z0-9]+$/g, '').toLowerCase() : undefined)
 
 const getValidationSchema = (values) => {
-  console.log('VALIDATION SCHEMA')
   return Yup.object().shape({
     nickname: Yup.string()
       .min(3)
@@ -168,13 +167,11 @@ export const CreateUsernameModal = ({
   initialValues,
   handleSubmit,
   certificateRegistrationError,
-  certificate 
+  certificate
 }) => {
   const [isTouched, setTouched] = useState(false)
   const [formSent, setFormSent] = useState(false)
   const responseReceived = Boolean(certificateRegistrationError || certificate)
-  console.log('responseReceived', responseReceived)
-  console.log('formSent', formSent)
   const isNewUser = electronStore.get('isNewUser')
   return (
     <Modal open={open} handleClose={handleClose} isCloseDisabled={isNewUser}>
