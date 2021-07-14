@@ -11,8 +11,6 @@ import certificatesSelector from '../../../store/certificates/certificates.selec
 
 import CreateUsernameModal from '../../../components/widgets/createUsername/CreateUsernameModal'
 import { withModal } from '../../../store/handlers/modals'
-import electronStore from '../../../../shared/electronStore'
-import { select } from 'redux-saga/effects'
 export const mapStateToProps = state => {
   return {
     initialValues: {

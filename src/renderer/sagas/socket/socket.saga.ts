@@ -230,7 +230,6 @@ export function* registerUserCertificate(
   socket: Socket,
   action: PayloadAction<ReturnType<typeof certificatesActions.registerUserCertificate>['payload']>
 ): Generator {
-  console.log('registerUserCertificate socket.saga = =', action.payload)
   yield* apply(socket, socket.emit, [socketsActions.REGISTER_USER_CERTIFICATE, action.payload.serviceAddress, action.payload.userCsr])
 }
 
@@ -239,7 +238,6 @@ export function* responseGetCertificates(socket: Socket): Generator {
 }
 
 export function* addCertificate(): Generator {
-  console.log('Calling addCertificate')
   const hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
   const nickname = yield* select(identitySelectors.nickName)
   if (!hasCertyficate && nickname) {

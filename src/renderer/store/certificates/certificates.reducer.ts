@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import electronStore from '../../../shared/electronStore'
 
 export class CertificatesState {
   usersCertificates: string[] = ['']
@@ -17,15 +18,16 @@ export const certificates = createSlice({
       state.usersCertificates = action.payload
     },
     setOwnCertificate: (state, action: PayloadAction<string>) => {
-      console.log('Setting own cert!!', action.payload)
+      electronStore.set('isNewUser', false)
       state.ownCertificate.certificate = action.payload
     },
     setOwnCertKey: (state, action: PayloadAction<string>) => {
       state.ownCertificate.privateKey = action.payload
     },
     setRegistrationError: (state, action: PayloadAction<string>) => {
-      console.log('Setting registration error!!', action.payload)
       state.registrationError = action.payload
+      state.ownCertificate.certificate = ''
+      state.ownCertificate.privateKey = ''
     },
     createOwnCertificate: (state, _action: PayloadAction<string>) => {
       return state
@@ -33,7 +35,7 @@ export const certificates = createSlice({
     registerUserCertificate: (state, _action: PayloadAction<{serviceAddress: string, userCsr: string}>) => {
       state.registrationError = null
       state.ownCertificate.certificate = ''
-      console.log('registerUserCertificate action')
+      state.ownCertificate.privateKey = ''
       return state
     },
     saveCertificate: (state, _action: PayloadAction<string>) => {

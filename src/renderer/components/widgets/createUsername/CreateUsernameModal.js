@@ -4,9 +4,6 @@ import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import * as R from 'ramda' // change to lodash
 import classNames from 'classnames'
-import config from '../../config'
-import { io, Socket } from 'socket.io-client'
-import { Socket as socketsActions } from '../const/actionsTypes'
 
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
@@ -17,7 +14,6 @@ import { withStyles } from '@material-ui/core/styles'
 import Modal from '../../ui/Modal'
 import UsernameCreated from './UsernameCreated'
 import electronStore from '../../../../shared/electronStore'
-import { certificatesActions } from '../../store/certificates/certificates.reducer'
 
 const styles = theme => ({
   root: {},
@@ -109,66 +105,7 @@ const styles = theme => ({
   }
 })
 
-Yup.addMethod(Yup.mixed, 'validateUsername', function (certificateRegistrationError) {
-  console.log('validating username')
-  console.log(certificateRegistrationError)
-  return this.test('test', 'Sorry username already taken. please choose another', value => {
-    return !certificateRegistrationError
-  })
-})
-
-// const getErrorsFromValidationError = validationError => {
-//   const FIRST_ERROR = 0
-//   return validationError.inner.reduce((errors, error) => {
-//     return {
-//       ...errors,
-//       [error.path]: error.errors[FIRST_ERROR]
-//     }
-//   }, {})
-// }
-
 const sanitize = x => (x ? x.replace(/[^a-zA-Z0-9]+$/g, '').toLowerCase() : undefined)
-
-// const validate = ({ nickname }, takenUsernames) => {
-//   const sanitizedValue = sanitize(nickname)
-//   const values = {
-//     nickname: sanitizedValue
-//   }
-//   const validationSchema = getValidationSchema(values, takenUsernames)
-//   try {
-//     validationSchema.validateSync(values, { abortEarly: false })
-//     return {}
-//   } catch (error) {
-//     return getErrorsFromValidationError(error)
-//   }
-// }
-
-// const validateNew = ({nickname}) => {
-//   console.log('Validate New')
-//   const socket = io(config.socket.address)
-//   const sanitizedValue = sanitize(nickname)
-//   return new Promise(resolve => {
-//     socket.once(socketsActions.CERTIFICATE_REGISTRATION_ERRORS, (payload, callback) => resolve(payload))
-//     socket.once(certificatesActions, resolve(['some error that came with response']))
-//     // socket.emit(certificatesActions.createOwnCertificate, {})
-//   })
-// }
-
-// const validate = (values, certificateRegistrationError, certificate) => {
-
-//   console.log('VALIDATING: ', certificateRegistrationError)
-//   console.log('VALIDATING:  ', certificate)
-//   return new Promise(resolve => {
-//     if (certificateRegistrationError || certificate) {
-//       if (certificateRegistrationError) {
-//         resolve(certificateRegistrationError)
-//       }
-//     }
-//   })
-//   registrationResponseReady.then(() => {
-//     console.log('asodhaksdhkjashdkhaskdh')
-//   })
-// }
 
 const getValidationSchema = (values) => {
   console.log('VALIDATION SCHEMA')
@@ -181,7 +118,6 @@ const getValidationSchema = (values) => {
           'Your username cannot have any spaces or special characters, must be lowercase letters and numbers only',
         excludeEmptyString: true
       })
-      // .validateUsername(certificateRegistrationError)
       .required('Required')
   })
 }
@@ -237,13 +173,8 @@ export const CreateUsernameModal = ({
   const [isTouched, setTouched] = useState(false)
   const [formSent, setFormSent] = useState(false)
   const responseReceived = Boolean(certificateRegistrationError || certificate)
-  // if (responseReceived)
   console.log('responseReceived', responseReceived)
   console.log('formSent', formSent)
-  if (certificate) {
-    console.log('cerrrrt', certificate)
-    electronStore.set('isNewUser', false)
-  }
   const isNewUser = electronStore.get('isNewUser')
   return (
     <Modal open={open} handleClose={handleClose} isCloseDisabled={isNewUser}>
@@ -257,7 +188,6 @@ export const CreateUsernameModal = ({
               onSubmit={values => submitForm(handleSubmit, values, setFormSent)}
               initialValues={initialValues}
               validationSchema={values => getValidationSchema(values, certificateRegistrationError)}>
-              {/* // validate={values => validate(values, certificateRegistrationError, certificate)}> */}
               {() => {
                 return (
                   <Form className={classes.fullWidth}>
