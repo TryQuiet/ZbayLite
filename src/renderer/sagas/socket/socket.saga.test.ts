@@ -92,10 +92,8 @@ describe('checkCertificatesSaga', () => {
 
   test('send public channel message', async () => {
     const socket = { emit: jest.fn(), on: jest.fn() } as unknown as Socket
-    const keyObject = await loadPrivateKey('MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZ3WYzRL626KcbhJlYzasix819MaxrlKChJ4seDy3+UKgCgYIKoZIzj0DAQehRANCAATow6wHM+wpCk1t819J9PhMwXbWcW5vYvT1wb1T+l/NmWcjJ2bVLeFTQxzOLHMQeaXzpad7nBY0tMbfzXCiZLvI', configCrypto.signAlg, configCrypto.hashAlg)
     const randomId = 'randomId'
     const createdAt = 10000
-    const signature = 'signature'
     const address = 'address'
     const publicKey = 'publicKey'
     const signatureString = 'signatureString'
@@ -139,14 +137,6 @@ describe('checkCertificatesSaga', () => {
         [
           matchers.call(extractPubKeyString, 'MIIBmzCCAUECBgF6gbgdQjAKBggqhkjOPQQDAjASMRAwDgYDVQQDEwdaYmF5IENBMB4XDTIxMDcwNzE2MDYwNFoXDTMwMTIzMTIzMDAwMFowfTF7MCIGCisGAQQBg4wbAgETFGRldjk5ZGFtaWFudGVzdHl5dWVyMD8GA1UEAxM4Y3FpMjVmb3VweGFqdzd2aTdzeTUyaGo1d2R3cXZmcXpiajVzenFwczZ6NmJndWMzN2ZidjJpaWQwFAYJKwYBAgEPAwEBEwd1bmtub3duMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE6MOsBzPsKQpNbfNfSfT4TMF21nFub2L09cG9U/pfzZlnIydm1S3hU0MczixzEHml86Wne5wWNLTG381womS7yKMdMBswDAYDVR0TBAUwAwIBAzALBgNVHQ8EBAMCAAYwCgYIKoZIzj0EAwIDSAAwRQIhAMD+OU2mSakkuE6pU6gPr12eRAFGUK7usfyKmTFbCLH/AiB8IRuvOuNcjj87Aoz9kDcbe7CHx+ogean9aFFmmDNx/A=='),
           publicKey
-        ],
-        [
-          matchers.call(loadPrivateKey, 'MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZ3WYzRL626KcbhJlYzasix819MaxrlKChJ4seDy3+UKgCgYIKoZIzj0DAQehRANCAATow6wHM+wpCk1t819J9PhMwXbWcW5vYvT1wb1T+l/NmWcjJ2bVLeFTQxzOLHMQeaXzpad7nBY0tMbfzXCiZLvI', configCrypto.signAlg, configCrypto.hashAlg),
-          keyObject
-        ],
-        [
-          matchers.call(signing, message, keyObject),
-          signature
         ],
         [
           matchers.call(createRandomId),
@@ -198,13 +188,9 @@ describe('checkCertificatesSaga', () => {
 
   test('send direct message when conversation egsist', async () => {
     const socket = { emit: jest.fn(), on: jest.fn() } as unknown as Socket
-    const keyObject = await loadPrivateKey('MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZ3WYzRL626KcbhJlYzasix819MaxrlKChJ4seDy3+UKgCgYIKoZIzj0DAQehRANCAATow6wHM+wpCk1t819J9PhMwXbWcW5vYvT1wb1T+l/NmWcjJ2bVLeFTQxzOLHMQeaXzpad7nBY0tMbfzXCiZLvI', configCrypto.signAlg, configCrypto.hashAlg)
     const randomId = 'randomId'
     const createdAt = 10000
-    const signature = 'signature'
     const address = 'address'
-    const publicKey = 'publicKey'
-    const signatureString = 'signatureString'
     const message = '' as IMessage
     const encryptedMessage = 'encryptedMessage'
     const conversationId = 'conversationId'
@@ -284,28 +270,12 @@ describe('checkCertificatesSaga', () => {
           }]
         ],
         [
-          matchers.call(extractPubKeyString, 'MIIBmzCCAUECBgF6gbgdQjAKBggqhkjOPQQDAjASMRAwDgYDVQQDEwdaYmF5IENBMB4XDTIxMDcwNzE2MDYwNFoXDTMwMTIzMTIzMDAwMFowfTF7MCIGCisGAQQBg4wbAgETFGRldjk5ZGFtaWFudGVzdHl5dWVyMD8GA1UEAxM4Y3FpMjVmb3VweGFqdzd2aTdzeTUyaGo1d2R3cXZmcXpiajVzenFwczZ6NmJndWMzN2ZidjJpaWQwFAYJKwYBAgEPAwEBEwd1bmtub3duMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE6MOsBzPsKQpNbfNfSfT4TMF21nFub2L09cG9U/pfzZlnIydm1S3hU0MczixzEHml86Wne5wWNLTG381womS7yKMdMBswDAYDVR0TBAUwAwIBAzALBgNVHQ8EBAMCAAYwCgYIKoZIzj0EAwIDSAAwRQIhAMD+OU2mSakkuE6pU6gPr12eRAFGUK7usfyKmTFbCLH/AiB8IRuvOuNcjj87Aoz9kDcbe7CHx+ogean9aFFmmDNx/A=='),
-          publicKey
-        ],
-        [
-          matchers.call(loadPrivateKey, 'MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZ3WYzRL626KcbhJlYzasix819MaxrlKChJ4seDy3+UKgCgYIKoZIzj0DAQehRANCAATow6wHM+wpCk1t819J9PhMwXbWcW5vYvT1wb1T+l/NmWcjJ2bVLeFTQxzOLHMQeaXzpad7nBY0tMbfzXCiZLvI', configCrypto.signAlg, configCrypto.hashAlg),
-          keyObject
-        ],
-        [
-          matchers.call(signing, message, keyObject),
-          signature
-        ],
-        [
           matchers.call(createRandomId),
           randomId
         ],
         [
           matchers.call(getCreatedAtTime),
           createdAt
-        ],
-        [
-          matchers.call.fn(signArrayBufferToString),
-          signatureString
         ],
         [
           matchers.call.fn(encryptMessage),
@@ -330,13 +300,8 @@ describe('checkCertificatesSaga', () => {
 
   test('send direct message with initialize conversation', async () => {
     const socket = { emit: jest.fn(), on: jest.fn() } as unknown as Socket
-    const keyObject = await loadPrivateKey('MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZ3WYzRL626KcbhJlYzasix819MaxrlKChJ4seDy3+UKgCgYIKoZIzj0DAQehRANCAATow6wHM+wpCk1t819J9PhMwXbWcW5vYvT1wb1T+l/NmWcjJ2bVLeFTQxzOLHMQeaXzpad7nBY0tMbfzXCiZLvI', configCrypto.signAlg, configCrypto.hashAlg)
     const randomId = 'randomId'
-    const createdAt = 10000
-    const signature = 'signature'
     const address = 'address'
-    const publicKey = 'publicKey'
-    const signatureString = 'signatureString'
     const message = '' as IMessage
     const encryptedMessage = 'encryptedMessage'
     const encryptedPhrase = 'encryptedPhrase'
@@ -434,30 +399,6 @@ describe('checkCertificatesSaga', () => {
         [
           matchers.call.fn(getPublicKey),
           conversationId
-        ],
-        [
-          matchers.call(extractPubKeyString, 'MIIBmzCCAUECBgF6gbgdQjAKBggqhkjOPQQDAjASMRAwDgYDVQQDEwdaYmF5IENBMB4XDTIxMDcwNzE2MDYwNFoXDTMwMTIzMTIzMDAwMFowfTF7MCIGCisGAQQBg4wbAgETFGRldjk5ZGFtaWFudGVzdHl5dWVyMD8GA1UEAxM4Y3FpMjVmb3VweGFqdzd2aTdzeTUyaGo1d2R3cXZmcXpiajVzenFwczZ6NmJndWMzN2ZidjJpaWQwFAYJKwYBAgEPAwEBEwd1bmtub3duMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE6MOsBzPsKQpNbfNfSfT4TMF21nFub2L09cG9U/pfzZlnIydm1S3hU0MczixzEHml86Wne5wWNLTG381womS7yKMdMBswDAYDVR0TBAUwAwIBAzALBgNVHQ8EBAMCAAYwCgYIKoZIzj0EAwIDSAAwRQIhAMD+OU2mSakkuE6pU6gPr12eRAFGUK7usfyKmTFbCLH/AiB8IRuvOuNcjj87Aoz9kDcbe7CHx+ogean9aFFmmDNx/A=='),
-          publicKey
-        ],
-        [
-          matchers.call(loadPrivateKey, 'MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgZ3WYzRL626KcbhJlYzasix819MaxrlKChJ4seDy3+UKgCgYIKoZIzj0DAQehRANCAATow6wHM+wpCk1t819J9PhMwXbWcW5vYvT1wb1T+l/NmWcjJ2bVLeFTQxzOLHMQeaXzpad7nBY0tMbfzXCiZLvI', configCrypto.signAlg, configCrypto.hashAlg),
-          keyObject
-        ],
-        [
-          matchers.call(signing, message, keyObject),
-          signature
-        ],
-        [
-          matchers.call(createRandomId),
-          randomId
-        ],
-        [
-          matchers.call(getCreatedAtTime),
-          createdAt
-        ],
-        [
-          matchers.call.fn(signArrayBufferToString),
-          signatureString
         ],
         [
           matchers.call(encryptMessage, 'sharedSecret', 'no panicpubKey'),
