@@ -20,7 +20,7 @@ import { messageType, actionTypes } from '../../../shared/static'
 import { ipcRenderer } from 'electron'
 import { PayloadAction } from '@reduxjs/toolkit'
 
-import { encodeMessage } from '../../cryptography/cryptography'
+import { encodeMessage, constants } from '../../cryptography/cryptography'
 import { certificatesActions } from '../../store/certificates/certificates.reducer'
 import certificatesSelectors from '../../store/certificates/certificates.selector'
 import { extractPubKeyString } from '../../pkijs/tests/extractPubKey'
@@ -29,6 +29,8 @@ import { loadPrivateKey } from '../../pkijs/generatePems/common'
 import configCrypto from '../../pkijs/generatePems/config'
 import { arrayBufferToString } from 'pvutils'
 import { actions as waggleActions } from '../../store/handlers/waggle'
+import directMessagesHandlers, { IConversation } from '../../store/handlers/directMessages'
+import crypto from 'crypto'
 
 export const connect = async (): Promise<Socket> => {
   const socket = io(config.socket.address)
@@ -84,6 +86,18 @@ export function* handleActions(socket: Socket): Generator {
   }
 }
 
+export const createRandomId = (): string => {
+  return Math.random().toString(36).substr(2, 9)
+}
+
+export const getCreatedAtTime = (): number => {
+  return DateTime.utc().toSeconds()
+}
+
+export const signArrayBufferToString = (sign: ArrayBuffer) => {
+  return arrayBufferToString(sign)
+}
+
 export function* sendMessage(socket: Socket): Generator {
   const { address } = yield* select(channelSelectors.channel)
   const messageToSend = yield* select(channelSelectors.message)
@@ -94,12 +108,16 @@ export function* sendMessage(socket: Socket): Generator {
   const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg, configCrypto.hashAlg)
   const sign = yield* call(signing, messageToSend, keyObject)
 
+  const randomId = yield* call(createRandomId)
+  const createdAt = yield* call(getCreatedAtTime)
+  const signString = yield* call(signArrayBufferToString, sign)
+
   const preparedMessage = {
-    id: Math.random().toString(36).substr(2, 9),
+    id: randomId,
     type: messageType.BASIC,
     message: messageToSend,
-    createdAt: DateTime.utc().toSeconds(),
-    signature: arrayBufferToString(sign),
+    createdAt: createdAt,
+    signature: signString as string,
     pubKey: ownPubKey,
     channelId: address
   }
@@ -167,14 +185,78 @@ export function* getPrivateConversations(socket: Socket): Generator {
   yield* apply(socket, socket.emit, [socketsActions.GET_PRIVATE_CONVERSATIONS])
 }
 
-export function* sendDirectMessage(socket: Socket): Generator {
-  const { id } = yield* select(channelSelectors.channel)
-  const conversations = yield* select(directMessagesSelectors.conversations)
-  const conv = Array.from(Object.values(conversations)).filter(item => {
+export const converstionFilter = (conversations: {
+  [key: string]: IConversation
+}, id: string) => {
+  return Array.from(Object.values(conversations)).filter(item => {
     return item.contactPublicKey === id
   })
-  const conversationId = conv[0].conversationId
-  const sharedSecret = conv[0].sharedSecret
+}
+
+export const encryptMessage = (sharedSecret, stringifiedMessage) => {
+  return encodeMessage(sharedSecret, stringifiedMessage)
+}
+
+export const computeSecrets = (dh, halfKey) => {
+  return dh.computeSecret(halfKey, 'hex').toString('hex')
+}
+
+export const getPublicKey = (dh): string => {
+  return dh.getPublicKey('hex')
+}
+
+export const parseMessage = (preparedMessage) => {
+  return JSON.stringify(preparedMessage)
+}
+
+export function* sendDirectMessage(socket: Socket): Generator {
+  const { id } = yield* select(channelSelectors.channel)
+  let conversations = yield* select(directMessagesSelectors.conversations)
+
+  let conv = yield* call(converstionFilter, conversations, id)
+  let conversationId
+  let sharedSecret
+
+  if (!conv[0]) {
+    const contactChannel = yield* select(channelSelectors.channel)
+    const contactPublicKey = contactChannel.id
+
+    const myPublicKey = yield* select(identitySelectors.signerPubKey)
+    const contactPubKey = yield* select(directMessagesSelectors.user(contactPublicKey))
+    const halfKey = contactPubKey.halfKey
+
+    const dh = crypto.createDiffieHellman(constants.prime, 'hex', constants.generator, 'hex')
+    dh.generateKeys()
+
+    const pubKey = yield* call(getPublicKey, dh)
+
+    sharedSecret = yield* call(computeSecrets, dh, halfKey)
+
+    const encryptedPhrase = yield* call(encryptMessage, sharedSecret, `no panic${myPublicKey}`)
+
+    yield* put(
+      directMessagesHandlers.actions.addConversation({
+        sharedSecret,
+        contactPublicKey: contactPublicKey,
+        conversationId: pubKey
+      })
+    )
+
+    yield* put(
+      directMessagesActions.initializeConversation({
+        address: pubKey,
+        encryptedPhrase
+      })
+    )
+
+    conversations = yield* select(directMessagesSelectors.conversations)
+    conv = yield* call(converstionFilter, conversations, id)
+    conversationId = pubKey
+  } else {
+    conversationId = conv[0].conversationId
+    sharedSecret = conv[0].sharedSecret
+  }
+
   const messageToSend = yield* select(channelSelectors.message)
 
   const ownCertificate = yield* select(certificatesSelectors.ownCertificate)
@@ -193,8 +275,10 @@ export function* sendDirectMessage(socket: Socket): Generator {
     channelId: conversationId
   }
 
-  const stringifiedMessage = JSON.stringify(preparedMessage)
-  const encryptedMessage = encodeMessage(sharedSecret, stringifiedMessage)
+  const stringifiedMessage = yield* call(parseMessage, preparedMessage)
+
+  const encryptedMessage = yield* call(encryptMessage, sharedSecret, stringifiedMessage)
+
   yield* apply(socket, socket.emit, [
     socketsActions.SEND_DIRECT_MESSAGE,
     {

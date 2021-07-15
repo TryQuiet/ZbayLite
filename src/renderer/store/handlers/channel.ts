@@ -8,16 +8,13 @@ import history from '../../../shared/history'
 import messagesHandlers from './messages'
 import channelSelectors from '../selectors/channel'
 import contactsSelectors from '../selectors/contacts'
-import directMessagesSelectors from '../selectors/directMessages'
-import directMessagesHandlers from '../handlers/directMessages'
+
 import { actionTypes } from '../../../shared/static'
 import contactsHandlers from './contacts'
 import electronStore from '../../../shared/electronStore'
 
 import { ActionsType, PayloadType } from './types'
 import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
-import { directMessagesActions } from '../../sagas/directMessages/directMessages.reducer'
-import { IConversation } from './directMessages'
 
 // TODO: to remove, but must be replaced in all the tests
 export const ChannelState = {
@@ -134,34 +131,6 @@ const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
   history.push(`/main/channel/${targetChannel.address}`)
 }
 
-const sendOnEnter = (_event, resetTab?: (arg: number) => void) => async (dispatch, getState) => {
-  if (resetTab) {
-    resetTab(0)
-  }
-  const isPublicChannel = channelSelectors.isPublicChannel(getState())
-  const isDirectMessageChannel = channelSelectors.isDirectMessage(getState())
-  console.log(`isPublicChannel? ${isPublicChannel}`)
-  if (isPublicChannel) {
-    dispatch(publicChannelsActions.sendMessage())
-    return
-  }
-  console.log(`isDM? ${isDirectMessageChannel}`)
-  if (isDirectMessageChannel) {
-    const id = channelSelectors.id(getState())
-    const conversations: { [key: string]: IConversation } = directMessagesSelectors.conversations(getState())
-
-    const conversation = Array.from(Object.values(conversations)).filter(conv => {
-      return conv.contactPublicKey === id
-    })
-
-    if (!conversation[0]) {
-      console.log('INITIALIZING XONVE')
-      await dispatch(directMessagesHandlers.epics.initializeConversation())
-    }
-    dispatch(directMessagesActions.sendDirectMessage())
-  }
-}
-
 const clearNewMessages = () => async (dispatch, getState) => {
   const channelId = channelSelectors.channelId(getState())
   dispatch(messagesHandlers.actions.cleanNewMessages({ channelId }))
@@ -221,7 +190,6 @@ export const reducer = handleActions<Channel, PayloadType<ChannelActions>>(
 )
 
 export const epics = {
-  sendOnEnter,
   loadChannel,
   clearNewMessages,
   linkChannelRedirect

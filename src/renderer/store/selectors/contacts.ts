@@ -261,6 +261,8 @@ export const messagesOfChannelWithUserInfo = createSelector(
           if (userInfo.onionAddress !== null) {
             return ({ message, userInfo: userInfo })
           }
+        } else if (message.pubKey === 'holmesMessagesFromStart') {
+          return ({ message, userInfo: { username: 'holmes', onionAddress: '', peerId: '' } })
         }
       }
     ).filter((item) => item !== undefined)

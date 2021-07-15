@@ -8,6 +8,7 @@ import mentionsHandlers from '../../../store/handlers/mentions'
 import channelSelectors from '../../../store/selectors/channel'
 import usersSelectors from '../../../store/selectors/users'
 import { User } from '../../../store/handlers/users'
+import { publicChannelsActions } from '../../../sagas/publicChannels/publicChannels.reducer'
 
 export const useChannelInputData = () => {
   const channelSelectorsData = useSelector(channelSelectors.data)
@@ -38,8 +39,8 @@ export const useChannelInputActions = () => {
     // dispatch(messagesQueueHandlers.epics.resetMessageDebounce())
   }, [dispatch])
 
-  const sendOnEnter = useCallback((e: React.KeyboardEvent<HTMLDivElement>, setTab: (arg: number) => void) => {
-    dispatch(channelHandlers.epics.sendOnEnter(e, setTab))
+  const sendOnEnter = useCallback(() => {
+    dispatch(publicChannelsActions.sendMessage())
   }, [dispatch])
 
   const checkMentions = useCallback(() => {
@@ -49,7 +50,7 @@ export const useChannelInputActions = () => {
   return { onChange, resetDebounce, sendOnEnter, checkMentions }
 }
 
-export const ChannelInput = ({ setTab }) => {
+export const ChannelInput = () => {
   const [infoClass, setInfoClass] = React.useState<string>(null)
   // eslint-disable-next-line
   const [anchorEl, setAnchorEl] = React.useState({} as HTMLElement)
@@ -68,9 +69,9 @@ export const ChannelInput = ({ setTab }) => {
         onChange({ value: e, id })
         resetDebounce()
       }}
-      onKeyPress={(e) => {
+      onKeyPress={() => {
         checkMentions()
-        sendOnEnter(e, setTab)
+        sendOnEnter()
       }}
       message={message}
       inputState={inputState}
