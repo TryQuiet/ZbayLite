@@ -24,8 +24,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { encodeMessage } from '../../cryptography/cryptography'
 
 import certificatesSelectors from '../../store/certificates/certificates.selector'
-import { extractPubKeyString, sign, loadPrivateKey } from '@zbayapp/identity'
-import configCrypto from '@zbayapp/identity/src/config'
+import { extractPubKeyString, sign, loadPrivateKey, configCrypto } from '@zbayapp/identity'
 import { arrayBufferToString } from 'pvutils'
 import { actions as waggleActions } from '../../store/handlers/waggle'
 

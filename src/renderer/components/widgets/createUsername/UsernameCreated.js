@@ -74,16 +74,6 @@ export const UsernameCreated = ({ classes, handleClose, setFormSent }) => {
       >
         <Typography variant={'h4'}>You created a username</Typography>
       </Grid>
-      {/* <Grid
-      container
-      item
-      className={classes.descConatainer}
-      xs={12}
-      direction='row'
-      justify='center'
-    >
-      <Typography variant={'body2'}>Your username will be be registered shortly.</Typography>
-    </Grid> */}
       <Grid item xs={'auto'} className={classes.buttonContainer}>
         <Button
           variant='contained'
