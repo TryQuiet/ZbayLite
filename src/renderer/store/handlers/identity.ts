@@ -444,6 +444,9 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
     dispatch(setLoadingMessage('Loading users and messages'))
   } catch (err) { }
   if (isNewUser === true) {
+    if (myUser.nickname) {
+      console.log('IT ALREADY HAS USERNAME SAVED')
+    }
     await dispatch(usersHandlers.epics.fetchTakenUsernames())
     dispatch(modalsHandlers.actionCreators.openModal('createUsernameModal')())
   }
