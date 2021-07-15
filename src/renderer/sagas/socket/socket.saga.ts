@@ -8,6 +8,7 @@ import {
   directMessagesActions,
   DirectMessagesActions
 } from '../directMessages/directMessages.reducer'
+import { CertificatesActions, certificatesActions } from '../../store/certificates/certificates.reducer'
 import { eventChannel } from 'redux-saga'
 import { fork, takeEvery } from 'redux-saga/effects'
 import { call, take, select, put, takeLeading, all, apply } from 'typed-redux-saga'
@@ -21,7 +22,7 @@ import { ipcRenderer } from 'electron'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { encodeMessage } from '../../cryptography/cryptography'
-import { certificatesActions } from '../../store/certificates/certificates.reducer'
+
 import certificatesSelectors from '../../store/certificates/certificates.selector'
 import { extractPubKeyString, sign, loadPrivateKey } from '@zbayapp/identity'
 import configCrypto from '@zbayapp/identity/src/config'
@@ -40,8 +41,7 @@ export const connect = async (): Promise<Socket> => {
 
 export function subscribe(socket) {
   return eventChannel<
-  | ActionFromMapping<PublicChannelsActions & DirectMessagesActions>
-  | ReturnType<typeof certificatesActions.responseGetCertificates>
+  | ActionFromMapping<PublicChannelsActions & DirectMessagesActions & CertificatesActions>
   >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
@@ -187,14 +187,14 @@ export function* sendDirectMessage(socket: Socket): Generator {
   const ownPubKey = yield* call(extractPubKeyString, ownCertificate)
   const privKey = yield* select(certificatesSelectors.ownPrivKey)
   const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg, configCrypto.hashAlg)
-  const sign = yield* call(signing, messageToSend, keyObject)
+  const signed = yield* call(sign, messageToSend, keyObject)
 
   const preparedMessage = {
     id: Math.random().toString(36).substr(2, 9),
     type: messageType.BASIC,
     message: messageToSend,
     createdAt: DateTime.utc().toSeconds(),
-    signature: arrayBufferToString(sign),
+    signature: arrayBufferToString(signed),
     pubKey: ownPubKey,
     channelId: conversationId
   }

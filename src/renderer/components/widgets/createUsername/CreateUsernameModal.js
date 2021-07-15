@@ -252,7 +252,7 @@ CreateUsernameModal.propTypes = {
   usernameFee: PropTypes.number.isRequired,
   zecRate: PropTypes.object.isRequired,
   certificateRegistrationError: PropTypes.string.isRequired,
-  certificate: PropTypes.object.isRequired
+  certificate: PropTypes.string.isRequired
 }
 
 export default R.compose(React.memo, withStyles(styles))(CreateUsernameModal)

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import electronStore from '../../../shared/electronStore'
+import { ActionsType } from '../../sagas/const/actionsTypes'
 
 export class CertificatesState {
   usersCertificates: string[] = ['']
@@ -7,6 +7,7 @@ export class CertificatesState {
     certificate: '',
     privateKey: ''
   }
+
   registrationError: string = null
 }
 
@@ -31,7 +32,7 @@ export const certificates = createSlice({
     createOwnCertificate: (state, _action: PayloadAction<string>) => {
       return state
     },
-    registerUserCertificate: (state, _action: PayloadAction<{serviceAddress: string, userCsr: string}>) => {
+    registerUserCertificate: (state, _action: PayloadAction<{serviceAddress: string; userCsr: string}>) => {
       state.registrationError = null
       state.ownCertificate.certificate = ''
       state.ownCertificate.privateKey = ''
@@ -48,6 +49,7 @@ export const certificates = createSlice({
     }
   }
 })
+export type CertificatesActions = ActionsType<typeof certificates.actions>
 
 export const certificatesActions = certificates.actions
 export const certificatesReducer = certificates.reducer

@@ -16,9 +16,7 @@ export function* responseGetCertificates(
   yield* put(certificatesActions.setUsersCertificates(certificates.certificates))
 }
 
-export function* responseGetCertificate(
-  action: PayloadAction<ReturnType<typeof certificatesActions.setOwnCertificate>['payload']>
-): Generator {
+export function* responseGetCertificate(): Generator {
   console.log('Response get cert saga, setting registration status')
   electronStore.set('isNewUser', false)
   yield put(

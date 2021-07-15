@@ -30,8 +30,6 @@ describe('checkCertificatesSaga', () => {
     }
   }
 
-  const mockedDate = '01.01.2021'
-
   test('creating own cert', async () => {
     await expectSaga(createOwnCertificate, { payload: 'name', type: certificatesActions.createOwnCertificate.type })
       .withReducer(combineReducers({ [StoreKeys.Certificates]: certificatesReducer }), {
@@ -59,7 +57,7 @@ describe('checkCertificatesSaga', () => {
             zbayNickname: 'name'
           }),
           user
-        ],
+        ]
         // [
         //   matchers.call(createUserCert, dataFromRootPems.certificate, dataFromRootPems.privKey, user.userCsr, mockedDate, new Date('1/1/2031')),
         //   {
