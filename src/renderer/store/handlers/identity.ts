@@ -471,28 +471,17 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
 
     const messageFromHolmes = {
       type: 1,
-      spent: '0',
-      fromYou: false,
-      status: 'broadcasted',
-      blockHeight: 0,
-      signature: {
-        type: 'Buffer',
-        data: [88]
-      },
+      signature: 'sign',
       r: 1,
       message: 'holmes message',
-      typeIndicator: false,
       createdAt: DateTime.utc().toSeconds(),
       id: '',
-      sender: {
-        replyTo: 'zs1ydvkmgvraapkzwuvrva2d8c8eslmkw3wtlx0kuq0vu23xvnc753d35qjdlklmu9rr40a6kla2wx',
-        username: 'holmes'
-      }
+      pubKey: 'holmesMessagesFromStart',
+      channelId: holmesContact.address
     }
 
     const messageHi = ({
       ...messageFromHolmes,
-      blockHeight: 9999999999999999,
       createdAt: Math.floor(DateTime.utc().toSeconds() + 1),
       id: 'sklf7894hthur7467sd786fsjh49832095usldf89345jklhj34s98734lkjfdsa',
       message:
@@ -501,7 +490,6 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
 
     const messageOurGoal = ({
       ...messageFromHolmes,
-      blockHeight: 9999999999999999,
       createdAt: Math.floor(DateTime.utc().toSeconds() + 2),
       id: 'opcvlkdsjjpe04908589234lnfs0d9f82038lnmpqweri02978234ljhlsdfu821',
       message:
@@ -510,19 +498,24 @@ export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
 
     const messageZbay = ({
       ...messageFromHolmes,
-      blockHeight: 9999999999999999,
       createdAt: Math.floor(DateTime.utc().toSeconds() + 3),
       id: 'aoiurhtnlksjdfjs0d99849233lojkkljhsioduyfo09r8t39045uilknfsldfj9',
       message:
         'Any questions? Feedback? Annoyances? Burning needs where if Zbay met them you’d use it every day? If so, message me here!'
     } as unknown) as DisplayableMessage
 
+    const messagesObj = {
+      [messageHi.id]: messageHi,
+      [messageOurGoal.id]: messageOurGoal,
+      [messageZbay.id]: messageZbay
+    }
+
     await dispatch(
       contactsHandlers.actions.setMessages({
         key: holmesContact.publicKey,
         username: holmesContact.nickname,
         contactAddress: holmesContact.address,
-        messages: [messageHi, messageOurGoal, messageZbay]
+        messages: messagesObj
       })
     )
   }

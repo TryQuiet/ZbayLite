@@ -64,19 +64,19 @@ const persistConfig = {
 }
 
 export const reducers = {
-  users: usersHandlers.reducer,
+  [StoreKeys.Users]: usersHandlers.reducer,
   waggle: waggleHandlers.reducer,
-  directMessages: directMessages.reducer,
+  [StoreKeys.DirectMessages]: directMessages.reducer,
   app: appHandlers.reducer,
   operations: operationsHandlers.reducer,
   messagesQueue: messagesQueueHandlers.reducer,
   directMessagesQueue: directMessagesQueueHandlers.reducer,
   modals: modalsHandlers.reducer,
-  identity: identityHandlers.reducer,
+  [StoreKeys.Identity]: identityHandlers.reducer,
   notifications: notificationsHandlers.reducer,
   importedChannel: importedChannelHandlers.reducer,
   rates: ratesHandlers.reducer,
-  channel: channelHandlers.reducer,
+  [StoreKeys.Channel]: channelHandlers.reducer,
   channels: channelsHandlers.reducer,
   node: nodeHandlers.reducer,
   vault: vaultHandlers.reducer,
