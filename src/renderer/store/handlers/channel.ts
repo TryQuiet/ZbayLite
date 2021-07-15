@@ -5,21 +5,12 @@ import { remote } from 'electron'
 import { DateTime } from 'luxon'
 
 import history from '../../../shared/history'
-import operationsHandlers from './operations'
-import notificationsHandlers from './notifications'
-import messagesHandlers, { _checkMessageSize } from './messages'
-import channelsHandlers from './channels'
-import offersHandlers from './offers'
+import messagesHandlers from './messages'
 import channelSelectors from '../selectors/channel'
-import identitySelectors from '../selectors/identity'
 import contactsSelectors from '../selectors/contacts'
 import directMessagesSelectors from '../selectors/directMessages'
 import directMessagesHandlers from '../handlers/directMessages'
-import client from '../../zcash'
-import { messages } from '../../zbay'
-import { errorNotification } from './utils'
-import { messageType, actionTypes } from '../../../shared/static'
-import { DisplayableMessage } from '../../zbay/messages.types'
+import { actionTypes } from '../../../shared/static'
 import contactsHandlers from './contacts'
 import electronStore from '../../../shared/electronStore'
 
@@ -120,14 +111,6 @@ const loadChannel = key => async (dispatch, getState) => {
     dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: key }))
   } catch (err) { }
 }
-const loadOffer = (id, address) => async dispatch => {
-  try {
-    await dispatch(offersHandlers.epics.updateLastSeen({ itemId: id }))
-    dispatch(setChannelId(id))
-    dispatch(setShareableUri(''))
-    dispatch(setAddress(address))
-  } catch (err) { }
-}
 const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
   const contact = contactsSelectors.contact(targetChannel.address)(getState())
   if (targetChannel.name === 'zbay') {
@@ -177,11 +160,6 @@ const sendOnEnter = (_event, resetTab?: (arg: number) => void) => async (dispatc
     }
     dispatch(directMessagesActions.sendDirectMessage())
   }
-}
-
-const updateLastSeen = () => async (dispatch, getState) => {
-  const channelId = channelSelectors.channelId(getState())
-  return dispatch(channelsHandlers.epics.updateLastSeen({ channelId }))
 }
 
 const clearNewMessages = () => async (dispatch, getState) => {
@@ -246,8 +224,6 @@ export const epics = {
   sendOnEnter,
   loadChannel,
   clearNewMessages,
-  updateLastSeen,
-  loadOffer,
   linkChannelRedirect
 }
 

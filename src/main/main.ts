@@ -288,13 +288,17 @@ app.on('ready', async () => {
   })
 
   // Temporary disable ZCASH
+  console.log('starting client')
+  const client = new Client()
+  const response = await client.postMessage('1', 'balance')
+  // @ts-expect-error
+  electronStore.set('balance', response.zbalance)
+  await client.terminate()
 
-  // client = new Client()
   // ipcMain.on('rpcQuery', async (_event, arg) => {
   //   const request = JSON.parse(arg)
   //   const response = await client.postMessage(request.id, request.method, request.args)
-  //   if (mainWindow) {
-  //     mainWindow.webContents.send('rpcQuery', JSON.stringify({ id: request.id, data: response }))
+  //   if (mainWindow) {  //     mainWindow.webContents.send('rpcQuery', JSON.stringify({ id: request.id, data: response }))
   //   }
   // })
 })

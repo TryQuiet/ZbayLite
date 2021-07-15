@@ -9,9 +9,8 @@ import updateHandlers from './store/handlers/update'
 import waggleHandlers from './store/handlers/waggle'
 import publicChannelsHandlers from './store/handlers/publicChannels'
 import directMessagesHandlers from './store/handlers/directMessages'
-import identityHandlers from './store/handlers/identity'
 
-import { errorNotification, successNotification } from './store/handlers/utils'
+import { successNotification } from './store/handlers/utils'
 import notificationsHandlers from './store/handlers/notifications'
 import { socketsActions } from './sagas/socket/socket.saga.reducer'
 import debug from 'debug'
@@ -28,10 +27,6 @@ Web.HashingTools.patchCorePBKDF()
 
 ipcRenderer.on('newUpdateAvailable', event => {
   store.dispatch(updateHandlers.epics.checkForUpdate())
-})
-
-ipcRenderer.on('onionAddress', (_, address) => {
-  store.dispatch(identityHandlers.actions.setOnionAddress(address))
 })
 
 ipcRenderer.on('successMessage', (event, msg) => {

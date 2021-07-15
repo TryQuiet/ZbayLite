@@ -20,7 +20,9 @@ export default class Client {
     })
   }
 
-  terminate = async () => await worker.terminate()
+  terminate = async () => await worker.terminate().then(() => {
+    console.log('termianted zcash')
+  })
 
   postMessage = async (id, method, args = '') => {
     const promise = new Promise((resolve) => {

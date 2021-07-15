@@ -53,8 +53,8 @@ export const loadCertificate = (rootCert: string): Certificate => {
   return new Certificate({ schema: asn1.result })
 }
 
-export const loadPrivateKey = async (filename: string, signAlg: string, hashAlg: string): Promise<KeyObject> => {
-  const keyBuffer = stringToArrayBuffer(fromBase64(filename))
+export const loadPrivateKey = async (privKey: string, signAlg: string, hashAlg: string): Promise<KeyObject> => {
+  const keyBuffer = stringToArrayBuffer(fromBase64(privKey))
 
   const algorithm = getAlgorithmParameters(signAlg, 'generatekey')
   if ('hash' in algorithm.algorithm) {
