@@ -7,8 +7,9 @@ import { createUserCsr } from '@zbayapp/identity'
 import { StoreKeys } from '../store.keys'
 import electronStore from '../../../shared/electronStore'
 import { Store } from '../reducers'
+import { registrationServiceAddress } from '../../../shared/static'
 
-describe('checkCertificatesSaga', () => {
+describe('createOwnCertificate', () => {
   const hiddenServices = {
     libp2pHiddenService: {
       onionAddress: 'onionAddress',
@@ -24,13 +25,13 @@ describe('checkCertificatesSaga', () => {
     certificates: {
       ...new CertificatesState(),
       ownCertificate: {
-        certificate: 'cert',
+        certificate: '',
         privateKey: 'certKey'
       }
     }
   }
 
-  test('creating own cert', async () => {
+  test('creates user csr and sends request to register user certificate', async () => {
     await expectSaga(createOwnCertificate, { payload: 'name', type: certificatesActions.createOwnCertificate.type })
       .withReducer(combineReducers({ [StoreKeys.Certificates]: certificatesReducer }), {
         [StoreKeys.Certificates]: {
@@ -46,10 +47,6 @@ describe('checkCertificatesSaga', () => {
           matchers.apply(electronStore, electronStore.get, ['peerId']),
           'peerId'
         ],
-        // [
-        //   matchers.call(getDate),
-        //   mockedDate
-        // ],
         [
           matchers.call(createUserCsr, {
             commonName: hiddenServices.libp2pHiddenService.onionAddress,
@@ -58,17 +55,14 @@ describe('checkCertificatesSaga', () => {
           }),
           user
         ]
-        // [
-        //   matchers.call(createUserCert, dataFromRootPems.certificate, dataFromRootPems.privKey, user.userCsr, mockedDate, new Date('1/1/2031')),
-        //   {
-        //     userCertObject: {},
-        //     userCertString: 'cert'
-        //   }
-        // ]
       ])
-      .put(certificatesActions.setOwnCertificate('cert'))
       .put(certificatesActions.setOwnCertKey('certKey'))
-      .put(certificatesActions.saveCertificate('cert'))
+      .put(
+        certificatesActions.registerUserCertificate({
+          serviceAddress: registrationServiceAddress,
+          userCsr: user.userCsr
+        })
+      )
       .hasFinalState(expectedState)
       .run()
   })

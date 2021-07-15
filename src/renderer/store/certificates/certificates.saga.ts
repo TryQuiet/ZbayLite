@@ -19,13 +19,13 @@ export function* responseGetCertificates(
 export function* responseGetCertificate(): Generator {
   console.log('Response get cert saga, setting registration status')
   electronStore.set('isNewUser', false)
-  yield put(
+  yield* put(
     identityActions.setRegistraionStatus({
       nickname: '',
       status: 'SUCCESS'
     })
   )
-  yield put(
+  yield* put(
     notificationsHandlers.actions.enqueueSnackbar(
       successNotification({
         message: 'Username registered.'
@@ -68,7 +68,7 @@ export function* createOwnCertificate(
   yield put(
     certificatesActions.registerUserCertificate({
       serviceAddress: registrationServiceAddress,
-      userCsr: user.userCsr // 'IncorrectCSR'
+      userCsr: user.userCsr
     })
   )
   yield* put(certificatesActions.setOwnCertKey(user.userKey))

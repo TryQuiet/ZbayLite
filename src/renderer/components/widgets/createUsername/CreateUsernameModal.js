@@ -131,7 +131,7 @@ const CustomInputComponent = ({
 }) => {
   const { value, ...rest } = field
   const updatedValue = sanitize(value)
-  const errors = errors.nickname || certificateRegistrationError
+  const nicknameErrors = errors.nickname || certificateRegistrationError
   return (
     <TextField
       variant={'outlined'}
@@ -139,14 +139,14 @@ const CustomInputComponent = ({
       className={classNames({
         [classes.focus]: true,
         [classes.margin]: true,
-        [classes.error]: isTouched && errors
+        [classes.error]: isTouched && nicknameErrors
       })}
       placeholder={'Enter a username'}
-      error={isTouched && errors}
-      helperText={isTouched && errors}
+      error={isTouched && nicknameErrors}
+      helperText={isTouched && nicknameErrors}
       value={updatedValue}
-      error={isTouched && errors }
-      helperText={isTouched && errors}
+      error={isTouched && nicknameErrors }
+      helperText={isTouched && nicknameErrors}
       defaultValue={values.nickname || ''}
       {...rest}
       {...props}
