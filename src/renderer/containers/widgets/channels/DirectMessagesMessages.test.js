@@ -3,18 +3,6 @@ import { mapStateToProps } from './DirectMessagesMessages'
 import { createMessage } from '../../../testUtils'
 import create from '../../../store/create'
 import { ChannelState } from '../../../store/handlers/channel'
-import {
-  setEngine,
-  CryptoEngine
-} from 'pkijs'
-import { Crypto } from '@peculiar/webcrypto'
-
-const webcrypto = new Crypto()
-setEngine('newEngine', webcrypto, new CryptoEngine({
-  name: '',
-  crypto: webcrypto,
-  subtle: webcrypto.subtle
-}))
 
 describe('ChannelInput', () => {
   let store = null

@@ -21,7 +21,7 @@ export default class Client {
   }
 
   terminate = async () => await worker.terminate().then(() => {
-    console.log('termianted zcash')
+    console.log('terminated zcash')
   })
 
   postMessage = async (id, method, args = '') => {
