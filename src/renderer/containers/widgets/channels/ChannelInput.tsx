@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import ChannelInputComponent from '../../../components/widgets/channels/ChannelInput'
 import channelHandlers from '../../../store/handlers/channel'
-import messagesQueueHandlers from '../../../store/handlers/messagesQueue'
+// import messagesQueueHandlers from '../../../store/handlers/messagesQueue'
 import mentionsHandlers from '../../../store/handlers/mentions'
 import channelSelectors from '../../../store/selectors/channel'
 import usersSelectors from '../../../store/selectors/users'
@@ -36,7 +36,7 @@ export const useChannelInputActions = () => {
   }, [dispatch])
 
   const resetDebounce = useCallback(() => {
-    dispatch(messagesQueueHandlers.epics.resetMessageDebounce())
+    // dispatch(messagesQueueHandlers.epics.resetMessageDebounce())
   }, [dispatch])
 
   const sendOnEnter = useCallback(() => {
