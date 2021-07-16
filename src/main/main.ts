@@ -10,8 +10,15 @@ import { spawnTor, waggleVersion, runWaggle } from './waggleManager'
 import debug from 'debug'
 import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
 import { DataServer } from 'waggle/lib/socket/DataServer'
+
+import {
+  setEngine,
+  CryptoEngine
+} from 'pkijs'
+import { Crypto } from '@peculiar/webcrypto'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
+
 })
 
 electronStore.set('appDataPath', app.getPath('appData'))
@@ -19,6 +26,7 @@ electronStore.set('waggleInitialized', false)
 electronStore.set('waggleVersion', waggleVersion)
 
 export const isDev = process.env.NODE_ENV === 'development'
+const webcrypto = new Crypto()
 
 interface IWindowSize {
   width: number
@@ -29,6 +37,11 @@ const windowSize: IWindowSize = {
   width: 800,
   height: 540
 }
+setEngine('newEngine', webcrypto, new CryptoEngine({
+  name: '',
+  crypto: webcrypto,
+  subtle: webcrypto.subtle
+}))
 
 let mainWindow: BrowserWindow
 

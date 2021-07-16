@@ -10,7 +10,7 @@ import {
 import identity, { Identity } from '../../store/handlers/identity'
 import { Socket } from 'socket.io-client'
 import * as matchers from 'redux-saga-test-plan/matchers'
-import { extractPubKeyString } from '../../pkijs/tests/extractPubKey'
+import { extractPubKeyString } from '@zbayapp/identity'
 import { publicChannelsActions } from '../publicChannels/publicChannels.reducer'
 import channel, { Channel } from '../../store/handlers/channel'
 import { Socket as socketsActions } from '../const/actionsTypes'
@@ -50,7 +50,7 @@ describe('checkCertificatesSaga', () => {
         }),
         initialState
       )
-      .put(certificatesActions.creactOwnCertificate('nickname'))
+      .put(certificatesActions.createOwnCertificate('nickname'))
       .hasFinalState(initialState)
       .run()
   })

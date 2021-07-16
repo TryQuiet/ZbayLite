@@ -352,10 +352,10 @@ exports[`BasicMessage renders component 1`] = `
       Object {
         "channelId": "address",
         "createdAt": 123445789,
-        "id": "qwerrtuu",
+        "id": 1,
         "message": "example message",
         "pubKey": "ownPubKey",
-        "signature": "l'qr²0³só.0K×û |-vó¤KA©B0	@D=b#°Nf<¡§ª¢ö ÇèæÂÉ½èYÁ",
+        "signature": "secretsignature",
         "type": 1,
       }
     }
@@ -717,12 +717,10 @@ exports[`BasicMessage renders component when message is sent by owner 1`] = `
         "channelId": "address",
         "createdAt": 123445789,
         "fromYou": true,
-        "id": "qwerrtuu",
+        "id": 1,
         "message": "example message",
         "pubKey": "ownPubKey",
-        "signature": "È2@¼jrÇªÆN1ùäò$plöî×^Jó oC¬cÞvtâ, 
-=Ñ[Oë[GÐ
-ñÛç",
+        "signature": "secretsignature",
         "type": 1,
       }
     }

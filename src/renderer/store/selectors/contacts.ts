@@ -9,8 +9,7 @@ import { DisplayableMessage } from '../../zbay/messages.types'
 import { Contact } from '../handlers/contacts'
 import { Store } from '../reducers'
 import certificatesSelector from '../certificates/certificates.selector'
-import { extractPubKeyString } from '../../pkijs/tests/extractPubKey'
-import { loadCertificate } from '../../pkijs/generatePems/common'
+import { extractPubKeyString, loadCertificate } from '@zbayapp/identity'
 import channelSelector from '../selectors/channel'
 
 const contacts = (s: Store) => s.contacts

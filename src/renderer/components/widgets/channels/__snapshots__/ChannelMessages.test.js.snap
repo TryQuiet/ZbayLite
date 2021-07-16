@@ -365,10 +365,10 @@ exports[`ChannelMessages renders component 1`] = `
         Object {
           "channelId": "address",
           "createdAt": 123445789,
-          "id": "qwerrtuu",
+          "id": 1,
           "message": "example message",
           "pubKey": "ownPubKey",
-          "signature": "xÃ\\\\¯ræ?äkàÐ8¶Á¿BXocñüú[È5c;»bÖv.:óÇÜËê=Ò³Ã]´DÆ­X³",
+          "signature": "secretsignature",
           "type": 1,
         },
       ]

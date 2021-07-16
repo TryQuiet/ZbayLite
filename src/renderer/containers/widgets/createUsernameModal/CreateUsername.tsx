@@ -7,10 +7,10 @@ import identitySelectors from '../../../store/selectors/identity'
 import usersSelectors from '../../../store/selectors/users'
 // import feesSelectors from '../../../store/selectors/fees'
 // import ratesSelectors from '../../../store/selectors/rates'
+import certificatesSelector from '../../../store/certificates/certificates.selector'
 
 import CreateUsernameModal from '../../../components/widgets/createUsername/CreateUsernameModal'
 import { withModal } from '../../../store/handlers/modals'
-import electronStore from '../../../../shared/electronStore'
 export const mapStateToProps = state => {
   return {
     initialValues: {
@@ -25,7 +25,9 @@ export const mapStateToProps = state => {
     },
     // usernameFee: feesSelectors.userFee(state),
     // zecRate: ratesSelectors.rate('usd')(state),
-    enoughMoney: true
+    enoughMoney: true,
+    certificateRegistrationError: certificatesSelector.certificateRegistrationError(state),
+    certificate: certificatesSelector.ownCertificate(state)
   }
 }
 
@@ -33,7 +35,6 @@ export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       handleSubmit: ({ nickname }) => {
-        electronStore.set('isNewUser', false)
         return usersHandlers.epics.createOrUpdateUser({ nickname, debounce: true })
       }
     },

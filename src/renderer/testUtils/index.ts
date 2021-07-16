@@ -1,21 +1,8 @@
 import { DateTime, Settings } from 'luxon'
 import BigNumber from 'bignumber.js'
 import { messageType } from '../../shared/static'
-import config from '../pkijs/generatePems/config'
-import { loadPrivateKey } from '../pkijs/generatePems/common'
-import { sign } from '@zbayapp/identity'
-import { toBase64, arrayBufferToString } from 'pvutils'
 
-import { KeyObject } from 'node:crypto'
 Settings.defaultZoneName = 'utc'
-
-const privateKey =
-  'MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgM4aywA4/lIyErKAT8Fsp9TSwUpUj44EbS0x15LXTQnagCgYIKoZIzj0DAQehRANCAARTa1q+AaLBjgkvW33rRLB5omfB9ZCHTZVgFlGjBJicGIhTSIvmmZ97F72QcMpsFNjGdQmLzjMeDH2FBRqzrJFh'
-let pKey: KeyObject
-(async () => {
-  console.log('asdfasdf')
-  pKey = await loadPrivateKey(privateKey, config.signAlg, config.hashAlg)
-})()
 
 export const now = DateTime.utc(2019, 3, 7, 13, 3, 48)
 
@@ -66,29 +53,16 @@ export const createVaultMessage = (
 })
 
 export const createMessage = async () => {
-  let pKey = await loadPrivateKey(privateKey, config.signAlg, config.hashAlg)
-  const id = 'qwerrtuu'
-  console.log(pKey)
-  const signature = await sign(`i`, pKey)
-  const signature2 = await sign(`i`, pKey)
-  console.log(toBase64(arrayBufferToString(signature)))
-  console.log(toBase64(arrayBufferToString(signature2)))
   return {
-    id,
+    id: 1,
     type: messageType.BASIC,
     message: 'example message',
     pubKey: 'ownPubKey',
     channelId: 'address',
     createdAt: 123445789,
-    signature: arrayBufferToString(signature)
+    signature: 'secretsignature'
   }
 }
-
-export const createMultipleMessages = () => {
-
-}
-
-
 
 export const messages = {
   createMessage,
@@ -123,21 +97,6 @@ export const createIdentity = ({
   shippingData,
   keys
 })
-
-const dupa = async ()=> {
-  await createMessage()
-  await createMessage()
-  await createMessage()
-  await createMessage()
-  await createMessage()
-  await createMessage()
-  await createMessage()
-  await createMessage()
-  await createMessage()
-  await createMessage()
-}
-
-dupa()
 
 export default {
   identities,
