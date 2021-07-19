@@ -12,7 +12,6 @@ import { withStyles } from '@material-ui/core/styles'
 
 import Modal from '../../ui/Modal'
 import UsernameCreated from './UsernameCreated'
-import electronStore from '../../../../shared/electronStore'
 import { LoadingButton } from '../../ui/LoadingButton'
 
 const styles = theme => ({
@@ -166,13 +165,13 @@ export const CreateUsernameModal = ({
   handleClose,
   initialValues,
   handleSubmit,
+  isNewUser,
   certificateRegistrationError,
   certificate
 }) => {
   const [isTouched, setTouched] = useState(false)
   const [formSent, setFormSent] = useState(false)
   const responseReceived = Boolean(certificateRegistrationError || certificate)
-  const isNewUser = electronStore.get('isNewUser')
   const waitingForResponse = formSent && !responseReceived
   return (
     <Modal open={open} handleClose={handleClose} isCloseDisabled={isNewUser}>
@@ -254,6 +253,7 @@ CreateUsernameModal.propTypes = {
   enoughMoney: PropTypes.bool.isRequired,
   usernameFee: PropTypes.number.isRequired,
   zecRate: PropTypes.object.isRequired,
+  isNewUser: PropTypes.bool.isRequired,
   certificateRegistrationError: PropTypes.string.isRequired,
   certificate: PropTypes.string.isRequired
 }
