@@ -27,6 +27,7 @@ import { arrayBufferToString } from 'pvutils'
 import { actions as waggleActions } from '../../store/handlers/waggle'
 import directMessagesHandlers, { IConversation } from '../../store/handlers/directMessages'
 import crypto from 'crypto'
+import certificatesSelector from '../../store/certificates/certificates.selector'
 
 export const connect = async (): Promise<Socket> => {
   const socket = io(config.socket.address)
@@ -224,7 +225,7 @@ export function* sendDirectMessage(socket: Socket): Generator {
     const contactChannel = yield* select(channelSelectors.channel)
     const contactPublicKey = contactChannel.id
 
-    const myPublicKey = yield* select(identitySelectors.signerPubKey)
+    const myPublicKey = yield* select(certificatesSelector.ownPublicKey)
     const contactPubKey = yield* select(directMessagesSelectors.user(contactPublicKey))
     const halfKey = contactPubKey.halfKey
 
