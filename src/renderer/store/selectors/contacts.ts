@@ -9,7 +9,7 @@ import { DisplayableMessage } from '../../zbay/messages.types'
 import { Contact } from '../handlers/contacts'
 import { Store } from '../reducers'
 import certificatesSelector from '../certificates/certificates.selector'
-import { extractPubKeyString, loadCertificate } from '@zbayapp/identity'
+import { extractPubKeyString, loadCertificate, arrayBufferToHexString } from '@zbayapp/identity'
 import channelSelector from '../selectors/channel'
 
 const contacts = (s: Store) => s.contacts
@@ -28,22 +28,8 @@ const contactsList = createSelector(
   identitySelectors.removedChannels,
   usersSelectors.users,
   (contacts, removedChannels, users) => {
-    return Array.from(Object.values(contacts))
-      .map(contact => {
-        const user = users[contact.key]
-        if (!contact.address && user) {
-          return {
-            ...contact,
-            messages: messages,
-            address: user.address || contact.address,
-            username: user.nickname || contact.username
-          }
-        } else {
-          return contact
-        }
-      })
-      .filter(
-        c => c.key.length === 66 && c.offerId === null && !removedChannels.includes(c.address)
+    return Array.from(Object.values(contacts)).filter(
+        c => !c.address
       )
   }
 )
@@ -79,6 +65,7 @@ const directMessagesContact = address =>
 
 const contact = address =>
   createSelector(contacts, usersSelectors.users, (c, u) => {
+    console.log(address, 'address')
     if (!c[address]) {
       return new Contact()
     } else {
@@ -198,27 +185,33 @@ const allChannels = createSelector(
 const usersCertificateMapping = createSelector(
   certificatesSelector.usersCertificates,
   (certificates) => {
-    return certificates.reduce<{ [pubKey: string]: { username: string; onionAddress: string; peerId: string } }>((acc, current) => {
+    return certificates.reduce<{ [pubKey: string]: { username: string; onionAddress: string; peerId: string, dmPublicKey: string } }>((acc, current) => {
       let parsedCerficated
       let certObject
       let nickname = null
       let onionAddress = null
       let peerId = null
+      let dmPublicKey = null
       if (current !== null && current) {
         parsedCerficated = extractPubKeyString(current)
         certObject = loadCertificate(current)
-        if (certObject.subject.typesAndValues.length === 3) {
+        if (true) {
           nickname = certObject.subject.typesAndValues[0].value.valueBlock.value
           onionAddress = certObject.subject.typesAndValues[1].value.valueBlock.value
           peerId = certObject.subject.typesAndValues[2].value.valueBlock.value
         } else {
-          return
+          return {}
         }
+        dmPublicKey = certObject.subject.typesAndValues[3]?.value.valueBlock.valueHex
+        dmPublicKey = arrayBufferToHexString(dmPublicKey)
+        console.log(`Users certificate mapping ${dmPublicKey}`)
       }
+      console.log(`NICKNAME IS ${nickname}`)
       acc[parsedCerficated] = {
         username: nickname,
         onionAddress: onionAddress,
-        peerId: peerId
+        peerId: peerId,
+        dmPublicKey
       }
       return acc
     }, {})
@@ -382,5 +375,6 @@ export default {
   unknownMessages,
   allMessagesTxnId,
   messagesOfChannelWithUserInfo,
-  allMessagesOfChannelsWithUserInfo
+  allMessagesOfChannelsWithUserInfo,
+  usersCertificateMapping
 }

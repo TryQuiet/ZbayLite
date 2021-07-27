@@ -1,19 +1,49 @@
-import { call, apply, all, takeEvery, put } from 'typed-redux-saga'
+import { call, apply, all, takeEvery, put, select } from 'typed-redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
+import { hexStringToArrayBuffer } from '@zbayapp/identity'
 
 import { certificatesActions } from './certificates.reducer'
 import { createUserCsr } from '@zbayapp/identity'
 import electronStore from '../../../shared/electronStore'
+import { actions } from '../../store/handlers/directMessages'
 import { actions as identityActions } from '../handlers/identity'
 import { registrationServiceAddress } from '../../../shared/static'
 import notificationsHandlers from '../../store/handlers/notifications'
 import { successNotification } from '../handlers/utils'
+import directMessagesSelectors from '../../store/selectors/directMessages'
+import contactsSelectors from '../../store/selectors/contacts'
+
+// export function* responseGetAvailableUsers(
+//   action: DirectMessagesActions['responseGetAvailableUsers']
+// ): Generator {
+//   const userss = yield* select(contactsSelectors.usersCertificateMapping)
+//   console.log('saga users', userss)
+// }
 
 export function* responseGetCertificates(
   action: PayloadAction<ReturnType<typeof certificatesActions.responseGetCertificates>['payload']>
 ): Generator {
   const certificates = action.payload
   yield* put(certificatesActions.setUsersCertificates(certificates.certificates))
+  const users = yield* select(contactsSelectors.usersCertificateMapping)
+  console.log(`responseGetCertificates ${users}`)
+  for (const [key, value] of Object.entries(users)) {
+    console.log('DM PUBLIC KEY')
+    if (value.dmPublicKey) {
+      console.log(`PUBLIC KEY FROM CERT IS ${value.dmPublicKey}`)
+      yield put(
+        actions.fetchUsers({
+          usersList: {
+            [value.username]: {
+              publicKey: key,
+              halfKey: value.dmPublicKey,
+              nickname: value.username
+            }
+          }
+        })
+      )
+    }
+  }
 }
 
 export function* responseGetCertificate(): Generator {
@@ -44,21 +74,22 @@ export function* createOwnCertificate(
     }
   }
 
-  const hiddenServices: HiddenServicesType = yield* apply(
-    electronStore,
-    electronStore.get,
-    ['hiddenServices']
-  )
+  const hiddenServices: HiddenServicesType = yield* apply(electronStore, electronStore.get, [
+    'hiddenServices'
+  ])
 
   let peerIdAddress = yield* apply(electronStore, electronStore.get, ['peerId'])
   if (!peerIdAddress) {
     peerIdAddress = 'unknown'
   }
+  const dmPublicKey = yield* select(directMessagesSelectors.publicKey)
+  const bufferDmPublicKey = hexStringToArrayBuffer(dmPublicKey)
 
   const userData = {
     zbayNickname: action.payload,
     commonName: hiddenServices.libp2pHiddenService.onionAddress,
-    peerId: peerIdAddress
+    peerId: peerIdAddress,
+    dmPublicKey: bufferDmPublicKey
   }
 
   console.log('userData', userData)

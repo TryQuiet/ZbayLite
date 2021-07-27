@@ -98,6 +98,9 @@ export type ChannelActions = ActionsType<typeof actions>
 
 const loadChannel = key => async (dispatch, getState) => {
   try {
+    console.log(
+  `key is ${key}`
+    )
     dispatch(setChannelId(key))
     dispatch(setDisplayableLimit(30))
     const contact = contactsSelectors.contact(key)(getState())

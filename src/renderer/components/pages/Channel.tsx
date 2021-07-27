@@ -33,6 +33,8 @@ export const Channel: React.FC<IChannelComponentProps> = ({ channelType, ...prop
   const Header = channelTypeToHeader[channelType]
   const Input = channelTypeToInput[channelType] as React.FC<InputProps> // for now
 
+  console.log('channelProps', {props})
+
   return (
     <Page>
       <PageHeader>

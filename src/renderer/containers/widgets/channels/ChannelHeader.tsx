@@ -14,6 +14,8 @@ import { messageType, notificationFilterType } from '../../../../shared/static'
 
 export const mapStateToProps = (state, props) => {
   const contact = contactsSelectors.contact(props.contactId)(state)
+  console.log('props', {props})
+  console.log('contact', {contact})
   return {
     channel: {
       name: props.contactId === 'general' ? 'zbay' : contact.username,

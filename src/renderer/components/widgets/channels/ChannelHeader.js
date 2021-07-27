@@ -121,6 +121,7 @@ export const ChannelHeader = ({
   userAddress,
   name
 }) => {
+  console.log('channel ', {channel})
   const debounce = (fn, ms) => {
     let timer
     return _ => {

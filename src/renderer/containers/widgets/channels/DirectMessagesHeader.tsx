@@ -10,6 +10,8 @@ import { notificationFilterType } from '../../../../shared/static'
 
 export const mapStateToProps = (state, props) => {
   const contact = contactsSelectors.contact(props.contactId)(state)
+  console.log('props')
+  console.log('contactio', {contact})
   return {
     channel: {
       name: contact.username,

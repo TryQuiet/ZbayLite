@@ -80,7 +80,7 @@ export const ChannelsListItem: React.FC<IChannelsListItemComponentProps> = ({
       onClick={() => {
         history.push(
           `/main/${directMessages
-            ? `direct-messages/${channel.key}/${channel.username}`
+            ? `direct-messages/${channel.username}`
             : `channel/${channel.key}`
           }`
         )

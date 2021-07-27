@@ -117,8 +117,8 @@ export const updatePendingMessage = ({ key, id, txid }) => async dispatch => {
 }
 export const linkUserRedirect = contact => async (dispatch, getState) => {
   const contacts = selectors.contacts(getState())
-  if (contacts[contact.address]) {
-    history.push(`/main/direct-messages/${contact.address}/${contact.nickname}`)
+  if (contacts[contact.nickname]) {
+    history.push(`/main/direct-messages/${contact.nickname}`)
   }
   await dispatch(
     setUsernames({
@@ -128,14 +128,15 @@ export const linkUserRedirect = contact => async (dispatch, getState) => {
       }
     })
   )
-  history.push(`/main/direct-messages/${contact.address}/${contact.nickname}`)
+  history.push(`/main/direct-messages/${contact.nickname}`)
 }
 
 export const updateLastSeen = ({ contact }) => async (dispatch, getState) => {
   const lastSeen = DateTime.utc()
   const unread = selectors.newMessages(contact.address)(getState()).length
   remote.app.badgeCount = remote.app.badgeCount - unread
-  dispatch(cleanNewMessages({ contactAddress: contact.key }))
+  console.log(`update last senn ${contact.username}`)
+  dispatch(cleanNewMessages({ contactAddress: contact.username }))
   dispatch(
     setLastSeen({
       lastSeen,
@@ -149,7 +150,7 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
   getState
 ) => {
   const contacts = selectors.contacts(getState())
-  if (!contacts[contact.publicKey]) {
+  if (!contacts[contact.nickname]) {
     await dispatch(
       addContact({
         key: contact.publicKey,
@@ -159,7 +160,7 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
     )
   }
   if (redirect) {
-    history.push(`/main/direct-messages/${contact.publicKey}/${contact.nickname}`)
+    history.push(`/main/direct-messages/${contact.nickname}`)
   }
 }
 
@@ -264,6 +265,8 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { contactAddress } }: ContactActions['cleanNewMessages']
     ) =>
       produce(state, draft => {
+        console.log(contactAddress)
+        console.log('cleannewmessages')
         draft[contactAddress].newMessages = []
       }),
     [appendNewMessages.toString()]: (
@@ -271,6 +274,8 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { contactAddress, messagesIds } }: ContactActions['appendNewMessages']
     ) =>
       produce(state, draft => {
+        console.log(contactAddress)
+        console.log('apendnewmessages')
         draft[contactAddress].newMessages = draft[contactAddress].newMessages.concat(messagesIds)
         remote.app.setBadgeCount(remote.app.getBadgeCount() + messagesIds.length)
       }),
