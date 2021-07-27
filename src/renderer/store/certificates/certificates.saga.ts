@@ -1,13 +1,14 @@
-import { call, apply, all, takeEvery, put } from 'typed-redux-saga'
+import { call, apply, all, takeEvery, put, select } from 'typed-redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { certificatesActions } from './certificates.reducer'
-import { createUserCsr } from '@zbayapp/identity'
+import { createUserCsr, hexStringToArrayBuffer } from '@zbayapp/identity'
 import electronStore from '../../../shared/electronStore'
 import { actions as identityActions } from '../handlers/identity'
 import { registrationServiceAddress } from '../../../shared/static'
 import notificationsHandlers from '../../store/handlers/notifications'
 import { successNotification } from '../handlers/utils'
+import directMessagesSelectors from '../selectors/directMessages'
 
 export function* responseGetCertificates(
   action: PayloadAction<ReturnType<typeof certificatesActions.responseGetCertificates>['payload']>
@@ -55,10 +56,13 @@ export function* createOwnCertificate(
     peerIdAddress = 'unknown'
   }
 
+  const dmPublicKey = yield* select(directMessagesSelectors.publicKey)
+
   const userData = {
     zbayNickname: action.payload,
     commonName: hiddenServices.libp2pHiddenService.onionAddress,
-    peerId: peerIdAddress
+    peerId: peerIdAddress,
+    dmPublicKey: hexStringToArrayBuffer(dmPublicKey)
   }
 
   console.log('userData', userData)
