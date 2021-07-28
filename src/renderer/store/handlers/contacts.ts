@@ -229,7 +229,7 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { key, username, contactAddress, offerId = null } }: ContactActions['addContact']
     ) =>
       produce(state, draft => {
-        draft[key] = {
+        draft[username] = {
           lastSeen: null,
           messages: [],
           newMessages: [],
