@@ -164,7 +164,7 @@ export function* responseGetPrivateConversations(
     const conversation = checkConversation(key, value, privKey)
 
     if (conversation) {
-      const user = yield* select(directMessagesSelectors.user(conversation.contactPublicKey))
+      const user = yield* select(directMessagesSelectors.userByPublicKey(conversation.contactPublicKey))
       if (!contacts[user.nickname]) {
         yield put(
           contactsActions.addDirectContact({

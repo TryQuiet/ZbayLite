@@ -10,6 +10,9 @@ export const users = createSelector(directMessages, (d) => {
 export const user = (publicKey) => createSelector(users, (d) => {
   return d[publicKey]
 })
+export const userByPublicKey = (publicKey) => createSelector(users, (d) => {
+  return Array.from(Object.values(d)).find(u  => u.publicKey === publicKey)
+})
 
 export const publicKey = createSelector(directMessages, d => d.publicKey)
 export const privateKey = createSelector(directMessages, d => d.privateKey)
@@ -22,5 +25,6 @@ export default {
   publicKey,
   privateKey,
   conversations,
-  conversationsList
+  conversationsList,
+  userByPublicKey
 }
