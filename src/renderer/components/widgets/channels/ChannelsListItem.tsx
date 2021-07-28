@@ -72,7 +72,7 @@ export const ChannelsListItem: React.FC<IChannelsListItemComponentProps> = ({
 }) => {
   const classes = useStyles({})
   const isFromZbay = channel.username !== 'Unknown'
-  const highlight = selected.id === channel.key
+  const highlight = selected.id === channel.key || selected.id === channel.username
   return (
     <ListItem
       button

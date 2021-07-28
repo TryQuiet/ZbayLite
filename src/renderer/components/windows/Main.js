@@ -37,7 +37,6 @@ export const Main = ({
   disablePowerSleepMode,
   isLogWindowOpened
 }) => {
-  console.log('match', {match})
   const debounce = (fn, ms) => {
     let timer
     return _ => {

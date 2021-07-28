@@ -181,9 +181,9 @@ export const inputLocked = createSelector(
   waggleSelectors.isConnected,
   isPublicChannel,
   (channelId, waggleContacts, waggle, publicChannel) => {
-    const contactsData: Array<{ publicKey: string }> = Object.values(waggleContacts)
+    const contactsData: Array<{ publicKey: string, nickname:string }> = Object.values(waggleContacts)
     const currentContactArray = contactsData.filter(item => {
-      return item.publicKey === channelId
+      return item.publicKey === channelId || item.nickname === channelId
     })
 
     if (!waggle) {

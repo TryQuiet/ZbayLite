@@ -98,9 +98,6 @@ export type ChannelActions = ActionsType<typeof actions>
 
 const loadChannel = key => async (dispatch, getState) => {
   try {
-    console.log(
-  `key is ${key}`
-    )
     dispatch(setChannelId(key))
     dispatch(setDisplayableLimit(30))
     const contact = contactsSelectors.contact(key)(getState())
@@ -108,7 +105,7 @@ const loadChannel = key => async (dispatch, getState) => {
     remote.app.setBadgeCount(remote.app.getBadgeCount() - unread)
     electronStore.set(`lastSeen.${key}`, `${Math.floor(DateTime.utc().toSeconds())}`)
     dispatch(setAddress(contact.address))
-    dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: key }))
+    dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: contact.key }))
   } catch (err) { }
 }
 const linkChannelRedirect = targetChannel => async (dispatch, getState) => {

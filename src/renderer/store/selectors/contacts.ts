@@ -68,21 +68,13 @@ const directMessagesContact = address =>
 
 const contact = address =>
   createSelector(contacts, usersSelectors.users, (c, u) => {
-    console.log(address, 'address')
     if (!c[address]) {
       return new Contact()
     } else {
-      if (!c[address].address) {
-        return {
-          ...c[address],
-          address: u[address]?.address,
-          username: u[address]?.nickname || c[address].username
-        }
-      } else {
         return c[address]
       }
     }
-  })
+  )
 
 const messagesSorted = address =>
   createSelector(contact(address), usersSelectors.users, (c, u) => {

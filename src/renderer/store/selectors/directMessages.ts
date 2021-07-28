@@ -8,10 +8,7 @@ export const users = createSelector(directMessages, (d) => {
 })
 
 export const user = (publicKey) => createSelector(users, (d) => {
-  return Array.from(Object.values(d)).find((i) => {
-    console.log(publicKey, 'VSSSSSSSSSSSSss', i.publicKey)
-    i.publicKey === publicKey
-  })
+  return d[publicKey]
 })
 
 export const publicKey = createSelector(directMessages, d => d.publicKey)

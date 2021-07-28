@@ -65,11 +65,9 @@ export function subscribe(socket) {
       emit(directMessagesActions.responseGetPrivateConversations(payload))
     })
     socket.on(socketsActions.RESPONSE_GET_CERTIFICATE, payload => {
-      console.log('RESPONSE_GET_CERTIFICATE', payload)
       emit(certificatesActions.setOwnCertificate(payload))
     })
     socket.on(socketsActions.CERTIFICATE_REGISTRATION_ERROR, payload => {
-      console.log('CERTIFICATE_REGISTRATION_ERROR', payload)
       emit(certificatesActions.setRegistrationError(payload))
     })
     socket.on(socketsActions.RESPONSE_GET_CERTIFICATES, payload => {
@@ -321,7 +319,6 @@ export function* addCertificate(): Generator {
   const hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
   const nickname = yield* select(identitySelectors.nickName)
   if (!hasCertyficate && nickname) {
-    console.log('Calling createOwnCertificate')
     yield* put(certificatesActions.createOwnCertificate(nickname))
   }
 }

@@ -34,12 +34,10 @@ export function* loadMessage(action: PublicChannelsActions['loadMessage']): Gene
   }
 
   if (foundMessage && myUser.nickname !== foundMessage.userInfo.username) { ///
-    console.log('siema', myUser.nickname, foundMessage.userInfo.username)
     yield* call(displayDirectMessageNotification, {
       username: foundMessage.userInfo.username,
       message: message
     })
-    console.log(' action.payload.channelAddress', action.payload.channelAddress)
     yield put(
       actions.appendNewMessages({
         contactAddress: action.payload.channelAddress,
@@ -64,6 +62,7 @@ export function* getPublicChannels(
 
     const mainChannel = yield* select(publicChannelsSelectors.publicChannelsByName('zbay'))
     if (mainChannel && !electronStore.get('generalChannelInitialized')) {
+      console.log('adding zbay channel', {mainChannel})
       yield put(
         contactsHandlers.actions.addContact({
           key: mainChannel.address,

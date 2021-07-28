@@ -22,7 +22,6 @@ const DirectMessages = ({
   
   useEffect(
     () => {
-      console.log(`match parrams id ${match.params}`, {match})
       loadChannel(match.params.username)
     },
     [match.params.username]

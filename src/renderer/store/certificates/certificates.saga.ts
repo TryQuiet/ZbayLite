@@ -26,11 +26,8 @@ export function* responseGetCertificates(
   const certificates = action.payload
   yield* put(certificatesActions.setUsersCertificates(certificates.certificates))
   const users = yield* select(contactsSelectors.usersCertificateMapping)
-  console.log(`responseGetCertificates ${users}`)
   for (const [key, value] of Object.entries(users)) {
-    console.log('DM PUBLIC KEY')
     if (value.dmPublicKey) {
-      console.log(`PUBLIC KEY FROM CERT IS ${value.dmPublicKey}`)
       yield put(
         actions.fetchUsers({
           usersList: {
@@ -47,7 +44,6 @@ export function* responseGetCertificates(
 }
 
 export function* responseGetCertificate(): Generator {
-  console.log('Response get cert saga, setting registration status')
   electronStore.set('isNewUser', false)
   yield* put(
     identityActions.setRegistraionStatus({
@@ -92,8 +88,6 @@ export function* createOwnCertificate(
     dmPublicKey: bufferDmPublicKey
   }
 
-  console.log('userData', userData)
-
   const user = yield* call(createUserCsr, userData)
 
   yield put(
@@ -103,7 +97,6 @@ export function* createOwnCertificate(
     })
   )
   yield* put(certificatesActions.setOwnCertKey(user.userKey))
-  console.log('After registering csr')
 }
 
 export function* certificatesSaga(): Generator {

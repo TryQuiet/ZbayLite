@@ -54,6 +54,12 @@ const addContact = createAction<{
   username: string
   key: string
 }>(actionTypes.ADD_CONTACT)
+const addDirectContact = createAction<{
+  offerId?: string
+  contactAddress: string
+  username: string
+  key: string
+}>(actionTypes.ADD_DIRECT_CONTACT)
 const addMessage = createAction<{
   key: string
   message: { [key: string]: DisplayableMessage }
@@ -96,6 +102,7 @@ export const actions = {
   updateMessage,
   addMessage,
   addContact,
+  addDirectContact,
   setVaultMessages,
   cleanNewMessages,
   appendNewMessages,
@@ -135,7 +142,6 @@ export const updateLastSeen = ({ contact }) => async (dispatch, getState) => {
   const lastSeen = DateTime.utc()
   const unread = selectors.newMessages(contact.address)(getState()).length
   remote.app.badgeCount = remote.app.badgeCount - unread
-  console.log(`update last senn ${contact.username}`)
   dispatch(cleanNewMessages({ contactAddress: contact.username }))
   dispatch(
     setLastSeen({
@@ -152,7 +158,7 @@ export const createVaultContact = ({ contact, history, redirect = true }) => asy
   const contacts = selectors.contacts(getState())
   if (!contacts[contact.nickname]) {
     await dispatch(
-      addContact({
+      addDirectContact({
         key: contact.publicKey,
         username: contact.nickname,
         contactAddress: contact.address
@@ -229,7 +235,8 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { key, username, contactAddress, offerId = null } }: ContactActions['addContact']
     ) =>
       produce(state, draft => {
-        draft[username] = {
+        console.log('add regular contact')
+        draft[key] = {
           lastSeen: null,
           messages: [],
           newMessages: [],
@@ -241,6 +248,24 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
           typingIndicator: false
         }
       }),
+      [addDirectContact.toString()]: (
+        state,
+        { payload: { key, username, contactAddress, offerId = null } }: ContactActions['addDirectContact']
+      ) =>
+        produce(state, draft => {
+          console.log('adding direct contact')
+          draft[username] = {
+            lastSeen: null,
+            messages: [],
+            newMessages: [],
+            vaultMessages: [],
+            offerId: offerId,
+            key,
+            address: contactAddress,
+            username,
+            typingIndicator: false
+          }
+        }),
     [addMessage.toString()]: (state, { payload: { key, message } }: ContactActions['addMessage']) =>
       produce(state, draft => {
         const messageId = Object.keys(message)[0]
@@ -265,17 +290,15 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { contactAddress } }: ContactActions['cleanNewMessages']
     ) =>
       produce(state, draft => {
-        console.log(contactAddress)
-        console.log('cleannewmessages')
-        draft[contactAddress].newMessages = []
+ 
+        //draft[contactAddress].newMessages = []
       }),
     [appendNewMessages.toString()]: (
       state,
       { payload: { contactAddress, messagesIds } }: ContactActions['appendNewMessages']
     ) =>
       produce(state, draft => {
-        console.log(contactAddress)
-        console.log('apendnewmessages')
+
         draft[contactAddress].newMessages = draft[contactAddress].newMessages.concat(messagesIds)
         remote.app.setBadgeCount(remote.app.getBadgeCount() + messagesIds.length)
       }),

@@ -111,7 +111,6 @@ export function* loadAllDirectMessages(
     let foundMessage
     if (latestMessage !== null) {
       foundMessage = messagesWithInfo.find((item) => {
-        console.log(item.message.id,'CONTRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', latestMessage.id)
         return item.message.id === latestMessage.id
       })
     }
@@ -165,12 +164,10 @@ export function* responseGetPrivateConversations(
     const conversation = checkConversation(key, value, privKey)
 
     if (conversation) {
-      console.log({conversation})
       const user = yield* select(directMessagesSelectors.user(conversation.contactPublicKey))
-      console.log({user})
       if (!contacts[user.nickname]) {
         yield put(
-          contactsActions.addContact({
+          contactsActions.addDirectContact({
             key: conversation.contactPublicKey,
             username: user.nickname,
             contactAddress: ''
