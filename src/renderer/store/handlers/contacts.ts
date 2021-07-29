@@ -217,7 +217,7 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
           }
         }
         draft[username].messages = {
-          ...draft[key].messages,
+          ...draft[username].messages,
           ...messages
         }
       }),
@@ -227,7 +227,7 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       ) =>
         produce(state, draft => {
           if (!draft[key]) {
-            draft[username] = {
+            draft[key] = {
               lastSeen: null,
               messages: [],
               newMessages: [],
