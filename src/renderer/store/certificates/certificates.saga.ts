@@ -2,7 +2,7 @@ import { call, apply, all, takeEvery, put, select } from 'typed-redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { certificatesActions } from './certificates.reducer'
-import { createUserCsr, configCrypto } from '@zbayapp/identity/lib/src'
+import { createUserCsr, configCrypto } from '@zbayapp/identity'
 import electronStore from '../../../shared/electronStore'
 import { actions as identityActions } from '../handlers/identity'
 import { registrationServiceAddress } from '../../../shared/static'
@@ -76,7 +76,6 @@ export function* createOwnCertificate(
   console.log('userData', userData)
 
   const user = yield* call(createUserCsr, userData)
-  console.log(user)
 
   yield put(
     certificatesActions.registerUserCertificate({
