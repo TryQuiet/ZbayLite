@@ -137,7 +137,7 @@ export function* loadAllDirectMessages(
 
     yield put(
       contactsActions.appendNewMessages({
-        contactAddress: contactPublicKey,
+        contactAddress: username,
         messagesIds: Array.from(Object.keys(displayableMessages))
       })
     )

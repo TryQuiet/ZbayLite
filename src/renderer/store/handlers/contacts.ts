@@ -156,6 +156,7 @@ export const updateLastSeen = ({ contact }) => async (dispatch, getState) => {
   const unread = selectors.newMessages(contact.address)(getState()).length
   remote.app.badgeCount = remote.app.badgeCount - unread
   dispatch(cleanNewMessages({ contactAddress: contact.username }))
+  dispatch(cleanNewMessages({ contactAddress: contact.address }))
   dispatch(
     setLastSeen({
       lastSeen,
@@ -331,7 +332,8 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { contactAddress } }: ContactActions['cleanNewMessages']
     ) =>
       produce(state, draft => {
-        //draft[contactAddress].newMessages = []
+        if (!draft[contactAddress]) return
+        draft[contactAddress].newMessages = []
       }),
     [appendNewMessages.toString()]: (
       state,
