@@ -77,7 +77,10 @@ export function* loadAllDirectMessages(
   const contactPublicKey = contact.contactPublicKey
   const sharedSecret = contact.sharedSecret
   console.log(contactPublicKey)
-  const user = yield* select(directMessagesSelectors.userByPublicKey(contactPublicKey))
+  let user = yield* select(directMessagesSelectors.userByPublicKey(contactPublicKey))
+  if (!user) {
+    user = yield* select(directMessagesSelectors.user(contactPublicKey))
+  }
   console.log({user}, 'user')
   if (!user) return
   const channel = yield* select(contactsSelectors.contact(user.nickname))
