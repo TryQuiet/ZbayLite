@@ -22,7 +22,7 @@ import { ipcRenderer } from 'electron'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { encodeMessage, constants } from '../../cryptography/cryptography'
 import certificatesSelectors from '../../store/certificates/certificates.selector'
-import { extractPubKeyString, sign, loadPrivateKey, configCrypto, CertFieldsTypes, parseCertificate } from '@zbayapp/identity'
+import { extractPubKeyString, sign, loadPrivateKey, configCrypto, CertFieldsTypes, parseCertificate } from '@zbayapp/identity/lib/src'
 import { arrayBufferToString } from 'pvutils'
 import { actions as waggleActions } from '../../store/handlers/waggle'
 import directMessagesHandlers, { IConversation } from '../../store/handlers/directMessages'
@@ -108,7 +108,7 @@ export function* sendMessage(socket: Socket): Generator {
   const ownCertificate = yield* select(certificatesSelectors.ownCertificate)
   const ownPubKey = yield* call(extractPubKeyString, ownCertificate)
   const privKey = yield* select(certificatesSelectors.ownPrivKey)
-  const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg, configCrypto.hashAlg)
+  const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg)
   const signed = yield* call(sign, messageToSend, keyObject)
 
   const randomId = yield* call(createRandomId)
@@ -265,7 +265,7 @@ export function* sendDirectMessage(socket: Socket): Generator {
   const ownCertificate = yield* select(certificatesSelectors.ownCertificate)
   const ownPubKey = yield* call(extractPubKeyString, ownCertificate)
   const privKey = yield* select(certificatesSelectors.ownPrivKey)
-  const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg, configCrypto.hashAlg)
+  const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg)
   const signed = yield* call(sign, messageToSend, keyObject)
 
   const preparedMessage = {
@@ -323,7 +323,7 @@ export function* addCertificate(): Generator {
   let updateCertificate = false
 
   if (hasCertyficate) {
-    parsedCert = parseCertificate(hasCertyficate)
+    parsedCert = yield* call(parseCertificate, hasCertyficate)
   }
 
   const certFieldsArray = Object.keys(CertFieldsTypes)

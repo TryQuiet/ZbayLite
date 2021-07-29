@@ -9,7 +9,7 @@ import { DisplayableMessage } from '../../zbay/messages.types'
 import { Contact } from '../handlers/contacts'
 import { Store } from '../reducers'
 import certificatesSelector from '../certificates/certificates.selector'
-import { arrayBufferToHexString, extractPubKeyString, loadCertificate } from '@zbayapp/identity'
+import { arrayBufferToHexString, extractPubKeyString, loadCertificate } from '@zbayapp/identity/lib/src'
 import channelSelector from '../selectors/channel'
 
 const contacts = (s: Store) => s.contacts
@@ -198,7 +198,7 @@ const allChannels = createSelector(
 const usersCertificateMapping = createSelector(
   certificatesSelector.usersCertificates,
   (certificates) => {
-    const accumulator = certificates.reduce<{ [pubKey: string]: { username: string; onionAddress: string; peerId: string; dmPubKey: string } }>((acc, current) => {
+    return certificates.reduce<{ [pubKey: string]: { username: string; onionAddress: string; peerId: string; dmPubKey: string } }>((acc, current) => {
       let parsedCerficated
       let certObject
       let nickname = null
@@ -222,11 +222,6 @@ const usersCertificateMapping = createSelector(
       }
       return acc
     }, {})
-    if (accumulator) {
-      return accumulator
-    } else {
-      return {}
-    }
   }
 )
 
