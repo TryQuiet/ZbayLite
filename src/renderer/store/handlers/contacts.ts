@@ -129,6 +129,7 @@ export const actions = {
 export type ContactActions = ActionsType<typeof actions>
 
 export const loadContact = address => async (dispatch, getState) => {
+  console.log('loadContact')
   const contact = selectors.contact(address)(getState())
   dispatch(updateLastSeen({ contact }))
 }
@@ -152,6 +153,7 @@ export const linkUserRedirect = contact => async (dispatch, getState) => {
 }
 
 export const updateLastSeen = ({ contact }) => async (dispatch, getState) => {
+  console.log('updateLastSeen')
   const lastSeen = DateTime.utc()
   const unread = selectors.newMessages(contact.address)(getState()).length
   remote.app.badgeCount = remote.app.badgeCount - unread

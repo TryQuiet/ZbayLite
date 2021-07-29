@@ -97,6 +97,7 @@ export const actions = {
 export type ChannelActions = ActionsType<typeof actions>
 
 const loadChannel = key => async (dispatch, getState) => {
+  console.log('loadChannel', key)
   try {
     dispatch(setChannelId(key))
     dispatch(setDisplayableLimit(30))
@@ -106,6 +107,7 @@ const loadChannel = key => async (dispatch, getState) => {
     electronStore.set(`lastSeen.${key}`, `${Math.floor(DateTime.utc().toSeconds())}`)
     dispatch(setAddress(contact.address))
     dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: contact.key }))
+    dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: key }))
   } catch (err) { }
 }
 const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
@@ -120,13 +122,13 @@ const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
   }
 
   dispatch(publicChannelsActions.subscribeForTopic(targetChannel))
-  // await dispatch(
-  //   contactsHandlers.actions.addContact({
-  //     key: targetChannel.address,
-  //     contactAddress: targetChannel.address,
-  //     username: targetChannel.name
-  //   })
-  // )
+  await dispatch(
+    contactsHandlers.actions.addContact({
+      key: targetChannel.address,
+      contactAddress: targetChannel.address,
+      username: targetChannel.name
+    })
+  )
 
   history.push(`/main/channel/${targetChannel.address}`)
 }

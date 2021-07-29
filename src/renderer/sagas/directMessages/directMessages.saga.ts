@@ -110,7 +110,7 @@ export function* loadAllDirectMessages(
       displayableMessages[msg] = decodedMessage
       latestMessage = decodedMessage
     })
-    yield put(
+    yield* put(
       contactsHandlers.actions.setMessages({
         key: contactPublicKey,
         username: username,
@@ -120,17 +120,21 @@ export function* loadAllDirectMessages(
     )
     const myUser = yield* select(usersSelectors.myUser)
     const messagesWithInfo = yield* select(contactsSelectors.messagesOfChannelWithUserInfo)
+    console.log(messagesWithInfo)
+
+    console.log(latestMessage, 'latestMessage')
 
     let foundMessage
     if (latestMessage !== null) {
-      foundMessage = messagesWithInfo.find((item) => {
+      foundMessage = messagesWithInfo.flat().find((item) => {
         return item.message.id === latestMessage.id
       })
     }
+console.log('foundmessage is', {foundMessage})
 
-    if (latestMessage && foundMessage && foundMessage?.userInfo.username !== myUser.nickname) {
+    if (latestMessage && latestMessage.username !== myUser.nickname) {
       yield* call(displayDirectMessageNotification, {
-        username: foundMessage.userInfo.username,
+        username: latestMessage.username,
         message: latestMessage
       })
     }
