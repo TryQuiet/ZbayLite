@@ -77,7 +77,7 @@ export function* loadAllDirectMessages(
   const contactPublicKey = contact.contactPublicKey
   const sharedSecret = contact.sharedSecret
   console.log(contactPublicKey)
-  const user = yield* select(directMessagesSelectors.user(contactPublicKey))
+  const user = yield* select(directMessagesSelectors.userByPublicKey(contactPublicKey))
   console.log({user}, 'user')
   if (!user) return
   const channel = yield* select(contactsSelectors.contact(user.nickname))
@@ -93,7 +93,10 @@ export function* loadAllDirectMessages(
   let newMessages = []
   console.time('sorting')
   const ids = Array.from(Object.keys(channel.messages))
+  console.log(ids, 'ids')
+
   newMessages = action.payload.messages.filter(id => !ids.includes(id))
+  console.log(action.payload.messages)
   console.timeEnd('sorting')
 
   const displayableMessages = {}
