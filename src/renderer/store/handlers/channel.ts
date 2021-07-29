@@ -120,13 +120,13 @@ const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
   }
 
   dispatch(publicChannelsActions.subscribeForTopic(targetChannel))
-  await dispatch(
-    contactsHandlers.actions.addContact({
-      key: targetChannel.address,
-      contactAddress: targetChannel.address,
-      username: targetChannel.name
-    })
-  )
+  // await dispatch(
+  //   contactsHandlers.actions.addContact({
+  //     key: targetChannel.address,
+  //     contactAddress: targetChannel.address,
+  //     username: targetChannel.name
+  //   })
+  // )
 
   history.push(`/main/channel/${targetChannel.address}`)
 }

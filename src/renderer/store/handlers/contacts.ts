@@ -41,13 +41,25 @@ export interface ContactsStore {
 const initialState: ContactsStore = {}
 
 const setMessages = createAction<{
-  messages: {
-    [key: string]: DisplayableMessage
-  } | DisplayableMessage[]
+  messages:
+    | {
+        [key: string]: DisplayableMessage
+      }
+    | DisplayableMessage[]
   contactAddress: string
   username: string
   key: string
 }>(actionTypes.SET_DIRECT_MESSAGES)
+const setChannelMessages = createAction<{
+  messages:
+    | {
+        [key: string]: DisplayableMessage
+      }
+    | DisplayableMessage[]
+  contactAddress: string
+  username: string
+  key: string
+}>(actionTypes.SET_CHANNEL_MESSAGES)
 const addContact = createAction<{
   offerId?: string
   contactAddress: string
@@ -98,6 +110,7 @@ const setContactConnected = createAction(actionTypes.SET_CONTACT_CONNECTED)
 
 export const actions = {
   setMessages,
+  setChannelMessages,
   setAllMessages,
   updateMessage,
   addMessage,
@@ -208,6 +221,29 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
           ...messages
         }
       }),
+      [setChannelMessages.toString()]: (
+        state,
+        { payload: { key, username, contactAddress, messages } }: ContactActions['setChannelMessages']
+      ) =>
+        produce(state, draft => {
+          if (!draft[key]) {
+            draft[username] = {
+              lastSeen: null,
+              messages: [],
+              newMessages: [],
+              vaultMessages: [],
+              offerId: null,
+              key,
+              address: contactAddress,
+              username,
+              typingIndicator: false
+            }
+          }
+          draft[key].messages = {
+            ...draft[key].messages,
+            ...messages
+          }
+        }),
     [setAllMessages.toString()]: (
       state,
       { payload: { key, username, contactAddress, messages } }: ContactActions['setAllMessages']
@@ -236,6 +272,8 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
     ) =>
       produce(state, draft => {
         console.log('add regular contact')
+        console.log(key)
+        if (key === 'zbay') return
         draft[key] = {
           lastSeen: null,
           messages: [],
@@ -248,24 +286,27 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
           typingIndicator: false
         }
       }),
-      [addDirectContact.toString()]: (
-        state,
-        { payload: { key, username, contactAddress, offerId = null } }: ContactActions['addDirectContact']
-      ) =>
-        produce(state, draft => {
-          console.log('adding direct contact')
-          draft[username] = {
-            lastSeen: null,
-            messages: [],
-            newMessages: [],
-            vaultMessages: [],
-            offerId: offerId,
-            key,
-            address: contactAddress,
-            username,
-            typingIndicator: false
-          }
-        }),
+    [addDirectContact.toString()]: (
+      state,
+      {
+        payload: { key, username, contactAddress, offerId = null }
+      }: ContactActions['addDirectContact']
+    ) =>
+      produce(state, draft => {
+        console.log('adding direct contact')
+        if (username === 'zbay') return
+        draft[username] = {
+          lastSeen: null,
+          messages: [],
+          newMessages: [],
+          vaultMessages: [],
+          offerId: offerId,
+          key,
+          address: contactAddress,
+          username,
+          typingIndicator: false
+        }
+      }),
     [addMessage.toString()]: (state, { payload: { key, message } }: ContactActions['addMessage']) =>
       produce(state, draft => {
         const messageId = Object.keys(message)[0]
@@ -290,7 +331,6 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { contactAddress } }: ContactActions['cleanNewMessages']
     ) =>
       produce(state, draft => {
- 
         //draft[contactAddress].newMessages = []
       }),
     [appendNewMessages.toString()]: (
@@ -298,7 +338,6 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { contactAddress, messagesIds } }: ContactActions['appendNewMessages']
     ) =>
       produce(state, draft => {
-
         draft[contactAddress].newMessages = draft[contactAddress].newMessages.concat(messagesIds)
         remote.app.setBadgeCount(remote.app.getBadgeCount() + messagesIds.length)
       }),

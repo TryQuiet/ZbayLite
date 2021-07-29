@@ -97,7 +97,7 @@ export function* loadAllMessages(
   })
 
   yield put(
-    contactsHandlers.actions.setMessages({
+    contactsHandlers.actions.setChannelMessages({
       key: action.payload.channelAddress,
       username: username,
       contactAddress: action.payload.channelAddress,
