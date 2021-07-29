@@ -73,9 +73,16 @@ export function* loadAllDirectMessages(
     return conv.conversationId === action.payload.channelAddress
   })
   const contact = conversation[0]
+  console.log({contact}, 'contact')
   const contactPublicKey = contact.contactPublicKey
   const sharedSecret = contact.sharedSecret
-  const channel = yield* select(contactsSelectors.contact(contactPublicKey))
+  console.log(contactPublicKey)
+  const user = yield* select(directMessagesSelectors.user(contactPublicKey))
+  console.log({user}, 'user')
+  if (!user) return
+  const channel = yield* select(contactsSelectors.contact(user.nickname))
+
+  console.log({channel})
   if (!channel) {
     log.error(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
     return
