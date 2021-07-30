@@ -245,8 +245,8 @@ export const messagesOfChannelWithUserInfo = createSelector(
       .map(message => {
         if (usersCertificateMapping[message.pubKey]) {
           const userInfo = usersCertificateMapping[message.pubKey]
-          if (userInfo.onionAddress !== null) {
-            return { message, userInfo: userInfo }
+          if (userInfo.onionAddress !== null && userInfo.dmPublicKey !== null) {
+            return ({ message, userInfo: userInfo })
           }
         } else if (message.pubKey === 'holmesMessagesFromStart') {
           return { message, userInfo: { username: 'holmes', onionAddress: '', peerId: '' } }

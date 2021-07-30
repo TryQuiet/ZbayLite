@@ -3,15 +3,15 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { hexStringToArrayBuffer } from '@zbayapp/identity'
 
 import { certificatesActions } from './certificates.reducer'
-import { createUserCsr } from '@zbayapp/identity'
+import { createUserCsr, configCrypto } from '@zbayapp/identity'
 import electronStore from '../../../shared/electronStore'
-import { actions } from '../../store/handlers/directMessages'
+import { actions } from '../handlers/directMessages'
 import { actions as identityActions } from '../handlers/identity'
 import { registrationServiceAddress } from '../../../shared/static'
-import notificationsHandlers from '../../store/handlers/notifications'
+import notificationsHandlers from '../handlers/notifications'
 import { successNotification } from '../handlers/utils'
-import directMessagesSelectors from '../../store/selectors/directMessages'
-import contactsSelectors from '../../store/selectors/contacts'
+import directMessagesSelectors from '../selectors/directMessages'
+import contactsSelectors from '../selectors/contacts'
 
 // export function* responseGetAvailableUsers(
 //   action: DirectMessagesActions['responseGetAvailableUsers']
@@ -27,7 +27,7 @@ export function* responseGetCertificates(
   yield* put(certificatesActions.setUsersCertificates(certificates.certificates))
   const users = yield* select(contactsSelectors.usersCertificateMapping)
   for (const [key, value] of Object.entries(users)) {
-    if (value.dmPublicKey) {
+    if (value.dmPublicKey && value.username) {
       yield put(
         actions.fetchUsers({
           usersList: {
@@ -60,6 +60,10 @@ export function* responseGetCertificate(): Generator {
   )
 }
 
+function isString(value: unknown): value is string {
+  return typeof value === 'string'
+}
+
 export function* createOwnCertificate(
   action: PayloadAction<ReturnType<typeof certificatesActions.createOwnCertificate>['payload']>
 ): Generator {
@@ -74,9 +78,11 @@ export function* createOwnCertificate(
     'hiddenServices'
   ])
 
-  let peerIdAddress = yield* apply(electronStore, electronStore.get, ['peerId'])
-  if (!peerIdAddress) {
-    peerIdAddress = 'unknown'
+  const peerIdAddress = yield* apply(electronStore, electronStore.get, ['peerId'])
+
+  if (!isString(peerIdAddress)) {
+    console.log('invalid peer id address or not exist')
+    return
   }
   const dmPublicKey = yield* select(directMessagesSelectors.publicKey)
   const bufferDmPublicKey = hexStringToArrayBuffer(dmPublicKey)
@@ -85,7 +91,9 @@ export function* createOwnCertificate(
     zbayNickname: action.payload,
     commonName: hiddenServices.libp2pHiddenService.onionAddress,
     peerId: peerIdAddress,
-    dmPublicKey: bufferDmPublicKey
+    dmPublicKey: dmPublicKey,
+    signAlg: configCrypto.signAlg,
+    hashAlg: configCrypto.hashAlg
   }
 
   const user = yield* call(createUserCsr, userData)
@@ -96,6 +104,7 @@ export function* createOwnCertificate(
       userCsr: user.userCsr
     })
   )
+
   yield* put(certificatesActions.setOwnCertKey(user.userKey))
 }
 
