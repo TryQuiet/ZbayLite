@@ -69,7 +69,7 @@ const directMessagesContact = address =>
 const contact = address =>
   createSelector(contacts, usersSelectors.users, (c, u) => {
     if (!c[address]) {
-      return new Contact()
+      return new Contact({username: 'unknown'})
     } else {
         return c[address]
       }

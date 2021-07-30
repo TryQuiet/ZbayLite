@@ -186,18 +186,20 @@ export const inputLocked = createSelector(
       return item.publicKey === channelId || item.nickname === channelId
     })
 
+    console.log('current contact')
+    console.log(currentContactArray[0])
     if (!waggle) {
       return INPUT_STATE.NOT_CONNECTED
     }
 
-    if (publicChannel || currentContactArray[0]) {
+    if (publicChannel || !currentContactArray[0]?.nickname.startsWith('anon')) {
       return INPUT_STATE.AVAILABLE
     }
 
-    if (!currentContactArray[0]) {
+    if (!currentContactArray[0] || currentContactArray[0].nickname.startsWith('anon')) {
       return INPUT_STATE.USER_NOT_REGISTERED
     }
-
+    
     return INPUT_STATE.NOT_CONNECTED
   }
 )

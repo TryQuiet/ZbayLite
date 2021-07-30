@@ -23,6 +23,8 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
     return conv.conversationId === action.payload.channelAddress
   })
 
+  console.log('load single message')
+
   const contact = conversation[0]
   const contactPublicKey = contact.contactPublicKey
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
@@ -119,6 +121,7 @@ export function* loadAllDirectMessages(
       })
     )
     const myUser = yield* select(usersSelectors.myUser)
+    console.log(user, 'vs', myUser)
     const messagesWithInfo = yield* select(contactsSelectors.messagesOfChannelWithUserInfo)
     console.log(messagesWithInfo)
 
@@ -131,10 +134,17 @@ export function* loadAllDirectMessages(
       })
     }
 console.log('foundmessage is', {foundMessage})
+let messageSender = null
+if (latestMessage) {
+  messageSender = yield* select(directMessagesSelectors.userByPublicKey(latestMessage.pubKey))
+}
 
-    if (latestMessage && latestMessage.username !== myUser.nickname) {
+    if (latestMessage && (messageSender?.nickname !== myUser.nickname)) {
+      console.log('inside IF')
+      console.log(user.nickname)
+      console.log(myUser.nickname)
       yield* call(displayDirectMessageNotification, {
-        username: latestMessage.username,
+        username: username,
         message: latestMessage
       })
     }
