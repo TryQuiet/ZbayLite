@@ -208,12 +208,10 @@ const usersCertificateMapping = createSelector(
       if (current !== null && current) {
         parsedCerficated = extractPubKeyString(current)
         certObject = loadCertificate(current)
-        if (certObject.subject.typesAndValues.length === 4) {
-          nickname = getCertFieldValue(certObject, CertFieldsTypes.nickName)
-          onionAddress = getCertFieldValue(certObject, CertFieldsTypes.commonName)
-          peerId = getCertFieldValue(certObject, CertFieldsTypes.peerId)
-          dmPubKey = getCertFieldValue(certObject, CertFieldsTypes.dmPublicKey)
-        }
+        nickname = getCertFieldValue(certObject, CertFieldsTypes.nickName)
+        onionAddress = getCertFieldValue(certObject, CertFieldsTypes.commonName)
+        peerId = getCertFieldValue(certObject, CertFieldsTypes.peerId)
+        dmPubKey = getCertFieldValue(certObject, CertFieldsTypes.dmPublicKey)
       }
       acc[parsedCerficated] = {
         username: nickname,
@@ -221,7 +219,9 @@ const usersCertificateMapping = createSelector(
         peerId: peerId,
         dmPubKey: dmPubKey
       }
-      return acc
+      if (nickname && onionAddress && peerId && dmPubKey) {
+        return acc
+      }
     }, {})
   }
 )
