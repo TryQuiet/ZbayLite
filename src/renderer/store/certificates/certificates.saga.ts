@@ -30,7 +30,7 @@ export function* responseGetCertificates(
 ): Generator {
   const certificates = action.payload
 
-  const filteredCertificates = yield* call(filterCertificates, certificates.certificates)
+  const filteredCertificates = filterCertificates(certificates.certificates)
   yield* put(certificatesActions.setUsersCertificates(filteredCertificates))
 }
 
