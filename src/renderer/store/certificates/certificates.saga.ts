@@ -2,7 +2,7 @@ import { call, apply, all, takeEvery, put, select } from 'typed-redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { certificatesActions } from './certificates.reducer'
-import { createUserCsr, configCrypto, CertFieldsTypes, parseCertificate } from '@zbayapp/identity'
+import { createUserCsr, configCrypto, CertFieldsTypes, parseCertificate, getCertFieldValue } from '@zbayapp/identity'
 import electronStore from '../../../shared/electronStore'
 import { actions as identityActions } from '../handlers/identity'
 import { registrationServiceAddress } from '../../../shared/static'
@@ -11,18 +11,16 @@ import { successNotification } from '../handlers/utils'
 import directMessagesSelectors from '../selectors/directMessages'
 
 const filterCertificates = (certificates: string[]): string[] => {
-  return certificates.filter((hasCertyficate) => {
-    const certFieldsArray = Object.keys(CertFieldsTypes)
-    const parsedCert = parseCertificate(hasCertyficate)
+  return certificates.filter((cert) => {
+    const parsedCert = parseCertificate(cert)
 
     let isValid = true
 
-    for (let i = 0; i < certFieldsArray.length; i++) {
-      if (hasCertyficate && !parsedCert.subject.typesAndValues[i]) {
+    for (const field of Object.keys(CertFieldsTypes)) {
+      if (cert && !getCertFieldValue(parsedCert, CertFieldsTypes[field])) {
         isValid = false
       }
     }
-
     return isValid
   })
 }
