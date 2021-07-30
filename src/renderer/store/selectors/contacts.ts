@@ -9,7 +9,7 @@ import { DisplayableMessage } from '../../zbay/messages.types'
 import { Contact } from '../handlers/contacts'
 import { Store } from '../reducers'
 import certificatesSelector from '../certificates/certificates.selector'
-import { arrayBufferToHexString, extractPubKeyString, loadCertificate } from '@zbayapp/identity'
+import { CertFieldsTypes, extractPubKeyString, getCertFieldValue, loadCertificate } from '@zbayapp/identity'
 import channelSelector from '../selectors/channel'
 
 const contacts = (s: Store) => s.contacts
@@ -208,11 +208,12 @@ const usersCertificateMapping = createSelector(
       if (current !== null && current) {
         parsedCerficated = extractPubKeyString(current)
         certObject = loadCertificate(current)
-        nickname = certObject.subject.typesAndValues[0].value.valueBlock.value
-        onionAddress = certObject.subject.typesAndValues[1].value.valueBlock.value
-        peerId = certObject.subject.typesAndValues[2].value.valueBlock.value
-        const dmPubKeyArray = certObject.subject.typesAndValues[3]?.value.valueBlock.valueHex
-        dmPubKey = arrayBufferToHexString(dmPubKeyArray)
+        if (certObject.subject.typesAndValues.length === 4) {
+          nickname = getCertFieldValue(certObject, CertFieldsTypes.nickName)
+          onionAddress = getCertFieldValue(certObject, CertFieldsTypes.commonName)
+          peerId = getCertFieldValue(certObject, CertFieldsTypes.peerId)
+          dmPubKey = getCertFieldValue(certObject, CertFieldsTypes.dmPublicKey)
+        }
       }
       acc[parsedCerficated] = {
         username: nickname,
