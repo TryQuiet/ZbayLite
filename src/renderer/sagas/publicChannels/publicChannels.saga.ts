@@ -62,7 +62,6 @@ export function* getPublicChannels(
 
     const mainChannel = yield* select(publicChannelsSelectors.publicChannelsByName('zbay'))
     if (mainChannel && !electronStore.get('generalChannelInitialized')) {
-      console.log('adding zbay channel', {mainChannel})
       yield put(
         contactsHandlers.actions.addContact({
           key: mainChannel.address,

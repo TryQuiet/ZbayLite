@@ -23,8 +23,6 @@ export function* loadDirectMessage(action: DirectMessagesActions['loadDirectMess
     return conv.conversationId === action.payload.channelAddress
   })
 
-  console.log('load single message')
-
   const contact = conversation[0]
   const contactPublicKey = contact.contactPublicKey
   const channel = yield* select(contactsSelectors.contact(contactPublicKey))
@@ -75,34 +73,24 @@ export function* loadAllDirectMessages(
     return conv.conversationId === action.payload.channelAddress
   })
   const contact = conversation[0]
-  console.log({contact}, 'contact')
   const contactPublicKey = contact.contactPublicKey
   const sharedSecret = contact.sharedSecret
-  console.log(contactPublicKey)
   let user = yield* select(directMessagesSelectors.userByPublicKey(contactPublicKey))
   if (!user) {
     user = yield* select(directMessagesSelectors.user(contactPublicKey))
   }
-  console.log({user}, 'user')
   if (!user) return
   const channel = yield* select(contactsSelectors.contact(user.nickname))
 
-  console.log({channel})
   if (!channel) {
     log.error(`Couldn't load all messages. No channel ${action.payload.channelAddress} in contacts`)
     return
   }
 
   const { username } = channel
-
   let newMessages = []
-  console.time('sorting')
   const ids = Array.from(Object.keys(channel.messages))
-  console.log(ids, 'ids')
-
   newMessages = action.payload.messages.filter(id => !ids.includes(id))
-  console.log(action.payload.messages)
-  console.timeEnd('sorting')
 
   const displayableMessages = {}
   if (username && newMessages) {
@@ -121,28 +109,13 @@ export function* loadAllDirectMessages(
       })
     )
     const myUser = yield* select(usersSelectors.myUser)
-    console.log(user, 'vs', myUser)
-    const messagesWithInfo = yield* select(contactsSelectors.messagesOfChannelWithUserInfo)
-    console.log(messagesWithInfo)
 
-    console.log(latestMessage, 'latestMessage')
-
-    let foundMessage
-    if (latestMessage !== null) {
-      foundMessage = messagesWithInfo.flat().find((item) => {
-        return item.message.id === latestMessage.id
-      })
+    let messageSender = null
+    if (latestMessage) {
+      messageSender = yield* select(directMessagesSelectors.userByPublicKey(latestMessage.pubKey))
     }
-console.log('foundmessage is', {foundMessage})
-let messageSender = null
-if (latestMessage) {
-  messageSender = yield* select(directMessagesSelectors.userByPublicKey(latestMessage.pubKey))
-}
 
     if (latestMessage && (messageSender?.nickname !== myUser.nickname)) {
-      console.log('inside IF')
-      console.log(user.nickname)
-      console.log(myUser.nickname)
       yield* call(displayDirectMessageNotification, {
         username: username,
         message: latestMessage
@@ -159,7 +132,6 @@ if (latestMessage) {
 }
 
 export function* responseGetAvailableUsers(
-  action: DirectMessagesActions['responseGetAvailableUsers']
 ): Generator {
   // for (const [key, value] of Object.entries(action.payload)) {
   //   // const user = yield* select(usersSelectors.registeredUser(key))

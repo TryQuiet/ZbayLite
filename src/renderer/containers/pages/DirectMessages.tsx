@@ -19,7 +19,6 @@ const DirectMessages = ({
   match,
   loadChannel
 }) => {
-  
   useEffect(
     () => {
       loadChannel(match.params.username)

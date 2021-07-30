@@ -42,20 +42,20 @@ const initialState: ContactsStore = {}
 
 const setMessages = createAction<{
   messages:
-    | {
-        [key: string]: DisplayableMessage
-      }
-    | DisplayableMessage[]
+  | {
+    [key: string]: DisplayableMessage
+  }
+  | DisplayableMessage[]
   contactAddress: string
   username: string
   key: string
 }>(actionTypes.SET_DIRECT_MESSAGES)
 const setChannelMessages = createAction<{
   messages:
-    | {
-        [key: string]: DisplayableMessage
-      }
-    | DisplayableMessage[]
+  | {
+    [key: string]: DisplayableMessage
+  }
+  | DisplayableMessage[]
   contactAddress: string
   username: string
   key: string
@@ -224,29 +224,29 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
           ...messages
         }
       }),
-      [setChannelMessages.toString()]: (
-        state,
-        { payload: { key, username, contactAddress, messages } }: ContactActions['setChannelMessages']
-      ) =>
-        produce(state, draft => {
-          if (!draft[key]) {
-            draft[key] = {
-              lastSeen: null,
-              messages: [],
-              newMessages: [],
-              vaultMessages: [],
-              offerId: null,
-              key,
-              address: contactAddress,
-              username,
-              typingIndicator: false
-            }
+    [setChannelMessages.toString()]: (
+      state,
+      { payload: { key, username, contactAddress, messages } }: ContactActions['setChannelMessages']
+    ) =>
+      produce(state, draft => {
+        if (!draft[key]) {
+          draft[key] = {
+            lastSeen: null,
+            messages: [],
+            newMessages: [],
+            vaultMessages: [],
+            offerId: null,
+            key,
+            address: contactAddress,
+            username,
+            typingIndicator: false
           }
-          draft[key].messages = {
-            ...draft[key].messages,
-            ...messages
-          }
-        }),
+        }
+        draft[key].messages = {
+          ...draft[key].messages,
+          ...messages
+        }
+      }),
     [setAllMessages.toString()]: (
       state,
       { payload: { key, username, contactAddress, messages } }: ContactActions['setAllMessages']
@@ -274,8 +274,6 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       { payload: { key, username, contactAddress, offerId = null } }: ContactActions['addContact']
     ) =>
       produce(state, draft => {
-        console.log('add regular contact')
-        console.log(key)
         if (key === 'zbay') return
         draft[key] = {
           lastSeen: null,
@@ -296,7 +294,6 @@ export const reducer = handleActions<ContactsStore, PayloadType<ContactActions>>
       }: ContactActions['addDirectContact']
     ) =>
       produce(state, draft => {
-        console.log('adding direct contact')
         if (username === 'zbay') return
         draft[username] = {
           lastSeen: null,

@@ -32,7 +32,7 @@ const contactsList = createSelector(
   contacts,
   identitySelectors.removedChannels,
   usersSelectors.users,
-  (contacts, removedChannels, users) => {
+  (contacts) => {
     return Array.from(Object.values(contacts)).filter(c => !c.address)
   }
 )
@@ -67,13 +67,13 @@ const directMessagesContact = address =>
   createSelector(contacts, c => Array.from(Object.values(c)).find(el => el.address === address))
 
 const contact = address =>
-  createSelector(contacts, usersSelectors.users, (c, u) => {
+  createSelector(contacts, usersSelectors.users, (c) => {
     if (!c[address]) {
-      return new Contact({username: 'unknown'})
+      return new Contact({ username: 'unknown' })
     } else {
-        return c[address]
-      }
+      return c[address]
     }
+  }
   )
 
 const messagesSorted = address =>

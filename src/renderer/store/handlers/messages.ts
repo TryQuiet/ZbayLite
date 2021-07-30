@@ -72,7 +72,6 @@ export const findNewMessages = (key, messages, state, isDM = false) => {
       const myUser = usersSelectors.myUser(state)
       return filteredByTimeAndType.filter(msg => {
         if (msg.message.itemId) {
-
           return msg.message.text
             ?.split(' ')
             .map(text => text.trim())

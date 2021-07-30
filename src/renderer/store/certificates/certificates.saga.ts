@@ -1,9 +1,9 @@
 import { call, apply, all, takeEvery, put, select } from 'typed-redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { hexStringToArrayBuffer } from '@zbayapp/identity'
+import { createUserCsr, configCrypto } from '@zbayapp/identity'
 
 import { certificatesActions } from './certificates.reducer'
-import { createUserCsr, configCrypto } from '@zbayapp/identity'
+
 import electronStore from '../../../shared/electronStore'
 import { actions } from '../handlers/directMessages'
 import { actions as identityActions } from '../handlers/identity'
@@ -85,7 +85,6 @@ export function* createOwnCertificate(
     return
   }
   const dmPublicKey = yield* select(directMessagesSelectors.publicKey)
-  const bufferDmPublicKey = hexStringToArrayBuffer(dmPublicKey)
 
   const userData = {
     zbayNickname: action.payload,

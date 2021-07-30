@@ -22,7 +22,7 @@ export const actionTypes = mirrorKey({
   SET_DECODING_CHANNEL: undefined,
   SET_DECODING_ERROR: undefined,
   CLEAR_CHANNEL: undefined,
-SET_CHANNEL_MESSAGES: undefined,
+  SET_CHANNEL_MESSAGES: undefined,
   SET_APP_VERSION: undefined,
   SET_TRANSFERS: undefined,
   SET_USE_TOR: undefined,

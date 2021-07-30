@@ -21,7 +21,6 @@ import { messageType, actionTypes } from '../../../shared/static'
 import { ipcRenderer } from 'electron'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { encodeMessage, constants } from '../../cryptography/cryptography'
-import certificatesSelectors from '../../store/certificates/certificates.selector'
 import { extractPubKeyString, sign, loadPrivateKey, configCrypto, CertFieldsTypes, parseCertificate } from '@zbayapp/identity'
 import { arrayBufferToString } from 'pvutils'
 import { actions as waggleActions } from '../../store/handlers/waggle'
@@ -104,9 +103,9 @@ export function* sendMessage(socket: Socket): Generator {
   const { address } = yield* select(channelSelectors.channel)
   const messageToSend = yield* select(channelSelectors.message)
 
-  const ownCertificate = yield* select(certificatesSelectors.ownCertificate)
+  const ownCertificate = yield* select(certificatesSelector.ownCertificate)
   const ownPubKey = yield* call(extractPubKeyString, ownCertificate)
-  const privKey = yield* select(certificatesSelectors.ownPrivKey)
+  const privKey = yield* select(certificatesSelector.ownPrivKey)
   const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg)
   const signed = yield* call(sign, messageToSend, keyObject)
 
@@ -261,9 +260,9 @@ export function* sendDirectMessage(socket: Socket): Generator {
 
   const messageToSend = yield* select(channelSelectors.message)
 
-  const ownCertificate = yield* select(certificatesSelectors.ownCertificate)
+  const ownCertificate = yield* select(certificatesSelector.ownCertificate)
   const ownPubKey = yield* call(extractPubKeyString, ownCertificate)
-  const privKey = yield* select(certificatesSelectors.ownPrivKey)
+  const privKey = yield* select(certificatesSelector.ownPrivKey)
   const keyObject = yield* call(loadPrivateKey, privKey, configCrypto.signAlg)
   const signed = yield* call(sign, messageToSend, keyObject)
 
@@ -316,7 +315,7 @@ export function* responseGetCertificates(socket: Socket): Generator {
 }
 
 export function* addCertificate(): Generator {
-  const hasCertyficate = yield* select(certificatesSelectors.ownCertificate)
+  const hasCertyficate = yield* select(certificatesSelector.ownCertificate)
   const nickname = yield* select(identitySelectors.nickName)
   let parsedCert
   let updateCertificate = false

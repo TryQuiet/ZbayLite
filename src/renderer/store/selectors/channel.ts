@@ -181,7 +181,7 @@ export const inputLocked = createSelector(
   waggleSelectors.isConnected,
   isPublicChannel,
   (channelId, waggleContacts, waggle, publicChannel) => {
-    const contactsData: Array<{ publicKey: string, nickname:string }> = Object.values(waggleContacts)
+    const contactsData: Array<{ publicKey: string; nickname: string }> = Object.values(waggleContacts)
     const currentContactArray = contactsData.filter(item => {
       return item.publicKey === channelId || item.nickname === channelId
     })
@@ -192,14 +192,14 @@ export const inputLocked = createSelector(
       return INPUT_STATE.NOT_CONNECTED
     }
 
-    if (publicChannel || !currentContactArray[0]?.nickname.startsWith('anon')) {
+    if (publicChannel || !currentContactArray[0]?.nickname?.startsWith('anon')) {
       return INPUT_STATE.AVAILABLE
     }
 
-    if (!currentContactArray[0] || currentContactArray[0].nickname.startsWith('anon')) {
+    if (!currentContactArray[0] || currentContactArray[0]?.nickname?.startsWith('anon')) {
       return INPUT_STATE.USER_NOT_REGISTERED
     }
-    
+
     return INPUT_STATE.NOT_CONNECTED
   }
 )

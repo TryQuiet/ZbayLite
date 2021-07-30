@@ -11,7 +11,7 @@ export const user = (publicKey) => createSelector(users, (d) => {
   return d[publicKey]
 })
 export const userByPublicKey = (publicKey) => createSelector(users, (d) => {
-  return Array.from(Object.values(d)).find(u  => u.publicKey === publicKey)
+  return Array.from(Object.values(d)).find(u => u.publicKey === publicKey)
 })
 
 export const publicKey = createSelector(directMessages, d => d.publicKey)
