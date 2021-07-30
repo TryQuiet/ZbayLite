@@ -115,7 +115,7 @@ export function* loadAllDirectMessages(
       messageSender = yield* select(directMessagesSelectors.userByPublicKey(latestMessage.pubKey))
     }
 
-    if (latestMessage && (messageSender?.nickname !== myUser.nickname)) {
+    if (latestMessage && (messageSender?.nickname !== myUser.nickname) && (messageSender?.nickname !== channel.username)) {
       yield* call(displayDirectMessageNotification, {
         username: username,
         message: latestMessage
