@@ -13,13 +13,6 @@ import { successNotification } from '../handlers/utils'
 import directMessagesSelectors from '../selectors/directMessages'
 import contactsSelectors from '../selectors/contacts'
 
-// export function* responseGetAvailableUsers(
-//   action: DirectMessagesActions['responseGetAvailableUsers']
-// ): Generator {
-//   const userss = yield* select(contactsSelectors.usersCertificateMapping)
-//   console.log('saga users', userss)
-// }
-
 export function* responseGetCertificates(
   action: PayloadAction<ReturnType<typeof certificatesActions.responseGetCertificates>['payload']>
 ): Generator {

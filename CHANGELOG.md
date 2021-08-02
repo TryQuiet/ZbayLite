@@ -6,6 +6,28 @@
 * Extracted waggle handling logic to separate function
 * Changed a way main process is terminating
 * [Performance] Removed excess decryption from checking conversations -->
+# [3.4.2] - 30 July 2021
+
+## Fix
+
+* Notifications for both dms and public channels
+
+## Changed
+
+* Contacts store is now storing DM contacts by nickname
+* Direct Messages users are now stored by nickname
+* Change direct messages channel path from channelId/nickname to nickname
+* Keep halfKey in certificate
+* Extract halfKey from certificate, dropped old orbitdb structure.
+* Fetch users when fetching certificates
+
+## Removed
+
+* ResponseGetAvailableUsers saga
+* GetAvailableUsers saga
+
+## Added
+
 # [3.4.1] - 20 July 2021
 
 ## Fix

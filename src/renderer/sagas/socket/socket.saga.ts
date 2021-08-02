@@ -57,9 +57,6 @@ export function subscribe(socket) {
     socket.on(socketsActions.RESPONSE_FETCH_ALL_DIRECT_MESSAGES, payload => {
       emit(directMessagesActions.responseLoadAllDirectMessages(payload))
     })
-    socket.on(socketsActions.RESPONSE_GET_AVAILABLE_USERS, payload => {
-      emit(directMessagesActions.responseGetAvailableUsers(payload))
-    })
     socket.on(socketsActions.RESPONSE_GET_PRIVATE_CONVERSATIONS, payload => {
       emit(directMessagesActions.responseGetPrivateConversations(payload))
     })

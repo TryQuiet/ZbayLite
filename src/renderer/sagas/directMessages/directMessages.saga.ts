@@ -131,25 +131,6 @@ export function* loadAllDirectMessages(
   }
 }
 
-export function* responseGetAvailableUsers(
-): Generator {
-  // for (const [key, value] of Object.entries(action.payload)) {
-  //   // const user = yield* select(usersSelectors.registeredUser(key))
-
-  //   yield put(
-  //     actions.fetchUsers({
-  //       usersList: {
-  //         [key]: {
-  //           publicKey: key,
-  //           halfKey: value.halfKey,
-  //           nickname: `anon${key.substring(0, 8)}`
-  //         }
-  //       }
-  //     })
-  //   )
-  // }
-}
-
 export function* responseGetPrivateConversations(
   action: DirectMessagesActions['responseGetPrivateConversations']
 ): Generator {
@@ -189,7 +170,6 @@ export function* responseGetPrivateConversations(
 
 export function* directMessagesSaga(): Generator {
   yield all([
-    takeEvery(`${directMessagesActions.responseGetAvailableUsers}`, responseGetAvailableUsers),
     takeEvery(
       `${directMessagesActions.responseGetPrivateConversations}`,
       responseGetPrivateConversations
