@@ -186,8 +186,6 @@ export const inputLocked = createSelector(
       return item.publicKey === channelId || item.nickname === channelId
     })
 
-    console.log('current contact')
-    console.log(currentContactArray[0])
     if (!waggle) {
       return INPUT_STATE.NOT_CONNECTED
     }

@@ -25,6 +25,7 @@
 
 * ResponseGetAvailableUsers saga
 * GetAvailableUsers saga
+* Initial messages from holmes
 
 ## Added
 
