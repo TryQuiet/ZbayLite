@@ -10,7 +10,7 @@ import {
 import identity, { Identity } from '../../store/handlers/identity'
 import { Socket } from 'socket.io-client'
 import * as matchers from 'redux-saga-test-plan/matchers'
-import { extractPubKeyString } from '@zbayapp/identity'
+import { extractPubKeyString, parseCertificate } from '@zbayapp/identity'
 import { publicChannelsActions } from '../publicChannels/publicChannels.reducer'
 import channel, { Channel } from '../../store/handlers/channel'
 import { Socket as socketsActions } from '../const/actionsTypes'
@@ -73,6 +73,12 @@ describe('checkCertificatesSaga', () => {
         }
       }
     }
+
+    const parsedCert = {
+      subject: {
+        typesAndValues: ['commonName', 'zbayNickname', 'peerId', 'dmPublicKey'] // cert fields
+      }
+    }
     const runResult = await expectSaga(addCertificate)
       .withReducer(
         combineReducers({
@@ -81,6 +87,12 @@ describe('checkCertificatesSaga', () => {
         }),
         initialState
       )
+      .provide([
+        [
+          matchers.call(parseCertificate, 'some certificate'),
+          parsedCert
+        ]
+      ])
       .hasFinalState(initialState)
       .run()
 
@@ -300,7 +312,7 @@ describe('checkCertificatesSaga', () => {
     const randomId = 'randomId'
     const address = 'address'
     const message = '' as IMessage
-    const encryptedMessage = 'encryptedMessage'
+    const encryptedMessage = 'keKhopVVNJtPAPBCooSZ3uB4nh8lsQ63lmOqZlRX+zUfEi2IJ/6WL5NPD+tTFw71F4ArpZJ7SgeqqPyJo6lnz2Ls1tMxZH6T/KuwJq0x70fV7M1LMqazim/LdMvqrKq0vOlwMkZbmijtH6wOalxeaA=='
     const encryptedPhrase = 'encryptedPhrase'
     const conversationId = 'conversationId'
     const contactPublicKey = 'contactPublicKey'
@@ -308,7 +320,7 @@ describe('checkCertificatesSaga', () => {
     const identityStore = new Identity()
 
     const conversation = {
-      sharedSecret: 'sharedSecret',
+      sharedSecret: '9bf9fb2db723642d6126d3fdb5df6fe374cef4c1fa1c5403dcbe849d3d30a3fd',
       contactPublicKey: contactPublicKey,
       conversationId: conversationId
     }
@@ -391,14 +403,14 @@ describe('checkCertificatesSaga', () => {
         ],
         [
           matchers.call.fn(computeSecrets),
-          'sharedSecret'
+          '9bf9fb2db723642d6126d3fdb5df6fe374cef4c1fa1c5403dcbe849d3d30a3fd'
         ],
         [
           matchers.call.fn(getPublicKey),
           conversationId
         ],
         [
-          matchers.call(encryptMessage, 'sharedSecret', 'no panicpubKey'),
+          matchers.call(encryptMessage, '9bf9fb2db723642d6126d3fdb5df6fe374cef4c1fa1c5403dcbe849d3d30a3fd', 'no panicpubKey'),
           encryptedMessage
         ],
         [
@@ -406,7 +418,7 @@ describe('checkCertificatesSaga', () => {
           'parsedMessage'
         ],
         [
-          matchers.call(encryptMessage, 'sharedSecret', 'parsedMessage'),
+          matchers.call(encryptMessage, '9bf9fb2db723642d6126d3fdb5df6fe374cef4c1fa1c5403dcbe849d3d30a3fd', 'parsedMessage'),
           encryptedPhrase
         ],
         [
