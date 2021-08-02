@@ -1,9 +1,7 @@
 import { call, apply, all, takeEvery, put, select } from 'typed-redux-saga'
 import { PayloadAction } from '@reduxjs/toolkit'
-import { createUserCsr, configCrypto } from '@zbayapp/identity'
-
 import { certificatesActions } from './certificates.reducer'
-
+import { createUserCsr, configCrypto, CertFieldsTypes, parseCertificate, getCertFieldValue } from '@zbayapp/identity'
 import electronStore from '../../../shared/electronStore'
 import { actions } from '../handlers/directMessages'
 import { actions as identityActions } from '../handlers/identity'
@@ -13,11 +11,27 @@ import { successNotification } from '../handlers/utils'
 import directMessagesSelectors from '../selectors/directMessages'
 import contactsSelectors from '../selectors/contacts'
 
+const filterCertificates = (certificates: string[]): string[] => {
+  return certificates.filter((cert) => {
+    const parsedCert = parseCertificate(cert)
+
+    let isValid = true
+
+    for (const field of Object.keys(CertFieldsTypes)) {
+      if (cert && !getCertFieldValue(parsedCert, CertFieldsTypes[field])) {
+        isValid = false
+      }
+    }
+    return isValid
+  })
+}
+
 export function* responseGetCertificates(
   action: PayloadAction<ReturnType<typeof certificatesActions.responseGetCertificates>['payload']>
 ): Generator {
   const certificates = action.payload
-  yield* put(certificatesActions.setUsersCertificates(certificates.certificates))
+  const filteredCertificates = filterCertificates(certificates.certificates)
+  yield* put(certificatesActions.setUsersCertificates(filteredCertificates))
   const users = yield* select(contactsSelectors.usersCertificateMapping)
   for (const [key, value] of Object.entries(users)) {
     if (value.dmPublicKey && value.username) {
@@ -34,6 +48,7 @@ export function* responseGetCertificates(
       )
     }
   }
+
 }
 
 export function* responseGetCertificate(): Generator {
