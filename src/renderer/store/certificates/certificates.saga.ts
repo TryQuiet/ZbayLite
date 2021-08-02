@@ -48,7 +48,6 @@ export function* responseGetCertificates(
       )
     }
   }
-
 }
 
 export function* responseGetCertificate(): Generator {
