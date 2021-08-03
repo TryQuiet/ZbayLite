@@ -10,8 +10,8 @@
 
 ## Fix
 
-* Links
-* Scroll
+* Restored links functionality.
+* Channels are scrolled to bottom on channel change.
 
 # [3.5.0] - 30 July 2021
 
