@@ -263,7 +263,7 @@ export const directMessages = address =>
       const messagesObjectsArray = messagesWithUserInfo.map(message => {
         const newMessage = {
           ...message.message,
-          createdAt: Math.floor(message.message.createdAt),
+          createdAt: message.message.createdAt * 1000,
           sender: {
             username: message.userInfo ? message.userInfo.username : 'unNamed',
             replyTo: ''
@@ -274,11 +274,14 @@ export const directMessages = address =>
       const sortedMessages = messagesObjectsArray
         .sort((a, b) => {
           return b.createdAt - a.createdAt
+        }).map(message => {
+          return {
+            ...message,
+            createdAt: Math.floor((message.createdAt / 1000))
+          }
         })
-        .map(message => message)
 
       const messages = sortedMessages
-
       const channelModerators = []
       const messsagesToRemove: DisplayableMessage[] = []
       const blockedUsers = []

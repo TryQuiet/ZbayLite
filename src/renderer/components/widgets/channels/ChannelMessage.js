@@ -20,13 +20,13 @@ import OpenlinkModal from '../../../containers/ui/OpenlinkModal'
 
 const styles = theme => ({
   message: {
-    marginTop: 14,
+    marginTop: 8,
     whiteSpace: 'pre-line',
     wordBreak: 'break-word',
     lineHeight: '20px'
   },
   messageInput: {
-    marginTop: -35,
+    marginTop: -27,
     marginLeft: 46
   },
   imagePlaceholder: {
@@ -245,7 +245,7 @@ export const ChannelMessage = ({
 }) => {
   const [showImage, setShowImage] = React.useState(false)
   const [imageUrl, setImageUrl] = React.useState(null)
-  const [parsedMessage, setParsedMessage] = React.useState('')
+  const [parsedMessage, setParsedMessage] = React.useState([])
   const [openModal, setOpenModal] = React.useState(false)
   const status = message.status || null
   const messageData = message.message.itemId
@@ -276,6 +276,15 @@ export const ChannelMessage = ({
     }
   }, [imageUrl])
   const [actionsOpen, setActionsOpen] = useState(false)
+  const arrayOfGroupedMessages = [[]]
+  for (const el of parsedMessage) {
+    if (el !== '\n') {
+      arrayOfGroupedMessages[arrayOfGroupedMessages.length - 1].push(el)
+    } else {
+      arrayOfGroupedMessages.push([])
+    }
+  }
+
   return (
     <BasicMessage
       message={message}
@@ -283,63 +292,75 @@ export const ChannelMessage = ({
       setActionsOpen={setActionsOpen}
     >
       <Grid className={classes.messageInput} item>
-        <Typography variant='body2' className={classes.message}>
-          {parsedMessage}
-        </Typography>
+        {
+          arrayOfGroupedMessages.map((item) => {
+            if (item !== ' ') {
+              return < Typography variant='body2' className={classes.message} >
+                {item}
+              </Typography>
+            }
+          })
+        }
         {status === 'failed' && (
           <ChannelMessageActions onResend={() => onResend(message)} />
         )}
       </Grid>
-      {!showImage && imageUrl && !autoloadImage && (
-        <Grid
-          item
-          container
-          className={classes.imagePlaceholder}
-          justify='center'
-          spacing={0}
-          onClick={() => {
-            if (whitelisted.includes(new URL(imageUrl).hostname)) {
-              setShowImage(true)
-            } else {
-              setOpenModal(true)
-            }
-          }}
-        >
-          <Grid item className={classes.imagePlacegolderDiv}>
-            <Icon className={classes.imagePlacegolder} src={imagePlacegolder} />
+      {
+        !showImage && imageUrl && !autoloadImage && (
+          <Grid
+            item
+            container
+            className={classes.imagePlaceholder}
+            justify='center'
+            spacing={0}
+            onClick={() => {
+              if (whitelisted.includes(new URL(imageUrl).hostname)) {
+                setShowImage(true)
+              } else {
+                setOpenModal(true)
+              }
+            }}
+          >
+            <Grid item className={classes.imagePlacegolderDiv}>
+              <Icon className={classes.imagePlacegolder} src={imagePlacegolder} />
+            </Grid>
+            <Grid item className={classes.buttonDiv}>
+              <Button className={classes.button} variant='outlined'>
+                Load image
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item className={classes.buttonDiv}>
-            <Button className={classes.button} variant='outlined'>
-              Load image
-            </Button>
+        )
+      }
+      {
+        ((showImage && imageUrl) || autoloadImage) && (
+          <Grid
+            item
+            container
+            direction='column'
+            onClick={() => {
+              shell.openExternal(imageUrl)
+            }}
+            className={classes.imageDiv}
+          >
+            <img className={classes.img} src={imageUrl} alt='new' />
           </Grid>
-        </Grid>
-      )}
-      {((showImage && imageUrl) || autoloadImage) && (
-        <Grid
-          item
-          container
-          direction='column'
-          onClick={() => {
-            shell.openExternal(imageUrl)
-          }}
-          className={classes.imageDiv}
-        >
-          <img className={classes.img} src={imageUrl} alt='new' />
-        </Grid>
-      )}
-      {imageUrl && (
-        <OpenlinkModal
-          open={openModal}
-          handleClose={() => setOpenModal(false)}
-          handleConfirm={() => setShowImage(true)}
-          url={imageUrl}
-          addToWhitelist={addToWhitelist}
-          setWhitelistAll={setWhitelistAll}
-          isImage
-        />
-      )}
-    </BasicMessage>
+        )
+      }
+      {
+        imageUrl && (
+          <OpenlinkModal
+            open={openModal}
+            handleClose={() => setOpenModal(false)}
+            handleConfirm={() => setShowImage(true)}
+            url={imageUrl}
+            addToWhitelist={addToWhitelist}
+            setWhitelistAll={setWhitelistAll}
+            isImage
+          />
+        )
+      }
+    </BasicMessage >
   )
 }
 

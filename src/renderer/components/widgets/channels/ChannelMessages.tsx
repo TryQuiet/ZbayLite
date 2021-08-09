@@ -143,7 +143,7 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
         .filter(msg => messagesTypesToDisplay.includes(msg.type))
         .concat(usersRegistration)
         .concat(publicChannelsRegistration)
-        .sort((a, b) => Math.floor(a.createdAt) - Math.floor(b.createdAt))
+        .reverse()
     )
   }
 
