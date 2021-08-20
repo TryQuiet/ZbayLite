@@ -19,12 +19,7 @@ exports[`ChannelMessage renders component 1`] = `
   <WithStyles(ForwardRef(Grid))
     className="messageInput-mock"
     item={true}
-  >
-    <WithStyles(ForwardRef(Typography))
-      className="message-mock"
-      variant="body2"
-    />
-  </WithStyles(ForwardRef(Grid))>
+  />
 </Connect(Component)>
 `;
 
@@ -48,11 +43,6 @@ exports[`ChannelMessage renders component when message is sent by owner 1`] = `
   <WithStyles(ForwardRef(Grid))
     className="messageInput-mock"
     item={true}
-  >
-    <WithStyles(ForwardRef(Typography))
-      className="message-mock"
-      variant="body2"
-    />
-  </WithStyles(ForwardRef(Grid))>
+  />
 </Connect(Component)>
 `;

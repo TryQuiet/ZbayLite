@@ -245,7 +245,7 @@ export const ChannelMessage = ({
 }) => {
   const [showImage, setShowImage] = React.useState(false)
   const [imageUrl, setImageUrl] = React.useState(null)
-  const [parsedMessage, setParsedMessage] = React.useState([])
+  const [allMessages, setAllMessages] = React.useState([])
   const [openModal, setOpenModal] = React.useState(false)
   const status = message.status || null
   const messageData = message.message.itemId
@@ -255,20 +255,30 @@ export const ChannelMessage = ({
     imageUrl && !torEnabled
       ? autoload.includes(new URL(imageUrl).hostname)
       : false
+
+  const arrayOfGroupedMessages = [[]]
+
   React.useEffect(() => {
-    setParsedMessage(
-      checkLinking(
-        publicChannels,
-        users,
-        onLinkedChannel,
-        onLinkedUser,
-        messageData,
-        setImageUrl,
-        openExternalLink,
-        allowAll,
-        whitelisted
-      )
+    const parsedMessages = checkLinking(
+      publicChannels,
+      users,
+      onLinkedChannel,
+      onLinkedUser,
+      messageData,
+      setImageUrl,
+      openExternalLink,
+      allowAll,
+      whitelisted
     )
+
+    for (const el of parsedMessages) {
+      if (el !== '\n') {
+        arrayOfGroupedMessages[arrayOfGroupedMessages.length - 1].push(el)
+      } else {
+        arrayOfGroupedMessages.push([])
+      }
+    }
+    setAllMessages(arrayOfGroupedMessages)
   }, [messageData, whitelisted, allowAll])
   React.useEffect(() => {
     if (allowAll || whitelisted.includes(imageUrl)) {
@@ -276,14 +286,6 @@ export const ChannelMessage = ({
     }
   }, [imageUrl])
   const [actionsOpen, setActionsOpen] = useState(false)
-  const arrayOfGroupedMessages = [[]]
-  for (const el of parsedMessage) {
-    if (el !== '\n') {
-      arrayOfGroupedMessages[arrayOfGroupedMessages.length - 1].push(el)
-    } else {
-      arrayOfGroupedMessages.push([])
-    }
-  }
 
   return (
     <BasicMessage
@@ -293,7 +295,7 @@ export const ChannelMessage = ({
     >
       <Grid className={classes.messageInput} item>
         {
-          arrayOfGroupedMessages.map((item) => {
+          allMessages.map((item) => {
             if (item !== ' ') {
               return < Typography variant='body2' className={classes.message} >
                 {item}

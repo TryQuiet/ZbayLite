@@ -138,14 +138,14 @@ const concatMessages = (mainMsg, messagesToConcat) => {
 export const mergeIntoOne = (messages: DisplayableMessage[]) => {
   if (messages.length === 0) return
   const result = []
-  const timeOfStackMessages = 0 // in seconds
+  const timeOfStackMessages = 300 // in seconds
   let lastPubKey = null
   let lastCteatedAt = null
   for (const msg of messages) {
     if (lastPubKey && lastPubKey !== msg.pubKey) {
       result.push([])
       result[result.length - 1].push(msg)
-    } else if (lastCteatedAt && (msg.createdAt - lastCteatedAt) < timeOfStackMessages) {
+    } else if (lastCteatedAt && ((lastCteatedAt - msg.createdAt) < timeOfStackMessages)) {
       result[result.length - 1].push(msg)
     } else {
       result.push([])
