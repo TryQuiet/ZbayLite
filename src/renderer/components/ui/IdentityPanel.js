@@ -42,8 +42,7 @@ const styles = theme => ({
   }
 })
 
-export const IdentityPanel = ({ classes, identity, handleSettings, user }) => {
-  const nickname = user ? user.nickname : `anon${identity.signerPubKey.substring(0, 10)}`
+export const IdentityPanel = ({ classes, nickname, handleSettings }) => {
   return (
     <div className={classes.root}>
       <Button

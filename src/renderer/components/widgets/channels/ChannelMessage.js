@@ -229,6 +229,7 @@ const checkLinking = (
 }
 export const ChannelMessage = ({
   classes,
+  dupa,
   message,
   onResend,
   publicChannels,
@@ -240,17 +241,14 @@ export const ChannelMessage = ({
   whitelisted,
   addToWhitelist,
   setWhitelistAll,
-  autoload,
-  torEnabled
+  autoload
 }) => {
   const [showImage, setShowImage] = React.useState(false)
   const [imageUrl, setImageUrl] = React.useState(null)
   const [parsedMessage, setParsedMessage] = React.useState('')
   const [openModal, setOpenModal] = React.useState(false)
-  const status = message.status || null
-  const messageData = message.message.itemId
-    ? message.message.text
-    : message.message
+  // const status = message.status || null
+  const messageData = message.message
   const autoloadImage =
     imageUrl && !torEnabled
       ? autoload.includes(new URL(imageUrl).hostname)
@@ -286,9 +284,9 @@ export const ChannelMessage = ({
         <Typography variant='body2' className={classes.message}>
           {parsedMessage}
         </Typography>
-        {status === 'failed' && (
+        {/* {status === 'failed' && (
           <ChannelMessageActions onResend={() => onResend(message)} />
-        )}
+        )} */}
       </Grid>
       {!showImage && imageUrl && !autoloadImage && (
         <Grid

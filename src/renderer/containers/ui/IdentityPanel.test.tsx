@@ -1,10 +1,15 @@
-import { mapStateToProps } from './IdentityPanel'
+import { useData } from './IdentityPanel'
+
+import React from 'react'
+import { renderHook } from '@testing-library/react-hooks'
+import { Provider } from 'react-redux'
 
 import create from '../../store/create'
 import { initialState } from '../../store/handlers/identity'
 
 describe('IdentityPanel', () => {
   let store = null
+  let wrapper
   beforeEach(() => {
     jest.clearAllMocks()
     store = create({
@@ -19,10 +24,11 @@ describe('IdentityPanel', () => {
         }
       }
     })
+    wrapper = ({ children }) => <Provider store={store}>{children}</Provider>
   })
 
   it('will receive right props', async () => {
-    const props = mapStateToProps(store.getState())
-    expect(props).toMatchSnapshot()
+    const { result } = renderHook(() => useData(), { wrapper })
+    expect(result.current).toMatchSnapshot()
   })
 })

@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { connect, useSelector, useDispatch } from 'react-redux'
 import * as R from 'ramda'
 import Grid from '@material-ui/core/Grid'
 import { bindActionCreators } from 'redux'
@@ -13,13 +13,21 @@ import QuickActionButton from '../../../components/widgets/sidebar/QuickActionBu
 import { Icon } from '../../../components/ui/Icon'
 import SearchIcon from '../../../static/images/st-search.svg'
 
+import { publicChannels } from '@zbayapp/nectar'
+
+const useData = () => {
+  const data = {
+    channels: useSelector(publicChannels.selectors.publicChannels),
+    selected: useSelector(publicChannels.selectors.currentChannel)
+  }
+  return data
+}
+
 export const mapStateToProps = state => ({
   channels: contactsSelectors.channelsList(state),
   selected: channelSelectors.channelInfo(state)
-  // fundsLocked:
-  //   channelSelectors.inputLocked(state) === INPUT_STATE.DISABLE ||
-  //   channelSelectors.inputLocked(state) === INPUT_STATE.LOCKED
 })
+
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
@@ -29,6 +37,7 @@ export const mapDispatchToProps = dispatch =>
     },
     dispatch
   )
+
 export const ChannelsPanel = ({
   title,
   openCreateModal,
@@ -37,6 +46,8 @@ export const ChannelsPanel = ({
   openDepositMonet,
   ...props
 }) => {
+  const { channels, selected } = useData()
+
   return (
     <Grid container item xs direction='column'>
       <Grid item>
@@ -48,7 +59,7 @@ export const ChannelsPanel = ({
         />
       </Grid>
       <Grid item>
-        <BaseChannelsList {...props} />
+        <BaseChannelsList channels={channels} selected={selected} />
       </Grid>
       {/*
       <Grid item>

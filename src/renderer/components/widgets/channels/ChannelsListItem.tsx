@@ -60,9 +60,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export interface IChannelsListItemComponentProps {
-  channel: Contact
+  channel: any
   directMessages: boolean
-  selected: ChannelInfo
+  selected: any
 }
 
 export const ChannelsListItem: React.FC<IChannelsListItemComponentProps> = ({
@@ -71,8 +71,7 @@ export const ChannelsListItem: React.FC<IChannelsListItemComponentProps> = ({
   selected
 }) => {
   const classes = useStyles({})
-  const isFromZbay = channel.username !== 'Unknown'
-  const highlight = selected.id === channel.key || selected.id === channel.username
+  const highlight = selected === channel.address
   return (
     <ListItem
       button
@@ -81,7 +80,7 @@ export const ChannelsListItem: React.FC<IChannelsListItemComponentProps> = ({
         history.push(
           `/main/${directMessages
             ? `direct-messages/${channel.username}`
-            : `channel/${channel.key}`
+            : `channel/${channel.address}`
           }`
         )
       }}
@@ -92,7 +91,7 @@ export const ChannelsListItem: React.FC<IChannelsListItemComponentProps> = ({
         primary={
           <Grid container alignItems='center'>
             <Grid item>
-              {directMessages && (
+              {/* {directMessages && (
                 <Icon
                   className={channel?.connected ? classes.connectedIcon : classes.notConnectedIcon}
                   src={
@@ -101,20 +100,16 @@ export const ChannelsListItem: React.FC<IChannelsListItemComponentProps> = ({
                       : avatarAnonMask
                   }
                 />
-              )}
+              )} */}
             </Grid>
             <Grid item>
               <Typography
                 variant='body2'
                 className={classNames(classes.title, {
-                  [classes.newMessages]: channel.newMessages.length > 0
+                  // TODO
+                  [classes.newMessages]: false
                 })}>
-                {directMessages
-                  ? `${isFromZbay
-                    ? `${channel.username.substring(0, 20) || channel.address.substring(0, 20)}`
-                    : 'unknown'
-                  }`
-                  : `# ${channel.username}`}
+                {`# ${channel.name}`}
               </Typography>
             </Grid>
           </Grid>

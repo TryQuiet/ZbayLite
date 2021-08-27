@@ -1,6 +1,5 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
-import * as R from 'ramda'
 import { shallow } from 'enzyme'
 
 import ChannelMessages from './ChannelMessages'

@@ -87,10 +87,6 @@ const openCreateUsernameModal = (openModal, closeModal) => {
 
 export const AccountSettingsForm = ({
   classes,
-  transparentAddress,
-  privateAddress,
-  handleCopy,
-  handleSubmit,
   openModal,
   closeModal,
   user
@@ -144,7 +140,7 @@ export const AccountSettingsForm = ({
   )
 }
 AccountSettingsForm.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object,
   initialValues: PropTypes.shape({
     nickname: PropTypes.string
   }),

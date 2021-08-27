@@ -2,7 +2,7 @@
 import { mapStateToProps, mapDispatchToProps } from './JoinChannelModal'
 
 import create from '../../../store/create'
-import { _PublicChannelData } from '../../../store/handlers/publicChannels'
+// import { _PublicChannelData } from '../../../store/handlers/publicChannels'
 
 describe('JoinChannelModal', () => {
   let store = null
@@ -12,7 +12,7 @@ describe('JoinChannelModal', () => {
       initialState: {
         importedChannel: {
           General: {
-            ..._PublicChannelData,
+            // ..._PublicChannelData,
             address:
               'ztestsapling1dfjv308amnk40s89trkvz646ne69553us0g858mmpgsw540efgftn4tf25gts2cttg3jgk9y8lx',
             minFee: '0',
@@ -22,7 +22,7 @@ describe('JoinChannelModal', () => {
             owner: '0208be86d3cac41fdb539b0b761bedccedaa300d5a09fd3ca34b6acad1ba856bcb'
           },
           Test: {
-            ..._PublicChannelData,
+            // ..._PublicChannelData,
             address:
               'ztestsapling1x7wn5g6y3c9fjnv0k78ks7dfprpuk0uvqmjxye0pwnwf73yh50krkgyempp09fjdlzaxuz90wxx',
             minFee: '0',

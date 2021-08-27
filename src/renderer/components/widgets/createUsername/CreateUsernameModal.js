@@ -163,9 +163,8 @@ export const CreateUsernameModal = ({
   classes,
   open,
   handleClose,
-  initialValues,
+  initialValue,
   handleSubmit,
-  isNewUser,
   certificateRegistrationError,
   certificate
 }) => {
@@ -174,16 +173,16 @@ export const CreateUsernameModal = ({
   const responseReceived = Boolean(certificateRegistrationError || certificate)
   const waitingForResponse = formSent && !responseReceived
   return (
-    <Modal open={open} handleClose={handleClose} isCloseDisabled={isNewUser}>
+    <Modal open={!certificate} handleClose={handleClose} isCloseDisabled={!certificate}>
       <Grid container className={classes.main} direction='column'>
-        {isNewUser ? (
+        {!certificate ? (
           <React.Fragment>
             <Grid className={classes.title} item>
               <Typography variant={'h3'}>Register a username</Typography>
             </Grid>
             <Formik
-              onSubmit={values => submitForm(handleSubmit, values, setFormSent)}
-              initialValues={initialValues}
+              onSubmit={values => submitForm(handleSubmit, values.nickname, setFormSent)}
+              initialValues={initialValue}
               validationSchema={values => getValidationSchema(values, certificateRegistrationError)}>
               {() => {
                 return (

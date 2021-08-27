@@ -28,6 +28,9 @@ const openModal = (modalName: string, data?: any) => createAction(actionTypes.OP
 
 const closeModal = (modalName: string) => createAction(actionTypes.CLOSE_MODAL, () => modalName)
 
+export const closeModalHandler = createAction<string>(actionTypes.CLOSE_MODAL)
+export const openModalHandler = createAction<string>(actionTypes.OPEN_MODAL)
+
 export const actionCreators = {
   openModal,
   closeModal
@@ -39,7 +42,8 @@ export const reducer = handleActions<Modals, PayloadType<ModalsActions>>(
   {
     [actionTypes.OPEN_MODAL]: (state, { payload }: ModalsActions['openModal']) =>
       produce(state, draft => {
-        draft[payload.modalName] = true
+        console.log('openModal', payload)
+        draft[payload] = true
         draft.payloads = {
           ...draft.payloads,
           [payload.modalName]: payload.data
@@ -47,6 +51,7 @@ export const reducer = handleActions<Modals, PayloadType<ModalsActions>>(
       }),
     [actionTypes.CLOSE_MODAL]: (state, { payload: modalName }: ModalsActions['closeModal']) =>
       produce(state, draft => {
+        console.log('close modal')
         draft[modalName] = false
       })
   },
@@ -71,5 +76,7 @@ export const withModal = (name) => (Component) => {
 export default {
   reducer,
   actionCreators,
-  withModal
+  withModal,
+  closeModalHandler,
+  openModalHandler
 }

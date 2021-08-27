@@ -11,9 +11,9 @@ import { Scrollbars } from 'rc-scrollbars'
 import Modal from '../../../ui/Modal'
 import Tab from '../../../ui/Tab'
 import AccountSettingsForm from '../../../../containers/widgets/settings/AccountSettingsForm'
-import ShippingSettingsForm from '../../../../containers/widgets/settings/ShippingSettingsForm'
+// import ShippingSettingsForm from '../../../../containers/widgets/settings/ShippingSettingsForm'
 import InvitationModal from '../../../../containers/ui/InvitationModal/InvitationModal'
-import AddFundsModal from '../../../../containers/widgets/settings/AddFunds'
+// import AddFundsModal from '../../../../containers/widgets/settings/AddFunds'
 import Security from '../../../../containers/widgets/settings/Security'
 import Notifications from '../../../../containers/widgets/settings/Notifications'
 import BlockedUsers from '../../../../containers/widgets/settings/BlockedUsers'
@@ -21,9 +21,9 @@ import BuyZcash from '../BuyZcash'
 
 const tabs = {
   account: AccountSettingsForm,
-  shipping: ShippingSettingsForm,
+  // shipping: ShippingSettingsForm,
   invite: InvitationModal,
-  addFunds: AddFundsModal,
+  // addFunds: AddFundsModal,
   security: Security,
   notifications: Notifications,
   blockedusers: BlockedUsers,
@@ -139,11 +139,11 @@ export const SettingsModal = ({
                 label='Notifications'
                 classes={{ tabRoot: classes.tab, selected: classes.selected }}
               />
-              <Tab
+              {/* <Tab
                 value='shipping'
                 label='Shipping'
                 classes={{ tabRoot: classes.tab, selected: classes.selected }}
-              />
+              /> */}
               {/* <Tab
                 value='addFunds'
                 label='Add Funds'

@@ -1,29 +1,33 @@
+
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import * as R from 'ramda'
 import { bindActionCreators } from 'redux'
 
-import identityHandlers from '../../store/handlers/identity'
-import identitySelectors from '../../store/selectors/identity'
-import userSelectors from '../../store/selectors/users'
+// import identityHandlers from '../../store/handlers/identity'
+// import identitySelectors from '../../store/selectors/identity'
+// import userSelectors from '../../store/selectors/users'
 import TopUpModalComponent from '../../components/ui/TopUpModal/TopUpModal'
 import modalsHandlers, { withModal } from '../../store/handlers/modals'
 
 export const mapStateToProps = state => ({
-  privateAddress: identitySelectors.address(state),
+  // users: [userSelectors.users(state)],
+  // privateAddress: identitySelectors.address(state),
+  users: [],
+  privateAddress: 'asdf'
   // transparentAddress: identitySelectors.transparentAddress(state),
-  users: userSelectors.users(state)
   // donationAddress: identitySelectors.donationAddress(state),
   // donationAllow: identitySelectors.donationAllow(state)
 })
 export const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      updateDonation: identityHandlers.epics.updateDonation,
-      setDonationAddress: identityHandlers.actions.setDonationAddress,
-      setDonationAllow: identityHandlers.actions.setDonationAllow,
-      setShieldingTax: identityHandlers.actions.setShieldingTax,
+      // updateDonation: identityHandlers.epics.updateDonation,
+      // setDonationAddress: identityHandlers.actions.setDonationAddress,
+      // setDonationAllow: identityHandlers.actions.setDonationAllow,
+
+      // setShieldingTax: identityHandlers.actions.setShieldingTax,
       // updateShieldingTax: identityHandlers.epics.updateShieldingTax,
       // updateDonationAddress: address =>
       //   identityHandlers.epics.updateDonationAddress(address),

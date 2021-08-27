@@ -137,11 +137,11 @@ export const VaultUnlockerForm = ({
 
             <Grid item container justify='center' alignItems='center'>
               <Typography variant='body2' className={classes.status}>
-                {loader.message}
+                {/* {loader.message} */}
               </Typography>
             </Grid>
           </Grid>
-          { mainChannelLoaded && (
+          { true && (
             <Redirect to='/main/channel/general' />
           )}
         </Form>

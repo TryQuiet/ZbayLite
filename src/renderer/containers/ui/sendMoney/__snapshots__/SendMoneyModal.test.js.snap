@@ -2,21 +2,10 @@
 
 exports[`SendMoneyModal will receive right props 1`] = `
 Object {
-  "shippingData": Object {
-    "firstName": "testName",
-    "lastName": "testLastName",
-  },
   "targetRecipientAddress": undefined,
   "userData": Object {
-    "address": "test",
-    "balance": "2",
-    "id": "1",
-    "name": "Mars",
-    "shippingData": Object {
-      "firstName": "testName",
-      "lastName": "testLastName",
-    },
+    "nickname": "",
   },
-  "users": Object {},
+  "users": Array [],
 }
 `;

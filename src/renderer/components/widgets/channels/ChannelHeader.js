@@ -132,6 +132,7 @@ export const ChannelHeader = ({
     }
   }
   const ActionsMenu = channelTypeToActions[channelType]
+  console.log('channel', channel)
   const isFromZbay = channel.name !== 'Unknown'
   const [silenceHover, setSilenceHover] = React.useState(false)
   const [wrapperWidth, setWrapperWidth] = React.useState(0)
@@ -139,7 +140,7 @@ export const ChannelHeader = ({
     setWrapperWidth(window.innerWidth - 300)
   })
   React.useEffect(() => {
-    setTab(0)
+    // setTab(0)
   }, [name])
   React.useEffect(() => {
     const handleResize = debounce(function handleResize () {
@@ -173,9 +174,9 @@ export const ChannelHeader = ({
                 })}>
                 {isRegisteredUsername || !isFromZbay
                   ? isFromZbay
-                    ? `${prefix[channelType]}${channel.name.substring(0, 20)}`
+                    ? `${prefix[channelType]}${channel?.name?.substring(0, 20)}`
                     : 'unknown'
-                  : `${prefix[channelType]}${channel.name.substring(0, 20)}`}
+                  : `${prefix[channelType]}${channel?.name?.substring(0, 20)}`}
               </Typography>
             </Grid>
             {mutedFlag && (
@@ -209,7 +210,7 @@ export const ChannelHeader = ({
               <Tabs
                 value={tab}
                 onChange={(e, value) => {
-                  setTab(value)
+                  // setTab(value)
                 }}
                 classes={{ root: classes.tabs, indicator: classes.indicator }}>
                 <Tab label='All' classes={{ root: classes.tab, selected: classes.selected }} />

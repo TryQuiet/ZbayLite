@@ -8,14 +8,14 @@ import vaultHandlers from '../../store/handlers/vault'
 import vaultSelectors from '../../store/selectors/vault'
 // import nodeSelectors from '../../store/selectors/node'
 import appSelectors from '../../store/selectors/app'
-import identitySelectors from '../../store/selectors/identity'
+// import identitySelectors from '../../store/selectors/identity'
 import VaultUnlockerFormComponent from '../../components/widgets/VaultUnlockerForm'
 // import { actionCreators } from '../../store/handlers/modals'
 import electronStore from '../../../shared/electronStore'
 
 export const mapStateToProps = state => ({
   isLogIn: vaultSelectors.isLogIn(state),
-  loader: identitySelectors.loader(state),
+  // loader: identitySelectors.loader(state),
   // currentBlock: nodeSelectors.currentBlock(state),
   // latestBlock: nodeSelectors.latestBlock(state),
   // nodeConnected: nodeSelectors.isConnected(state),

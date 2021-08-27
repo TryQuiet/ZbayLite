@@ -17,16 +17,14 @@ exports[`IdentityPanel renders component with username 1`] = `
     <WithStyles(ForwardRef(Typography))
       className="nickname-mock"
       variant="h4"
-    >
-      test
-    </WithStyles(ForwardRef(Typography))>
+    />
     <ExpandMoreIcon
       fontSize="small"
     />
   </WithStyles(ForwardRef(Button))>
   <withModal(Connect(SettingsModalContainer)) />
   <Memo(Connect(withModal(ReceivedInvitaionModalContainer))) />
-  <Connect(withModal(Component)) />
+  <CreateUsernameModal />
 </div>
 `;
 
@@ -47,15 +45,13 @@ exports[`IdentityPanel renders component without username 1`] = `
     <WithStyles(ForwardRef(Typography))
       className="nickname-mock"
       variant="h4"
-    >
-      test
-    </WithStyles(ForwardRef(Typography))>
+    />
     <ExpandMoreIcon
       fontSize="small"
     />
   </WithStyles(ForwardRef(Button))>
   <withModal(Connect(SettingsModalContainer)) />
   <Memo(Connect(withModal(ReceivedInvitaionModalContainer))) />
-  <Connect(withModal(Component)) />
+  <CreateUsernameModal />
 </div>
 `;

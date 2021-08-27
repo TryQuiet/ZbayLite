@@ -1,34 +1,38 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import * as R from 'ramda'
 
-import IdentityPanel from '../../components/ui/IdentityPanel'
-import identitySelectors from '../../store/selectors/identity'
-import usersSelectors from '../../store/selectors/users'
-import { actionCreators } from '../../store/handlers/modals'
+import { identity } from '@zbayapp/nectar'
 
-export const mapStateToProps = state => {
-  const identity = identitySelectors.data(state)
-  return {
-    identity: identity,
-    user: usersSelectors.registeredUser(identity.signerPubKey)(state)
+import IdentityPanelComponent from '../../components/ui/IdentityPanel'
+// import identitySelectors from '../../store/selectors/identity'
+// import usersSelectors from '../../store/selectors/users'
+import actionCreators from '../../store/handlers/modals'
+
+export const useData = () => {
+  const data = {
+    nickname: useSelector(identity.selectors.zbayNickname)
   }
+  return data
 }
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      handleSettings: actionCreators.openModal('accountSettingsModal'),
-      handleInvitation: actionCreators.openModal('invitationModal')
-    },
-    dispatch
-  )
+// export const mapDispatchToProps = dispatch =>
+//   bindActionCreators(
+//     {
+//       handleSettings: actionCreators.openModal('accountSettingsModal'),
+//       handleInvitation: actionCreators.openModal('invitationModal')
+//     },
+//     dispatch
+//   )
 
-export default R.compose(
-  React.memo,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-)(IdentityPanel)
+const IdentityPanel = () => {
+  const { nickname } = useData()
+  const dispatch = useDispatch()
+
+  const handleSettings = () => dispatch(actionCreators.openModalHandler('accountSettingsModal'))
+
+  return <IdentityPanelComponent nickname={nickname} handleSettings={handleSettings} />
+}
+
+export default IdentityPanel

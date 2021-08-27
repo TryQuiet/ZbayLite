@@ -1,10 +1,11 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from '@reduxjs/toolkit'
 import createElectronStorage from 'redux-persist-electron-storage'
 import { persistReducer } from 'redux-persist'
+import { publicChannels, users, identity, storeKeys, errors, messages } from '@zbayapp/nectar'
 
 import { StoreType } from './handlers/types'
 
-import identityHandlers from './handlers/identity'
+// import identityHandlers from './handlers/identity'
 import notificationsHandlers from './handlers/notifications'
 // import importedChannelHandlers from './handlers/importedChannel'
 import channelHandlers from './handlers/channel'
@@ -17,7 +18,7 @@ import modalsHandlers from './handlers/modals'
 // import directMessagesQueueHandlers from './handlers/directMessagesQueue'
 import criticalErrorHandlers from './handlers/criticalError'
 import appHandlers from './handlers/app'
-import usersHandlers from './handlers/users'
+// import usersHandlers from './handlers/users'
 import contactsHandlers from './handlers/contacts'
 import directMessageChannelHandlers from './handlers/directMessageChannel'
 // import invitationHandlers from './handlers/invitation'
@@ -25,7 +26,7 @@ import directMessageChannelHandlers from './handlers/directMessageChannel'
 // import offersHandlers from './handlers/offers'
 // import txnTimestampsHandlers from './handlers/txnTimestamps'
 // import torHandlers from './handlers/tor'
-import publicChannelsHandlers from './handlers/publicChannels'
+// import publicChannelsHandlers from './handlers/publicChannels'
 // import feesHandlers from './handlers/fees'
 import mentionsHandlers from './handlers/mentions'
 import whitelistHandlers from './handlers/whitelist'
@@ -42,10 +43,11 @@ const persistConfig = {
   key: 'root',
   storage: reduxStorage,
   whitelist: [
+    'Identity',
+    'PublicChannels',
     'directMessages',
     'contacts',
     'app',
-    'identity',
     'users',
     'channels',
     'vault',
@@ -64,7 +66,12 @@ const persistConfig = {
 }
 
 export const reducers = {
-  [StoreKeys.Users]: usersHandlers.reducer,
+  [storeKeys.PublicChannels]: publicChannels.reducer,
+  [storeKeys.Users]: users.reducer,
+  [storeKeys.Identity]: identity.reducer,
+  [storeKeys.Errors]: errors.reducer,
+  [storeKeys.Messages]: messages.reducer,
+  // [StoreKeys.Certificates]: certificatesReducer,
   waggle: waggleHandlers.reducer,
   [StoreKeys.DirectMessages]: directMessages.reducer,
   app: appHandlers.reducer,
@@ -72,7 +79,6 @@ export const reducers = {
   // messagesQueue: messagesQueueHandlers.reducer,
   // directMessagesQueue: directMessagesQueueHandlers.reducer,
   modals: modalsHandlers.reducer,
-  [StoreKeys.Identity]: identityHandlers.reducer,
   notifications: notificationsHandlers.reducer,
   // importedChannel: importedChannelHandlers.reducer,
   // rates: ratesHandlers.reducer,
@@ -88,15 +94,15 @@ export const reducers = {
   // offers: offersHandlers.reducer,
   // txnTimestamps: txnTimestampsHandlers.reducer,
   // tor: torHandlers.reducer,
-  publicChannels: publicChannelsHandlers.reducer,
+  // publicChannels: publicChannelsHandlers.reducer,
   // fees: feesHandlers.reducer,
   mentions: mentionsHandlers.reducer,
   whitelist: whitelistHandlers.reducer,
-  notificationCenter: notificationCenterHandlers.reducer,
+  notificationCenter: notificationCenterHandlers.reducer
   // ownedChannels: ownedChannels.reducer,
-  [StoreKeys.Certificates]: certificatesReducer
 }
 
 export type Store = StoreType<typeof reducers>
 
 export default persistReducer(persistConfig, combineReducers(reducers))
+// export default combineReducers(reducers)
