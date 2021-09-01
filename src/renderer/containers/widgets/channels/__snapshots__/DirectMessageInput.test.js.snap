@@ -32,7 +32,7 @@ Object {
   "myUser": Object {
     "nickname": "",
   },
-  "signerPubey": "asdf",
+  "signerPubey": "mock",
   "users": Array [],
 }
 `;

@@ -14,8 +14,7 @@ import { publicChannels, identity, messages } from '@zbayapp/nectar'
 export const useChannelInputData = () => {
   const currentChannel = useSelector(publicChannels.selectors.currentChannel)
   const channels = useSelector(publicChannels.selectors.publicChannels)
-  console.log(currentChannel, 'current Kutrwa channel')
-  console.log(channels, 'jebane channels')
+
   const data = {
     message: useSelector(channelSelectors.message),
     id: useSelector(channelSelectors.id),
@@ -78,7 +77,7 @@ export const ChannelInput = () => {
       }}
       onKeyPress={(message) => {
         console.log(message, 'message is')
-        // checkMentions()
+        checkMentions()
         sendOnEnter(message)
       }}
       message={message}

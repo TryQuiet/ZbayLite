@@ -5,7 +5,7 @@ import { all, fork } from 'redux-saga/effects'
 import { socketSaga } from './socket/socket.saga'
 // import { certificatesSaga } from '../store/certificates/certificates.saga'
 
-export default function* root(socket): Generator {
+export default function* root(_socket): Generator {
   yield all([
     // fork(publicChannels.saga, socket),
     // fork(directMessagesSaga),

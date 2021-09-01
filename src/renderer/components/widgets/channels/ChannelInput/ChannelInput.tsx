@@ -318,6 +318,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
             .replace(/ /g, String.fromCharCode(160))
             .split(String.fromCharCode(160))
           currentMsg[currentMsg.length - 1] =
+          // eslint-disable-next-line
             '@' + refMentionsToSelect.current[refSelected.current].nickname
           currentMsg.push(String.fromCharCode(160))
           setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
@@ -388,6 +389,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
                   .replace(/ /g, String.fromCharCode(160))
                   .split(String.fromCharCode(160))
                 currentMsg[currentMsg.length - 1] =
+                // eslint-disable-next-line
                   '@' + refMentionsToSelect.current[refSelected.current].nickname
                 currentMsg.push(String.fromCharCode(160))
                 setMessage(currentMsg.join(String.fromCharCode(160)))

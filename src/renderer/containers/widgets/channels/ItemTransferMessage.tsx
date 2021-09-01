@@ -9,7 +9,7 @@ import ItemTransferMessageComponent from '../../../components/widgets/channels/I
 // import nodeSelector from '../../../store/selectors/node'
 // import usersSelectors from '../../../store/selectors/users'
 
-const mapStateToProps = (state, { message }) => {
+const mapStateToProps = () => {
   return {
     // rateUsd: ratesSelectors.rate('usd')(state),
     // currentBlock: parseInt(nodeSelector.currentBlock(state)),

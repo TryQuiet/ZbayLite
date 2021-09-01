@@ -11,11 +11,11 @@ import { bindActionCreators } from 'redux'
 import TopUpModalComponent from '../../components/ui/TopUpModal/TopUpModal'
 import modalsHandlers, { withModal } from '../../store/handlers/modals'
 
-export const mapStateToProps = state => ({
+export const mapStateToProps = _state => ({
   // users: [userSelectors.users(state)],
   // privateAddress: identitySelectors.address(state),
   users: [],
-  privateAddress: 'asdf'
+  privateAddress: 'mock'
   // transparentAddress: identitySelectors.transparentAddress(state),
   // donationAddress: identitySelectors.donationAddress(state),
   // donationAllow: identitySelectors.donationAllow(state)

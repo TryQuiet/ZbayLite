@@ -10,7 +10,7 @@ import NewMessageModal from '../../../components/widgets/channels/NewMessageModa
 // import contactsHandlers from '../../../store/handlers/contacts'
 import notificationsHandlers from '../../../store/handlers/notifications'
 
-export const mapStateToProps = state => ({
+export const mapStateToProps = _state => ({
   users: []
   // users: usersSelector.users(state)
 })

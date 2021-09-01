@@ -229,7 +229,6 @@ const checkLinking = (
 }
 export const ChannelMessage = ({
   classes,
-  dupa,
   message,
   onResend,
   publicChannels,
@@ -250,7 +249,7 @@ export const ChannelMessage = ({
   // const status = message.status || null
   const messageData = message.message
   const autoloadImage =
-    imageUrl && !torEnabled
+    imageUrl
       ? autoload.includes(new URL(imageUrl).hostname)
       : false
   React.useEffect(() => {

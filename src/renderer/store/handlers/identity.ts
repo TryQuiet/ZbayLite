@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { createAction, handleActions } from 'redux-actions'
 import { remote } from 'electron'
 
-import appSelectors from '../selectors/app'
+// import appSelectors from '../selectors/app'
 import notificationCenterHandlers from './notificationCenter'
 import { successNotification } from './utils'
 import modalsHandlers from './modals'
@@ -16,8 +16,8 @@ import electronStore from '../../../shared/electronStore'
 // import { clearPublicChannels } from './publicChannels'
 
 import { ActionsType, PayloadType } from './types'
-import directMessagesHandlers from './directMessages'
-import directMessagesSelectors from '../selectors/directMessages'
+// import directMessagesHandlers from './directMessages'
+// import directMessagesSelectors from '../selectors/directMessages'
 import debug from 'debug'
 
 const log = Object.assign(debug('zbay:identity'), {
@@ -182,7 +182,7 @@ export const loadIdentity = () => async dispatch => {
   }
 }
 
-export const prepareUpgradedVersion = () => async (dispatch, getState) => {
+export const prepareUpgradedVersion = () => async (_dispatch, _getState) => {
   console.log('prereUpgradedVersion')
   // Temporary fix for apps upgraded from versions < 3
   // if (!electronStore.get('isNewUser') && !electronStore.get('appUpgraded')) {
@@ -195,7 +195,7 @@ export const prepareUpgradedVersion = () => async (dispatch, getState) => {
   // }
 }
 
-export const setIdentityEpic = identityToSet => async (dispatch, getState) => {
+export const setIdentityEpic = _identityToSet => async (dispatch, _getState) => {
   // const hasWaggleIdentity = directMessagesSelectors.publicKey(getState())
   // const identity = identityToSet
   console.log('setIdentityEpic')

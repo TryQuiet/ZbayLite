@@ -102,7 +102,6 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   channelId,
   onLinkedChannel,
   publicChannels,
-  isNewUser,
   isDev
 }) => {
   const classes = useStyles({})
@@ -133,10 +132,10 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   let groupedMessages: { [key: string]: DisplayableMessage[] }
   if (messages.length !== 0) {
     groupedMessages = R.groupBy<any>(msg => {
-      if (msg.createdAt.length < 10) {
+      if (msg.createdAt.split('').indexOf(',') === -1) {
         return 'Today'
       }
-      return msg.createdAt.substring(0, 6)
+      return msg.createdAt.split(',')[0]
     })(
       messages
         .filter(msg => messagesTypesToDisplay.includes(msg.type))

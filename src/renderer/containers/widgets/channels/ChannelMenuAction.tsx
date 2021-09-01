@@ -12,7 +12,7 @@ import notificationCenterSelectors from '../../../store/selectors/notificationCe
 import notificationCenterHandlers from '../../../store/handlers/notificationCenter'
 import { notificationFilterType } from '../../../../shared/static'
 
-import { publicChannels as pubChannels } from '@zbayapp/nectar'
+// import { publicChannels as pubChannels } from '@zbayapp/nectar'
 
 const filterToText = {
   [notificationFilterType.ALL_MESSAGES]: 'Every new message',

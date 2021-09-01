@@ -1,6 +1,6 @@
 // import { DateTime } from 'luxon'
 import { io, Socket } from 'socket.io-client'
-import { socket as nectar } from '@zbayapp/nectar'
+import { socket as nectar, identity } from '@zbayapp/nectar'
 // import {
 //   PublicChannelsActions,
 //   publicChannelsActions
@@ -28,7 +28,6 @@ import { ipcRenderer } from 'electron'
 // import directMessagesHandlers, { IConversation } from '../../store/handlers/directMessages'
 // import crypto from 'crypto'
 // import certificatesSelector from '../../store/certificates/certificates.selector'
-import {  identity } from '@zbayapp/nectar'
 import electronStore from '../../../shared/electronStore'
 import { identityActions } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
 

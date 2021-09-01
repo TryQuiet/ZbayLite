@@ -114,7 +114,7 @@ const loadChannel = key => async (dispatch, getState) => {
     console.log(err)
   }
 }
-const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
+const linkChannelRedirect = targetChannel => async (dispatch, _getState) => {
   // const contact = contactsSelectors.contact(targetChannel.address)(getState())
   // if (targetChannel.name === 'zbay') {
   //   history.push('/main/channel/zs10zkaj29rcev9qd5xeuzck4ly5q64kzf6m6h9nfajwcvm8m2vnjmvtqgr0mzfjywswwkwke68t00')

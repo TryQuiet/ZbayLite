@@ -1,4 +1,4 @@
-import { connect, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import React from 'react'
 
@@ -13,7 +13,7 @@ import notificationCenter from '../../../store/selectors/notificationCenter'
 
 import { publicChannels } from '@zbayapp/nectar'
 
-import { messageType, notificationFilterType } from '../../../../shared/static'
+import { notificationFilterType } from '../../../../shared/static'
 
 const useData = () => {
   const currentChannel = useSelector(publicChannels.selectors.currentChannel)

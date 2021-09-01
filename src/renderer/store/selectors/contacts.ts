@@ -10,8 +10,8 @@ import { DisplayableMessage } from '../../zbay/messages.types'
 import { Contact } from '../handlers/contacts'
 import { Store } from '../reducers'
 // import certificatesSelector from '../certificates/certificates.selector'
-import { CertFieldsTypes, extractPubKeyString, getCertFieldValue, loadCertificate } from '@zbayapp/identity'
-import channelSelector from '../selectors/channel'
+// import { CertFieldsTypes, extractPubKeyString, getCertFieldValue, loadCertificate } from '@zbayapp/identity'
+// import channelSelector from '../selectors/channel'
 
 const contacts = (s: Store) => s.contacts
 

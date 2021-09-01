@@ -1,10 +1,10 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { publicChannels, identity } from '@zbayapp/nectar'
+import { publicChannels } from '@zbayapp/nectar'
 import JoinChannelModalComponent from '../../../components/widgets/channels/JoinChannelModal'
 import channelHandlers from '../../../store/handlers/channel'
-import notificationsHandlers from '../../../store/handlers/notifications'
-import modalsHandlers, { withModal } from '../../../store/handlers/modals'
+// import notificationsHandlers from '../../../store/handlers/notifications'
+import modalsHandlers from '../../../store/handlers/modals'
 import modalsSelectors from '../../../store/selectors/modals'
 
 const useJoinChannelData = () => {
@@ -34,7 +34,7 @@ export const useJoinChannelActions = () => {
 }
 
 export const JoinChannelModal = () => {
-  const { publicChannels, open, users, modalName } = useJoinChannelData()
+  const { publicChannels, open, users } = useJoinChannelData()
   const { joinChannel, handleClose } = useJoinChannelActions()
 
   return (

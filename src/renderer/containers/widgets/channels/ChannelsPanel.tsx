@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect, useSelector, useDispatch } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import * as R from 'ramda'
 import Grid from '@material-ui/core/Grid'
 import { bindActionCreators } from 'redux'
@@ -44,6 +44,7 @@ export const ChannelsPanel = ({
   openJoinChannel,
   fundsLocked,
   openDepositMonet,
+  // eslint-disable-next-line
   ...props
 }) => {
   const { channels, selected } = useData()

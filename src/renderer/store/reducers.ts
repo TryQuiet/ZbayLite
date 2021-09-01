@@ -35,7 +35,7 @@ import notificationCenterHandlers from './handlers/notificationCenter'
 // import ownedChannels from './handlers/ownedChannels'
 import directMessages from './handlers/directMessages'
 import waggleHandlers from './handlers/waggle'
-import { certificatesReducer } from './certificates/certificates.reducer'
+// import { certificatesReducer } from './certificates/certificates.reducer'
 import { StoreKeys } from './store.keys'
 
 const reduxStorage = createElectronStorage()

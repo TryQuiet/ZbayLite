@@ -11,13 +11,13 @@ import contactsSelectors from '../../../store/selectors/contacts'
 import appSelectors from '../../../store/selectors/app'
 // import ownedChannelsSelectors from '../../../store/selectors/ownedChannels'
 // import publicChannelsSelector from '../../../store/selectors/publicChannels'
-import { MessageType } from '../../../../shared/static.types'
+// import { MessageType } from '../../../../shared/static.types'
 import channelHandlers, { actions } from '../../../store/handlers/channel'
 import { publicChannels as pubChannels } from '@zbayapp/nectar'
 import electronStore from '../../../../shared/electronStore'
 import { loadNextMessagesLimit } from '../../../../shared/static'
 
-export const ChannelMessages = ({ tab, contentRect }) => {
+export const ChannelMessages = ({ contentRect }) => {
   const isDev = process.env.NODE_ENV === 'development'
 
   const [scrollPosition, setScrollPosition] = React.useState(-1)

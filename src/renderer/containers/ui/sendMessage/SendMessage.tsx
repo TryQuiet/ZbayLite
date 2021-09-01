@@ -1,7 +1,6 @@
 import React from 'react'
 import * as R from 'ramda'
-import { connect, useSelector, useDispatch } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import { withModal, actionCreators } from '../../../store/handlers/modals'
@@ -11,7 +10,7 @@ import directMessages from '../../../store/handlers/contacts'
 // import userSelectors from '../../../store/selectors/users'
 import directMessagesSelector from '../../../store/selectors/directMessages'
 
-import { identity } from '@zbayapp/nectar'
+// import { identity } from '@zbayapp/nectar'
 
 const useData = () => {
   const data = {

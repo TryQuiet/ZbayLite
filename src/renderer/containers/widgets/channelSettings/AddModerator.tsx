@@ -4,12 +4,12 @@ import * as R from 'ramda'
 
 // import moderationActions from '../../../store/handlers/moderationActions'
 import AddModerator from '../../../components/widgets/channelSettings/AddModerator'
-import channelSelectors from '../../../store/selectors/channel'
+// import channelSelectors from '../../../store/selectors/channel'
 // import usersSelector from '../../../store/selectors/users'
 import { withModal } from '../../../store/handlers/modals'
-import contactsSelectors from '../../../store/selectors/contacts'
+// import contactsSelectors from '../../../store/selectors/contacts'
 
-export const mapStateToProps = state => {
+export const mapStateToProps = _state => {
   // const messagesState = contactsSelectors.directMessages(channelSelectors.channelId(state))(state)
   // const visibleMessages = messagesState.visibleMessages
   // const moderators = messagesState.channelModerators

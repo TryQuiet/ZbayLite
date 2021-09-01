@@ -11,7 +11,7 @@ import channelSelectors from '../../store/selectors/channel'
 // import ratesSelectors from '../../store/selectors/rates'
 import PublishChannelModal from '../../components/ui/PublishChannelModal'
 // import publicChannelsHandlers from '../../store/handlers/publicChannels'
-import { publicChannels } from '@zbayapp/nectar'
+// import { publicChannels } from '@zbayapp/nectar'
 export const mapStateToProps = state => {
   return {
     // balance: identitySelectors.balance('zec')(state),

@@ -1,17 +1,15 @@
 import Immutable from 'immutable'
 import { createAction } from 'redux-actions'
-import channelSelectors from '../selectors/channel'
+// import channelSelectors from '../selectors/channel'
 // import usersSelectors from '../selectors/users'
 // import identitySelectors from '../selectors/identity'
 
 import {
-  messageType,
-  actionTypes,
-  notificationFilterType
+  actionTypes
 } from '../../../shared/static'
 import { DisplayableMessage } from '../../zbay/messages.types'
-import electronStore from '../../../shared/electronStore'
-import notificationCenterSelectors from '../selectors/notificationCenter'
+// import electronStore from '../../../shared/electronStore'
+// import notificationCenterSelectors from '../selectors/notificationCenter'
 
 export const ChannelMessages = {
   messages: [],
@@ -34,12 +32,12 @@ export const actions = {
   appendNewMessages
 }
 
-const msgTypeToNotification = new Set([
-  messageType.BASIC,
-  messageType.ITEM_TRANSFER,
-  messageType.ITEM_BASIC,
-  messageType.TRANSFER
-])
+// const msgTypeToNotification = new Set([
+//   messageType.BASIC,
+//   messageType.ITEM_TRANSFER,
+//   messageType.ITEM_BASIC,
+//   messageType.TRANSFER
+// ])
 
 // export const findNewMessages = (key, messages, state, isDM = false) => {
 //   if (messages) {

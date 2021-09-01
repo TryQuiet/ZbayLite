@@ -4,12 +4,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import ChannelInputComponent from '../../../components/widgets/channels/ChannelInput'
 import channelHandlers from '../../../store/handlers/channel'
 // import directMessagesQueueHandlers from '../../../store/handlers/directMessagesQueue'
-import channelSelectors, { INPUT_STATE } from '../../../store/selectors/channel'
+import channelSelectors from '../../../store/selectors/channel'
 // import usersSelectors from '../../../store/selectors/users'
 // import identitySelectors from '../../../store/selectors/identity'
 import contactsSelectors from '../../../store/selectors/contacts'
 // import { User } from '../../../store/handlers/users'
-import { directMessagesActions } from '../../../sagas/directMessages/directMessages.reducer'
+// import { directMessagesActions } from '../../../sagas/directMessages/directMessages.reducer'
 
 export const useDirectMessageInputData = contactId => {
   const contact = useSelector(contactsSelectors.contact(contactId))
@@ -24,7 +24,7 @@ export const useDirectMessageInputData = contactId => {
     // inputState: useSelector(usersSelectors.registeredUser(signerPubey)) ? inputLocked : INPUT_STATE.USER_NOT_REGISTERED,
     // users: useSelector(usersSelectors.users),
     // myUser: useSelector(usersSelectors.myUser),
-    signerPubey: 'asdf',
+    signerPubey: 'mock',
     inputState: inputLocked,
     users: [],
     myUser: { nickname: '' },
@@ -50,7 +50,7 @@ export const useDirectMessageInputActions = () => {
   }, [dispatch])
 
   const sendDirectMessageOnEnter = useCallback(() => {
-    dispatch(directMessagesActions.sendDirectMessage())
+    // dispatch(directMessagesActions.sendDirectMessage())
   }, [dispatch])
 
   return { onChange, resetDebounce, sendDirectMessageOnEnter }

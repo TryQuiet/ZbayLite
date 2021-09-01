@@ -1,7 +1,5 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect, useDispatch, useSelector } from 'react-redux'
-import * as R from 'ramda'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { identity } from '@zbayapp/nectar'
 
