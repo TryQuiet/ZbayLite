@@ -40,7 +40,7 @@ export const connect = async (): Promise<Socket> => {
 
 export function subscribe(socket) {
   return eventChannel<
-  | ActionFromMapping<PublicChannelsActions & DirectMessagesActions & CertificatesActions>
+    | ActionFromMapping<PublicChannelsActions & DirectMessagesActions & CertificatesActions>
   >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
@@ -326,9 +326,7 @@ export function* addCertificate(): Generator {
 
   for (const x of certFieldsArray) {
     if (hasCertificate) {
-      console.log(parsedCert)
       certField = getCertFieldValue(parsedCert, x)
-      console.log(certField)
       if (!certField) {
         updateCertificate = true
       }
