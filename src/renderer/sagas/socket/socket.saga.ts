@@ -325,12 +325,15 @@ export function* addCertificate(): Generator {
   const certFieldsArray = Object.values(CertFieldsTypes)
 
   for (const x of certFieldsArray) {
-    certField = getCertFieldValue(parsedCert, x)
-    if (hasCertificate && !certField) {
-      updateCertificate = true
+    if (hasCertificate) {
+      console.log(parsedCert)
+      certField = getCertFieldValue(parsedCert, x)
+      console.log(certField)
+      if (!certField) {
+        updateCertificate = true
+      }
     }
   }
-
   if ((!hasCertificate && nickname) || updateCertificate) {
     console.log('Calling createOwnCertificate')
     yield* put(certificatesActions.createOwnCertificate(nickname))
