@@ -40,7 +40,7 @@ export const connect = async (): Promise<Socket> => {
 
 export function subscribe(socket) {
   return eventChannel<
-    | ActionFromMapping<PublicChannelsActions & DirectMessagesActions & CertificatesActions>
+  | ActionFromMapping<PublicChannelsActions & DirectMessagesActions & CertificatesActions>
   >(emit => {
     socket.on(socketsActions.MESSAGE, payload => {
       emit(publicChannelsActions.loadMessage(payload))
