@@ -21,10 +21,7 @@ export const initialState: Modals = new Modals({
   payloads: {}
 })
 
-const openModal = (modalName: string, data?: any) => createAction(actionTypes.OPEN_MODAL, () => ({
-  modalName,
-  data
-}))
+const openModal = (modalName: string, data?: any) => createAction(actionTypes.OPEN_MODAL, () => modalName)
 
 const closeModal = (modalName: string) => createAction(actionTypes.CLOSE_MODAL, () => modalName)
 
@@ -44,10 +41,6 @@ export const reducer = handleActions<Modals, PayloadType<ModalsActions>>(
       produce(state, draft => {
         console.log('openModal', payload)
         draft[payload] = true
-        draft.payloads = {
-          ...draft.payloads,
-          [payload.modalName]: payload.data
-        }
       }),
     [actionTypes.CLOSE_MODAL]: (state, { payload: modalName }: ModalsActions['closeModal']) =>
       produce(state, draft => {

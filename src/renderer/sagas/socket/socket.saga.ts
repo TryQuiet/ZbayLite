@@ -45,14 +45,8 @@ export const connect = async (): Promise<Socket> => {
 
 export function* startConnection(): Generator {
   const socket = yield* call(connect)
+  // @ts-ignore
   yield* fork(nectar.useIO, socket)
-  const hiddenServices: any = yield* apply(electronStore, electronStore.get, ['hiddenServices'])
-  yield* put(identityActions.storeCommonName(hiddenServices.libp2pHiddenService.onionAddress))
-  yield* takeEvery(
-    identityActions.requestPeerId.type,
-    identity.sagas.requestPeerIdSaga,
-    socket
-  )
 }
 
 export function* socketSaga(): Generator {

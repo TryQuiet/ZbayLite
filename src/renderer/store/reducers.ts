@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import createElectronStorage from 'redux-persist-electron-storage'
 import { persistReducer } from 'redux-persist'
-import { publicChannels, users, identity, storeKeys, errors, messages } from '@zbayapp/nectar'
+import { publicChannels, users, identity, storeKeys, errors, messages, communities} from '@zbayapp/nectar'
 
 import { StoreType } from './handlers/types'
 
@@ -44,6 +44,7 @@ const persistConfig = {
   storage: reduxStorage,
   whitelist: [
     'Identity',
+    'Communities',
     'PublicChannels',
     'directMessages',
     'contacts',
@@ -68,6 +69,7 @@ const persistConfig = {
 export const reducers = {
   [storeKeys.PublicChannels]: publicChannels.reducer,
   [storeKeys.Users]: users.reducer,
+  [storeKeys.Communities]: communities.reducer,
   [storeKeys.Identity]: identity.reducer,
   [storeKeys.Errors]: errors.reducer,
   [storeKeys.Messages]: messages.reducer,

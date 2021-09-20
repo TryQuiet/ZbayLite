@@ -8,7 +8,8 @@ import AccountSettingsFormComponent from '../../../components/widgets/settings/A
 const useData = () => {
   const data = {
     user: {
-      nickname: useSelector(identity.selectors.zbayNickname)
+      // nickname: useSelector(identity.selectors.zbayNickname)
+      nickname: 'mockNickname'
     }
   }
   return data

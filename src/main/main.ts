@@ -279,7 +279,7 @@ app.on('ready', async () => {
   })
 
   mainWindow.webContents.on('did-finish-load', async () => {
-    tor = await spawnTor()
+    // tor = await spawnTor()
     waggleProcess = await runWaggle(mainWindow.webContents)
     if (process.platform === 'win32' && process.argv) {
       const payload = process.argv[1]
@@ -319,7 +319,7 @@ app.setAsDefaultProtocolClient('zbay')
 app.on('before-quit', async e => {
   e.preventDefault()
   if (waggleProcess !== null) {
-    await waggleProcess.connectionsManager.closeStorage()
+    // await waggleProcess.connectionsManager.closeStorage()
     await waggleProcess.dataServer.close()
   }
   if (tor !== null) {

@@ -111,45 +111,48 @@ export const getPorts = async (): Promise<{
 }
 
 export const runWaggle = async (webContents: BrowserWindow['webContents']): Promise<{connectionsManager: ConnectionsManager; dataServer: DataServer}> => {
-  const ports = electronStore.get('ports')
+  const ports = await getPorts()
   const appDataPath = electronStore.get('appDataPath')
-  const { libp2pHiddenService } = electronStore.get('hiddenServices')
+
+  console.log(ports, 'ports')
 
   const dataServer = new TlgManager.DataServer(ports.dataServer)
   await dataServer.listen()
 
   const connectionsManager = new TlgManager.ConnectionsManager({
     port: ports.libp2pHiddenService,
-    host: `${libp2pHiddenService.onionAddress}.onion`,
+    host: `mockonion`,
     agentHost: 'localhost',
     agentPort: ports.socksPort,
     io: dataServer.io,
     options: {
-      isWaggleMobileMode: false,
       env: {
         appDataPath: `${appDataPath}/Zbay`
-      }
+      },
+      spawnTor: true,
+      torControlPort: ports.controlPort
     }
   })
 
-  TlgManager.initListeners(dataServer.io, connectionsManager)
+  connectionsManager.init().then(() =>
+    webContents.send('connectToWebsocket')
+  )
 
-  webContents.send('connectToWebsocket')
-  ipcMain.on('connectionReady', () => {
-    if (!electronStore.get('waggleInitialized')) {
-      connectionsManager
-        .initializeNode()
-        .then(async (result) => {
-          await connectionsManager.initStorage()
-          webContents.send('waggleInitialized')
-          electronStore.set('peerId', result.peerId)
-          electronStore.set('waggleInitialized', true)
-        })
-        .catch(error => {
-          log.error(`Couldn't initialize waggle: ${error.message}`)
-        })
-    }
-  })
+  // TlgManager.initListeners(dataServer.io, connectionsManager)
+
+  // ipcMain.on('connectionReady', () => {
+  //   if (!electronStore.get('waggleInitialized')) {
+  //     connectionsManager
+  //     .init()
+  //     .then(async (result) => {
+  //       webContents.send('waggleInitialized')
+  //       electronStore.set('waggleInitialized', true)
+  //       })
+  //       .catch(error => {
+  //         log.error(`Couldn't initialize waggle: ${error.message}`)
+  //       })
+  //   }
+  // })
 
   return { connectionsManager, dataServer }
 }

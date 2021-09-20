@@ -10,7 +10,8 @@ import actionCreators from '../../store/handlers/modals'
 
 export const useData = () => {
   const data = {
-    nickname: useSelector(identity.selectors.zbayNickname)
+    // nickname: useSelector(identity.selectors.zbayNickname)
+    nickname: 'mockNickname'
   }
   return data
 }

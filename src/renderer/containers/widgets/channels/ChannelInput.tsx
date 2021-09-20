@@ -24,7 +24,8 @@ export const useChannelInputData = () => {
     channelName: channels.find(channel => channel.address === currentChannel)?.name,
     users: [],
     myUser: {
-      nickname: useSelector(identity.selectors.zbayNickname)
+      // nickname: useSelector(identity.selectors.zbayNickname)
+      nickname: 'mockNickname'
     },
     // users: useSelector(usersSelectors.users),
     // myUser: useSelector(usersSelectors.myUser),
