@@ -109,7 +109,7 @@ const CustomInputComponent = ({
   field,
   isTouched,
   form: { touched, errors, values },
-  createCommunityError,
+  joinCommunityError,
   ...props
 }) => {
   const { value, ...rest } = field
@@ -139,24 +139,24 @@ const submitForm = (handleSubmit, values, setFormSent) => {
   handleSubmit(values)
 }
 
-export const CreateCommunityModal = ({
+export const JoinCommunityModal = ({
   classes,
   open,
   handleClose,
   initialValues,
   handleSubmit,
-  createCommunityError
+  joinCommunityError
 }) => {
   const [isTouched, setTouched] = useState(false)
   const [formSent, setFormSent] = useState(false)
-  const responseReceived = Boolean(createCommunityError)
+  const responseReceived = Boolean(joinCommunityError)
   const waitingForResponse = formSent && !responseReceived
   return (
-    <Modal open={open} handleClose={handleClose}>
+    <Modal open={true} handleClose={handleClose}>
       <Grid container className={classes.main} direction='column'>
         <React.Fragment>
           <Grid className={classes.title} item>
-            <Typography variant={'h3'}>Create a new community</Typography>
+            <Typography variant={'h3'}>Join community</Typography>
           </Grid>
           <Formik
             onSubmit={values => submitForm(handleSubmit, values, setFormSent)}
@@ -167,14 +167,14 @@ export const CreateCommunityModal = ({
                   <Grid container className={classes.container}>
                     <Grid className={classes.field} item xs={12}>
                       <Typography variant='caption' className={classes.label}>
-                        Create a name for your community.{' '}
+                        Paste your invite link to join an existing community.{' '}
                       </Typography>
                       <Field
-                        name='communityName'
+                        name='communityAddress'
                         classes={classes}
                         component={CustomInputComponent}
                         isTouched={isTouched}
-                        createCommunityError={createCommunityError}
+                        joinCommunityError={joinCommunityError}
                       />
                     </Grid>
                   </Grid>
@@ -209,7 +209,7 @@ export const CreateCommunityModal = ({
                     <Typography variant='body2' className={classes.info}>
                       You can{' '}
                       <span className={classes.link} onClick={() => {}}>
-                        join a community
+                        create a new community
                       </span>
                       instead.
                     </Typography>
@@ -224,11 +224,11 @@ export const CreateCommunityModal = ({
   )
 }
 
-CreateCommunityModal.propTypes = {
+JoinCommunityModal.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   initialValues: PropTypes.object.isRequired,
   handleSubmit: PropTypes.func.isRequired
 }
 
-export default R.compose(React.memo, withStyles(styles))(CreateCommunityModal)
+export default R.compose(React.memo, withStyles(styles))(JoinCommunityModal)
