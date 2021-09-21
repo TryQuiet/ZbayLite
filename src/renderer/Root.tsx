@@ -36,6 +36,7 @@ import AddModerator from './containers/widgets/channelSettings/AddModerator'
 import FailedUsernameRegister from './containers/ui/FailedUsernameRegister'
 import SendMoney from './containers/ui/sendMoneySeparate/sendMoney'
 import theme from './theme'
+import CreateCommunityModal from './components/widgets/createCommunity/CreateCommunityModal'
 
 export default () => {
   const persistor = persistStore(store)
@@ -55,6 +56,7 @@ export default () => {
               <TopUpModal />
               <CssBaseline />
               <CreateChannelModal />
+              <CreateCommunityModal />
               <NewMessageModal />
               {/* @ts-ignore */}
               <SendMessageModal />
