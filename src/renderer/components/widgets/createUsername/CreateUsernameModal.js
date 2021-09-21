@@ -187,25 +187,26 @@ export const CreateUsernameModal = ({
   return (
     <Modal open={!certificate} handleClose={handleClose} isCloseDisabled={!certificate}>
       <Grid container className={classes.main} direction='column'>
-        {true ? (
+        {!certificate ? (
           <React.Fragment>
             <Grid className={classes.title} item>
               <Typography variant={'h3'}>Register a username</Typography>
-              <input 
-        type="text" 
-        name="topicBox" 
-        placeholder="Enter topic here..." 
-        value={ val }
-        onChange={ (target) => {
-          console.log(target)
-          setVal(target.target.value)} } 
-      />
-              <Button onClick={() => {handleCreateCommunity(val)}}>create community</Button>
+              <input
+                type="text"
+                name="topicBox"
+                placeholder="Enter topic here..."
+                value={ val }
+                onChange={ (target) => {
+                  console.log(target)
+                  setVal(target.target.value)
+                } }
+              />
+              <Button onClick={() => { handleCreateCommunity(val) }}>create community</Button>
               <Button onClick={trig}>trigger selector</Button>
-              <Button onClick={() => {handleJoinCommunity(val)}}>join community</Button>
-              <Button onClick={() => {handleLaunchCommunity(val)}}>launch community</Button>
-              <Button onClick={() => {handleLaunchRegistrar(val)}}>launch registrar</Button>
-              <Button onClick={() => {handleRegisterUsername(val)}}>register username</Button>
+              <Button onClick={() => { handleJoinCommunity(val) }}>join community</Button>
+              <Button onClick={() => { handleLaunchCommunity(val) }}>launch community</Button>
+              <Button onClick={() => { handleLaunchRegistrar(val) }}>launch registrar</Button>
+              <Button onClick={() => { handleRegisterUsername(val) }}>register username</Button>
             </Grid>
             <Formik
               onSubmit={values => submitForm(handleRegisterUsername, values.nickname, setFormSent)}

@@ -9,7 +9,7 @@ import channelSelectors from '../../../store/selectors/channel'
 // import usersSelectors from '../../../store/selectors/users'
 // import { User } from '../../../store/handlers/users'
 // import { publicChannelsActions } from '../../../sagas/publicChannels/publicChannels.reducer'
-import { publicChannels, identity, messages } from '@zbayapp/nectar'
+import { publicChannels, messages } from '@zbayapp/nectar'
 
 export const useChannelInputData = () => {
   const currentChannel = useSelector(publicChannels.selectors.currentChannel)

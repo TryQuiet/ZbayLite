@@ -1,7 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { identity } from '@zbayapp/nectar'
+import { useDispatch } from 'react-redux'
 
 import IdentityPanelComponent from '../../components/ui/IdentityPanel'
 // import identitySelectors from '../../store/selectors/identity'

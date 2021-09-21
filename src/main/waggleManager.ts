@@ -3,7 +3,7 @@ import fp from 'find-free-port'
 import path from 'path'
 import os from 'os'
 import * as fs from 'fs'
-import { ipcMain, BrowserWindow } from 'electron'
+import { BrowserWindow } from 'electron'
 import electronStore from '../shared/electronStore'
 import debug from 'debug'
 import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
@@ -121,7 +121,7 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
 
   const connectionsManager = new TlgManager.ConnectionsManager({
     port: ports.libp2pHiddenService,
-    host: `mockonion`,
+    host: 'mockonion',
     agentHost: 'localhost',
     agentPort: ports.socksPort,
     io: dataServer.io,
@@ -134,25 +134,9 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
     }
   })
 
-  connectionsManager.init().then(() =>
-    webContents.send('connectToWebsocket')
-  )
+  await connectionsManager.init()
 
-  // TlgManager.initListeners(dataServer.io, connectionsManager)
-
-  // ipcMain.on('connectionReady', () => {
-  //   if (!electronStore.get('waggleInitialized')) {
-  //     connectionsManager
-  //     .init()
-  //     .then(async (result) => {
-  //       webContents.send('waggleInitialized')
-  //       electronStore.set('waggleInitialized', true)
-  //       })
-  //       .catch(error => {
-  //         log.error(`Couldn't initialize waggle: ${error.message}`)
-  //       })
-  //   }
-  // })
+  webContents.send('connectToWebsocket')
 
   return { connectionsManager, dataServer }
 }

@@ -1,6 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { identity } from '@zbayapp/nectar'
+import { useDispatch } from 'react-redux'
 
 import modalsHandlers from '../../../store/handlers/modals'
 import AccountSettingsFormComponent from '../../../components/widgets/settings/AccountSettingsForm'

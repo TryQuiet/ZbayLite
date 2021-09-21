@@ -21,7 +21,7 @@ export const initialState: Modals = new Modals({
   payloads: {}
 })
 
-const openModal = (modalName: string, data?: any) => createAction(actionTypes.OPEN_MODAL, () => modalName)
+const openModal = (modalName: string) => createAction(actionTypes.OPEN_MODAL, () => modalName)
 
 const closeModal = (modalName: string) => createAction(actionTypes.CLOSE_MODAL, () => modalName)
 

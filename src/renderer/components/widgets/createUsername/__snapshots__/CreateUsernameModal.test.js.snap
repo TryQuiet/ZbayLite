@@ -25,6 +25,43 @@ exports[`CreateUsernameModal renders component 1`] = `
       >
         Register a username
       </WithStyles(ForwardRef(Typography))>
+      <input
+        name="topicBox"
+        onChange={[Function]}
+        placeholder="Enter topic here..."
+        type="text"
+        value=""
+      />
+      <WithStyles(ForwardRef(Button))
+        onClick={[Function]}
+      >
+        create community
+      </WithStyles(ForwardRef(Button))>
+      <WithStyles(ForwardRef(Button))
+        onClick={[Function]}
+      >
+        trigger selector
+      </WithStyles(ForwardRef(Button))>
+      <WithStyles(ForwardRef(Button))
+        onClick={[Function]}
+      >
+        join community
+      </WithStyles(ForwardRef(Button))>
+      <WithStyles(ForwardRef(Button))
+        onClick={[Function]}
+      >
+        launch community
+      </WithStyles(ForwardRef(Button))>
+      <WithStyles(ForwardRef(Button))
+        onClick={[Function]}
+      >
+        launch registrar
+      </WithStyles(ForwardRef(Button))>
+      <WithStyles(ForwardRef(Button))
+        onClick={[Function]}
+      >
+        register username
+      </WithStyles(ForwardRef(Button))>
     </WithStyles(ForwardRef(Grid))>
     <Formik
       enableReinitialize={false}

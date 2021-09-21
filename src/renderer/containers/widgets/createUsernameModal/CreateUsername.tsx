@@ -16,7 +16,7 @@ const useData = () => {
     certificateRegistrationError: useSelector(errors.selectors.certificateRegistration),
     certificate: useSelector(identity.selectors.currentIdentity)?.userCertificate,
     id: useSelector(identity.selectors.currentIdentity)
-    }
+  }
   return data
 }
 
@@ -26,7 +26,7 @@ const CreateUsernameModal = () => {
     modalName,
     certificateRegistrationError,
     certificate,
-    open,id
+    open, id
   } = useData()
   const dispatch = useDispatch()
 
@@ -34,25 +34,21 @@ const CreateUsernameModal = () => {
     console.log('create new community')
     console.log(communityName)
     dispatch(communities.actions.createNewCommunity(communityName))
-
   }
   const handleJoinCommunity = (registrarAddress: string) => {
     console.log('join community')
     console.log(registrarAddress)
     dispatch(communities.actions.joinCommunity(registrarAddress))
-
   }
   const handleLaunchCommunity = (id: string) => {
     console.log('launching Community')
     console.log(id)
-    //dispatch(communities.actions.launchCommunity(id))
-
+    // dispatch(communities.actions.launchCommunity(id))
   }
   const handleLaunchRegistrar = (id: string) => {
     console.log('launching registrar')
     console.log(id)
     dispatch(communities.actions.launchRegistrar())
-
   }
   const handleRegisterUsername = (username) => {
     console.log('handle register username')
@@ -61,9 +57,9 @@ const CreateUsernameModal = () => {
   }
 
   const triggerSelector = () => {
-    
+
   }
-  
+
   const handleOpen = () => {
     dispatch(modalsHandlers.actionCreators.openModal(modalName))
   }
