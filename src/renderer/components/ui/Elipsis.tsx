@@ -10,7 +10,7 @@ const useStyles = makeStyles({
   content: {}
 })
 
-type ElipsisProps = {
+interface ElipsisProps {
   content: string
   length: number
   tooltipPlacement?: 'bottom-start' | 'bottom' | 'bottom-end'

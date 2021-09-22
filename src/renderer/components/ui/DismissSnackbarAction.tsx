@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-type DismissSnackbarActionProps = {
+interface DismissSnackbarActionProps {
   notificationKey: string | number
 }
 

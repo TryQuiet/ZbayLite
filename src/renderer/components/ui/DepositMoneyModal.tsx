@@ -10,10 +10,10 @@ import icon from './assets/addFundsIcon.png'
 const Icon = className => <img className={className} src={icon} />
 
 const useStyles = makeStyles(() => ({
-  root: {},
+  root: {}
 }))
 
-type DepositMoneyProps = {
+interface DepositMoneyProps {
   open: boolean
   onClick: () => void
   handleClose: () => void
@@ -25,9 +25,9 @@ export const DepositMoneyModal: React.FC<DepositMoneyProps> = ({ handleClose, op
   return (
     <Dialog onClose={handleClose} className={classes.root} open={open}>
       <QuickActionLayout
-        main={"Add funds now?"}
+        main={'Add funds now?'}
         info={"You'll need some funds to send messages."}
-        buttonName={"Add funds"}
+        buttonName={'Add funds'}
         onClick={onClick}
         handleClose={handleClose}>
         <Icon />
