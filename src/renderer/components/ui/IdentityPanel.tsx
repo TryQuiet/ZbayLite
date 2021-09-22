@@ -8,11 +8,9 @@ import SettingsModal from '../../containers/widgets/settings/SettingsModal'
 import ReceivedInvitationModal from '../../containers/ui/InvitationModal/ReceivedInvitationModal'
 import CreateUsernameModal from '../../containers/widgets/createUsernameModal/CreateUsername'
 
-import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
-import theme from '../../theme'
-
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     marginTop: theme.spacing(1),
     WebkitAppRegion: process.platform === 'win32' ? 'no-drag' : 'drag',
@@ -39,7 +37,7 @@ const useStyles = makeStyles({
     maxWidth: 175,
     whiteSpace: 'nowrap'
   }
-})
+}))
 
 interface IdentityPanelProps {
   user: User
@@ -63,23 +61,21 @@ export const IdentityPanel: React.FC<IdentityPanelProps> = ({ identity, handleSe
   const nickname = user ? user.nickname : `anon${identity.signerPubKey.substring(0, 10)}`
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <div className={classes.root}>
-        <Button
-          onClick={handleSettings}
-          component='span'
-          classes={{ root: classes.button, label: classes.buttonLabel }}>
-          <Typography variant='h4' className={classes.nickname}>
-            {nickname}
-          </Typography>
-          <ExpandMoreIcon fontSize='small' />
-        </Button>
-        <SettingsModal />
-        <ReceivedInvitationModal />
-        {/* <ImportChannelModal /> */}
-        <CreateUsernameModal />
-      </div>
-    </MuiThemeProvider>
+    <div className={classes.root}>
+      <Button
+        onClick={handleSettings}
+        component='span'
+        classes={{ root: classes.button, label: classes.buttonLabel }}>
+        <Typography variant='h4' className={classes.nickname}>
+          {nickname}
+        </Typography>
+        <ExpandMoreIcon fontSize='small' />
+      </Button>
+      <SettingsModal />
+      <ReceivedInvitationModal />
+      {/* <ImportChannelModal /> */}
+      <CreateUsernameModal />
+    </div>
   )
 }
 

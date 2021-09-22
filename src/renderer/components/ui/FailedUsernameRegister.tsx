@@ -2,7 +2,7 @@ import React from 'react'
 
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
-import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
 import red from '@material-ui/core/colors/red'
 
@@ -12,9 +12,7 @@ import LoadingButton from './LoadingButton'
 
 import exclamationMark from '../../static/images/exclamationMark.svg'
 
-import theme from '../../theme'
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4)
   },
@@ -57,40 +55,33 @@ export const FailedUsernameRegister: React.FC<FailedUsernameRegisterProps> = ({
   const classes = useStyles({})
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <Modal open={open} handleClose={handleClose} title=''>
-        <Grid
-          container
-          justify='flex-start'
-          spacing={3}
-          direction='column'
-          className={classes.root}>
-          <Grid item container direction='column' alignItems='center'>
-            <Icon className={classes.icon} src={exclamationMark} />
-            <Typography variant='h3' className={classes.message}>
-              Oops!
+    <Modal open={open} handleClose={handleClose} title=''>
+      <Grid container justify='flex-start' spacing={3} direction='column' className={classes.root}>
+        <Grid item container direction='column' alignItems='center'>
+          <Icon className={classes.icon} src={exclamationMark} />
+          <Typography variant='h3' className={classes.message}>
+            Oops!
+          </Typography>
+        </Grid>
+        <Grid item container direction='column'>
+          <Grid item>
+            <Typography variant='body2' className={classes.info}>
+              Username didn't get registered. You are still anonymous.
             </Typography>
           </Grid>
-          <Grid item container direction='column'>
-            <Grid item>
-              <Typography variant='body2' className={classes.info}>
-                Username didn't get registered. You are still anonymous.
-              </Typography>
-            </Grid>
-            <Grid item container justify='center' alignItems='center'>
-              <LoadingButton
-                classes={{ button: classes.button }}
-                text='Create a username'
-                onClick={() => {
-                  openModalCreateUsername()
-                  handleClose()
-                }}
-              />
-            </Grid>
+          <Grid item container justify='center' alignItems='center'>
+            <LoadingButton
+              classes={{ button: classes.button }}
+              text='Create a username'
+              onClick={() => {
+                openModalCreateUsername()
+                handleClose()
+              }}
+            />
           </Grid>
         </Grid>
-      </Modal>
-    </MuiThemeProvider>
+      </Grid>
+    </Modal>
   )
 }
 

@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FailedUsernameRegister renders component 1`] = `
-<ThemeProvider
-  theme={
+<ContextProvider
+  value={
     Object {
       "breakpoints": Object {
         "between": [Function],
@@ -340,78 +340,15 @@ exports[`FailedUsernameRegister renders component 1`] = `
         "speedDial": 1050,
         "tooltip": 1500,
       },
+      Symbol(mui.nested): false,
     }
   }
 >
   <Component
-    addBorder={false}
-    alignCloseLeft={false}
-    canGoBack={false}
-    contentWidth={600}
+    classes={null}
     handleClose={[MockFunction]}
-    isBold={false}
-    isCloseDisabled={false}
     open={true}
-    title=""
-  >
-    <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1"
-      container={true}
-      direction="column"
-      justify="flex-start"
-      spacing={3}
-    >
-      <WithStyles(ForwardRef(Grid))
-        alignItems="center"
-        container={true}
-        direction="column"
-        item={true}
-      >
-        <Component
-          className="makeStyles-icon-2"
-          src="test-file-stub"
-        />
-        <WithStyles(ForwardRef(Typography))
-          className="makeStyles-message-3"
-          variant="h3"
-        >
-          Oops!
-        </WithStyles(ForwardRef(Typography))>
-      </WithStyles(ForwardRef(Grid))>
-      <WithStyles(ForwardRef(Grid))
-        container={true}
-        direction="column"
-        item={true}
-      >
-        <WithStyles(ForwardRef(Grid))
-          item={true}
-        >
-          <WithStyles(ForwardRef(Typography))
-            className="makeStyles-info-4"
-            variant="body2"
-          >
-            Username didn't get registered. You are still anonymous.
-          </WithStyles(ForwardRef(Typography))>
-        </WithStyles(ForwardRef(Grid))>
-        <WithStyles(ForwardRef(Grid))
-          alignItems="center"
-          container={true}
-          item={true}
-          justify="center"
-        >
-          <WithStyles(LoadingButton)
-            classes={
-              Object {
-                "button": "makeStyles-button-5",
-              }
-            }
-            inProgress={false}
-            onClick={[Function]}
-            text="Create a username"
-          />
-        </WithStyles(ForwardRef(Grid))>
-      </WithStyles(ForwardRef(Grid))>
-    </WithStyles(ForwardRef(Grid))>
-  </Component>
-</ThemeProvider>
+    openModalCreateUsername={[MockFunction]}
+  />
+</ContextProvider>
 `;

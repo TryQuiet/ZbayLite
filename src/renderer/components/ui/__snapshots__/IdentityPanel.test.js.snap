@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`IdentityPanel renders component with username 1`] = `
-<ThemeProvider
-  theme={
+<ContextProvider
+  value={
     Object {
       "breakpoints": Object {
         "between": [Function],
@@ -340,42 +340,46 @@ exports[`IdentityPanel renders component with username 1`] = `
         "speedDial": 1050,
         "tooltip": 1500,
       },
+      Symbol(mui.nested): false,
     }
   }
 >
-  <div
-    className="makeStyles-root-1"
-  >
-    <WithStyles(ForwardRef(Button))
-      classes={
-        Object {
-          "label": "makeStyles-buttonLabel-3",
-          "root": "makeStyles-button-2",
-        }
+  <Component
+    classes={null}
+    handleSettings={[MockFunction]}
+    identity={
+      Object {
+        "address": "zs1z7rejlpsa98s2rrrfkwmaxu53e4ue0ulcrw0h4x5g8jl04tak0d3mm47vdtahatqrlkngh9sly",
+        "addresses": Array [],
+        "id": null,
+        "name": "Saturn",
+        "onionAddress": "",
+        "shieldingTax": true,
+        "shippingData": Object {
+          "city": "",
+          "country": "",
+          "firstName": "",
+          "lastName": "",
+          "postalCode": "",
+          "region": "",
+          "street": "",
+        },
+        "signerPrivKey": "",
+        "signerPubKey": "",
       }
-      component="span"
-      onClick={[MockFunction]}
-    >
-      <WithStyles(ForwardRef(Typography))
-        className="makeStyles-nickname-4"
-        variant="h4"
-      >
-        test
-      </WithStyles(ForwardRef(Typography))>
-      <ExpandMoreIcon
-        fontSize="small"
-      />
-    </WithStyles(ForwardRef(Button))>
-    <withModal(Connect(SettingsModalContainer)) />
-    <Memo(Connect(withModal(ReceivedInvitaionModalContainer))) />
-    <Connect(withModal(Component)) />
-  </div>
-</ThemeProvider>
+    }
+    user={
+      Object {
+        "nickname": "test",
+      }
+    }
+  />
+</ContextProvider>
 `;
 
 exports[`IdentityPanel renders component without username 1`] = `
-<ThemeProvider
-  theme={
+<ContextProvider
+  value={
     Object {
       "breakpoints": Object {
         "between": [Function],
@@ -713,35 +717,39 @@ exports[`IdentityPanel renders component without username 1`] = `
         "speedDial": 1050,
         "tooltip": 1500,
       },
+      Symbol(mui.nested): false,
     }
   }
 >
-  <div
-    className="makeStyles-root-1"
-  >
-    <WithStyles(ForwardRef(Button))
-      classes={
-        Object {
-          "label": "makeStyles-buttonLabel-3",
-          "root": "makeStyles-button-2",
-        }
+  <Component
+    classes={null}
+    handleSettings={[MockFunction]}
+    identity={
+      Object {
+        "address": "zs1z7rejlpsa98s2rrrfkwmaxu53e4ue0ulcrw0h4x5g8jl04tak0d3mm47vdtahatqrlkngh9sly",
+        "addresses": Array [],
+        "id": null,
+        "name": "Saturn",
+        "onionAddress": "",
+        "shieldingTax": true,
+        "shippingData": Object {
+          "city": "",
+          "country": "",
+          "firstName": "",
+          "lastName": "",
+          "postalCode": "",
+          "region": "",
+          "street": "",
+        },
+        "signerPrivKey": "",
+        "signerPubKey": "",
       }
-      component="span"
-      onClick={[MockFunction]}
-    >
-      <WithStyles(ForwardRef(Typography))
-        className="makeStyles-nickname-4"
-        variant="h4"
-      >
-        test
-      </WithStyles(ForwardRef(Typography))>
-      <ExpandMoreIcon
-        fontSize="small"
-      />
-    </WithStyles(ForwardRef(Button))>
-    <withModal(Connect(SettingsModalContainer)) />
-    <Memo(Connect(withModal(ReceivedInvitaionModalContainer))) />
-    <Connect(withModal(Component)) />
-  </div>
-</ThemeProvider>
+    }
+    user={
+      Object {
+        "nickname": "test",
+      }
+    }
+  />
+</ContextProvider>
 `;

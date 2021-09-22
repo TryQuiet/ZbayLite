@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Loading button renders component 1`] = `
-<ThemeProvider
-  theme={
+<ContextProvider
+  value={
     Object {
       "breakpoints": Object {
         "between": [Function],
@@ -340,33 +340,16 @@ exports[`Loading button renders component 1`] = `
         "speedDial": 1050,
         "tooltip": 1500,
       },
+      Symbol(mui.nested): false,
     }
   }
 >
-  inProgress ? (
-  <WithStyles(ForwardRef(Button))
-    className="makeStyles-button-1 makeStyles-inProgress-2"
+  <Component
     props={
       Object {
         "inProgress": false,
       }
     }
-  >
-    <WithStyles(ForwardRef(CircularProgress))
-      className="makeStyles-progress-3"
-    />
-  </WithStyles(ForwardRef(Button))>
-  ) : (
-  <WithStyles(ForwardRef(Button))
-    className="makeStyles-button-1"
-    props={
-      Object {
-        "inProgress": false,
-      }
-    }
-  >
-    Continue
-  </WithStyles(ForwardRef(Button))>
-  )
-</ThemeProvider>
+  />
+</ContextProvider>
 `;

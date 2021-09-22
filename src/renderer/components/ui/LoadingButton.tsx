@@ -1,13 +1,11 @@
 import React from 'react'
 
-import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import classNames from 'classnames'
 
-import theme from '../../theme'
-
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   button: {
     maxWidth: 286,
     height: 60,
@@ -30,11 +28,12 @@ const useStyles = makeStyles({
   progress: {
     color: theme.palette.colors.white
   }
-})
+}))
 
 interface LoadingButtonProps {
-  inProgress: boolean
-  text: string | undefined
+  inProgress?: boolean
+  text?: string
+  [index: string]: any
 }
 
 export const LoadingButton: React.FC<LoadingButtonProps> = ({
@@ -44,20 +43,16 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
 }) => {
   const classes = useStyles({})
 
-  return (
-    <MuiThemeProvider theme={theme}>
-      inProgress ? (
-      <Button
-        className={classNames({ [classes.button]: true, [classes.inProgress]: true })}
-        {...other}>
-        <CircularProgress className={classes.progress} />
-      </Button>
-      ) : (
-      <Button className={classes.button} {...other}>
-        {text || 'Continue'}
-      </Button>
-      )
-    </MuiThemeProvider>
+  return inProgress ? (
+    <Button
+      className={classNames({ [classes.button]: true, [classes.inProgress]: true })}
+      {...other}>
+      <CircularProgress className={classes.progress} />
+    </Button>
+  ) : (
+    <Button className={classes.button} {...other}>
+      {text || 'Continue'}
+    </Button>
   )
 }
 
