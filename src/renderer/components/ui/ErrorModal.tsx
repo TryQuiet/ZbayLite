@@ -67,7 +67,7 @@ const handleSend = async ({ title, message }) => {
   })
 }
 
-type ErrorModalProps = {
+interface ErrorModalProps {
   open: boolean
   message: string
   traceback: string
