@@ -1,54 +1,58 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+
 import { AutoSizer } from 'react-virtualized'
+
 import { Scrollbars } from 'rc-scrollbars'
 
 import { Grid } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
 import AddFunds from '../../../components/widgets/settings/AddFunds'
 import Modal from '../Modal'
 
-const styles = theme => ({
-  root: {}
-})
+const useStyles = makeStyles(() => ({
+  content: {}
+}))
 
-export const TopUpModal = ({
-  classes,
-  open,
-  handleClose,
-  openSettingsModal,
-  setTabToOpen,
-  ...rest
-}) => {
+interface TopUpModalProps {
+  open: boolean
+  handleClose: () => void
+  openSettingsModal: () => void
+  setTabToOpen: () => void
+  [index: string]: any
+}
+
+export const TopUpModal: React.FC<TopUpModalProps> = ({ open = false, handleClose, openSettingsModal, setTabToOpen, ...rest }) => {
+  const classes = useStyles({})
+
   const [offset, setOffset] = React.useState(0)
+
   const adjustOffset = () => {
     if (window.innerWidth > 600) {
       setOffset((window.innerWidth - 600) / 2)
     }
   }
+
   React.useEffect(() => {
     if (window) {
       window.addEventListener('resize', adjustOffset)
       adjustOffset()
     }
   }, [])
+
   return (
     <Modal open={open} handleClose={handleClose} contentWidth='100%'>
       <AutoSizer>
-        {({ width, height }) => {
+        {({ _width, height }) => {
           return (
-            <Scrollbars
-              autoHideTimeout={500}
-              style={{ width: window.innerWidth, height: height }}
-            >
+            <Scrollbars autoHideTimeout={500} style={{ width: window.innerWidth, height: height }}>
               <Grid container justify={'center'}>
                 <Grid item xs>
                   <Grid
                     item
                     className={classes.content}
-                    style={{ paddingRight: offset, paddingLeft: offset }}
-                  >
+                    style={{ paddingRight: offset, paddingLeft: offset }}>
+                    {/* @ts-ignore */}
                     <AddFunds
                       {...rest}
                       variant={'wide'}
@@ -68,21 +72,4 @@ export const TopUpModal = ({
   )
 }
 
-TopUpModal.propTypes = {
-  classes: PropTypes.object.isRequired,
-  open: PropTypes.bool.isRequired,
-  type: PropTypes.oneOf(['transparent', 'private']),
-  address: PropTypes.string.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  openSettingsModal: PropTypes.func.isRequired,
-  setTabToOpen: PropTypes.func.isRequired,
-  handleCopy: PropTypes.func
-}
-
-TopUpModal.defaultProps = {
-  open: false,
-  handleCopy: () => null
-}
-
-export default withStyles(styles)(TopUpModal)
+export default TopUpModal
