@@ -2,7 +2,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 
-import { mockClasses } from '../../../shared/testing/mocks'
 import { LoadingButton } from './LoadingButton'
 
 describe('Loading button', () => {
@@ -12,7 +11,6 @@ describe('Loading button', () => {
     }
     const result = shallow(
       <LoadingButton
-        classes={mockClasses}
         props={props}
       />
     )
