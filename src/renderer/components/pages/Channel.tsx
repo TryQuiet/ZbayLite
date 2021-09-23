@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
 
 import Page from '../ui/Page/Page'
-import PageHeader from '../ui/page/PageHeader'
+import PageHeader from '../ui/Page/PageHeader'
 import { channelTypeToHeader, channelTypeToInput } from './ChannelMapping'
 import ChannelContent from '../../containers/widgets/channels/ChannelContent'
 import { CHANNEL_TYPE } from './ChannelTypes'
