@@ -16,7 +16,6 @@ import Notifier from './containers/ui/Notifier'
 import ErrorModal from './containers/ui/ErrorModal'
 import MigrationModal from './containers/ui/MigrationModal'
 import QuitAppDialog from './containers/ui/QuitAppDialog'
-import TopUpModal from './containers/ui/TopUpModal'
 import SecurityModal from './containers/widgets/settings/SecurityModal'
 import UpdateModal from './containers/widgets/update/UpdateModal'
 import CreateChannelModal from './containers/widgets/channels/CreateChannelModal'
@@ -43,7 +42,6 @@ export default () => {
               <QuitAppDialog />
               <UpdateModal />
               <SecurityModal />
-              <TopUpModal />
               <CssBaseline />
               <CreateChannelModal />
               <NewMessageModal />
