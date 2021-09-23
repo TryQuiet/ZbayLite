@@ -7,7 +7,6 @@ import { Provider } from 'react-redux'
 import { HashRouter, Route } from 'react-router-dom'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
-
 import store from './store'
 import Index from './containers/windows/Index'
 import Main from './containers/windows/Main'
@@ -19,22 +18,15 @@ import MigrationModal from './containers/ui/MigrationModal'
 import QuitAppDialog from './containers/ui/QuitAppDialog'
 import TopUpModal from './containers/ui/TopUpModal'
 import SecurityModal from './containers/widgets/settings/SecurityModal'
-import SendMoneyModal from './containers/ui/sendMoney/SendMoneyModal'
 import UpdateModal from './containers/widgets/update/UpdateModal'
 import CreateChannelModal from './containers/widgets/channels/CreateChannelModal'
 import NewMessageModal from './containers/widgets/channels/NewMessageModal'
-import SendMessageModal from './containers/ui/sendMessage/SendMessage'
 import JoinChannelModal from './containers/widgets/channels/JoinChannelModal'
 import ChannelSettingsModal from './containers/widgets/channelSettings/ChannelSettingsModal'
-import AdvertModal from './containers/ui/adverts/AdvertModal'
-import AdvertActionsModal from './containers/ui/adverts/AdvertActionsModal'
 import PublishChannelModal from './containers/ui/PublishChannelModal'
-import SentFundsModal from './containers/ui/SentFundsModal'
 import OpenExternalLinkModal from './containers/ui/OpenExternalLinkModal'
-import SendFundsModal from './containers/ui/adverts/SendFundsModal'
 import AddModerator from './containers/widgets/channelSettings/AddModerator'
 import FailedUsernameRegister from './containers/ui/FailedUsernameRegister'
-import SendMoney from './containers/ui/sendMoneySeparate/sendMoney'
 import theme from './theme'
 
 export default () => {
@@ -50,24 +42,16 @@ export default () => {
               <ErrorModal />
               <QuitAppDialog />
               <UpdateModal />
-              <SendMoneyModal />
               <SecurityModal />
               <TopUpModal />
               <CssBaseline />
               <CreateChannelModal />
               <NewMessageModal />
-              {/* @ts-ignore */}
-              <SendMessageModal />
               <JoinChannelModal />
-              <AdvertModal />
-              <AdvertActionsModal />
-              <SendFundsModal />
               <ChannelSettingsModal />
               <PublishChannelModal />
-              <SentFundsModal />
               <AddModerator />
               <OpenExternalLinkModal />
-              <SendMoney />
               <FailedUsernameRegister />
               <Route path='/vault' exact component={Vault} />
               <Route path='/main' component={Main} />
