@@ -1,7 +1,8 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { Field } from 'formik'
-import { Checkbox } from 'formik-material-ui'
+import { Checkbox, CheckboxProps as FormikCheckboxProps } from 'formik-material-ui'
+
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import CheckBoxOutlineBlank from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
@@ -16,8 +17,7 @@ interface CheckboxProps {
 
 interface StyledCheckboxProps extends CheckboxProps {}
 
-const StyledCheckbox = withStyles({})((props: StyledCheckboxProps) => (
-  // @ts-expect-error
+const StyledCheckbox = withStyles({})((props: FormikCheckboxProps & StyledCheckboxProps) => (
   <Checkbox
     {...props}
     checkedIcon={<CheckBoxIcon style={{ fontSize: '18px' }} />}
