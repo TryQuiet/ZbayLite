@@ -1,13 +1,13 @@
 import React from 'react'
-import * as R from 'ramda'
 
 import IconButton from '@material-ui/core/IconButton'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
 import MenuAction from '../../ui/MenuAction'
 import addIcon from '../../../static/images/zcash/add-icon.svg'
+import { Action, ActionFunction0 } from 'redux-actions'
 
-const styles = theme => ({
+const useStyles = makeStyles((theme) => ({
   icon: {
     width: 15,
     height: 15
@@ -20,9 +20,17 @@ const styles = theme => ({
     backgroundColor: 'rgb(0,0,0,0.26)',
     borderRadius: '50%'
   }
-})
+}))
 
-export const AddDirectMessage = ({ classes, openModal }) => {
+type AddDirectMessageProps = {
+  openModal: ActionFunction0<Action<{
+    modalName: string;
+    data: any;
+  }>>
+}
+
+export const AddDirectMessage: React.FC<AddDirectMessageProps> = ({ openModal }) => {
+  const classes = useStyles({})
   return (
     <React.Fragment>
       <MenuAction
@@ -40,7 +48,4 @@ export const AddDirectMessage = ({ classes, openModal }) => {
   )
 }
 
-export default R.compose(
-  React.memo,
-  withStyles(styles)
-)(AddDirectMessage)
+export default AddDirectMessage
