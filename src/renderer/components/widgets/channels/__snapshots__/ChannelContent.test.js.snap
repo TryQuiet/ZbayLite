@@ -2,7 +2,7 @@
 
 exports[`ChannelContent renders component 1`] = `
 <WithStyles(ForwardRef(Grid))
-  className="fullHeight-mock"
+  className="makeStyles-fullHeight-1"
   container={true}
   direction="column"
   item={true}
@@ -20,7 +20,7 @@ exports[`ChannelContent renders component 1`] = `
     </RootRef>
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
-    className="mentionsDiv-mock"
+    className="makeStyles-mentionsDiv-2"
     item={true}
   />
 </WithStyles(ForwardRef(Grid))>

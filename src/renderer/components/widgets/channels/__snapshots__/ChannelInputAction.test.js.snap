@@ -4,11 +4,10 @@ exports[`ChannelInputAction renders component 1`] = `
 <Memo(WithStyles(MenuAction))
   classes={
     Object {
-      "button": "button-mock",
-      "icon": "icon-mock",
+      "button": "makeStyles-button-1",
+      "icon": "makeStyles-icon-2",
     }
   }
-  disabled={false}
   icon="test-file-stub"
   iconHover="test-file-stub"
   offset="-10 12"

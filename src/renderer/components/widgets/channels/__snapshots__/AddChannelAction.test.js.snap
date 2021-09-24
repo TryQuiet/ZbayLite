@@ -301,8 +301,8 @@ exports[`BaseChannelsList renders component 1`] = `
     }
     classes={
       Object {
-        "button": "button-mock",
-        "icon": "icon-mock",
+        "button": "makeStyles-button-2",
+        "icon": "makeStyles-icon-1",
       }
     }
     icon="test-file-stub"
