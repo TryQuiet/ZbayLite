@@ -13,7 +13,7 @@ import Button from '@material-ui/core/Button'
 
 import electronStore from '../../../../shared/electronStore'
 import Icon from '../Icon/Icon'
-import exclamationMark from '../../static/images/exclamationMark.svg'
+import exclamationMark from '../../../static/images/exclamationMark.svg'
 import Modal from '../Modal/Modal'
 
 const styles = theme => ({

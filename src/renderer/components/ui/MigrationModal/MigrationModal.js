@@ -9,7 +9,7 @@ import { shell } from 'electron'
 import red from '@material-ui/core/colors/red'
 
 import Icon from '../Icon/Icon'
-import exclamationMark from '../../static/images/exclamationMark.svg'
+import exclamationMark from '../../../static/images/exclamationMark.svg'
 import Modal from '../Modal/Modal'
 import LoadingButton from '../LoadingButton/LoadingButton'
 import electronStore from '../../../../shared/electronStore'

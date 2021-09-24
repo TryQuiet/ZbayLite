@@ -10,7 +10,7 @@ import Icon from '../Icon/Icon'
 import Modal from '../Modal/Modal'
 import LoadingButton from '../LoadingButton/LoadingButton'
 
-import exclamationMark from '../../static/images/exclamationMark.svg'
+import exclamationMark from '../../../static/images/exclamationMark.svg'
 
 const useStyles = makeStyles((theme) => ({
   root: {
