@@ -44,7 +44,7 @@ export const ChannelMenuAction: React.FC<ChannelMenuActionProps> = ({
   onDelete,
   onSettings,
   mutedFlag,
-  disableSettings,
+  disableSettings = false,
   notificationFilter,
   openNotificationsTab
 }) => {
@@ -105,10 +105,6 @@ export const ChannelMenuAction: React.FC<ChannelMenuActionProps> = ({
       />
     </MenuAction>
   )
-}
-
-ChannelMenuAction.defaultProps = {
-  disableSettings: false
 }
 
 export default ChannelMenuAction

@@ -121,15 +121,15 @@ export interface ChannelHeaderProps {
 export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
   tab,
   setTab,
-  channel,
-  directMessage,
+  channel = {},
+  directMessage = false,
   offer,
-  channelType,
-  showAdSwitch,
+  channelType = 3,
+  showAdSwitch = false,
   updateShowInfoMsg,
   mutedFlag,
   unmute,
-  isRegisteredUsername,
+  isRegisteredUsername = true,
   name
 }) => {
   const classes = useStyles({})
@@ -254,14 +254,6 @@ export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
       )}
     </div>
   )
-}
-
-ChannelHeader.defaultProps = {
-  channel: {},
-  directMessage: false,
-  channelType: 3,
-  showAdSwitch: false,
-  isRegisteredUsername: true
 }
 
 export default ChannelHeader

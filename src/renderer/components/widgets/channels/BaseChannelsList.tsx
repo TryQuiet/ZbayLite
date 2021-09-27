@@ -15,9 +15,9 @@ interface BaseChannelsListProps {
 }
 
 export const BaseChannelsList: React.FC<BaseChannelsListProps> = ({
-  channels,
-  unknownMessages,
-  directMessages,
+  channels = [],
+  unknownMessages = [],
+  directMessages = false,
   selected
 }) => {
   return (
@@ -42,12 +42,6 @@ export const BaseChannelsList: React.FC<BaseChannelsListProps> = ({
       )}
     </List>
   )
-}
-
-BaseChannelsList.defaultProps = {
-  channels: [],
-  unknownMessages: [],
-  directMessages: false
 }
 
 export default React.memo(BaseChannelsList)

@@ -74,12 +74,12 @@ export interface ChannelInfoModalProps {
 }
 
 export const ChannelInfoModal: React.FC<ChannelInfoModalProps> = ({
-  channel,
+  channel = {},
   channelData,
   shareUri,
-  open,
+  open = false,
   handleClose,
-  directMessage
+  directMessage = false
 }) => {
   const classes = useStyles({})
   const address = directMessage ? channelData?.address : shareUri
@@ -171,12 +171,6 @@ export const ChannelInfoModal: React.FC<ChannelInfoModalProps> = ({
       </AutoSizer>
     </Modal>
   )
-}
-
-ChannelInfoModal.defaultProps = {
-  open: false,
-  channel: {},
-  directMessage: false
 }
 
 export default ChannelInfoModal
