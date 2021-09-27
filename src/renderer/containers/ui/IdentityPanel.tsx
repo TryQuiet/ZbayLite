@@ -1,35 +1,24 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
-import IdentityPanelComponent from '../../components/ui/IdentityPanel'
-// import identitySelectors from '../../store/selectors/identity'
-// import usersSelectors from '../../store/selectors/users'
+import IdentityPanelComponent from '../../components/ui/IdentityPanel/IdentityPanel'
 import actionCreators from '../../store/handlers/modals'
+import {identity} from '@zbayapp/nectar'
 
 export const useData = () => {
   const data = {
-    // nickname: useSelector(identity.selectors.zbayNickname)
-    nickname: 'mockNickname'
+    identity: useSelector(identity.selectors.currentIdentity)
   }
   return data
 }
 
-// export const mapDispatchToProps = dispatch =>
-//   bindActionCreators(
-//     {
-//       handleSettings: actionCreators.openModal('accountSettingsModal'),
-//       handleInvitation: actionCreators.openModal('invitationModal')
-//     },
-//     dispatch
-//   )
-
 const IdentityPanel = () => {
-  const { nickname } = useData()
+  const { identity } = useData()
   const dispatch = useDispatch()
 
   const handleSettings = () => dispatch(actionCreators.openModalHandler('accountSettingsModal'))
 
-  return <IdentityPanelComponent nickname={nickname} handleSettings={handleSettings} />
+  return <IdentityPanelComponent identity={identity} handleSettings={handleSettings} />
 }
 
 export default IdentityPanel

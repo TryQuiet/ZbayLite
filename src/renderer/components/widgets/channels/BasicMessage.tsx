@@ -11,8 +11,8 @@ import { makeStyles, Theme } from '@material-ui/core/styles'
 
 import red from '@material-ui/core/colors/red'
 
-// import Icon from '../../ui/Icon'
-// import maskIcon from '../../../static/images/avatar-13-mask-light.svg'
+import Icon from '../../ui/Icon/Icon'
+import maskIcon from '../../../static/images/avatar-13-mask-light.svg'
 import { IBasicMessageProps } from './BasicMessage.d'
 import SendMessagePopover from '../../../containers/widgets/channels/SendMessagePopover'
 
