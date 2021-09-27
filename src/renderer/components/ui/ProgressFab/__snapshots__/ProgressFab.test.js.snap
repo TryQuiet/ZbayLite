@@ -2,14 +2,10 @@
 
 exports[`ProgressFab renders component 1`] = `
 <div
-  className="wrapper-mock"
+  className="makeStyles-wrapper-3"
 >
   <WithStyles(ForwardRef(Fab))
-    classes={
-      Object {
-        "root": "root-mock",
-      }
-    }
+    classes={null}
     disabled={false}
     onClick={[MockFunction]}
   >
@@ -20,14 +16,10 @@ exports[`ProgressFab renders component 1`] = `
 
 exports[`ProgressFab renders disabled 1`] = `
 <div
-  className="wrapper-mock"
+  className="makeStyles-wrapper-3"
 >
   <WithStyles(ForwardRef(Fab))
-    classes={
-      Object {
-        "root": "root-mock buttonSuccess-mock",
-      }
-    }
+    classes={null}
     disabled={true}
     onClick={[MockFunction]}
   >
@@ -38,21 +30,17 @@ exports[`ProgressFab renders disabled 1`] = `
 
 exports[`ProgressFab renders loading 1`] = `
 <div
-  className="wrapper-mock"
+  className="makeStyles-wrapper-3"
 >
   <WithStyles(ForwardRef(Fab))
-    classes={
-      Object {
-        "root": "root-mock",
-      }
-    }
+    classes={null}
     disabled={false}
     onClick={[MockFunction]}
   >
     <Icon />
   </WithStyles(ForwardRef(Fab))>
   <WithStyles(ForwardRef(CircularProgress))
-    className="fabProgress-mock"
+    className="makeStyles-fabProgress-2"
     size={68}
   />
 </div>
@@ -60,14 +48,10 @@ exports[`ProgressFab renders loading 1`] = `
 
 exports[`ProgressFab renders success 1`] = `
 <div
-  className="wrapper-mock"
+  className="makeStyles-wrapper-3"
 >
   <WithStyles(ForwardRef(Fab))
-    classes={
-      Object {
-        "root": "root-mock buttonSuccess-mock",
-      }
-    }
+    classes={null}
     disabled={false}
     onClick={[MockFunction]}
   >
