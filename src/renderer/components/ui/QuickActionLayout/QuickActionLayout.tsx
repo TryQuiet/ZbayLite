@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import IconButton from '../Icon/IconButton'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   alignAvatarPopover: {
     marginTop: theme.spacing(2)
   },
@@ -55,7 +55,7 @@ interface QuickActionLayoutProps {
   main: string
   info: string
   children: ReactElement
-  handleClose: () => void
+  handleClose: (event?: {}, reason?: 'backdropClick' | 'escapeKeyDown') => void
   buttonName?: string
   warrning?: string
   onClick?: () => void
