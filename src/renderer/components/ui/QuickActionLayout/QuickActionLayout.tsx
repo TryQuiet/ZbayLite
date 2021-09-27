@@ -53,8 +53,8 @@ const useStyles = makeStyles(theme => ({
 
 interface QuickActionLayoutProps {
   main: string
-  info: string
-  children: ReactElement
+  info?: string
+  children?: ReactElement
   handleClose: (event?: {}, reason?: 'backdropClick' | 'escapeKeyDown') => void
   buttonName?: string
   warrning?: string
