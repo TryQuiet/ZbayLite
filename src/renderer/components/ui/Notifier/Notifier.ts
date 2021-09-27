@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 
 interface NotifierProps {
   notifications: Notification[]
-  enqueueSnackbar: (message: string, options: any) => void
-  removeSnackbar: (key: string) => void
+  enqueueSnackbar?: (message: string, options: any) => void
+  removeSnackbar?: (key: string) => void
 }
 
 interface Notification {
