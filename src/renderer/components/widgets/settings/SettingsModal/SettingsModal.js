@@ -11,7 +11,6 @@ import { Scrollbars } from 'rc-scrollbars'
 import Modal from '../../../ui/Modal/Modal'
 import Tab from '../../../ui/Tab/Tab'
 import AccountSettingsForm from '../../../../containers/widgets/settings/AccountSettingsForm'
-import InvitationModal from '../../../../containers/ui/InvitationModal/InvitationModal'
 import Security from '../../../../containers/widgets/settings/Security'
 import Notifications from '../../../../containers/widgets/settings/Notifications'
 import BlockedUsers from '../../../../containers/widgets/settings/BlockedUsers'
@@ -19,7 +18,6 @@ import BuyZcash from '../BuyZcash'
 
 const tabs = {
   account: AccountSettingsForm,
-  invite: InvitationModal,
   security: Security,
   notifications: Notifications,
   blockedusers: BlockedUsers,

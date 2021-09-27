@@ -5,7 +5,6 @@ import { Button } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 
 import SettingsModal from '../../../containers/widgets/settings/SettingsModal'
-import ReceivedInvitationModal from '../../../containers/ui/InvitationModal/ReceivedInvitationModal'
 import CreateUsernameModal from '../../../containers/widgets/createUsernameModal/CreateUsername'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -61,7 +60,7 @@ export const IdentityPanel: React.FC<IdentityPanelProps> = ({ handleSettings, id
         <ExpandMoreIcon fontSize='small' />
       </Button>
       <SettingsModal />
-      <ReceivedInvitationModal />
+      {/* <ImportChannelModal /> */}
       <CreateUsernameModal />
     </div>
   )
