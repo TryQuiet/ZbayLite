@@ -6,7 +6,7 @@ import ShippingSettingsForm from '../../../components/widgets/settings/ShippingS
 import identityHandlers from '../../../store/handlers/identity'
 
 export const mapStateToProps = _state => ({
-  initialValues:''
+  initialValues: ''
 })
 
 export const mapDispatchToProps = dispatch => bindActionCreators({
