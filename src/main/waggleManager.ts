@@ -2,12 +2,8 @@ import TlgManager from 'waggle'
 import fp from 'find-free-port'
 import { BrowserWindow } from 'electron'
 import electronStore from '../shared/electronStore'
-import debug from 'debug'
 import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
 import { DataServer } from 'waggle/lib/socket/DataServer'
-const log = Object.assign(debug('zbay:waggle'), {
-  error: debug('zbay:waggle:err')
-})
 
 export const getPorts = async (): Promise<{
   socksPort: number

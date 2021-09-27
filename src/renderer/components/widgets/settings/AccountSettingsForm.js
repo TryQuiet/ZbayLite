@@ -88,9 +88,9 @@ export const AccountSettingsForm = ({
       </Grid>
       <Grid container justify='center'>
         <Grid container xs item className={classes.createUsernameContainer}>
-            <Grid item xs={12}>
-              <Typography variant='h4'>@{user ? user.zbayNickname : ''}</Typography>
-            </Grid>
+          <Grid item xs={12}>
+            <Typography variant='h4'>@{user ? user.zbayNickname : ''}</Typography>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>

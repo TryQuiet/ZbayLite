@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import IdentityPanelComponent from '../../components/ui/IdentityPanel/IdentityPanel'
 import actionCreators from '../../store/handlers/modals'
-import {identity} from '@zbayapp/nectar'
+import { identity } from '@zbayapp/nectar'
 
 export const useData = () => {
   const data = {

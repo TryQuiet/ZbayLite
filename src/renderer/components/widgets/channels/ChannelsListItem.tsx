@@ -6,9 +6,6 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { Typography, Grid } from '@material-ui/core'
 
-import Icon from '../../ui/Icon/Icon'
-import onlineIcon from '../../../static/images/online.svg'
-import offlineIcon from '../../../static/images/offline.svg'
 import history from '../../../../shared/history'
 
 const useStyles = makeStyles(theme => ({

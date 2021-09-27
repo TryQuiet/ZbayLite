@@ -1,8 +1,8 @@
 import React from 'react'
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import AccountSettingsFormComponent from '../../../components/widgets/settings/AccountSettingsForm'
-import {identity} from '@zbayapp/nectar'
+import { identity } from '@zbayapp/nectar'
 
 const useData = () => {
   const data = {

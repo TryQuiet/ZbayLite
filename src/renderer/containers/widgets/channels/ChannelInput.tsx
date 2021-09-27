@@ -73,7 +73,7 @@ export const ChannelInput = () => {
       }}
       message={message}
       inputState={inputState}
-      inputPlaceholder={`#${channelName} as @${myUser ? myUser.zbayNickname: ''}`}
+      inputPlaceholder={`#${channelName} as @${myUser ? myUser.zbayNickname : ''}`}
       channelName={channelName}
       anchorEl={anchorEl}
       setAnchorEl={setAnchorEl}

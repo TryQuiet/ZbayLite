@@ -10,7 +10,6 @@ import CreateUsernameModal from '../../../containers/widgets/createUsernameModal
 import { makeStyles } from '@material-ui/core/styles'
 import { Identity } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
 
-
 const useStyles = makeStyles(theme => ({
   root: {
     marginTop: theme.spacing(1),

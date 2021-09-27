@@ -1,4 +1,3 @@
-
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -12,7 +11,6 @@ import { Scrollbars } from 'rc-scrollbars'
 import Modal from '../../../ui/Modal/Modal'
 import Tab from '../../../ui/Tab/Tab'
 import AccountSettingsForm from '../../../../containers/widgets/settings/AccountSettingsForm'
-import ShippingSettingsForm from '../../../../containers/widgets/settings/ShippingSettingsForm'
 import Security from '../../../../containers/widgets/settings/Security'
 import Notifications from '../../../../containers/widgets/settings/Notifications'
 import BlockedUsers from '../../../../containers/widgets/settings/BlockedUsers'
@@ -20,7 +18,6 @@ import BuyZcash from '../BuyZcash'
 
 const tabs = {
   account: AccountSettingsForm,
-  shipping: ShippingSettingsForm,
   security: Security,
   notifications: Notifications,
   blockedusers: BlockedUsers,
