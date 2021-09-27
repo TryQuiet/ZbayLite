@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
 
 import dotsIcon from '../../../static/images/zcash/dots-icon.svg'
-import IconButton from '../../ui/Icon/IconButton'
 import MenuAction from '../../ui/MenuAction/MenuAction'
 import MenuActionItem from '../../ui/MenuAction/MenuActionItem'
 import ConfirmModal from '../channelSettings/ConfirmModal'
@@ -54,7 +53,6 @@ export const ChannelMenuAction: React.FC<ChannelMenuActionProps> = ({
     <MenuAction
       icon={dotsIcon}
       iconHover={dotsIcon}
-      IconButton={IconButton}
       offset='0 8'
     >
       <MenuActionItem onClick={onInfo} title='Info & Invites' />

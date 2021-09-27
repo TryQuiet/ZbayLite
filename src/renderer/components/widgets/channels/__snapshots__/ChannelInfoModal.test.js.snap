@@ -362,7 +362,6 @@ exports[`ChannelInfoModal renders component 1`] = `
       }
     }
     classes={null}
-    directMessage={false}
     handleClose={[MockFunction]}
     open={true}
     shareUri="https://handlers.zbay.app/importchannel=channel-hash"
@@ -732,9 +731,7 @@ exports[`ChannelInfoModal renders component when closed 1`] = `
       }
     }
     classes={null}
-    directMessage={false}
     handleClose={[MockFunction]}
-    open={false}
     shareUri="https://handlers.zbay.app/importchannel=channel-hash"
   />
 </ContextProvider>
