@@ -27,10 +27,10 @@ const RefIconButton = React.forwardRef<HTMLButtonElement, React.PropsWithChildre
 interface MenuActionProps {
   icon: string | ExtendButtonBase<IconButtonTypeMap<{}, 'button'>>
   iconHover: string
+  children: any[]
   offset: string | number
   placement?: PopperPlacementType
   disabled?: boolean
-  children?: any
   onClick?: () => void
 }
 
