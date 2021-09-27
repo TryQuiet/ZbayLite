@@ -360,12 +360,15 @@ exports[`ChannelHeader renders component 1`] = `
         "unread": 12,
       }
     }
+    channelType={3}
     classes={null}
+    directMessage={false}
     isRegisteredUsername={true}
     members={null}
     mutedFlag={true}
     name="channel"
     setTab={[Function]}
+    showAdSwitch={false}
     tab={0}
     unmute={[Function]}
     updateShowInfoMsg={[MockFunction]}
@@ -734,12 +737,15 @@ exports[`ChannelHeader renders members when 0 1`] = `
         "unread": 12,
       }
     }
+    channelType={3}
     classes={null}
+    directMessage={false}
     isRegisteredUsername={true}
     members={Set {}}
     mutedFlag={true}
     name="channel"
     setTab={[Function]}
+    showAdSwitch={false}
     tab={0}
     unmute={[Function]}
     updateShowInfoMsg={[MockFunction]}
@@ -1108,7 +1114,9 @@ exports[`ChannelHeader renders without members count 1`] = `
         "unread": 12,
       }
     }
+    channelType={3}
     classes={null}
+    directMessage={false}
     isRegisteredUsername={true}
     members={
       Set {
@@ -1121,6 +1129,7 @@ exports[`ChannelHeader renders without members count 1`] = `
     mutedFlag={true}
     name="channel"
     setTab={[Function]}
+    showAdSwitch={false}
     tab={0}
     unmute={[Function]}
     updateShowInfoMsg={[MockFunction]}

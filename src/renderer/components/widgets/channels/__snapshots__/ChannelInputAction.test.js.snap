@@ -346,6 +346,7 @@ exports[`ChannelInputAction renders component 1`] = `
 >
   <Component
     classes={null}
+    disabled={false}
     onPostOffer={[MockFunction]}
     onSendMoney={[MockFunction]}
   />
