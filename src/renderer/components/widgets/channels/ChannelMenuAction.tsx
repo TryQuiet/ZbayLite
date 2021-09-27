@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-type ChannelMenuActionProps = {
+interface ChannelMenuActionProps {
   onInfo: React.MouseEventHandler<HTMLLIElement>
   onMute: React.MouseEventHandler<HTMLLIElement>
   onUnmute: React.MouseEventHandler<HTMLLIElement>
@@ -105,6 +105,10 @@ export const ChannelMenuAction: React.FC<ChannelMenuActionProps> = ({
       />
     </MenuAction>
   )
+}
+
+ChannelMenuAction.defaultProps = {
+  disableSettings: false
 }
 
 export default ChannelMenuAction

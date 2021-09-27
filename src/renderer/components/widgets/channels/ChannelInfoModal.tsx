@@ -64,8 +64,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export type ChannelInfoModalProps = {
-  channel?: Channel
+export interface ChannelInfoModalProps {
+  channel: Channel
   channelData?: Contact
   shareUri?: string
   open?: boolean
@@ -171,6 +171,12 @@ export const ChannelInfoModal: React.FC<ChannelInfoModalProps> = ({
       </AutoSizer>
     </Modal>
   )
+}
+
+ChannelInfoModal.defaultProps = {
+  open: false,
+  channel: {},
+  directMessage: false
 }
 
 export default ChannelInfoModal

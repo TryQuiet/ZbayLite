@@ -105,10 +105,11 @@ const checkLinking = (
             textDecoration: 'none'
           }}
           key={index}
-          onClick={e => {
+          onClick={async (e) => {
             e.preventDefault()
             if (allowAll || whitelisted.includes(new URL(part).hostname)) {
-              shell.openExternal(part)
+              // eslint-disble-next-line
+              await shell.openExternal(part)
               return
             }
             openExternalLink(part)
@@ -135,7 +136,7 @@ const checkLinking = (
           borderRadius: 4,
           textDecoration: 'none'
         }}
-        key={match + i}
+        key={match + `${i}`}
         onClick={e => {
           e.preventDefault()
           onLinkedChannel(tags[match])
@@ -203,7 +204,7 @@ const checkLinking = (
             borderRadius: 4,
             textDecoration: 'none'
           }}
-          key={match + i}
+          key={match + `${i}`}
           onClick={e => {
             e.preventDefault()
             onLinkedUser(users.find(user => user.nickname === match))
@@ -224,20 +225,20 @@ const checkLinking = (
   return messageToDisplay
 }
 
-type ChannelMessageProps = {
-  message?: DisplayableMessage
-  onResend?: (DisplayableMessage: DisplayableMessage) => void
-  publicChannels?: PublicChannelsStore
-  onLinkedChannel?: string
-  onLinkedUser?: string
-  users?: UsersStore
-  openExternalLink?: string
-  allowAll?: boolean
-  whitelisted?: string
-  addToWhitelist?: (url: string, dontAutoload: boolean) => void
-  setWhitelistAll?: string
-  autoload?: string
-  torEnabled?: boolean
+interface ChannelMessageProps {
+  message: DisplayableMessage
+  onResend: (DisplayableMessage: DisplayableMessage) => void
+  publicChannels: PublicChannelsStore
+  onLinkedChannel: string
+  onLinkedUser: string
+  users: UsersStore
+  openExternalLink: string
+  allowAll: boolean
+  whitelisted: string
+  addToWhitelist: (url: string, dontAutoload: boolean) => void
+  setWhitelistAll: string
+  autoload: string
+  torEnabled: boolean
 }
 
 export const ChannelMessage: React.FC<ChannelMessageProps> = ({
@@ -333,8 +334,8 @@ export const ChannelMessage: React.FC<ChannelMessageProps> = ({
           item
           container
           direction='column'
-          onClick={() => {
-            shell.openExternal(imageUrl)
+          onClick={async () => {
+            await shell.openExternal(imageUrl)
           }}
           className={classes.imageDiv}
         >

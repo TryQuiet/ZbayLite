@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-type ChannelInputActionProps = {
+interface ChannelInputActionProps {
   onSendMoney: (...args: string[]) => void
   disabled: boolean
   targetRecipientAddress: string
@@ -58,6 +58,10 @@ export const ChannelInputAction: React.FC<ChannelInputActionProps> = ({
       />
     </MenuAction>
   )
+}
+
+ChannelInputAction.defaultProps = {
+  disabled: false
 }
 
 export default ChannelInputAction

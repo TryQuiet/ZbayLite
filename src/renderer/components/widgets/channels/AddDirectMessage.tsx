@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-type AddDirectMessageProps = {
+interface AddDirectMessageProps {
   openModal: ActionFunction0<Action<{
-    modalName: string;
-    data: any;
+    modalName: string
+    data: any
   }>>
 }
 

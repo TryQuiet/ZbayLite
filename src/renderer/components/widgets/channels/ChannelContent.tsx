@@ -19,18 +19,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-type ChannelMessagesProps = {
-  inputState?: string
-  contactId?: string
-  signerPubKey?: string
-  measureRef?: () => void
-  contentRect?: string
-  channelType?: CHANNEL_TYPE
-  offer?: string
-  tab?: (arg: number) => void
-  mentions?: { channelId: Mentions[] }
-  removeMention?: (name: string) => void
-  sendInvitation?: (name: string) => void
+interface ChannelMessagesProps {
+  inputState: string
+  contactId: string
+  signerPubKey: string
+  measureRef: () => void
+  contentRect: string
+  channelType: CHANNEL_TYPE
+  offer: string
+  tab: (arg: number) => void
+  mentions: { channelId: Mentions[] }
+  removeMention: (name: string) => void
+  sendInvitation: (name: string) => void
 }
 
 export const ChannelContent: React.FC<ChannelMessagesProps> = ({

@@ -27,7 +27,7 @@ export const BasicMessageContainer: React.FC<IBasicMessageProps> = ({
   allowModeration
 }
 ) => {
-  const { } = useBasicMessageData()
+  allowModeration = useBasicMessageData().allowModeration
 
   return (
     <BasicMessage

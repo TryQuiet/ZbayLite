@@ -17,7 +17,6 @@ import Icon from '../../ui/Icon'
 import silenced from '../../../static/images/silenced.svg'
 import silencedBlack from '../../../static/images/silencedBlack.svg'
 import Tooltip from '../../ui/Tooltip'
-import { PublicChannel } from '../../../store/handlers/publicChannels'
 import { Channel } from '../../../store/handlers/channel'
 
 const useStyles = makeStyles((theme) => ({
@@ -103,20 +102,20 @@ const prefix = {
 
 // TODO: [reafactoring] we should have channel stats for unread and members count
 
-export type ChannelHeaderProps = {
-  isRegisteredUsername?: boolean
-  updateShowInfoMsg?: (arg: boolean) => void
-  directMessage?: boolean
-  showAdSwitch?: boolean
-  channelType?: CHANNEL_TYPE
-  tab?: number
-  setTab?: (arg: number) => void
-  channel?: Channel
-  offer?: string
-  mutedFlag?: boolean
-  unmute?: () => void
-  name?: string
-  contactId?: string
+export interface ChannelHeaderProps {
+  isRegisteredUsername: boolean
+  updateShowInfoMsg: (arg: boolean) => void
+  directMessage: boolean
+  showAdSwitch: boolean
+  channelType: CHANNEL_TYPE
+  tab: number
+  setTab: (arg: number) => void
+  channel: Channel
+  offer: string
+  mutedFlag: boolean
+  unmute: () => void
+  name: string
+  contactId: string
 }
 
 export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
@@ -222,6 +221,7 @@ export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
             <Grid item className={classes.switch}>
               <Tabs
                 value={tab}
+                /* eslint-disable-next-line */
                 onChange={(e, value) => {
                   setTab(value)
                 }}
@@ -254,6 +254,14 @@ export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
       )}
     </div>
   )
+}
+
+ChannelHeader.defaultProps = {
+  channel: {},
+  directMessage: false,
+  channelType: 3,
+  showAdSwitch: false,
+  isRegisteredUsername: true
 }
 
 export default ChannelHeader

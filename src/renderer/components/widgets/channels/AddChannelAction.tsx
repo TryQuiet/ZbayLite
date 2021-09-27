@@ -24,10 +24,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-type AddChannelActionProps = {
+interface AddChannelActionProps {
   openCreateModal: ActionFunction0<Action<{
-    modalName: string;
-    data: any;
+    modalName: string
+    data: any
   }>>
 }
 

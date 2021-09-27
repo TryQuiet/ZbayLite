@@ -7,11 +7,11 @@ import { unknownUserId } from '../../../../shared/static'
 import { Contact } from '../../../store/handlers/contacts'
 import { ChannelInfo } from '../../../store/selectors/channel'
 
-type BaseChannelsListProps = {
-  channels?: Contact[]
-  unknownMessages?: Contact[]
-  directMessages?: boolean
-  selected?: ChannelInfo
+interface BaseChannelsListProps {
+  channels: Contact[]
+  unknownMessages: Contact[]
+  directMessages: boolean
+  selected: ChannelInfo
 }
 
 export const BaseChannelsList: React.FC<BaseChannelsListProps> = ({
@@ -42,6 +42,12 @@ export const BaseChannelsList: React.FC<BaseChannelsListProps> = ({
       )}
     </List>
   )
+}
+
+BaseChannelsList.defaultProps = {
+  channels: [],
+  unknownMessages: [],
+  directMessages: false
 }
 
 export default React.memo(BaseChannelsList)
