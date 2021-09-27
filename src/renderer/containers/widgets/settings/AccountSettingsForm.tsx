@@ -1,15 +1,12 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import {useSelector} from 'react-redux'
 
-import modalsHandlers from '../../../store/handlers/modals'
 import AccountSettingsFormComponent from '../../../components/widgets/settings/AccountSettingsForm'
+import {identity} from '@zbayapp/nectar'
 
 const useData = () => {
   const data = {
-    user: {
-      // nickname: useSelector(identity.selectors.zbayNickname)
-      nickname: 'mockNickname'
-    }
+    user: useSelector(identity.selectors.currentIdentity)
   }
   return data
 }
@@ -17,16 +14,9 @@ const useData = () => {
 export const AccountSettingsForm = () => {
   const { user } = useData()
 
-  const dispatch = useDispatch()
-
-  const openModal = dispatch(modalsHandlers.actionCreators.openModal('createUsernameModal'))
-  const closeModal = dispatch(modalsHandlers.actionCreators.closeModal(''))
-
   return (
     <AccountSettingsFormComponent
       user={user}
-      openModal={openModal}
-      closeModal={closeModal}
     />
   )
 }

@@ -3,13 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import ChannelInputComponent from '../../../components/widgets/channels/ChannelInput'
 import channelHandlers from '../../../store/handlers/channel'
-// import messagesQueueHandlers from '../../../store/handlers/messagesQueue'
 import mentionsHandlers from '../../../store/handlers/mentions'
 import channelSelectors from '../../../store/selectors/channel'
-// import usersSelectors from '../../../store/selectors/users'
-// import { User } from '../../../store/handlers/users'
-// import { publicChannelsActions } from '../../../sagas/publicChannels/publicChannels.reducer'
-import { publicChannels, messages } from '@zbayapp/nectar'
+import { publicChannels, messages, identity, users } from '@zbayapp/nectar'
 
 export const useChannelInputData = () => {
   const currentChannel = useSelector(publicChannels.selectors.currentChannel)
@@ -20,15 +16,9 @@ export const useChannelInputData = () => {
     id: useSelector(channelSelectors.id),
     inputState: useSelector(channelSelectors.inputLocked),
     members: useSelector(channelSelectors.members),
-    // TODO
     channelName: channels.find(channel => channel.address === currentChannel)?.name,
-    users: [],
-    myUser: {
-      // nickname: useSelector(identity.selectors.zbayNickname)
-      nickname: 'mockNickname'
-    },
-    // users: useSelector(usersSelectors.users),
-    // myUser: useSelector(usersSelectors.myUser),
+    users: useSelector(users.selectors.certificatesMapping),
+    myUser: useSelector(identity.selectors.currentIdentity),
     isMessageTooLong: useSelector(channelSelectors.messageSizeStatus)
   }
   return data
@@ -83,7 +73,7 @@ export const ChannelInput = () => {
       }}
       message={message}
       inputState={inputState}
-      inputPlaceholder={`#${channelName} as @${myUser.nickname}`}
+      inputPlaceholder={`#${channelName} as @${myUser ? myUser.zbayNickname: ''}`}
       channelName={channelName}
       anchorEl={anchorEl}
       setAnchorEl={setAnchorEl}
