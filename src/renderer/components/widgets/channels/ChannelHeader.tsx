@@ -115,7 +115,7 @@ export interface ChannelHeaderProps {
   mutedFlag: boolean
   unmute: () => void
   name: string
-  contactId: string
+  contactId?: string
 }
 
 export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
