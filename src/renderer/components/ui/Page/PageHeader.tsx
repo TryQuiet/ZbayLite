@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 interface PageHeaderProps {
-  children: any[]
+  children: ReactElement
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({ children }) => {
