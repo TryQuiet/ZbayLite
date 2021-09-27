@@ -8,7 +8,7 @@ import { Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 
-import Modal from '../../ui/Modal'
+import Modal from '../../ui/Modal/Modal'
 import { Channel } from '../../../store/handlers/channel'
 import { Contact } from '../../../store/handlers/contacts'
 

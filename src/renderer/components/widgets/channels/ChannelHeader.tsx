@@ -12,11 +12,11 @@ import DirectMessagesInfoModal from '../../../containers/widgets/channels/Direct
 import { CHANNEL_TYPE } from '../../pages/ChannelTypes'
 import ChannelMenuAction from '../../../containers/widgets/channels/ChannelMenuAction'
 import DirectMessagesMenuActions from '../../../containers/widgets/channels/DirectMessagesMenuActions'
-import IconButton from '../../ui/IconButton'
-import Icon from '../../ui/Icon'
+import IconButton from '../../ui/Icon/IconButton'
+import Icon from '../../ui/Icon/Icon'
 import silenced from '../../../static/images/silenced.svg'
 import silencedBlack from '../../../static/images/silencedBlack.svg'
-import Tooltip from '../../ui/Tooltip'
+import Tooltip from '../../ui/Tooltip/Tooltip'
 import { Channel } from '../../../store/handlers/channel'
 
 const useStyles = makeStyles((theme) => ({

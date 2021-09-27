@@ -3,7 +3,7 @@ import React from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import { makeStyles } from '@material-ui/core/styles'
 
-import MenuAction from '../../ui/MenuAction'
+import MenuAction from '../../ui/MenuAction/MenuAction'
 import addIcon from '../../../static/images/zcash/add-icon.svg'
 import { Action, ActionFunction0 } from 'redux-actions'
 
