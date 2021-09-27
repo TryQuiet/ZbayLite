@@ -19,7 +19,7 @@ exports[`SendMessagePopover renders popover 1`] = `
     }
   }
 >
-  <Memo(WithStyles(QuickActionLayout))
+  <Component
     buttonName="Send message"
     handleClose={[MockFunction]}
     main="TestUser"
@@ -30,6 +30,6 @@ exports[`SendMessagePopover renders popover 1`] = `
       size="100"
       value="TestUser"
     />
-  </Memo(WithStyles(QuickActionLayout))>
+  </Component>
 </WithStyles(ForwardRef(Popover))>
 `;
