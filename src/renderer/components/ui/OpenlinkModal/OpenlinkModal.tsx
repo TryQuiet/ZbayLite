@@ -70,13 +70,13 @@ interface OpenLinkModalProps {
 }
 
 export const OpenlinkModal: React.FC<OpenLinkModalProps> = ({
-  open,
+  open = false,
   handleClose,
   handleConfirm,
-  url,
+  url = 'https://www.zbay.app/',
   addToWhitelist,
   setWhitelistAll,
-  isImage
+  isImage = false
 }) => {
   const classes = useStyles({})
 
@@ -220,12 +220,6 @@ export const OpenlinkModal: React.FC<OpenLinkModalProps> = ({
       </AutoSizer>
     </Modal>
   )
-}
-
-OpenlinkModal.defaultProps = {
-  open: false,
-  isImage: false,
-  url: 'https://www.zbay.app/'
 }
 
 export default OpenlinkModal
