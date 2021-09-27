@@ -1,3 +1,5 @@
+// TODO: Doesn't work on build winodws because of electron dependency. Keep this code in case we want run waggle in separate process
+
 // import waggle from 'waggle'
 // import debug from 'debug'
 // const log = Object.assign(debug('zbay:waggle:fork'), {

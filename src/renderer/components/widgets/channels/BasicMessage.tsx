@@ -1,5 +1,4 @@
 import React from 'react'
-// import { DateTime } from 'luxon'
 import classNames from 'classnames'
 import Jdenticon from 'react-jdenticon'
 
@@ -101,14 +100,8 @@ export const BasicMessage: React.FC<IBasicMessageProps> = ({
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => setAnchorEl(null)
-  // const sender = message.nickname
-  // const isUnregistered = message.isUnregistered
   const username = message.nickname
-  // const time = message.createdAt
-  // const timeFormat = getTimeFormat()
   const timeString = message.createdAt
-  // const status = message.status || 'broadcasted'
-  // const isFromZbayUser = username !== 'unknown'
   return (
     <ListItem
       className={classNames({
@@ -133,7 +126,6 @@ export const BasicMessage: React.FC<IBasicMessageProps> = ({
             wrap={'nowrap'}>
             <SendMessagePopover
               username={username}
-              // address={message.sender.replyTo}
               message={message}
               publicKey={message.pubKey}
               txid={message.id}

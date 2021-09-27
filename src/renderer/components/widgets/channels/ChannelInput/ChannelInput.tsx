@@ -19,7 +19,7 @@ import emojiGray from '../../../../static/images/emojiGray.svg'
 import emojiBlack from '../../../../static/images/emojiBlack.svg'
 import errorIcon from '../../../../static/images/t-error.svg'
 import sanitizeHtml from 'sanitize-html'
-// import { User, UsersStore } from '../../../../store/handlers/users'
+import { User } from '@zbayapp/nectar/lib/sagas/users/users.slice'
 
 const useStyles = makeStyles(theme => ({
   root: {

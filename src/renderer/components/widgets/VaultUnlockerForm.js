@@ -73,9 +73,7 @@ const formSchema = Yup.object().shape({
 export const VaultUnlockerForm = ({
   classes,
   onSubmit,
-  loader,
   isNewUser,
-  mainChannelLoaded
 }) => {
   const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production'
   const [done, setDone] = useState(true)
@@ -90,7 +88,6 @@ export const VaultUnlockerForm = ({
       onSubmit={() => { }}
       validationSchema={isDev ? null : formSchema}
     >
-      {({ isSubmitting }) => (
         <Form>
           <Grid
             container
@@ -120,7 +117,6 @@ export const VaultUnlockerForm = ({
                 {!isNewUser ? 'Welcome Back' : 'Welcome to Zbay!'}
               </Typography>
             </Grid>
-
             <Grid container item justify='center'>
               <LoadingButton
                 type='submit'
@@ -134,18 +130,9 @@ export const VaultUnlockerForm = ({
                 inProgress={!done || syncingStart}
               />
             </Grid>
-
-            <Grid item container justify='center' alignItems='center'>
-              <Typography variant='body2' className={classes.status}>
-                {/* {loader.message} */}
-              </Typography>
-            </Grid>
           </Grid>
-          { true && (
-            <Redirect to='/main/channel/general' />
-          )}
+          <Redirect to='/main/channel/general' />
         </Form>
-      )}
     </Formik>
   )
 }

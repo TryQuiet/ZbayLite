@@ -132,7 +132,6 @@ export const ChannelHeader = ({
     }
   }
   const ActionsMenu = channelTypeToActions[channelType]
-  console.log('channel', channel)
   const isFromZbay = channel.name !== 'Unknown'
   const [silenceHover, setSilenceHover] = React.useState(false)
   const [wrapperWidth, setWrapperWidth] = React.useState(0)
