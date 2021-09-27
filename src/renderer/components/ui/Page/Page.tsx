@@ -12,4 +12,4 @@ export const Page: React.FC<PageProps> = ({ children }) => (
   </Grid>
 )
 
-export default React.memo(Page)
+export default Page

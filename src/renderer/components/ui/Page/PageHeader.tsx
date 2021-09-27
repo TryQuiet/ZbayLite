@@ -25,4 +25,4 @@ export const PageHeader: React.FC<PageHeaderProps> = ({ children }) => {
   )
 }
 
-export default React.memo(PageHeader)
+export default PageHeader
