@@ -42,8 +42,8 @@ const ChannelMessage = ({ message }) => {
     dispatch(whitelistHandlers.epics.setWhitelistAll)
   }, [dispatch])
   const openExternalLink = useCallback(
-    payload => {
-      dispatch(actionCreators.openModal('openexternallink', payload))
+    () => {
+      dispatch(actionCreators.openModal('openexternallink'))
     },
     [dispatch]
   )
