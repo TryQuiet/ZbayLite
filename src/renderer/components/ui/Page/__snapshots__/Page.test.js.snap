@@ -10,13 +10,13 @@ exports[`Page renders component 1`] = `
     }
   }
 >
-  <Memo()
+  <Component
     classes={null}
   >
     <div>
       Test header
     </div>
-  </Memo()>
+  </Component>
   <div>
     Test header
   </div>
