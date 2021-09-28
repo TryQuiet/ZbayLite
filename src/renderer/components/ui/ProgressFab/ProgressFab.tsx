@@ -36,9 +36,9 @@ const useStyles = makeStyles(() => ({
 interface ProgressFabProps {
   className?: string
   children: ReactElement
-  loading: boolean
-  success: boolean
-  disabled: boolean
+  loading?: boolean
+  success?: boolean
+  disabled?: boolean
   onClick?: () => void
   [s: string]: any
 }

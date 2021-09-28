@@ -5,7 +5,11 @@ exports[`ProgressFab renders component 1`] = `
   className="makeStyles-wrapper-3"
 >
   <WithStyles(ForwardRef(Fab))
-    classes={null}
+    classes={
+      Object {
+        "root": "makeStyles-root-1",
+      }
+    }
     disabled={false}
     onClick={[MockFunction]}
   >
@@ -19,7 +23,11 @@ exports[`ProgressFab renders disabled 1`] = `
   className="makeStyles-wrapper-3"
 >
   <WithStyles(ForwardRef(Fab))
-    classes={null}
+    classes={
+      Object {
+        "root": "makeStyles-root-1 makeStyles-buttonSuccess-4",
+      }
+    }
     disabled={true}
     onClick={[MockFunction]}
   >
@@ -33,7 +41,11 @@ exports[`ProgressFab renders loading 1`] = `
   className="makeStyles-wrapper-3"
 >
   <WithStyles(ForwardRef(Fab))
-    classes={null}
+    classes={
+      Object {
+        "root": "makeStyles-root-1",
+      }
+    }
     disabled={false}
     onClick={[MockFunction]}
   >
@@ -51,7 +63,11 @@ exports[`ProgressFab renders success 1`] = `
   className="makeStyles-wrapper-3"
 >
   <WithStyles(ForwardRef(Fab))
-    classes={null}
+    classes={
+      Object {
+        "root": "makeStyles-root-1 makeStyles-buttonSuccess-4",
+      }
+    }
     disabled={false}
     onClick={[MockFunction]}
   >
