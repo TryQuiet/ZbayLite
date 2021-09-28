@@ -11,20 +11,13 @@ Object {
 
 exports[`ChannelInput will receive right props 1`] = `
 Object {
-  "channelName": " Unnamed",
-  "id": 5343,
+  "channelName": undefined,
+  "id": 1234,
   "inputState": 0,
   "isMessageTooLong": null,
   "members": Set {},
   "message": "",
-  "myUser": Object {
-    "address": "",
-    "createdAt": 0,
-    "firstName": "",
-    "lastName": "",
-    "nickname": "anon",
-    "onionAddress": "",
-  },
+  "myUser": undefined,
   "users": Object {},
 }
 `;
