@@ -57,7 +57,7 @@ interface QuickActionLayoutProps {
   children?: ReactElement
   handleClose: (event?: {}, reason?: 'backdropClick' | 'escapeKeyDown') => void
   buttonName?: string
-  warrning?: string
+  warning?: string
   onClick?: () => void
 }
 
@@ -67,7 +67,7 @@ export const QuickActionLayout: React.FC<QuickActionLayoutProps> = ({
   children,
   handleClose,
   buttonName,
-  warrning,
+  warning,
   onClick
 }) => {
   const classes = useStyles({})
@@ -100,14 +100,14 @@ export const QuickActionLayout: React.FC<QuickActionLayoutProps> = ({
         <Button
           variant={'contained'}
           onClick={onClick}
-          disabled={!!warrning}
+          disabled={!!warning}
           className={classes.button}>
           {buttonName}
         </Button>
       </Grid>
       <Grid item className={classes.infoDiv}>
         <Typography className={classes.info} variant='caption'>
-          {warrning}
+          {warning}
         </Typography>
       </Grid>
     </Grid>
