@@ -1,7 +1,5 @@
 
 import React from 'react'
-import BigNumber from 'bignumber.js'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import NodePanelField from '../../../components/widgets/node/NodePanelField'
@@ -13,14 +11,8 @@ export const mapStateToProps = _state => ({
   // currentBlock: nodeSelectors.currentBlock(state)
 })
 
-export const NodePanelBlocksField = ({ latestBlock, currentBlock }) => {
-  const outOf = latestBlock.isZero() ? '?' : `~${latestBlock.toString()}`
-  return <NodePanelField name='Blocks' value={`${currentBlock.toString()} / ${outOf}`} />
-}
-
-NodePanelBlocksField.propTypes = {
-  latestBlock: PropTypes.instanceOf(BigNumber),
-  currentBlock: PropTypes.instanceOf(BigNumber)
+export const NodePanelBlocksField = ({ latestBlock = 0, currentBlock = 0 }) => {
+  return <NodePanelField name='Blocks' value={`${currentBlock.toString()} / ${latestBlock.toString()}`} />
 }
 
 export default connect(mapStateToProps)(NodePanelBlocksField)

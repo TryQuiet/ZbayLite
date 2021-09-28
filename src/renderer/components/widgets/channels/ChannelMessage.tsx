@@ -229,15 +229,15 @@ interface ChannelMessageProps {
   message: DisplayableMessage
   onResend: (DisplayableMessage: DisplayableMessage) => void
   publicChannels: PublicChannelsStore
-  onLinkedChannel: string
-  onLinkedUser: string
+  onLinkedChannel: () => void
+  onLinkedUser: () => void
   users: UsersStore
-  openExternalLink: string
+  openExternalLink: () => void
   allowAll: boolean
-  whitelisted: string
+  whitelisted: any[]
   addToWhitelist: (url: string, dontAutoload: boolean) => void
-  setWhitelistAll: string
-  autoload: string
+  setWhitelistAll: () => void
+  autoload: any[]
   torEnabled: boolean
 }
 

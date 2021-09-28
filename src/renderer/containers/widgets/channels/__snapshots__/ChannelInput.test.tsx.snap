@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ChannelInput will receive right actions 1`] = `
+Object {
+  "checkMentions": [Function],
+  "onChange": [Function],
+  "resetDebounce": [Function],
+  "sendOnEnter": [Function],
+}
+`;
+
+exports[`ChannelInput will receive right props 1`] = `
+Object {
+  "channelName": " Unnamed",
+  "id": 5343,
+  "inputState": 0,
+  "isMessageTooLong": null,
+  "members": Set {},
+  "message": "",
+  "myUser": Object {
+    "address": "",
+    "createdAt": 0,
+    "firstName": "",
+    "lastName": "",
+    "nickname": "anon",
+    "onionAddress": "",
+  },
+  "users": Object {},
+}
+`;
