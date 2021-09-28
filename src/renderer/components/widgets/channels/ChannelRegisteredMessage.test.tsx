@@ -2,7 +2,6 @@ import React from 'react'
 import { shallow } from 'enzyme'
 
 import { ChannelRegisteredMessage } from './ChannelRegisteredMessage'
-import { _PublicChannelData } from '../../../store/handlers/publicChannels'
 
 import { MuiThemeProvider } from '@material-ui/core'
 import theme from '../../../theme'

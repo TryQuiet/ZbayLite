@@ -23,7 +23,6 @@ describe('ChannelHeader', () => {
           updateShowInfoMsg={jest.fn()}
           isRegisteredUsername
           directMessage={false}
-          showAdSwitch={false}
           channelType={CHANNEL_TYPE.NORMAL}
           offer={''}
         />
@@ -46,7 +45,6 @@ describe('ChannelHeader', () => {
           mutedFlag
           isRegisteredUsername
           directMessage={false}
-          showAdSwitch={false}
           channelType={CHANNEL_TYPE.NORMAL}
           offer={''}
         />
@@ -69,7 +67,6 @@ describe('ChannelHeader', () => {
           mutedFlag
           isRegisteredUsername
           directMessage={false}
-          showAdSwitch={false}
           channelType={CHANNEL_TYPE.NORMAL}
           offer={''}
         />
