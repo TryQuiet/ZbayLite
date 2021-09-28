@@ -25,7 +25,7 @@ export const SendMessageModal = () => {
   const dispatch = useDispatch()
 
   const createNewContact = contact => dispatch(directMessages.epics.createVaultContact(contact))
-  const openSentFundsModal = payload => dispatch(actionCreators.openModal('sentFunds', payload)())
+  const openSentFundsModal = () => dispatch(actionCreators.openModal('sentFunds')())
 
   return (
     <SendMessageModalComponent

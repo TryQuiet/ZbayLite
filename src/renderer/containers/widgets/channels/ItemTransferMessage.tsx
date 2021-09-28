@@ -22,8 +22,8 @@ const mapStateToProps = () => {
 export const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      openSentModal: payload =>
-        actionCreators.openModal('sentFunds', payload)()
+      openSentModal: () =>
+        actionCreators.openModal('sentFunds')()
     },
     dispatch
   )

@@ -1,19 +1,35 @@
 import React from 'react'
-import { connect } from 'react-redux'
 
 import BasicMessage from '../../../components/widgets/channels/BasicMessage'
-// import channelSelectors from '../../../store/selectors/channel'
-// import contactsSelectors from '../../../store/selectors/contacts'
-// import identitySelectors from '../../../store/selectors/identity'
+import { IBasicMessageProps } from '../../../components/widgets/channels/BasicMessage.d'
 
-export const mapStateToProps = _state => {
-  // const isOwner = channelSelectors.isOwner(state)
-  // const channelModerators = contactsSelectors.directMessages(channelSelectors.id(state))(state).channelModerators
-  // const signerPubKey = identitySelectors.signerPubKey(state)
-  // const isModerator = channelModerators.includes(signerPubKey)
+export const useBasicMessageData = () => {
+
+  // const isOwner = useSelector(publicChannels.selectors.isOwner)
+
   return {
     allowModeration: false
+    // allowModeration: isOwner
   }
 }
 
-export default connect(mapStateToProps)(React.memo(BasicMessage))
+export const BasicMessageContainer: React.FC<IBasicMessageProps> = ({
+  message,
+  setActionsOpen,
+  actionsOpen,
+  allowModeration
+}
+) => {
+  allowModeration = useBasicMessageData().allowModeration
+
+  return (
+    <BasicMessage
+      message={message}
+      setActionsOpen={setActionsOpen}
+      actionsOpen={actionsOpen}
+      allowModeration={allowModeration}
+    />
+  )
+}
+
+export default BasicMessageContainer
