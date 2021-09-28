@@ -7,7 +7,7 @@ describe('QuitAppDialog', () => {
   it('renders component', () => {
     const result = renderComponent(
       <QuitAppDialog open handleClose={jest.fn()} handleQuit={jest.fn()} />
-    );
+    )
 
     expect(result).toMatchSnapshot()
   })
