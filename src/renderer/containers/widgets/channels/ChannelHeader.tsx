@@ -6,25 +6,8 @@ import notificationCenterHandlers from '../../../store/handlers/notificationCent
 
 import channelSelectors from '../../../store/selectors/channel'
 import contactsSelectors from '../../../store/selectors/contacts'
-// import identitySelectors from '../../../store/selectors/identity'
 import notificationCenter from '../../../store/selectors/notificationCenter'
-
-import { publicChannels } from '@zbayapp/nectar'
-
 import { notificationFilterType } from '../../../../shared/static'
-
-const useData = () => {
-  const currentChannel = useSelector(publicChannels.selectors.currentChannel)
-  const channels = useSelector(publicChannels.selectors.publicChannels)
-  const data = {
-    channel: channels.find(channel => channel.address === currentChannel),
-    name: '',
-    members: [],
-    mutedFlag: false
-
-  }
-  return data
-}
 
 export const useChannelInputData = (contactId?) => {
   const contact = useSelector(contactsSelectors.contact(contactId))
@@ -92,6 +75,7 @@ export const ChannelHeaderContainer: React.FC<ChannelHeaderProps> = ({
       isRegisteredUsername={isRegisteredUsername}
       channelType={channelType}
     />
-  )}
+  )
+}
 
 export default ChannelHeaderContainer

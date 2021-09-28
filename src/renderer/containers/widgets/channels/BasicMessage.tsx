@@ -4,7 +4,6 @@ import BasicMessage from '../../../components/widgets/channels/BasicMessage'
 import { IBasicMessageProps } from '../../../components/widgets/channels/BasicMessage.d'
 
 export const useBasicMessageData = () => {
-
   // const isOwner = useSelector(publicChannels.selectors.isOwner)
 
   return {

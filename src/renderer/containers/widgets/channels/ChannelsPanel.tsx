@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect, useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 import * as R from 'ramda'
 import Grid from '@material-ui/core/Grid'
 import { bindActionCreators } from 'redux'
@@ -13,15 +13,13 @@ import QuickActionButton from '../../../components/widgets/sidebar/QuickActionBu
 import { Icon } from '../../../components/ui/Icon/Icon'
 import SearchIcon from '../../../static/images/st-search.svg'
 
-import { publicChannels } from '@zbayapp/nectar'
-
-const useData = () => {
-  const data = {
-    channels: useSelector(publicChannels.selectors.publicChannels),
-    selected: useSelector(publicChannels.selectors.currentChannel)
-  }
-  return data
-}
+// const useData = () => {
+//   const data = {
+//     channels: useSelector(publicChannels.selectors.publicChannels),
+//     selected: useSelector(publicChannels.selectors.currentChannel)
+//   }
+//   return data
+// }
 
 export const mapStateToProps = state => ({
   channels: contactsSelectors.channelsList(state),
@@ -47,8 +45,6 @@ export const ChannelsPanel = ({
   // eslint-disable-next-line
   ...props
 }) => {
-  const { channels, selected } = useData()
-
   return (
     <Grid container item xs direction='column'>
       <Grid item>

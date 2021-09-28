@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { publicChannels } from '@zbayapp/nectar'
+import { publicChannels, users } from '@zbayapp/nectar'
 
 import ChannelMessageComponent from '../../../components/widgets/channels/ChannelMessage'
 import channelHandlers from '../../../store/handlers/channel'
-// import usersSelectors from '../../../store/selectors/users'
 import whitelistSelectors from '../../../store/selectors/whitelist'
 import { actionCreators } from '../../../store/handlers/modals'
 import whitelistHandlers from '../../../store/handlers/whitelist'
@@ -12,8 +11,7 @@ import whitelistHandlers from '../../../store/handlers/whitelist'
 export const useChannelMessageData = () => {
   const data = {
     publicChannels: useSelector(publicChannels.selectors.publicChannels),
-    users: [],
-    // users: useSelector(usersSelectors.users),
+    users: useSelector(users.selectors.certificatesMapping),
     allowAll: useSelector(whitelistSelectors.allowAll),
     whitelisted: useSelector(whitelistSelectors.whitelisted),
     autoload: useSelector(whitelistSelectors.autoload)
@@ -38,6 +36,13 @@ const ChannelMessage = ({ message }) => {
     },
     [dispatch]
   )
+  const onLinkedUser = useCallback(
+    () => {
+      dispatch(actionCreators.openModal('openexternallink'))
+    },
+    [dispatch]
+  )
+
   const setWhitelistAll = useCallback(() => {
     dispatch(whitelistHandlers.epics.setWhitelistAll)
   }, [dispatch])
@@ -59,6 +64,7 @@ const ChannelMessage = ({ message }) => {
       setWhitelistAll={setWhitelistAll}
       openExternalLink={openExternalLink}
       message={message}
+      onLinkedUser={onLinkedUser}
     />
   )
 }
