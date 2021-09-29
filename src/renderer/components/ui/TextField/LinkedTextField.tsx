@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Field } from 'formik'
-import { formikLinkedTextField } from '../helpers'
+import { formikLinkedTextField } from './helpers'
 
 interface LinkedTextFieldProps {
   name: string
