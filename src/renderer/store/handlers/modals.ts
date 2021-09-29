@@ -8,6 +8,10 @@ import { ActionsCreatorsTypes, PayloadType } from './types'
 
 import modalsSelectors from '../selectors/modals'
 
+export enum ModalName {
+  createChannel = 'createChannel'
+}
+
 class Modals {
   payloads: {}
 
@@ -21,9 +25,9 @@ export const initialState: Modals = new Modals({
   payloads: {}
 })
 
-const openModal = (modalName: string) => createAction(actionTypes.OPEN_MODAL, () => modalName)
+const openModal = (modalName: ModalName) => createAction(actionTypes.OPEN_MODAL, () => modalName)
 
-const closeModal = (modalName: string) => createAction(actionTypes.CLOSE_MODAL, () => modalName)
+const closeModal = (modalName: ModalName) => createAction(actionTypes.CLOSE_MODAL, () => modalName)
 
 export const closeModalHandler = createAction<string>(actionTypes.CLOSE_MODAL)
 export const openModalHandler = createAction<string>(actionTypes.OPEN_MODAL)
@@ -51,7 +55,7 @@ export const reducer = handleActions<Modals, PayloadType<ModalsActions>>(
   initialState
 )
 
-export const withModal = name => Component => {
+export const withModal = (name: ModalName) => Component => {
   const mapStateToProps = state => ({
     open: modalsSelectors.open(name)(state)
   })
@@ -70,7 +74,7 @@ export const withModal = name => Component => {
   return C
 }
 
-export const useModal = (name: string) => {
+export const useModal = (name: ModalName) => {
   const open = useSelector(modalsSelectors.open(name))
   const dispatch = useDispatch()
   const { handleOpen, handleClose } = bindActionCreators(
