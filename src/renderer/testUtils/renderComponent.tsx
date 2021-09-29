@@ -1,13 +1,13 @@
-import React, { ReactElement } from 'react'
+import React, { FC, ReactElement } from 'react'
 import { MuiThemeProvider } from '@material-ui/core'
 
-import renderer from 'react-test-renderer';
-
 import theme from '../theme'
+import { render, Queries, RenderResult } from '@testing-library/react'
 
-export const renderComponent = (ui: ReactElement) => {
-  const wrapper = renderer.create(
-    <MuiThemeProvider theme={theme}>{ui}</MuiThemeProvider>
+export const renderComponent = (ui: ReactElement): RenderResult<Queries, HTMLElement> => {
+  const Wrapper: FC = ({ children }) => (
+    <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
   )
-  return wrapper.toJSON
+
+  return render(ui, { wrapper: Wrapper })
 }
