@@ -107,13 +107,13 @@ const usestyles = makeStyles(theme => ({
 
 interface TooltipProps {
   children: ReactElement
-  title: string
+  title?: string
   titleHTML?: ReactFragment
   noWrap?: boolean
   interactive?: boolean
   className?: string
   placement?: 'bottom' | 'top' | 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'
-  onClick?: () => void
+  onClick?: (e?: MouseEvent) => void
   [s: string]: any
 }
 
@@ -131,7 +131,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const classes = usestyles({})
   const [arrowRef, setArrowRef] = useState(null)
   return (
-    <span onClick={onClick}>
+    <span onClick={_e => onClick}>
       <MuiTooltip
         {...props}
         title={
