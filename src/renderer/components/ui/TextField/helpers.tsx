@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react'
-import { TextField } from 'formik-material-ui'
+import { TextField, TextFieldProps } from 'formik-material-ui'
 
 interface FormikLinkedTextFieldProps {
   variant: "standard" | "filled" | "outlined", 
@@ -9,7 +9,7 @@ interface FormikLinkedTextFieldProps {
   [s: string]: any
 }
 
-export const formikLinkedTextField: FunctionComponent<FormikLinkedTextFieldProps> = ({ 
+export const formikLinkedTextField: FunctionComponent<TextFieldProps & FormikLinkedTextFieldProps> = ({ 
   variant,
   transformer,
   otherField,
@@ -22,9 +22,10 @@ export const formikLinkedTextField: FunctionComponent<FormikLinkedTextFieldProps
       variant='outlined'
       {...props}
       inputProps={{
-        onChange: ({ target: { value } }) => {
+        onChange: (event) => {
+          const value = event.currentTarget.value
           props.form.setFieldValue(props.field.name, value)
-          props.form.setFieldValue(otherField, (value * transformer).toFixed(decimalPlaces))
+          props.form.setFieldValue(otherField, (Number(value) * transformer).toFixed(decimalPlaces))
         }
       }}
     />
