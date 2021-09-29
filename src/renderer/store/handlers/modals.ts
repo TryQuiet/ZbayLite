@@ -1,6 +1,6 @@
 import { produce, immerable } from 'immer'
 import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { createAction, handleActions } from 'redux-actions'
 import { actionTypes } from '../../../shared/static'
 
@@ -51,19 +51,40 @@ export const reducer = handleActions<Modals, PayloadType<ModalsActions>>(
   initialState
 )
 
-export const withModal = (name) => (Component) => {
+export const withModal = name => Component => {
   const mapStateToProps = state => ({
     open: modalsSelectors.open(name)(state)
   })
 
-  const mapDispatchToProps = dispatch => bindActionCreators({
-    handleOpen: openModal(name),
-    handleClose: closeModal(name)
-  }, dispatch)
+  const mapDispatchToProps = dispatch =>
+    bindActionCreators(
+      {
+        handleOpen: openModal(name),
+        handleClose: closeModal(name)
+      },
+      dispatch
+    )
   const wrappedDisplayName = Component.displayName || Component.name || 'Component'
   const C = connect(mapStateToProps, mapDispatchToProps)(Component)
   C.displayName = `withModal(${wrappedDisplayName})`
   return C
+}
+
+export const useModal = (name: string) => {
+  const open = useSelector(modalsSelectors.open(name))
+  const dispatch = useDispatch()
+  const { handleOpen, handleClose } = bindActionCreators(
+    {
+      handleOpen: openModal(name),
+      handleClose: closeModal(name)
+    },
+    dispatch
+  )
+  return {
+    open,
+    handleOpen,
+    handleClose
+  }
 }
 
 export default {
