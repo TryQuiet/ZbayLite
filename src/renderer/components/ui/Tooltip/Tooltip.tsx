@@ -113,7 +113,7 @@ interface TooltipProps {
   interactive?: boolean
   className?: string
   placement?: 'bottom' | 'top' | 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'
-  onClick?: (e?: MouseEvent) => void
+  onClick?: (e: React.MouseEvent) => void
   [s: string]: any
 }
 
@@ -131,7 +131,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const classes = usestyles({})
   const [arrowRef, setArrowRef] = useState(null)
   return (
-    <span onClick={_e => onClick}>
+    <span onClick={e => onClick(e)}>
       <MuiTooltip
         {...props}
         title={
