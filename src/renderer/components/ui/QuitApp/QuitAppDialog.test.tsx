@@ -9,6 +9,6 @@ describe('QuitAppDialog', () => {
       <QuitAppDialog open handleClose={jest.fn()} handleQuit={jest.fn()} />
     )
 
-    expect(result).toMatchSnapshot()
+    expect(result).toMatchInlineSnapshot()
   })
 })
