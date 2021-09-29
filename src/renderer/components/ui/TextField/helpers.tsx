@@ -1,7 +1,21 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { TextField } from 'formik-material-ui'
 
-export const formikLinkedTextField = ({ variant, transformer, otherField, precise, ...props }) => {
+interface FormikLinkedTextFieldProps {
+  variant: "standard" | "filled" | "outlined", 
+  transformer: number, 
+  otherField, 
+  precise, 
+  [s: string]: any
+}
+
+export const formikLinkedTextField: FunctionComponent<FormikLinkedTextFieldProps> = ({ 
+  variant,
+  transformer,
+  otherField,
+  precise,
+  ...props
+ }) => {
   const decimalPlaces = precise || 4
   return (
     <TextField
