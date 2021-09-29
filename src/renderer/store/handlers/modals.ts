@@ -23,8 +23,6 @@ export enum ModalName {
   joinChannel='joinChannel',
   sentFunds='sentFunds',
   newMessageSeparate='newMessageSeparate'
-  
-
 
 }
 
