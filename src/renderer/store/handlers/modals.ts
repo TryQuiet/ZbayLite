@@ -9,7 +9,23 @@ import { ActionsCreatorsTypes, PayloadType } from './types'
 import modalsSelectors from '../selectors/modals'
 
 export enum ModalName {
-  createChannel = 'createChannel'
+  createChannel = 'createChannel',
+  accountSettingsModal = 'accountSettingsModal',
+  sendMoneySeparate='sendMoneySeparate',
+  depositMoney='depositMoney',
+  openexternallink = 'openexternallink',
+  seedModal = 'seedModal',
+  criticalError = 'criticalError',
+  createUsernameModal = 'createUsernameModal',
+  channelInfo='channelInfo',
+  channelSettingsModal='channelSettingsModal',
+  publishChannel='publishChannel',
+  joinChannel='joinChannel',
+  sentFunds='sentFunds',
+  newMessageSeparate='newMessageSeparate'
+  
+
+
 }
 
 class Modals {
