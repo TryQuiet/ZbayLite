@@ -35,7 +35,6 @@ interface LoadingButtonProps {
   inProgress?: boolean
   text?: string
   classes?: Partial<ReturnType<typeof useStyles>>
-  buttonProps?: Partial<ButtonProps>
 }
 
 export const LoadingButton: React.FC<ButtonProps & LoadingButtonProps> = ({
