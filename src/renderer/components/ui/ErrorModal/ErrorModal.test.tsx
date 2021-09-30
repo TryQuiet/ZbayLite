@@ -164,7 +164,7 @@ describe('ErrorModal', () => {
                       class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
                     >
                       <button
-                        class="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-button-216 makeStyles-button-8"
+                        class="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-button-8"
                         tabindex="0"
                         type="button"
                       >

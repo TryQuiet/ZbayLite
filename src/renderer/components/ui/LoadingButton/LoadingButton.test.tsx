@@ -5,12 +5,12 @@ import { LoadingButton } from './LoadingButton'
 
 describe('Loading button', () => {
   it('renders component', () => {
-    const result = renderComponent(<LoadingButton inProgress={false} text='Loading...' />)
+    const result = renderComponent(<LoadingButton text='Loading...' />)
     expect(result.baseElement).toMatchInlineSnapshot(`
       <body>
         <div>
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-button-1 undefined"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-button-1"
             tabindex="0"
             type="button"
           >

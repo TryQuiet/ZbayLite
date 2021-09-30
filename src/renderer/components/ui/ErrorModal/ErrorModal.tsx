@@ -126,7 +126,7 @@ export const ErrorModal: React.FC<ErrorModalProps> = ({
             {!send && (
               <LoadingButton
                 text='Send & restart'
-                style={classes.button}
+                classes={{ button: classes.button }}
                 onClick={async () => {
                   try {
                     await handleSend({ title: message, message: traceback })
