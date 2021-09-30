@@ -52,7 +52,7 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
       <CircularProgress className={classes.progress} />
     </Button>
   ) : (
-    <Button className={classNames({[classes.button]: true, [style]: true})} {...other}>
+    <Button className={classNames({ [classes.button]: true, [style]: true })} {...other}>
       {text || 'Continue'}
     </Button>
   )
