@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BlockedUsers renders component 1`] = `
+<WithStyles(ForwardRef(Grid))
+  container={true}
+  direction="column"
+>
+  <WithStyles(ForwardRef(Grid))
+    alignItems="center"
+    className="makeStyles-titleDiv-2"
+    container={true}
+    item={true}
+    justify="space-between"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-title-1"
+      item={true}
+    >
+      <WithStyles(ForwardRef(Typography))
+        variant="h3"
+      >
+        BlockedUsers
+      </WithStyles(ForwardRef(Typography))>
+    </WithStyles(ForwardRef(Grid))>
+  </WithStyles(ForwardRef(Grid))>
+</WithStyles(ForwardRef(Grid))>
+`;
