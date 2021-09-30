@@ -33,24 +33,26 @@ const useStyles = makeStyles(theme => ({
 interface LoadingButtonProps {
   inProgress?: boolean
   text?: string
+  style?: string
   [index: string]: any
 }
 
 export const LoadingButton: React.FC<LoadingButtonProps> = ({
   inProgress = false,
   text,
+  style,
   ...other
 }) => {
   const classes = useStyles({})
 
   return inProgress ? (
     <Button
-      className={classNames({ [classes.button]: true, [classes.inProgress]: true })}
+      className={classNames({ [classes.button]: true, [classes.inProgress]: true, [style]: true })}
       {...other}>
       <CircularProgress className={classes.progress} />
     </Button>
   ) : (
-    <Button className={classes.button} {...other}>
+    <Button className={classNames({[classes.button]: true, [style]: true})} {...other}>
       {text || 'Continue'}
     </Button>
   )
