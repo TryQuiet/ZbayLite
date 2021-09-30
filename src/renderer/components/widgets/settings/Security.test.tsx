@@ -14,7 +14,6 @@ describe('Security', () => {
         onRescan={jest.fn()}
         whitelisted={[]}
         removeSiteHost={jest.fn()}
-        removeImageHost={jest.fn()}
       />
     )
     expect(result).toMatchSnapshot()

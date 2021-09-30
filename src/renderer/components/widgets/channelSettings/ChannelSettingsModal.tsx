@@ -79,7 +79,7 @@ export const ChannelSettingsModal: React.FC<ChannelSettingsModalProps> = ({
   open,
   handleClose,
   currentTab,
-  channel = {},
+  channel,
   isOwner,
   modalTabToOpen,
   setCurrentTab,

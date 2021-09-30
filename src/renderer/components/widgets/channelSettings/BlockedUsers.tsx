@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import UserListItem from './UserListItem'
 import { User } from '@zbayapp/nectar/lib/sagas/users/users.slice'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   title: {
     marginBottom: 24
   }

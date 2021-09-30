@@ -6,7 +6,7 @@ export interface ISendMessagePopoverProps {
   username: string
   handleClose: ModalProps['onClose']
   address: string
-  anchorEl?: null | Element | ((element: Element) => Element)
+  anchorEl?: PopoverProps['anchorEl']
   isUnregistered?: boolean
   createNewContact?: (contact: any) => void
   history?: History<LocationState>

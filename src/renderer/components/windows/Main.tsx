@@ -62,8 +62,8 @@ export const Main: React.FC<MainProps> = ({
     }, 1000)
 
     window.addEventListener('resize', debouncedHandleResize)
-    // eslint-disable-next-line
-    return (_: void) => {
+
+    return () => {
       window.removeEventListener('resize', debouncedHandleResize)
     }
   })

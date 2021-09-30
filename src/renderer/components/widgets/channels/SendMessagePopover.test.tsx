@@ -5,10 +5,10 @@ import { SendMessagePopover } from './SendMessagePopover'
 
 describe('SendMessagePopover', () => {
   it('renders popover', () => {
-    const reactRef = {}
+    const ref = React.createRef<HTMLAnchorElement>()
     const result = shallow(
       <SendMessagePopover
-        anchorEl={reactRef as Element}
+        anchorEl={ref.current}
         handleClose={jest.fn()}
         username='TestUser'
         users={{}}

@@ -49,8 +49,7 @@ export const SeedModal: React.FC<SeedModalProps> = ({ open, handleClose }) => {
       setSeedWords(seedData.seed.split(' '))
     }
     if (open) {
-      // eslint-disable-next-line
-      fetchSeed()
+      void fetchSeed()
     }
   }, [open])
   return (

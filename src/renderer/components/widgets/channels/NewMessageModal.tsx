@@ -141,9 +141,9 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
                   options={usersArray.map(option => option.nickname)}
                   value={values.recipient}
                   // eslint-disable-next-line
-                  onChange={(e, v) => setFieldValue('recipient', v)}
+                  onChange={(v: string) => setFieldValue('recipient', v)}
                   // eslint-disable-next-line
-                  onInputChange={(e, v) => {
+                  onInputChange={(v: string) => {
                     setFieldValue('recipient', v)
                   }}
                   renderInput={params => (

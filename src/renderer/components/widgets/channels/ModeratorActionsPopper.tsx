@@ -8,7 +8,7 @@ import {
   Grid,
   Typography
 } from '@material-ui/core'
-import { ReferenceObject } from 'popper.js'
+import { PopperProps } from '@material-ui/core/Popper'
 
 import Icon from '../../ui/Icon/Icon'
 import userIcon from '../../../static/images/userIcon.svg'
@@ -69,7 +69,7 @@ interface ModeratorActionsPopperProps {
   name: string
   address: string
   open: boolean
-  anchorEl: ReferenceObject | (() => ReferenceObject)
+  anchorEl: PopperProps['anchorEl']
   banUser: () => void
 }
 
@@ -122,23 +122,6 @@ export const ModeratorActionsPopper: React.FC<ModeratorActionsPopperProps> = ({
           alignItems='center'
           className={classes.actions}
         >
-          {/* <Grid // Temporarily hidden
-          item
-          container
-          onClick={() => {
-            removeMessage()
-          }}
-          className={classes.pointer}
-        >
-          <Grid item>
-            <Icon className={classes.removeIcon} src={removeMessageIcon} />
-          </Grid>
-          <Grid item xs>
-            <Typography variant='body1' className={classes.action}>
-              Hide message
-            </Typography>
-          </Grid>
-        </Grid> */}
           <Grid
             item
             container

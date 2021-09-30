@@ -211,8 +211,7 @@ export const JoinChannelModal: React.FC<JoinChannelModalProps> = ({
                         )
                       }}
                       value={values.channel}
-                      // eslint-disable-next-line
-                      onChange={(e, v) => {
+                      onChange={(v: string) => {
                         setFieldValue('channel', v)
                         setStep(1)
                       }}
