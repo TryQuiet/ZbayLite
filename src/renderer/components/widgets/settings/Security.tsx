@@ -72,13 +72,7 @@ export const Security: React.FC<SecurityProps> = ({
   const classes = useStyles({})
   return (
     <Grid container direction='column'>
-      <Grid
-        container
-        item
-        justify='space-between'
-        alignItems='center'
-        className={classes.titleDiv}
-      >
+      <Grid container item justify='space-between' alignItems='center' className={classes.titleDiv}>
         <Grid item className={classes.title}>
           <Typography variant='h3'>Security</Typography>
         </Grid>
@@ -89,8 +83,8 @@ export const Security: React.FC<SecurityProps> = ({
         </Grid>
         <Grid item>
           <Typography variant='body2'>
-            If something happens to your computer, you’ll need this key to
-            recover your account and your funds.
+            If something happens to your computer, you’ll need this key to recover your account and
+            your funds.
           </Typography>
         </Grid>
         <Grid item >
@@ -99,13 +93,13 @@ export const Security: React.FC<SecurityProps> = ({
             size='large'
             color='primary'
             type='submit'
-            fullWidth
+            fullWidth={true}
             inProgress={false}
-            className={classes.button}
             onClick={() => {
               openSeedModal()
             }}
             text='View key'
+            classes={{ button: classes.button }}
           />
         </Grid>
       </Grid>
@@ -114,17 +108,15 @@ export const Security: React.FC<SecurityProps> = ({
       </Grid>
       <Grid item>
         <Typography variant='body2'>
-          For faster message delivery, Zbay can send and receive messages
-          directly with Tor (instead of the Zcash blockchain) when other users
-          are online.{' '}
+          For faster message delivery, Zbay can send and receive messages directly with Tor (instead
+          of the Zcash blockchain) when other users are online.{' '}
           <a
             className={classes.link}
             onClick={e => {
               e.preventDefault()
               void shell.openExternal('https://www.zbay.app/faq.html')
             }}
-            href='https://www.zbay.app/faq.html'
-          >
+            href='https://www.zbay.app/faq.html'>
             Learn more.
           </a>
         </Typography>
@@ -140,12 +132,10 @@ export const Security: React.FC<SecurityProps> = ({
         <>
           <Grid item>
             <Typography variant='body2'>
-              To start quickly, Zbay includes username and channel registration
-              data in the app itself. If the Zbay team omitted some data, or
-              provided incorrect data, a user or channel could be censored or
-              impersonated. To verify this data, which takes ~1 hour but may add
-              some security, you can restart & re-sync. You only need to do this
-              once.
+              To start quickly, Zbay includes username and channel registration data in the app
+              itself. If the Zbay team omitted some data, or provided incorrect data, a user or
+              channel could be censored or impersonated. To verify this data, which takes ~1 hour
+              but may add some security, you can restart & re-sync. You only need to do this once.
             </Typography>
           </Grid>
           <Grid item >
@@ -154,13 +144,13 @@ export const Security: React.FC<SecurityProps> = ({
               size='large'
               color='primary'
               type='submit'
-              fullWidth
+              fullWidth={true}
               inProgress={false}
-              className={classes.rescanButton}
               onClick={() => {
                 onRescan()
               }}
               text='Restart & re-sync'
+              classes={{ button: classes.rescanButton }}
             />
           </Grid>
         </>
