@@ -6,7 +6,6 @@ import { Scrollbars } from 'rc-scrollbars'
 import { AutoSizer } from 'react-virtualized'
 
 import IdentityPanel from '../../../containers/ui/IdentityPanel'
-import WalletPanel from '../../../containers/widgets/walletPanel/WalletPanel'
 import ChannelsPanel from '../../../containers/widgets/channels/ChannelsPanel'
 import DirectMessagesPanel from '../../../containers/widgets/channels/DirectMessagesPanel'
 
@@ -44,7 +43,6 @@ const Sidebar: React.FC = () => {
           <AutoSizer>
             {({ width, height }) => (
               <Scrollbars autoHideTimeout={500} style={{ width: width, height: height }}>
-                <WalletPanel />
                 <ChannelsPanel title='Channels' />
                 <DirectMessagesPanel title='Direct Messages' />
               </Scrollbars>

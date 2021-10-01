@@ -1,17 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BaseChannelsList renders component 1`] = `
-<Fragment>
-  <Component
-    icon="test-file-stub"
-    iconHover="test-file-stub"
-    offset="0 8"
-  >
-    <Component
-      onClick={[MockFunction]}
-      title="Create"
-    />
-  </Component>
-  <Component />
-</Fragment>
+<body>
+  <div>
+    <button
+      class="MuiButtonBase-root MuiIconButton-root makeStyles-button-3"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        class="MuiIconButton-label"
+      >
+        <img
+          class="makeStyles-icon-2"
+          src="test-file-stub"
+        />
+      </span>
+    </button>
+  </div>
+</body>
 `;

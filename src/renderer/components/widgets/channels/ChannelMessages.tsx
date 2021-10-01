@@ -8,8 +8,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { MessageType } from '../../../../shared/static.types'
 import ChannelMessage from '../../../containers/widgets/channels/ChannelMessage'
 import WelcomeMessage from './WelcomeMessage'
-import ChannelItemTransferMessage from '../../../containers/widgets/channels/ItemTransferMessage'
-import ChannelAdMessage from '../../../containers/widgets/channels/ListingMessage'
 import MessagesDivider from '../MessagesDivider'
 import UserRegisteredMessage from './UserRegisteredMessage'
 import ChannelRegisteredMessage from './ChannelRegisteredMessage'
@@ -282,9 +280,6 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
 const typeToMessageComponent = {
   [MessageType.BASIC]: ChannelMessage,
   [MessageType.ITEM_BASIC]: ChannelMessage,
-  [MessageType.ITEM_TRANSFER]: ChannelItemTransferMessage,
-  [MessageType.TRANSFER]: ChannelItemTransferMessage,
-  [MessageType.AD]: ChannelAdMessage
 }
 
 ChannelMessages.defaultProps = {

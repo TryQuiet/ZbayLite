@@ -1,13 +1,15 @@
 import React from 'react'
 import { DateTime } from 'luxon'
-import { shallow } from 'enzyme'
 
 import { BasicMessage } from './BasicMessage'
 import { now, createMessage } from '../../../testUtils'
-import { MuiThemeProvider } from '@material-ui/core/styles'
 
-import theme from '../../../theme'
 import { DisplayableMessage } from '../../../zbay/messages.types'
+import { renderComponent } from '../../../testUtils/renderComponent'
+import { Router } from 'react-router'
+import history from '../../../../shared/history'
+import { Provider } from 'react-redux'
+import store from '../../../store'
 
 describe('BasicMessage', () => {
   beforeEach(() => {
@@ -15,20 +17,22 @@ describe('BasicMessage', () => {
     jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => now)
   })
 
-  const wrapper = el => <MuiThemeProvider theme={theme}>{el}</MuiThemeProvider>
-
   it('renders component', async () => {
     const message = await createMessage()
     const displayMessage = new DisplayableMessage(message)
-    const result = shallow(wrapper(
-      <BasicMessage
-        message={displayMessage}
-        actionsOpen={false}
-        setActionsOpen={jest.fn()}
-        allowModeration
-      />
-    ))
-    expect(result).toMatchSnapshot()
+    const result = renderComponent(
+      <Provider store={store}>
+        <Router history={history}>
+          <BasicMessage
+            message={displayMessage}
+            actionsOpen={false}
+            setActionsOpen={jest.fn()}
+            allowModeration
+          />
+        </Router>
+      </Provider>
+    )
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 
   it('renders component when message is sent by owner', async () => {
@@ -38,14 +42,18 @@ describe('BasicMessage', () => {
       fromYou: true
     }
     const displayMessage = new DisplayableMessage(messageFromYou)
-    const result = shallow(wrapper(
-      <BasicMessage
-        message={displayMessage}
-        actionsOpen={false}
-        setActionsOpen={jest.fn()}
-        allowModeration
-      />
-    ))
-    expect(result).toMatchSnapshot()
+    const result = renderComponent(
+      <Provider store={store}>
+        <Router history={history}>
+          <BasicMessage
+            message={displayMessage}
+            actionsOpen={false}
+            setActionsOpen={jest.fn()}
+            allowModeration
+          />
+        </ Router>
+      </Provider>
+    )
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })

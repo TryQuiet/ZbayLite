@@ -15,7 +15,6 @@ import ShippingSettingsForm from '../../../../containers/widgets/settings/Shippi
 import Security from '../../../../containers/widgets/settings/Security'
 import Notifications from '../../../../containers/widgets/settings/Notifications'
 import BlockedUsers from '../../../../containers/widgets/settings/BlockedUsers'
-import BuyZcash from '../BuyZcash'
 
 const tabs = {
   account: AccountSettingsForm,
@@ -23,7 +22,6 @@ const tabs = {
   security: Security,
   notifications: Notifications,
   blockedusers: BlockedUsers,
-  buyZcash: BuyZcash
 }
 
 const styles = theme => ({
