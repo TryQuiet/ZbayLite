@@ -8,6 +8,7 @@ import { HashRouter, Route } from 'react-router-dom'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
 import store from './store'
+import Index from './containers/windows/Index'
 import Main from './containers/windows/Main'
 import Loading from './containers/windows/Loading'
 import Vault from './containers/windows/Vault'
@@ -50,6 +51,7 @@ export default () => {
               <SecurityModal />
               <UpdateModal />
               <QuitAppDialog />
+              <Route path='/' component={Index} />
               <Route path='/main' component={Main} />
               <Route path='/loading' component={Loading} />
               <Route path='/vault' exact component={Vault} />
