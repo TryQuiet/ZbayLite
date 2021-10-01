@@ -17,7 +17,6 @@ import ChannelSettingsModal from './containers/widgets/channelSettings/ChannelSe
 import CreateChannelModal from './containers/widgets/channels/CreateChannelModal'
 import CreateUsernameModal from './containers/widgets/createUsernameModal/CreateUsername'
 import ErrorModal from './containers/ui/ErrorModal'
-import FailedUsernameRegister from './containers/ui/FailedUsernameRegister'
 import JoinChannelModal from './containers/widgets/channels/JoinChannelModal'
 import NewMessageModal from './containers/widgets/channels/NewMessageModal'
 import Notifier from './containers/ui/Notifier'
@@ -42,7 +41,6 @@ export default () => {
               <CreateUsernameModal />
               <CssBaseline />
               <ErrorModal />
-              <FailedUsernameRegister />
               <JoinChannelModal />
               <NewMessageModal />
               <Notifier />
