@@ -7,7 +7,6 @@ import { Grid } from '@material-ui/core'
 
 import Modal from '../../ui/Modal/Modal'
 import Tab from '../../ui/Tab/Tab'
-import BlockedUsers from '../../../containers/widgets/channelSettings/BlockedUsers'
 import Moderators from '../../../containers/widgets/channelSettings/Moderators'
 import ChannelInfo from '../../../containers/widgets/channelSettings/ChannelInfo'
 import Notifications from '../../../containers/widgets/channelSettings/Notifications'
@@ -15,7 +14,6 @@ import { Contact } from '../../../store/handlers/contacts'
 
 const tabs = {
   channelInfo: ChannelInfo,
-  blockedUsers: BlockedUsers,
   moderators: Moderators,
   notifications: Notifications
 }
@@ -113,16 +111,6 @@ export const ChannelSettingsModal: React.FC<ChannelSettingsModalProps> = ({
                 <Tab
                   value='channelInfo'
                   label='Channel info'
-                  classes={{
-                    tabRoot: classes.tab,
-                    selected: classes.selected
-                  }}
-                />
-              )}
-              {isOwner && (
-                <Tab
-                  value='blockedUsers'
-                  label='Blocked users'
                   classes={{
                     tabRoot: classes.tab,
                     selected: classes.selected
