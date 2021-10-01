@@ -100,7 +100,7 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   users,
   channelId,
   onLinkedChannel,
-  publicChannels,
+  publicChannels
 }) => {
   const classes = useStyles({})
   const msgRef = React.useRef<HTMLUListElement>()
