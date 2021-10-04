@@ -1,49 +1,43 @@
-import React, { KeyboardEventHandler } from 'react'
-import { storiesOf } from '@storybook/react'
-import { withKnobs } from '@storybook/addon-knobs'
+import React from 'react'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 
-import { withStore } from '../../../../storybook/decorators'
-import create from '../../../../store/create'
-import ChannelInput from './ChannelInput'
+import { ChannelInput } from './ChannelInput'
+import { withTheme } from '../../../../storybook/decorators'
 
 import { INPUT_STATE } from '../../../../store/selectors/channel'
 
-const store = create({
-  initialState: {}
-})
+export default {
+  title: 'Components/ChannelInpu',
+  decorators: [withTheme],
+  component: ChannelInput
+} as ComponentMeta<typeof ChannelInput>
 
-storiesOf('Components/MentionPoper', module)
-  .addDecorator(withKnobs)
-  .addDecorator(withStore(store))
-  .add('playground', () => {
-    return (
-      <ChannelInput
-        infoClass={''}
-        setInfoClass={function (arg: string): void {
-          throw new Error('Function not implemented.')
-        }}
-        id={''}
-        users={[
-            { nickname: 'bartek' },
-            { nickname: 'emilia' }
-        ]}
-        onChange={function (arg: string): void {
-          throw new Error('Function not implemented.')
-        }}
-        onKeyPress={function (event: any): void {
-          throw new Error('Function not implemented.')
-        }}
-        message={''}
-        inputState={INPUT_STATE.AVAILABLE}
-        inputPlaceholder={''}
-        anchorEl={undefined}
-        setAnchorEl={function (arg: HTMLElement): void {
-          throw new Error('Function not implemented.')
-        }}
-        mentionsToSelect={[]}
-        setMentionsToSelect={function (arg: any[]): void {
-          throw new Error('Function not implemented.')
-        }}
-      />
-    )
-  })
+const Template: ComponentStory<typeof ChannelInput> = args => <ChannelInput {...args} />
+
+export const MentionPoper = Template.bind({})
+
+MentionPoper.args = {
+  infoClass: '',
+  setInfoClass: function(arg: string): void {
+    throw new Error('Function not implemented.')
+  },
+  id: '',
+  users: [{ nickname: 'bartek' }, { nickname: 'emilia' }],
+  onChange: function(_arg: string): void {
+    throw new Error('Function not implemented.')
+  },
+  onKeyPress: function(_event: any): void {
+    throw new Error('Function not implemented.')
+  },
+  message: '',
+  inputState: INPUT_STATE.AVAILABLE,
+  inputPlaceholder: '',
+  anchorEl: undefined,
+  setAnchorEl: function(_arg: HTMLElement): void {
+    throw new Error('Function not implemented.')
+  },
+  mentionsToSelect: [],
+  setMentionsToSelect: function(_arg: any[]): void {
+    throw new Error('Function not implemented.')
+  }
+}
