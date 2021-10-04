@@ -4,7 +4,6 @@ module.exports = {
   "stories": [
     "../src/**/*.stories.mdx",
     "../src/**/*.stories.@(js|jsx|ts|tsx)",
-    "../src/renderer/components/widgets/channels/ChannelInput/*.stories.tsx"
   ],
   "addons": [
     "@storybook/addon-links",
@@ -13,7 +12,7 @@ module.exports = {
   "webpackFinal": async (config, { configType }) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      'fs': path.resolve(__dirname, 'fsMock.js'),
+      fs: path.resolve(__dirname, 'fsMock.js'),
       'electron-store-webpack-wrapper': path.resolve(__dirname, 'electronStoreMock.js'),
       net: path.resolve(__dirname, 'netMock.js')
     };
