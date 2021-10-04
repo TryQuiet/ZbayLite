@@ -6,8 +6,7 @@ import { now, createMessage } from '../../../testUtils'
 
 import { DisplayableMessage } from '../../../zbay/messages.types'
 import { renderComponent } from '../../../testUtils/renderComponent'
-import { Router } from 'react-router'
-import history from '../../../../shared/history'
+import { HashRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from '../../../store'
 
@@ -21,16 +20,16 @@ describe('BasicMessage', () => {
     const message = await createMessage()
     const displayMessage = new DisplayableMessage(message)
     const result = renderComponent(
-      <Provider store={store}>
-        <Router history={history}>
+      <HashRouter>
+        <Provider store={store}>
           <BasicMessage
             message={displayMessage}
             actionsOpen={false}
             setActionsOpen={jest.fn()}
             allowModeration
           />
-        </Router>
-      </Provider>
+        </Provider>
+      </HashRouter>
     )
     expect(result.baseElement).toMatchInlineSnapshot()
   })
@@ -43,16 +42,16 @@ describe('BasicMessage', () => {
     }
     const displayMessage = new DisplayableMessage(messageFromYou)
     const result = renderComponent(
-      <Provider store={store}>
-        <Router history={history}>
+      <HashRouter>
+        <Provider store={store}>
           <BasicMessage
             message={displayMessage}
             actionsOpen={false}
             setActionsOpen={jest.fn()}
             allowModeration
           />
-        </ Router>
-      </Provider>
+        </Provider>
+      </HashRouter>
     )
     expect(result.baseElement).toMatchInlineSnapshot()
   })

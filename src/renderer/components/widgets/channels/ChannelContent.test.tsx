@@ -1,17 +1,25 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { Provider } from 'react-redux'
+
 import { ChannelContent } from './ChannelContent'
 import { CHANNEL_TYPE } from '../../pages/ChannelTypes'
-
-import { MuiThemeProvider } from '@material-ui/core'
-import theme from '../../../theme'
+import { renderComponent } from '../../../testUtils/renderComponent'
 import { Mentions } from '../../../store/handlers/mentions'
+import store from '../../../store'
+import { DateTime } from 'luxon'
+import { now } from '../../../testUtils'
+
 
 describe('ChannelContent', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => now)
+  })
+
   it('renders component', () => {
-    const mentions = { channelId: [new Mentions()] }
-    const result = shallow(
-      <MuiThemeProvider theme={theme}>
+    const mentions = { channelId: [new Mentions({ nickname: '', timeStamp: 100000 })] }
+    const result = renderComponent(
+      <Provider store={store}>
         <ChannelContent
           channelType={CHANNEL_TYPE.NORMAL}
           measureRef={jest.fn()}
@@ -25,8 +33,8 @@ describe('ChannelContent', () => {
           offer={''}
           tab={jest.fn()}
         />
-      </MuiThemeProvider>
+      </Provider>
     )
-    expect(result).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })

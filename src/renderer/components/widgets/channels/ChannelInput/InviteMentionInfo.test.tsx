@@ -1,9 +1,8 @@
 import React from 'react'
-import { shallow } from 'enzyme'
 import { DateTime } from 'luxon'
 import { now } from '../../../../testUtils'
 
-import { mockClasses } from '../../../../../shared/testing/mocks'
+import { renderComponent } from '../../../../testUtils/renderComponent'
 import { InviteMentionInfo } from './InviteMentionInfo'
 
 describe('InviteMentionInfo', () => {
@@ -12,9 +11,8 @@ describe('InviteMentionInfo', () => {
     jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => now)
   })
   it('renders component', () => {
-    const result = shallow(
+    const result = renderComponent(
       <InviteMentionInfo
-        classes={mockClasses}
         handleClose={jest.fn()}
         handleInvite={jest.fn()}
         nickname='test'

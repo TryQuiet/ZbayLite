@@ -2,16 +2,15 @@
 
 exports[`SendMessagePopover renders popover 1`] = `
 <WithStyles(ForwardRef(Popover))
-  anchorEl={Object {}}
+  anchorEl={null}
   anchorOrigin={
     Object {
       "horizontal": "center",
       "vertical": "bottom",
     }
   }
-  id="simple-popover"
   onClose={[MockFunction]}
-  open={true}
+  open={false}
   transformOrigin={
     Object {
       "horizontal": "center",
