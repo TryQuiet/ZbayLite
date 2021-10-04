@@ -18,26 +18,16 @@ export const MentionPoper = Template.bind({})
 
 MentionPoper.args = {
   infoClass: '',
-  setInfoClass: function(arg: string): void {
-    throw new Error('Function not implemented.')
-  },
+  setInfoClass: function (arg: string): void {},
   id: '',
   users: [{ nickname: 'bartek' }, { nickname: 'emilia' }],
-  onChange: function(_arg: string): void {
-    throw new Error('Function not implemented.')
-  },
-  onKeyPress: function(_event: any): void {
-    throw new Error('Function not implemented.')
-  },
+  onChange: function (_arg: string): void {},
+  onKeyPress: function (_event: any): void {},
   message: '',
   inputState: INPUT_STATE.AVAILABLE,
   inputPlaceholder: '',
   anchorEl: undefined,
-  setAnchorEl: function(_arg: HTMLElement): void {
-    throw new Error('Function not implemented.')
-  },
-  mentionsToSelect: [],
-  setMentionsToSelect: function(_arg: any[]): void {
-    throw new Error('Function not implemented.')
-  }
+  setAnchorEl: function (_arg: HTMLElement): void {},
+  mentionsToSelect: [{ nickname: 'bartek' }, { nickname: 'emilia' }],
+  setMentionsToSelect: function (_arg: any[]): void {}
 }
