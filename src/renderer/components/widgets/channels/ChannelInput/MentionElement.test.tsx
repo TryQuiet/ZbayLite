@@ -1,14 +1,12 @@
 import React from 'react'
-import { shallow } from 'enzyme'
 
-import { mockClasses } from '../../../../../shared/testing/mocks'
+import { renderComponent } from '../../../../testUtils/renderComponent'
 import { MentionElement } from './MentionElement'
 
 describe('MentionElement', () => {
   it('renders component highlight', () => {
-    const result = shallow(
+    const result = renderComponent(
       <MentionElement
-        classes={mockClasses}
         onClick={jest.fn()}
         onMouseEnter={jest.fn()}
         name='test'
@@ -17,12 +15,11 @@ describe('MentionElement', () => {
         highlight
       />
     )
-    expect(result).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
   it('renders component not highlight', () => {
-    const result = shallow(
+    const result = renderComponent(
       <MentionElement
-        classes={mockClasses}
         onClick={jest.fn()}
         onMouseEnter={jest.fn()}
         name='test'
@@ -31,6 +28,6 @@ describe('MentionElement', () => {
         highlight={false}
       />
     )
-    expect(result).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })
