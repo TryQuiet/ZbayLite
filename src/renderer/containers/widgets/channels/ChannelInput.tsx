@@ -67,10 +67,6 @@ export const ChannelInput = () => {
       inputState={inputState}
       inputPlaceholder={`#${channelName} as @${myUser ? myUser.zbayNickname : ''}`}
       channelName={channelName}
-      anchorEl={anchorEl}
-      setAnchorEl={setAnchorEl}
-      mentionsToSelect={mentionsToSelect}
-      setMentionsToSelect={setMentionsToSelect}
       members={members}
       isMessageTooLong={isMessageTooLong}
     />
