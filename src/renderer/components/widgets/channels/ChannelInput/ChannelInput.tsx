@@ -8,7 +8,6 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import orange from '@material-ui/core/colors/orange'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import sanitizeHtml from 'sanitize-html'
 import { shell } from 'electron'
 
 import MentionPoper from './MentionPoper'
@@ -132,7 +131,7 @@ export interface IChannelInput {
   infoClass: string
   setInfoClass: (arg: string) => void
   id: string
-  users: any
+  users: Array<{ nickname: string }>
   onChange: (arg: string) => void
   onKeyPress: KeyboardEventHandler<HTMLDivElement>
   message: string
@@ -221,63 +220,55 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     messageRef.current = message
   }, [message])
 
-  const findMentions = (text: string) => {
-    const sanitized = sanitizeHtml(text)
-    console.log({ text, sanitized })
+  const findMentions = React.useCallback((text: string) => {
+    console.log({ text })
+    //(?<![>])
+    let result: string = text.replace(/(<span([^>]*)>)?@([a-z0-9]?\w*)(<\/span>)?/gi, (match, span, _class, nickname) => {
+      console.log({ match ,span, nickname })
+      if (span && span.includes('class')) { return match }
 
-    //const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))
-    const splitedMsg = text.split(String.fromCharCode(160))
-    const lastMention = splitedMsg[splitedMsg.length - 1].startsWith('@')
-    console.log({ splitedMsg, lastMention })
-    if (lastMention) {
-      const possibleMentions = Array.from(Object.values(users)).filter((user: any) =>
-        user.nickname.startsWith(splitedMsg[splitedMsg.length - 1].substring(1))
+      nickname = nickname ?? ''
+      const possibleMentions = users.filter((user) =>
+        user.nickname.startsWith(nickname) && !users.find(user => user.nickname === nickname)
       )
-      const sortedMentions = Object.values(possibleMentions).sort(function(a: any, b: any) {
-        if (a.nickname > b.nickname) {
-          return 1
-        }
-        if (b.nickname > a.nickname) {
-          return -1
-        }
-        return 0
-      })
-      if (JSON.stringify(mentionsToSelect) !== JSON.stringify(sortedMentions)) {
-        setMentionsToSelect(sortedMentions)
+
+      if (JSON.stringify(mentionsToSelect) !== JSON.stringify(possibleMentions)) {
+        setMentionsToSelect(possibleMentions)
         setTimeout(() => {
           setSelected(0)
         }, 0)
       }
-      {
-        if (possibleMentions.length) {
-          splitedMsg[splitedMsg.length - 1] = `<span>${splitedMsg[splitedMsg.length - 1]}</span>`
-        }
-      }
-    }
-    {
-      /* else {
-    if (mentionsToSelect.length !== 0) {
-    setMentionsToSelect([])
-    }
-    } */
-    }
-    for (const key in splitedMsg) {
-      const element = splitedMsg[key]
-      if (
-        element.startsWith('@') &&
-        Array.from(Object.values(users)).find((user: any) => user.nickname === element.substring(1))
-      ) {
-        splitedMsg[key] = renderToString(<span className={classes.highlight}>{element}</span>)
-        {
-          /* if (key === splitedMsg.length) {
-        setMentionsToSelect([])
-        } */
-        }
-      }
-    }
-    const result = splitedMsg.join(String.fromCharCode(160))
-    console.log({ result })
+      return `<span>@${nickname}</span>` 
+      
+    })
+  
+    //let result: string = text
+
+    // let uniqueMentions = mentions?.filter(onlyUnique).filter(mention => users.find(user => user.nickname === mention.substring(1)))
+
+    // if(uniqueMentions) {
+    //   console.log(`unique ${uniqueMentions}`)
+    // }
+
+    // uniqueMentions?.forEach(mention => {
+    //   const render = renderToString(<span className={classes.highlight}>{mention}</span>)
+    //   if (!text.includes(render)) {
+    //     result = replaceAll(text, mention, render)
+    //   }
+    // })
+
+    console.log(`result: ${result}`)
+
     return result
+  }, [mentionsToSelect, setMentionsToSelect])
+
+
+  function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index
+  }
+
+  function replaceAll(target, search, replacement) {
+    return target.replace(new RegExp(search, 'g'), replacement)
   }
 
   const sanitizedHtml = findMentions(htmlMessage)
@@ -326,8 +317,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
             .replace(/ /g, String.fromCharCode(160))
             .split(String.fromCharCode(160))
           currentMsg[currentMsg.length - 1] =
-            // eslint-disable-next-line
-            '@' + refMentionsToSelect.current[refSelected.current].nickname
+            `@${refMentionsToSelect.current[refSelected.current].nickname}`
           currentMsg.push(String.fromCharCode(160))
           setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
           e.preventDefault()
@@ -395,15 +385,12 @@ export const ChannelInput: React.FC<IChannelInput> = ({
               channelName={channelName}
               onClick={e => {
                 e.preventDefault()
-                const currentMsg = message
-                  .replace(/ /g, String.fromCharCode(160))
-                  .split(String.fromCharCode(160))
-                currentMsg[currentMsg.length - 1] =
-                  // eslint-disable-next-line
-                  '@' + refMentionsToSelect.current[refSelected.current].nickname
-                currentMsg.push(String.fromCharCode(160))
-                setMessage(currentMsg.join(String.fromCharCode(160)))
-                setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
+            
+                setHtmlMessage(htmlMessage => {
+                  const nickname = refMentionsToSelect.current[refSelected.current].nickname
+                  const wrapped = `<span class="${classes.highlight}">@${nickname}</span>&nbsp;`
+                  return htmlMessage.replace(/<span>[^/]*<\/span>$/g, wrapped)})
+                // todo: replace last word of message with 
                 setMentionsToSelect([])
                 inputRef.current.el.current.focus()
               }}
@@ -474,11 +461,11 @@ export const ChannelInput: React.FC<IChannelInput> = ({
                       <Picker
                         /* eslint-disable */
                         onEmojiClick={(e, emoji) => {
-                          setHtmlMessage(message + emoji.emoji)
+                          setHtmlMessage(htmlMessage => htmlMessage + emoji.emoji)
                           setMessage(message + emoji.emoji)
                           setOpenEmoji(false)
                         }}
-                      /* eslint-enable */
+                        /* eslint-enable */
                       />
                     </div>
                   </ClickAwayListener>
