@@ -10,7 +10,7 @@ function isDivElement(element: Element | undefined): element is HTMLDivElement {
 }
 
 const maxHeight = 230
-const useStyles = makeStyles(({
+const useStyles = makeStyles({
   root: {
     maxHeight: maxHeight,
     width: 307,
@@ -30,7 +30,7 @@ const useStyles = makeStyles(({
     borderLeft: '1px solid',
     borderColor: 'rgba(0,0,0,0.08)'
   }
-}))
+})
 
 interface MentionPoperProps {
   anchorEl: HTMLDivElement
@@ -51,7 +51,7 @@ export const MentionPoper: React.FC<MentionPoperProps> = ({ anchorEl, children, 
   React.useEffect(() => {
     if (anchorEl && popperRef.current) {
       if (children.length) {
-        const popperContainer = popperRef.current as unknown as HTMLDivElement
+        const popperContainer = (popperRef.current as unknown) as HTMLDivElement
         setPositionY(anchorEl.offsetTop - popperContainer.clientHeight)
         setPositionX(anchorEl.offsetLeft)
       } else {

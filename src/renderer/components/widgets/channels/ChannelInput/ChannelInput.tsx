@@ -1,13 +1,14 @@
 import React, { KeyboardEventHandler, useCallback } from 'react'
 import classNames from 'classnames'
 import { renderToString } from 'react-dom/server'
-import ContentEditable from 'react-contenteditable'
+import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import Picker from 'emoji-picker-react'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import orange from '@material-ui/core/colors/orange'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import sanitizeHtml from 'sanitize-html'
 import { shell } from 'electron'
 
 import MentionPoper from './MentionPoper'
@@ -177,7 +178,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
   const [selected, setSelected] = React.useState(0)
   const [emojiHovered, setEmojiHovered] = React.useState(false)
   const [openEmoji, setOpenEmoji] = React.useState(false)
-  const [_htmlMessage, setHtmlMessage] = React.useState<string>(initialMessage)
+  const [htmlMessage, setHtmlMessage] = React.useState<string>(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
   const showInfoMessage = inputState !== INPUT_STATE.AVAILABLE
 
@@ -220,14 +221,19 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     messageRef.current = message
   }, [message])
 
-  const findMentions = text => {
-    const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))
+  const findMentions = (text: string) => {
+    const sanitized = sanitizeHtml(text)
+    console.log({ text, sanitized })
+
+    //const splitedMsg = text.replace(/ /g, String.fromCharCode(160)).split(String.fromCharCode(160))
+    const splitedMsg = text.split(String.fromCharCode(160))
     const lastMention = splitedMsg[splitedMsg.length - 1].startsWith('@')
+    console.log({ splitedMsg, lastMention })
     if (lastMention) {
       const possibleMentions = Array.from(Object.values(users)).filter((user: any) =>
         user.nickname.startsWith(splitedMsg[splitedMsg.length - 1].substring(1))
       )
-      const sortedMentions = Object.values(possibleMentions).sort(function (a: any, b: any) {
+      const sortedMentions = Object.values(possibleMentions).sort(function(a: any, b: any) {
         if (a.nickname > b.nickname) {
           return 1
         }
@@ -242,15 +248,18 @@ export const ChannelInput: React.FC<IChannelInput> = ({
           setSelected(0)
         }, 0)
       }
-      if (possibleMentions.length) {
-        splitedMsg[splitedMsg.length - 1] = renderToString(
-          <span id={splitedMsg[splitedMsg.length - 1]}>{splitedMsg[splitedMsg.length - 1]}</span>
-        )
+      {
+        if (possibleMentions.length) {
+          splitedMsg[splitedMsg.length - 1] = `<span>${splitedMsg[splitedMsg.length - 1]}</span>`
+        }
       }
-    } else {
-      if (mentionsToSelect.length !== 0) {
-        setMentionsToSelect([])
-      }
+    }
+    {
+      /* else {
+    if (mentionsToSelect.length !== 0) {
+    setMentionsToSelect([])
+    }
+    } */
     }
     for (const key in splitedMsg) {
       const element = splitedMsg[key]
@@ -259,19 +268,25 @@ export const ChannelInput: React.FC<IChannelInput> = ({
         Array.from(Object.values(users)).find((user: any) => user.nickname === element.substring(1))
       ) {
         splitedMsg[key] = renderToString(<span className={classes.highlight}>{element}</span>)
-        if (key === splitedMsg.length) {
-          setMentionsToSelect([])
+        {
+          /* if (key === splitedMsg.length) {
+        setMentionsToSelect([])
+        } */
         }
       }
     }
-    return splitedMsg.join(String.fromCharCode(160))
+    const result = splitedMsg.join(String.fromCharCode(160))
+    console.log({ result })
+    return result
   }
 
-  const sanitizedHtml = findMentions(message)
+  const sanitizedHtml = findMentions(htmlMessage)
   const onChangeCb = useCallback(
-    e => {
+    (e: ContentEditableEvent) => {
       if (inputState === INPUT_STATE.AVAILABLE) {
+        // @ts-ignore
         setMessage(e.nativeEvent.target.innerText)
+        // @ts-ignore
         if (!e.nativeEvent.target.innerText) {
           setHtmlMessage('')
         } else {
@@ -311,11 +326,12 @@ export const ChannelInput: React.FC<IChannelInput> = ({
             .replace(/ /g, String.fromCharCode(160))
             .split(String.fromCharCode(160))
           currentMsg[currentMsg.length - 1] =
-          // eslint-disable-next-line
+            // eslint-disable-next-line
             '@' + refMentionsToSelect.current[refSelected.current].nickname
           currentMsg.push(String.fromCharCode(160))
           setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
           e.preventDefault()
+          setMentionsToSelect([])
         }
         return
       }
@@ -354,10 +370,11 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     ]
   )
   return (
-    <Grid className={classNames({
-      [classes.root]: true,
-      [classes.notAllowed]: showInfoMessage
-    })}>
+    <Grid
+      className={classNames({
+        [classes.root]: true,
+        [classes.notAllowed]: showInfoMessage
+      })}>
       <Grid
         container
         className={classNames({
@@ -382,11 +399,12 @@ export const ChannelInput: React.FC<IChannelInput> = ({
                   .replace(/ /g, String.fromCharCode(160))
                   .split(String.fromCharCode(160))
                 currentMsg[currentMsg.length - 1] =
-                // eslint-disable-next-line
+                  // eslint-disable-next-line
                   '@' + refMentionsToSelect.current[refSelected.current].nickname
                 currentMsg.push(String.fromCharCode(160))
                 setMessage(currentMsg.join(String.fromCharCode(160)))
                 setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
+                setMentionsToSelect([])
                 inputRef.current.el.current.focus()
               }}
             />
