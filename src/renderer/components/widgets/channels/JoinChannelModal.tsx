@@ -135,7 +135,6 @@ export const JoinChannelModal: React.FC<JoinChannelModalProps> = ({
               setStep(0)
               handleClose()
               resetForm()
-              return
             }
           }}>
           {({ values, setFieldValue }) => {

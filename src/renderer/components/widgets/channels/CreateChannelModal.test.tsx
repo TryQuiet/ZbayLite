@@ -1,5 +1,4 @@
 import React from 'react'
-import { shallow } from 'enzyme'
 
 import { CreateChannelModal } from './CreateChannelModal'
 import { renderComponent } from '../../../testUtils/renderComponent'
@@ -14,7 +13,7 @@ describe('CreateChannelModal', () => {
         <Provider store={store}>
           <CreateChannelModal handleClose={jest.fn()} open />
         </Provider>
-      </HashRouter >
+      </HashRouter>
     )
     expect(result.baseElement).toMatchInlineSnapshot()
   })

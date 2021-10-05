@@ -13,7 +13,7 @@ import zbayLogo from '../../../../static/images/zcash/zbay-square-logo.svg'
 import Icon from '../../../ui/Icon/Icon'
 import { getTimeFormat, transformToLowercase } from '../BasicMessage'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   messageCard: {
     padding: 0
   },
@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-type InviteMentionInfoProps = {
+interface InviteMentionInfoProps {
   nickname: string
   handleInvite: () => void
   handleClose: () => void
@@ -103,8 +103,7 @@ export const InviteMentionInfo: React.FC<InviteMentionInfoProps> = ({
     <ListItem
       className={classNames({
         [classes.wrapper]: true
-      })}
-    >
+      })}>
       <ListItemText
         disableTypography
         className={classes.messageCard}
@@ -118,25 +117,19 @@ export const InviteMentionInfo: React.FC<InviteMentionInfoProps> = ({
               direction='row'
               justify='flex-start'
               alignItems='flex-start'
-              wrap={'nowrap'}
-            >
+              wrap={'nowrap'}>
               <Grid item className={classes.avatar}>
                 <Icon className={classes.icon} src={zbayLogo} />
               </Grid>
               <Grid container item direction='row' justify='space-between'>
                 <Grid container item xs alignItems='flex-start' wrap='nowrap'>
                   <Grid item>
-                    <Typography
-                      color='textPrimary'
-                      className={classes.username}
-                    >
+                    <Typography color='textPrimary' className={classes.username}>
                       {username}
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography className={classes.time}>
-                      {timeString}
-                    </Typography>
+                    <Typography className={classes.time}>{timeString}</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -147,28 +140,19 @@ export const InviteMentionInfo: React.FC<InviteMentionInfoProps> = ({
           <Grid container direction='column' className={classes.messageInput}>
             <Grid item>
               <Typography variant='body2' className={classes.message}>
-                You mentioned{' '}
-                {<span className={classes.highlight}>@{nickname}</span>}, but
-                they're not a participant in this channel.
+                You mentioned {<span className={classes.highlight}>@{nickname}</span>}, but they're
+                not a participant in this channel.
               </Typography>
             </Grid>
             <Grid item className={classes.buttonsDiv}>
               <Grid container spacing={1}>
                 <Grid item>
-                  <Button
-                    className={classes.button}
-                    variant='outlined'
-                    onClick={handleInvite}
-                  >
+                  <Button className={classes.button} variant='outlined' onClick={handleInvite}>
                     Invite {nickname}
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button
-                    className={classes.button}
-                    variant='outlined'
-                    onClick={handleClose}
-                  >
+                  <Button className={classes.button} variant='outlined' onClick={handleClose}>
                     Do Nothing
                   </Button>
                 </Grid>

@@ -12,10 +12,9 @@ interface CheckboxProps {
   label: string
   labelClass: string
   rootClass: any
-  [s: string]: any
 }
 
-interface StyledCheckboxProps extends CheckboxProps {}
+interface StyledCheckboxProps extends CheckboxProps { }
 
 const StyledCheckbox = withStyles({})((props: FormikCheckboxProps & StyledCheckboxProps) => (
   <Checkbox
@@ -25,7 +24,9 @@ const StyledCheckbox = withStyles({})((props: FormikCheckboxProps & StyledCheckb
   />
 ))
 
-export const CheckboxWithLabel: React.FC<CheckboxProps> = ({
+type CheckboxWithLabelProps = React.ComponentProps<typeof FormControlLabel> & CheckboxProps
+
+export const CheckboxWithLabel: React.FC<CheckboxWithLabelProps> = ({
   name,
   label,
   labelClass,

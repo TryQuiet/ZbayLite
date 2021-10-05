@@ -51,7 +51,7 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
   open,
   handleClose,
   sendMessage,
-  users,
+  users
 }) => {
   const classes = useStyles({})
   const usersArray = Array.from(Object.values(users))
@@ -102,7 +102,6 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
               sendMessage(payload)
               handleClose()
               resetForm()
-              return
             }
           }}
         >
