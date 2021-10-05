@@ -2,25 +2,29 @@ import React from 'react'
 import { shallow } from 'enzyme'
 
 import { CreateChannelModal } from './CreateChannelModal'
+import { renderComponent } from '../../../testUtils/renderComponent'
+import { HashRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import store from '../../../store'
 
 describe('CreateChannelModal', () => {
   it('renders component', () => {
-    const result = shallow(
-      <CreateChannelModal
-        handleClose={jest.fn()}
-        open
-      />
+    const result = renderComponent(
+      <HashRouter>
+        <Provider store={store}>
+          <CreateChannelModal handleClose={jest.fn()} open />
+        </Provider>
+      </HashRouter >
     )
-    expect(result).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 
   it('renders closed component', () => {
-    const result = shallow(
-      <CreateChannelModal
-        handleClose={jest.fn()}
-        open={false}
-      />
-    )
-    expect(result).toMatchSnapshot()
+    const result = renderComponent(<CreateChannelModal handleClose={jest.fn()} open={false} />)
+    expect(result.baseElement).toMatchInlineSnapshot(`
+      <body>
+        <div />
+      </body>
+    `)
   })
 })

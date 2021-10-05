@@ -1,21 +1,24 @@
 import React from 'react'
-import { shallow } from 'enzyme'
 
 import { CreateChannelForm } from './CreateChannelForm'
 
-import { MuiThemeProvider } from '@material-ui/core'
-import theme from '../../../theme'
+import { renderComponent } from '../../../testUtils/renderComponent'
+import { HashRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import store from '../../../store'
 
 describe('CreateChannelForm', () => {
   it('renders component', () => {
-    const result = shallow(
-      <MuiThemeProvider theme={theme}>
-        <CreateChannelForm
-          onSubmit={jest.fn()}
-          setStep={jest.fn()}
-        />
-      </MuiThemeProvider>
+    const result = renderComponent(
+      <HashRouter>
+        <Provider store={store}>
+          <CreateChannelForm
+            onSubmit={jest.fn()}
+            setStep={jest.fn()}
+          />
+        </Provider>
+      </HashRouter>
     )
-    expect(result).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })

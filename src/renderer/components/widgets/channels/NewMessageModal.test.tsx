@@ -1,6 +1,6 @@
 import React from 'react'
-import { shallow } from 'enzyme'
 import { NewMessageModal } from './NewMessageModal'
+import { renderComponent } from '../../../testUtils/renderComponent'
 
 describe('NewMessageModal', () => {
   it('renders NewMessageModal', () => {
@@ -10,15 +10,14 @@ describe('NewMessageModal', () => {
       peerId: '',
       dmPublicKey: ''
     }
-    const result = shallow(
+    const result = renderComponent(
       <NewMessageModal
         handleClose={jest.fn()}
         sendMessage={jest.fn()}
-        showNotification={jest.fn()}
         open
         users={users}
       />
     )
-    expect(result).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })

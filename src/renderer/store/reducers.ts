@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit'
 import createElectronStorage from 'redux-persist-electron-storage'
 import { persistReducer } from 'redux-persist'
-import { reducers as nectarReducers } from '@zbayapp/nectar'
+import nectarReducers from '@zbayapp/nectar'
 
 import { StoreType } from './handlers/types'
 
@@ -67,7 +67,7 @@ const persistConfig = {
 }
 
 export const reducers = {
-  ...nectarReducers,
+  ...nectarReducers.reducers,
   // [StoreKeys.Certificates]: certificatesReducer,
   waggle: waggleHandlers.reducer,
   [StoreKeys.DirectMessages]: directMessages.reducer,

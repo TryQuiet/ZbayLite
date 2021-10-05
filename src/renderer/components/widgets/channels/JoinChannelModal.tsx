@@ -8,7 +8,6 @@ import TextField from '@material-ui/core/TextField'
 
 import Modal from '../../ui/Modal/Modal'
 import { AutocompleteField } from '../../ui/Autocomplete/Autocomplete'
-import { errorNotification, IErrorNotification } from '../../../store/handlers/utils'
 import LoadindButton from '../../ui/LoadingButton/LoadingButton'
 import { Channel } from '../../../store/handlers/channel'
 import { User } from '@zbayapp/nectar/lib/sagas/users/users.slice'
@@ -91,7 +90,6 @@ interface JoinChannelModalProps {
   handleClose: () => void
   joinChannel: () => void
   publicChannels: Channel
-  showNotification: (arg: IErrorNotification) => void
   users: User
 }
 
@@ -100,7 +98,6 @@ export const JoinChannelModal: React.FC<JoinChannelModalProps> = ({
   handleClose,
   joinChannel,
   publicChannels,
-  showNotification,
   users
 }) => {
   const classes = useStyles({})
@@ -130,7 +127,6 @@ export const JoinChannelModal: React.FC<JoinChannelModalProps> = ({
             const ch = channelsArray.find(channel => channel.name === values.channel.name)
             if (ch) {
               if (!ch) {
-                showNotification(errorNotification({ message: 'Channel does not exist' }))
                 return
               }
               setLoading(true)
@@ -141,11 +137,6 @@ export const JoinChannelModal: React.FC<JoinChannelModalProps> = ({
               resetForm()
               return
             }
-            showNotification(
-              errorNotification({
-                message: 'There was an error. Please check channel URL'
-              })
-            )
           }}>
           {({ values, setFieldValue }) => {
             return (

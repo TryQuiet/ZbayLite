@@ -9,7 +9,6 @@ import TextField from '@material-ui/core/TextField'
 import { TextField as FormikTextField } from '../../ui/TextField/TextField'
 import Modal from '../../ui/Modal/Modal'
 import { AutocompleteField } from '../../ui/Autocomplete/Autocomplete'
-import { errorNotification, IErrorNotification, successNotification } from '../../../store/handlers/utils'
 import { messageType } from '../../../../shared/static'
 import { User } from '@zbayapp/nectar/lib/sagas/users/users.slice'
 
@@ -46,7 +45,6 @@ interface NewMessageModalProps {
   handleClose: () => void
   sendMessage: (payload) => void
   users: User
-  showNotification: (arg: IErrorNotification) => void
 }
 
 export const NewMessageModal: React.FC<NewMessageModalProps> = ({
@@ -54,7 +52,6 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
   handleClose,
   sendMessage,
   users,
-  showNotification
 }) => {
   const classes = useStyles({})
   const usersArray = Array.from(Object.values(users))
@@ -90,11 +87,6 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
               sendMessage(payload)
               handleClose()
               resetForm()
-              showNotification(
-                successNotification({
-                  message: 'Message sent! It will appear momentarily.'
-                })
-              )
               return
             }
             if (isAddressValid) {
@@ -110,16 +102,8 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
               sendMessage(payload)
               handleClose()
               resetForm()
-              showNotification(
-                successNotification({
-                  message: 'Message sent! It will appear momentarily.'
-                })
-              )
               return
             }
-            showNotification(
-              errorNotification({ message: 'There was an error. Please check input address.' })
-            )
           }}
         >
           {({ values, setFieldValue }) => (

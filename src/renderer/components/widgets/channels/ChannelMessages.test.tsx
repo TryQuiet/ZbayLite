@@ -5,6 +5,9 @@ import { now, createMessage } from '../../../testUtils'
 import { ChannelMessages } from './ChannelMessages'
 import { DisplayableMessage } from '../../../zbay/messages.types'
 import { renderComponent } from '../../../testUtils/renderComponent'
+import { HashRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import store from '../../../store'
 
 describe('ChannelMessages', () => {
   it('renders component', async () => {
@@ -23,11 +26,15 @@ describe('ChannelMessages', () => {
       }
     }
     const result = renderComponent(
-      <ChannelMessages
-        messages={messages}
-        contentRect={contentRect}
-      />
+      <HashRouter>
+        <Provider store={store}>
+          <ChannelMessages
+            messages={messages}
+            contentRect={contentRect}
+          />
+        </Provider>
+      </HashRouter>
     )
-    expect(result.baseElement).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })
