@@ -8,12 +8,12 @@ import { ModalName, useModal } from '../../store/handlers/modals'
 import modalsSelectors from '../../store/selectors/modals'
 
 export interface useOpenExternalLinkModalDataReturnTypes {
-payload: string
+  payload: string
 }
 
 export interface useOpenExternalLinkModalActionsReturnTypes {
-addToWhitelist: (url: string) => void
-setWhitelistAll: () => void
+  addToWhitelist: (url: string) => void
+  setWhitelistAll: () => void
 }
 
 export const useOpenExternalLinkModalData = (): useOpenExternalLinkModalDataReturnTypes => {
