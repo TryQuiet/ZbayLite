@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MouseEvent } from 'react'
 import classNames from 'classnames'
 import Jdenticon from 'react-jdenticon'
 import { makeStyles } from '@material-ui/core/styles'
@@ -43,12 +43,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 interface MentionElementProps {
-  name: string,
-  channelName: string,
-  participant?: boolean,
-  highlight?: boolean,
-  onMouseEnter: () => void,
-  onClick: () => void
+  name: string
+  channelName: string
+  participant?: boolean
+  highlight?: boolean
+  onMouseEnter: () => void
+  onClick: (e: MouseEvent) => void
 }
 
 export const MentionElement: React.FC<MentionElementProps> = ({
@@ -68,7 +68,7 @@ export const MentionElement: React.FC<MentionElementProps> = ({
         [classes.highlight]: highlight
       })}
       onMouseEnter={onMouseEnter}
-      onClick={onClick}
+      onClick={e => onClick(e)}
     >
       <Grid item className={classes.avatarDiv}>
         <div className={classes.alignAvatar}>

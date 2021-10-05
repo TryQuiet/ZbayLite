@@ -18,7 +18,6 @@ import Icon from '../../../ui/Icon/Icon'
 import emojiGray from '../../../../static/images/emojiGray.svg'
 import emojiBlack from '../../../../static/images/emojiBlack.svg'
 import errorIcon from '../../../../static/images/t-error.svg'
-import sanitizeHtml from 'sanitize-html'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -128,7 +127,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-interface IChannelInput {
+export interface IChannelInput {
   infoClass: string
   setInfoClass: (arg: string) => void
   id: string
@@ -139,10 +138,6 @@ interface IChannelInput {
   inputState: INPUT_STATE
   inputPlaceholder: string
   channelName?: string
-  anchorEl: any
-  setAnchorEl: (arg: HTMLElement) => void
-  mentionsToSelect: any[]
-  setMentionsToSelect: (arg: any[]) => void
   members?: Set<string>
   isMessageTooLong?: boolean
   isDM?: boolean
@@ -163,14 +158,14 @@ export const ChannelInput: React.FC<IChannelInput> = ({
   inputState,
   inputPlaceholder,
   channelName,
-  anchorEl,
-  setAnchorEl,
-  mentionsToSelect,
-  setMentionsToSelect,
+
   members,
   isMessageTooLong
 }) => {
   const classes = useStyles({})
+
+  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement>()
+  const [mentionsToSelect, setMentionsToSelect] = React.useState<any[]>([])
 
   const messageRef = React.useRef<string>()
   const refSelected = React.useRef<number>()
@@ -182,7 +177,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
   const [selected, setSelected] = React.useState(0)
   const [emojiHovered, setEmojiHovered] = React.useState(false)
   const [openEmoji, setOpenEmoji] = React.useState(false)
-  const [htmlMessage, setHtmlMessage] = React.useState<string>(initialMessage)
+  const [_htmlMessage, setHtmlMessage] = React.useState<string>(initialMessage)
   const [message, setMessage] = React.useState(initialMessage)
   const showInfoMessage = inputState !== INPUT_STATE.AVAILABLE
 
@@ -272,8 +267,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     return splitedMsg.join(String.fromCharCode(160))
   }
 
-  const t2 = sanitizeHtml(htmlMessage)
-  const sanitizedHtml = findMentions(t2)
+  const sanitizedHtml = findMentions(message)
   const onChangeCb = useCallback(
     e => {
       if (inputState === INPUT_STATE.AVAILABLE) {

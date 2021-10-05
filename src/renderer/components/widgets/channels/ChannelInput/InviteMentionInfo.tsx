@@ -82,9 +82,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 interface InviteMentionInfoProps {
-  nickname: string,
-  handleInvite: () => void,
-  handleClose: () => void,
+  nickname: string
+  handleInvite: () => void
+  handleClose: () => void
   timeStamp: number
 }
 

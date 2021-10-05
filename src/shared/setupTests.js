@@ -31,7 +31,7 @@ jest.mock('electron', () => {
 // eslint-disable-next-line new-cap
 jest.mock('redux-persist-electron-storage', () => () => new mockStorage())
 
-jest.mock('react-jdenticon', () => '')
+jest.mock('react-jdenticon', () => () => 'Jdenticon')
 
 global.fetch = jest.fn(() => Promise.resolve())
 registerRequireContextHook()

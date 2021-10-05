@@ -3,7 +3,6 @@ import { Scrollbars } from 'rc-scrollbars'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Popper from '@material-ui/core/Popper'
-import PopperJs from 'popper.js'
 import Grid from '@material-ui/core/Grid'
 
 function isDivElement(element: Element | undefined): element is HTMLDivElement {
@@ -11,7 +10,7 @@ function isDivElement(element: Element | undefined): element is HTMLDivElement {
 }
 
 const maxHeight = 230
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(({
   root: {
     maxHeight: maxHeight,
     width: 307,
@@ -43,17 +42,16 @@ export const MentionPoper: React.FC<MentionPoperProps> = ({ anchorEl, children, 
   const classes = useStyles({})
 
   const anchor = React.useRef<HTMLDivElement>()
-  const popperRef = React.useRef<PopperJs>()
+  const popperRef = React.useRef<typeof Popper>()
   const scrollbarRef = React.useRef<Scrollbars>()
 
   const [height, setHeight] = React.useState(0)
   const [positionY, setPositionY] = React.useState(0)
   const [positionX, setPositionX] = React.useState(0)
-
   React.useEffect(() => {
     if (anchorEl && popperRef.current) {
       if (children.length) {
-        const popperContainer = popperRef.current as unknown as HTMLDivElement  
+        const popperContainer = popperRef.current as unknown as HTMLDivElement
         setPositionY(anchorEl.offsetTop - popperContainer.clientHeight)
         setPositionX(anchorEl.offsetLeft)
       } else {
@@ -61,10 +59,10 @@ export const MentionPoper: React.FC<MentionPoperProps> = ({ anchorEl, children, 
         setPositionX(0)
       }
     }
-  })
+  }, [children, anchorEl, popperRef])
 
   React.useEffect(() => {
-    if (anchor && anchor.current) {
+    if (anchor?.current) {
       if (anchor.current.clientHeight > maxHeight) {
         setHeight(maxHeight)
       } else {
@@ -98,7 +96,8 @@ export const MentionPoper: React.FC<MentionPoperProps> = ({ anchorEl, children, 
         transform: `translate3d(${positionX}px,${positionY}px,0px`,
         zIndex: positionX && positionY ? 0 : -1
       }}
-      popperRef={popperRef}>
+      // @ts-expect-error
+      ref={popperRef}>
       <Paper>
         <Scrollbars
           ref={scrollbarRef}

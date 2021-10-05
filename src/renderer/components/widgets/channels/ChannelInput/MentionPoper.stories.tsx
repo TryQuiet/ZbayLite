@@ -1,33 +1,38 @@
 import React from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 
-import { ChannelInput } from './ChannelInput'
+import { ChannelInput, IChannelInput } from './ChannelInput'
 import { withTheme } from '../../../../storybook/decorators'
 
 import { INPUT_STATE } from '../../../../store/selectors/channel'
 
-export default {
-  title: 'Components/ChannelInpu',
-  decorators: [withTheme],
-  component: ChannelInput
-} as ComponentMeta<typeof ChannelInput>
-
-const Template: ComponentStory<typeof ChannelInput> = args => <ChannelInput {...args} />
-
+const Template: ComponentStory<typeof ChannelInput> = args => {
+  return (
+    <div style={{ height: '400px', position: 'relative' }}>
+      <ChannelInput {...args} />
+    </div>
+  )
+}
 export const MentionPoper = Template.bind({})
 
-MentionPoper.args = {
+const args: IChannelInput = {
   infoClass: '',
-  setInfoClass: function (arg: string): void {},
+  setInfoClass: function (_arg: string): void {},
   id: '',
   users: [{ nickname: 'bartek' }, { nickname: 'emilia' }],
   onChange: function (_arg: string): void {},
   onKeyPress: function (_event: any): void {},
   message: '',
   inputState: INPUT_STATE.AVAILABLE,
-  inputPlaceholder: '',
-  anchorEl: undefined,
-  setAnchorEl: function (_arg: HTMLElement): void {},
-  mentionsToSelect: [{ nickname: 'bartek' }, { nickname: 'emilia' }],
-  setMentionsToSelect: function (_arg: any[]): void {}
+  inputPlaceholder: ''
 }
+
+MentionPoper.args = args
+
+const component: ComponentMeta<typeof ChannelInput> = {
+  title: 'Components/ChannelInput',
+  decorators: [withTheme],
+  component: ChannelInput
+}
+
+export default component

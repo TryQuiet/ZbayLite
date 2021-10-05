@@ -5,8 +5,13 @@ import { MentionPoper } from './MentionPoper'
 
 describe('MentionPoper', () => {
   it('renders component highlight', () => {
+    const anchor: HTMLDivElement = document.createElement('div')
     const result = renderComponent(
-      <MentionPoper anchorEl={React.createRef()} selected={1} />
+      <MentionPoper anchorEl={anchor} selected={1}>
+        <div />
+        <div />
+        <div />
+      </MentionPoper>
     )
     expect(result.baseElement).toMatchInlineSnapshot()
   })
