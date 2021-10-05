@@ -44,8 +44,6 @@ export const useChannelInputActions = () => {
 
 export const ChannelInput = () => {
   const [infoClass, setInfoClass] = React.useState<string>(null)
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement>(null)
-  const [mentionsToSelect, setMentionsToSelect] = React.useState<any[]>([])
 
   const { channelName, id, inputState, isMessageTooLong, members, message, myUser, users } = useChannelInputData()
   const { checkMentions, onChange, sendOnEnter } = useChannelInputActions()
