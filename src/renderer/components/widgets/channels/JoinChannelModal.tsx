@@ -126,16 +126,12 @@ export const JoinChannelModal: React.FC<JoinChannelModalProps> = ({
           onSubmit={async (values, { resetForm }) => {
             const ch = channelsArray.find(channel => channel.name === values.channel.name)
             if (ch) {
-              if (!ch) {
-                return
-              }
               setLoading(true)
               await joinChannel()
               setLoading(false)
               setStep(0)
               handleClose()
               resetForm()
-              return
             }
           }}>
           {({ values, setFieldValue }) => {

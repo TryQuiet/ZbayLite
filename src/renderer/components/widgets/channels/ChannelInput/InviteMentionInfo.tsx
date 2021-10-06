@@ -11,6 +11,7 @@ import { Button } from '@material-ui/core'
 
 import zbayLogo from '../../../../static/images/zcash/zbay-square-logo.svg'
 import Icon from '../../../ui/Icon/Icon'
+
 import { getTimeFormat, transformToLowercase } from '../BasicMessage'
 
 const useStyles = makeStyles((theme) => ({
@@ -20,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     backgroundColor: theme.palette.colors.gray03
   },
-
   username: {
     fontSize: 16,
     fontWeight: 500,
@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-type InviteMentionInfoProps = {
+interface InviteMentionInfoProps {
   nickname: string
   handleInvite: () => void
   handleClose: () => void
@@ -99,6 +99,7 @@ export const InviteMentionInfo: React.FC<InviteMentionInfoProps> = ({
   const time = DateTime.fromSeconds(timeStamp)
   const timeFormat = getTimeFormat()
   const timeString = transformToLowercase(time.toFormat(timeFormat))
+
   return (
     <ListItem
       className={classNames({

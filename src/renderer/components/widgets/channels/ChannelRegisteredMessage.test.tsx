@@ -3,7 +3,6 @@ import React from 'react'
 import { ChannelRegisteredMessage } from './ChannelRegisteredMessage'
 
 import { createMessage } from '../../../testUtils'
-import { DisplayableMessage } from '../../../zbay/messages.types'
 import { renderComponent } from '../../../testUtils/renderComponent'
 import { HashRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
@@ -11,16 +10,20 @@ import store from '../../../store'
 
 describe('ChannelRegisteredMessage', async () => {
   it('renders component', async () => {
-    const message = await createMessage()
-    const displayMessage = new DisplayableMessage(message)
+    const message = {
+      id: 'string',
+      type: 1,
+      message: 'string',
+      createdAt: 'string',
+      nickname: 'string'
+    }
     const result = renderComponent(
       <HashRouter>
         <Provider store={store}>
           <ChannelRegisteredMessage
             username='testUsername'
-            address='testAddress'
             onChannelClick={() => { }}
-            message={displayMessage}
+            message={message}
           />
         </Provider>
       </HashRouter>

@@ -2,9 +2,8 @@ import React from 'react'
 import { DateTime } from 'luxon'
 
 import { ChannelMessage } from './ChannelMessage'
-import { now, createMessage } from '../../../testUtils'
+import { now } from '../../../testUtils'
 import { renderComponent } from '../../../testUtils/renderComponent'
-import { DisplayableMessage } from '../../../zbay/messages.types'
 import { HashRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from '../../../store'
@@ -16,14 +15,19 @@ describe('ChannelMessage', () => {
   })
 
   it('renders component', async () => {
-    const message = await createMessage()
-    const displayMessage = new DisplayableMessage(message)
+    const message = {
+      id: 'string',
+      type: 1,
+      message: 'string',
+      createdAt: 'string',
+      nickname: 'string'
+    }
 
     const result = renderComponent(
       <HashRouter>
         <Provider store={store}>
           <ChannelMessage
-            message={displayMessage}
+            message={message}
             onResend={jest.fn()}
             onLinkedChannel={jest.fn()}
             onLinkedUser={jest.fn()}
@@ -43,18 +47,19 @@ describe('ChannelMessage', () => {
     expect(result.baseElement).toMatchInlineSnapshot()
   })
   it('renders component when message is sent by owner', async () => {
-    const message = await createMessage()
-    const messageFromYou = {
-      ...message,
-      fromYou: true
+    const message = {
+      id: 'string',
+      type: 1,
+      message: 'string',
+      createdAt: 'string',
+      nickname: 'string'
     }
-    const displayMessage = new DisplayableMessage(messageFromYou)
 
     const result = renderComponent(
       <HashRouter>
         <Provider store={store}>
           <ChannelMessage
-            message={displayMessage}
+            message={message}
             onResend={jest.fn()}
             onLinkedChannel={jest.fn()}
             onLinkedUser={jest.fn()}

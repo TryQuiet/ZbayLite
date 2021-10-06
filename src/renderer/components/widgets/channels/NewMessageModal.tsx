@@ -9,7 +9,6 @@ import TextField from '@material-ui/core/TextField'
 import { TextField as FormikTextField } from '../../ui/TextField/TextField'
 import Modal from '../../ui/Modal/Modal'
 import { AutocompleteField } from '../../ui/Autocomplete/Autocomplete'
-import { messageType } from '../../../../shared/static'
 import { User } from '@zbayapp/nectar/lib/sagas/users/users.slice'
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +50,7 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
   open,
   handleClose,
   sendMessage,
-  users,
+  users
 }) => {
   const classes = useStyles({})
   const usersArray = Array.from(Object.values(users))
@@ -78,7 +77,6 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
               payload = {
                 message: values.message || '',
                 spent: 0.0,
-                type: messageType.BASIC,
                 receiver: {
                   replyTo: targetUser.address,
                   username: targetUser.nickname
@@ -93,7 +91,6 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
               payload = {
                 message: values.message || '',
                 spent: 0.0,
-                type: messageType.BASIC,
                 receiver: {
                   replyTo: values.recipient,
                   username: values.recipient.substring(0, 15)
@@ -102,7 +99,6 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
               sendMessage(payload)
               handleClose()
               resetForm()
-              return
             }
           }}
         >
