@@ -8,6 +8,6 @@ describe('AddDirectMessage', () => {
     const openModal = jest.fn()
     const result = renderComponent(
       <AddDirectMessage openModal={openModal} />)
-    expect(result.baseElement).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })

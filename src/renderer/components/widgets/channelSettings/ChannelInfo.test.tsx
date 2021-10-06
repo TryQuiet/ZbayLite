@@ -1,12 +1,12 @@
 
 import React from 'react'
-import { shallow } from 'enzyme'
+import { renderComponent } from '../../../testUtils/renderComponent'
 
 import { ChannelInfo } from './ChannelInfo'
 
 describe('ChannelInfo', () => {
   it('renders component', () => {
-    const result = shallow(
+    const result = renderComponent(
       <ChannelInfo
         initialValues={{
           updateChannelDescription: '',
@@ -17,6 +17,6 @@ describe('ChannelInfo', () => {
         rateUsd={1}
       />
     )
-    expect(result).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })

@@ -1,12 +1,12 @@
 /* eslint import/first: 0 */
 import React from 'react'
-import { shallow } from 'enzyme'
+import { renderComponent } from '../../../testUtils/renderComponent'
 
 import { CreateUsernameModal } from './CreateUsernameModal'
 
 describe('CreateUsernameModal', () => {
   it('renders component', () => {
-    const result = shallow(
+    const result = renderComponent(
       <CreateUsernameModal
         handleClose={jest.fn()}
         initialValue={{
@@ -14,6 +14,6 @@ describe('CreateUsernameModal', () => {
         }}
       />
     )
-    expect(result).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })

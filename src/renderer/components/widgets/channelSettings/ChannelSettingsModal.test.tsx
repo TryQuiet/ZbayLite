@@ -8,7 +8,7 @@ jest.mock('../../../containers/widgets/channelSettings/Moderators', () => {
   return TabContent
 })
 import React from 'react'
-import { shallow } from 'enzyme'
+import { renderComponent } from '../../../testUtils/renderComponent'
 
 import { ChannelSettingsModal } from './ChannelSettingsModal'
 import { Contact } from '../../../store/handlers/contacts'
@@ -16,7 +16,7 @@ import { Contact } from '../../../store/handlers/contacts'
 describe('ChannelSettingsModal', () => {
   it('renders component', () => {
     const contact = new Contact()
-    const result = shallow(
+    const result = renderComponent(
       <ChannelSettingsModal
         channel={contact}
         setCurrentTab={() => { }}
@@ -28,6 +28,6 @@ describe('ChannelSettingsModal', () => {
         clearCurrentOpenTab={jest.fn()}
       />
     )
-    expect(result).toMatchSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })

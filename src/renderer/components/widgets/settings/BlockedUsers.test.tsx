@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { renderComponent } from '../../../testUtils/renderComponent'
 import { BlockedUsers } from './BlockedUsers'
 import { Contact } from '../../../store/handlers/contacts'
 
@@ -15,7 +15,29 @@ describe('BlockedUsers', () => {
         dmPublicKey: ''
       }
     }
-    const result = shallow(<BlockedUsers {...props} />)
-    expect(result).toMatchSnapshot()
+    const result = renderComponent(<BlockedUsers {...props} />)
+    expect(result.baseElement).toMatchInlineSnapshot(`
+      <body>
+        <div>
+          <div
+            class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+          >
+            <div
+              class="MuiGrid-root makeStyles-titleDiv-2 MuiGrid-container MuiGrid-item MuiGrid-align-items-xs-center MuiGrid-justify-xs-space-between"
+            >
+              <div
+                class="MuiGrid-root makeStyles-title-1 MuiGrid-item"
+              >
+                <h3
+                  class="MuiTypography-root MuiTypography-h3"
+                >
+                  BlockedUsers
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+    `)
   })
 })

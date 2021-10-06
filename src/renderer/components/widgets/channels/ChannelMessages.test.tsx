@@ -8,10 +8,19 @@ import { renderComponent } from '../../../testUtils/renderComponent'
 import { HashRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from '../../../store'
+import { MessageType } from '../../../../shared/static.types'
 
 describe('ChannelMessages', () => {
   it('renders component', async () => {
-    const message = await createMessage()
+    const message = {
+      id: 'string',
+      type: MessageType.BASIC,
+      message: 'string',
+      pubKey: 'string',
+      channelId: 'string',
+      createdAt: 1,
+      signature: 'string'
+    }
     const displayMessage = new DisplayableMessage(message)
     const displayMessageWithCreatedAtString = {
       ...displayMessage,

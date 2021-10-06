@@ -1,12 +1,13 @@
 /* eslint import/first: 0 */
 import React from 'react'
-import { shallow } from 'enzyme'
+import { renderComponent } from '../../testUtils/renderComponent'
 
 import { Main } from './Main'
 
 describe('Main', () => {
   it('renders component', () => {
-    const result = shallow(<Main match={{ url: 'test' }} isLogWindowOpened={false} />)
-    expect(result).toMatchSnapshot()
+    const result = renderComponent(
+      <Main match={{ url: 'test' }} isLogWindowOpened={false} />)
+    expect(result.baseElement).toMatchInlineSnapshot()
   })
 })
