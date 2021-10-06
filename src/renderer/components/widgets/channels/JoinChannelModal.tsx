@@ -168,20 +168,15 @@ export const JoinChannelModal: React.FC<JoinChannelModalProps> = ({
                             <Typography variant='body1' className={classes.channelTitle}>
                               {`#${option.name}`}
                             </Typography>
-                            <Typography
-                              variant='caption'
-                              className={classes.channelInfo}
-                            >
-                              {`Created by @${users[option.owner]
-                                ? users[option.owner].nickname
-                                : 'Unnamed'
+                            <Typography variant='caption' className={classes.channelInfo}>
+                              {`Created by @${users[option.owner] ? users[option.owner].nickname : 'Unnamed'
                                 } on ${time.toFormat('LLL d, y')} `}
                             </Typography>
                           </Grid>
                         )
                       }}
                       value={values.channel}
-                      onChange={(v: string) => {
+                      onChange={(_e, v) => {
                         setFieldValue('channel', v)
                         setStep(1)
                       }}
