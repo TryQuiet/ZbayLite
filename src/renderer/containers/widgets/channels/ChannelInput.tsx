@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -27,13 +28,19 @@ export const useChannelInputData = () => {
 export const useChannelInputActions = () => {
   const dispatch = useDispatch()
 
-  const onChange = useCallback((arg: { value: string; id: string }) => {
-    dispatch(channelHandlers.actions.setMessage(arg))
-  }, [dispatch])
+  const onChange = useCallback(
+    (arg: { value: string; id: string }) => {
+      dispatch(channelHandlers.actions.setMessage(arg))
+    },
+    [dispatch]
+  )
 
-  const sendOnEnter = useCallback((message) => {
-    dispatch(messages.actions.sendMessage(message))
-  }, [dispatch])
+  const sendOnEnter = useCallback(
+    message => {
+      dispatch(messages.actions.sendMessage(message))
+    },
+    [dispatch]
+  )
 
   const checkMentions = useCallback(() => {
     dispatch(mentionsHandlers.epics.checkMentions())
@@ -45,7 +52,17 @@ export const useChannelInputActions = () => {
 export const ChannelInput = () => {
   const [infoClass, setInfoClass] = React.useState<string>(null)
 
-  const { channelName, id, inputState, isMessageTooLong, members, message, myUser, users } = useChannelInputData()
+  const {
+    channelName,
+    id,
+    inputState,
+    isMessageTooLong,
+    members,
+    message,
+    myUser,
+    users
+  } = useChannelInputData()
+
   const { checkMentions, onChange, sendOnEnter } = useChannelInputActions()
 
   return (
@@ -57,7 +74,7 @@ export const ChannelInput = () => {
       onChange={e => {
         onChange({ value: e, id })
       }}
-      onKeyPress={(message) => {
+      onKeyPress={message => {
         checkMentions()
         sendOnEnter(message)
       }}
