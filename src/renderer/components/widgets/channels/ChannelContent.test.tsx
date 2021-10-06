@@ -140,8 +140,7 @@ describe('ChannelContent', () => {
                         <p
                           class="MuiTypography-root makeStyles-message-120 MuiTypography-body2"
                         >
-                          You mentioned
-                           
+                          You mentioned 
                           <span
                             class="makeStyles-highlight-124"
                           >

@@ -3,7 +3,7 @@ import { NewMessageModal } from './NewMessageModal'
 import { renderComponent } from '../../../testUtils/renderComponent'
 
 describe('NewMessageModal', () => {
-  it('renders NewMessageModal', () => {
+  it.skip('renders NewMessageModal', () => {
     const users = {
       username: '',
       onionAddress: '',
