@@ -2,7 +2,6 @@ import React from 'react'
 
 import { ChannelRegisteredMessage } from './ChannelRegisteredMessage'
 
-import { createMessage } from '../../../testUtils'
 import { renderComponent } from '../../../testUtils/renderComponent'
 import { HashRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
@@ -69,7 +68,7 @@ describe('ChannelRegisteredMessage', async () => {
                       <p
                         class="MuiTypography-root makeStyles-time-10 MuiTypography-body1"
                       >
-                        6:29 pm
+                        string
                       </p>
                     </div>
                   </div>
@@ -94,6 +93,7 @@ describe('ChannelRegisteredMessage', async () => {
                       class="makeStyles-link-2"
                     >
                       #
+                      string
                     </span>
                      
                     on zbay!

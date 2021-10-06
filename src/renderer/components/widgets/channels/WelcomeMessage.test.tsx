@@ -8,7 +8,7 @@ describe('WelcomeMessage', () => {
   it('renders component', () => {
     const result = renderComponent(
       <MuiThemeProvider theme={theme}>
-        <WelcomeMessage message={'random message'} />
+        <WelcomeMessage message={'random message'} timestamp={'string'} />
       </MuiThemeProvider>
     )
     expect(result.baseElement).toMatchInlineSnapshot(`
@@ -44,6 +44,15 @@ describe('WelcomeMessage', () => {
                         class="MuiTypography-root-129 makeStyles-username-3 MuiTypography-body1-131 MuiTypography-colorTextPrimary-154"
                       >
                         Zbay
+                      </p>
+                    </div>
+                    <div
+                      class="MuiGrid-root-26 MuiGrid-item-28"
+                    >
+                      <p
+                        class="MuiTypography-root-129 makeStyles-time-8 MuiTypography-body1-131"
+                      >
+                        string
                       </p>
                     </div>
                   </div>

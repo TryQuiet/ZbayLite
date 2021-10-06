@@ -277,7 +277,6 @@ export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
                           variant='contained'
                           size='small'
                           color='primary'
-                          margin='normal'
                           fullWidth
                           text={'Continue'}
                           classes={{ button: classes.button }}

@@ -57,40 +57,6 @@ describe('BaseChannelsList', () => {
                 class="MuiTouchRipple-root"
               />
             </div>
-            <div
-              aria-disabled="false"
-              class="MuiButtonBase-root MuiListItem-root makeStyles-root-5 MuiListItem-button"
-              role="button"
-              tabindex="0"
-            >
-              <div
-                class="MuiListItemText-root makeStyles-itemText-12"
-              >
-                <span
-                  class="MuiTypography-root MuiListItemText-primary makeStyles-primary-7 MuiTypography-body1"
-                >
-                  <div
-                    class="MuiGrid-root MuiGrid-container MuiGrid-align-items-xs-center"
-                  >
-                    <div
-                      class="MuiGrid-root MuiGrid-item"
-                    />
-                    <div
-                      class="MuiGrid-root MuiGrid-item"
-                    >
-                      <p
-                        class="MuiTypography-root makeStyles-title-8 MuiTypography-body2"
-                      >
-                        # undefined
-                      </p>
-                    </div>
-                  </div>
-                </span>
-              </div>
-              <span
-                class="MuiTouchRipple-root"
-              />
-            </div>
           </ul>
         </div>
       </body>

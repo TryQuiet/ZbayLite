@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 interface QuickActionButtonProps {
   text: string
   action: () => void
-  icon: string
+  icon?: ReactElement<any, any>
 }
 
 export const QuickActionButton: React.FC<QuickActionButtonProps> = ({ text, action, icon }) => {
