@@ -14,7 +14,7 @@ describe('ChannelInput', () => {
         message='This is just a test message'
         inputState={INPUT_STATE.AVAILABLE}
         channelName={'test'}
-        users={{}}
+        users={[]}
         inputPlaceholder='test'
         isMessageTooLong={false}
         infoClass={''}
@@ -45,7 +45,7 @@ describe('ChannelInput', () => {
                       contenteditable="true"
                       placeholder="Message test"
                     >
-                      This is just a test message
+                      This is just a test message
                       
                     </div>
                   </div>

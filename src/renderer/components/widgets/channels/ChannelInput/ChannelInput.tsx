@@ -1,6 +1,5 @@
 import React, { KeyboardEventHandler, useCallback } from 'react'
 import classNames from 'classnames'
-import { renderToString } from 'react-dom/server'
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import Picker from 'emoji-picker-react'
 import Grid from '@material-ui/core/Grid'
@@ -11,9 +10,9 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import { shell } from 'electron'
 
 import MentionPoper from './MentionPoper'
+import MentionElement from './MentionElement'
 import ChannelInputInfoMessage from './ChannelInputInfoMessage'
 import { INPUT_STATE } from '../../../../store/selectors/channel'
-import MentionElement from './MentionElement'
 import Icon from '../../../ui/Icon/Icon'
 import emojiGray from '../../../../static/images/emojiGray.svg'
 import emojiBlack from '../../../../static/images/emojiBlack.svg'
@@ -191,21 +190,26 @@ export const ChannelInput: React.FC<IChannelInput> = ({
       scroll.scrollTop = scroll.scrollHeight
     }, 100)
   }
+
   React.useEffect(() => {
     inputRef.current.updater.enqueueForceUpdate(inputRef.current)
   }, [inputPlaceholder, id])
+
   // Use reference to bypass memorization
   React.useEffect(() => {
     refSelected.current = selected
   }, [selected])
+
   React.useEffect(() => {
     refMentionsToSelect.current = mentionsToSelect
   }, [mentionsToSelect])
+
   React.useEffect(() => {
     if (!message) {
       setHtmlMessage('')
     }
   }, [message])
+
   React.useEffect(() => {
     setMessage(initialMessage)
     setHtmlMessage(initialMessage)
@@ -216,68 +220,53 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     }
     isFirstRenderRef.current = false
   }, [id])
+
   React.useEffect(() => {
     messageRef.current = message
   }, [message])
 
-  const findMentions = React.useCallback((text: string) => {
-    console.log({ text })
-    //(?<![>])
-    let result: string = text.replace(/(<span([^>]*)>)?@([a-z0-9]?\w*)(<\/span>)?/gi, (match, span, _class, nickname) => {
-      console.log({ match ,span, nickname })
-      if (span && span.includes('class')) { return match }
+  const findMentions = React.useCallback(
+    (text: string) => {
+      // Search for any mention in message string
+      const result: string = text.replace(
+        /(<span([^>]*)>)?@([a-z0-9]?\w*)(<\/span>)?/gi,
+        (match, span, _class, nickname) => {
+          // Ignore already established mentions
+          if (span?.includes('class')) {
+            return match
+          }
 
-      nickname = nickname ?? ''
-      const possibleMentions = users.filter((user) =>
-        user.nickname.startsWith(nickname) && !users.find(user => user.nickname === nickname)
+          nickname = nickname ?? ''
+          const possibleMentions = users.filter(
+            user =>
+              user.nickname.startsWith(nickname) && !users.find(user => user.nickname === nickname)
+          )
+
+          if (JSON.stringify(mentionsToSelect) !== JSON.stringify(possibleMentions)) {
+            setMentionsToSelect(possibleMentions)
+            setTimeout(() => {
+              setSelected(0)
+            }, 0)
+          }
+
+          // Wrap mention in spans to be able to treat it as an anchor for popper
+          return `<span>@${nickname}</span>`
+        }
       )
 
-      if (JSON.stringify(mentionsToSelect) !== JSON.stringify(possibleMentions)) {
-        setMentionsToSelect(possibleMentions)
-        setTimeout(() => {
-          setSelected(0)
-        }, 0)
-      }
-      return `<span>@${nickname}</span>` 
-      
-    })
-  
-    //let result: string = text
-
-    // let uniqueMentions = mentions?.filter(onlyUnique).filter(mention => users.find(user => user.nickname === mention.substring(1)))
-
-    // if(uniqueMentions) {
-    //   console.log(`unique ${uniqueMentions}`)
-    // }
-
-    // uniqueMentions?.forEach(mention => {
-    //   const render = renderToString(<span className={classes.highlight}>{mention}</span>)
-    //   if (!text.includes(render)) {
-    //     result = replaceAll(text, mention, render)
-    //   }
-    // })
-
-    console.log(`result: ${result}`)
-
-    return result
-  }, [mentionsToSelect, setMentionsToSelect])
-
-
-  function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index
-  }
-
-  function replaceAll(target, search, replacement) {
-    return target.replace(new RegExp(search, 'g'), replacement)
-  }
+      return result
+    },
+    [mentionsToSelect, setMentionsToSelect]
+  )
 
   const sanitizedHtml = findMentions(htmlMessage)
+
   const onChangeCb = useCallback(
     (e: ContentEditableEvent) => {
       if (inputState === INPUT_STATE.AVAILABLE) {
-        // @ts-ignore
+        // @ts-expect-error
         setMessage(e.nativeEvent.target.innerText)
-        // @ts-ignore
+        // @ts-expect-error
         if (!e.nativeEvent.target.innerText) {
           setHtmlMessage('')
         } else {
@@ -288,10 +277,25 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     },
     [setAnchorEl, onChange, setHtmlMessage]
   )
+
   const inputStateRef = React.useRef(inputState)
   React.useEffect(() => {
     inputStateRef.current = inputState
   })
+
+  const mentionSelectAction = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.preventDefault()
+    const nickname = refMentionsToSelect.current[refSelected.current].nickname
+    setHtmlMessage(htmlMessage => {
+      const wrapped = `<span class="${classes.highlight}">@${nickname}</span>&nbsp;`
+      return htmlMessage.replace(/<span>[^/]*<\/span>$/g, wrapped)
+    })
+    // Replace mentions characters with full nickname in original message string
+    setMessage(message.replace(/(\b(\w+)$)/, `${nickname} `))
+    // Clear popper items after choosing mention
+    setMentionsToSelect([])
+    inputRef.current?.el.current.focus()
+  }
 
   const onKeyDownCb = useCallback(
     e => {
@@ -313,37 +317,28 @@ export const ChannelInput: React.FC<IChannelInput> = ({
           e.preventDefault()
         }
         if (e.nativeEvent.keyCode === 13 || e.nativeEvent.keyCode === 9) {
-          const currentMsg = message
-            .replace(/ /g, String.fromCharCode(160))
-            .split(String.fromCharCode(160))
-          currentMsg[currentMsg.length - 1] =
-            `@${refMentionsToSelect.current[refSelected.current].nickname}`
-          currentMsg.push(String.fromCharCode(160))
-          setHtmlMessage(currentMsg.join(String.fromCharCode(160)))
-          e.preventDefault()
-          setMentionsToSelect([])
-        }
-        return
-      }
-      if (
-        inputStateRef.current === INPUT_STATE.AVAILABLE &&
-        e.nativeEvent.keyCode === 13 &&
-        e.target.innerText !== ''
-      ) {
-        onChange(e.target.innerText)
-        onKeyPress(e.target.innerText)
-        setMessage('')
-        setHtmlMessage('')
-        scrollToBottom()
-      } else {
-        if (e.nativeEvent.keyCode === 13) {
-          e.preventDefault()
-          if (infoClass !== classNames(classes.backdrop, classes.blinkAnimation)) {
-            setInfoClass(classNames(classes.backdrop, classes.blinkAnimation))
-            setTimeout(() => setInfoClass(classNames(classes.backdrop)), 1000)
-          }
+          mentionSelectAction(e)
         }
       }
+      // if (
+      //   inputStateRef.current === INPUT_STATE.AVAILABLE &&
+      //   e.nativeEvent.keyCode === 13 &&
+      //   e.target.innerText !== ''
+      // ) {
+      //   onChange(e.target.innerText)
+      //   onKeyPress(e.target.innerText)
+      //   setMessage('')
+      //   setHtmlMessage('')
+      //   scrollToBottom()
+      // } else {
+      //   if (e.nativeEvent.keyCode === 13) {
+      //     e.preventDefault()
+      //     if (infoClass !== classNames(classes.backdrop, classes.blinkAnimation)) {
+      //       setInfoClass(classNames(classes.backdrop, classes.blinkAnimation))
+      //       setTimeout(() => setInfoClass(classNames(classes.backdrop)), 1000)
+      //     }
+      //   }
+      // }
     },
     [
       onChange,
@@ -359,6 +354,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
       inputState
     ]
   )
+
   return (
     <Grid
       className={classNames({
@@ -384,15 +380,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
               participant={members.has(target.address)}
               channelName={channelName}
               onClick={e => {
-                e.preventDefault()
-            
-                setHtmlMessage(htmlMessage => {
-                  const nickname = refMentionsToSelect.current[refSelected.current].nickname
-                  const wrapped = `<span class="${classes.highlight}">@${nickname}</span>&nbsp;`
-                  return htmlMessage.replace(/<span>[^/]*<\/span>$/g, wrapped)})
-                // todo: replace last word of message with 
-                setMentionsToSelect([])
-                inputRef.current.el.current.focus()
+                mentionSelectAction(e)
               }}
             />
           ))}
