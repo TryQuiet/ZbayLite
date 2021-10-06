@@ -320,25 +320,25 @@ export const ChannelInput: React.FC<IChannelInput> = ({
           mentionSelectAction(e)
         }
       }
-      // if (
-      //   inputStateRef.current === INPUT_STATE.AVAILABLE &&
-      //   e.nativeEvent.keyCode === 13 &&
-      //   e.target.innerText !== ''
-      // ) {
-      //   onChange(e.target.innerText)
-      //   onKeyPress(e.target.innerText)
-      //   setMessage('')
-      //   setHtmlMessage('')
-      //   scrollToBottom()
-      // } else {
-      //   if (e.nativeEvent.keyCode === 13) {
-      //     e.preventDefault()
-      //     if (infoClass !== classNames(classes.backdrop, classes.blinkAnimation)) {
-      //       setInfoClass(classNames(classes.backdrop, classes.blinkAnimation))
-      //       setTimeout(() => setInfoClass(classNames(classes.backdrop)), 1000)
-      //     }
-      //   }
-      // }
+      if (
+        inputStateRef.current === INPUT_STATE.AVAILABLE &&
+        e.nativeEvent.keyCode === 13 &&
+        e.target.innerText !== ''
+      ) {
+        onChange(e.target.innerText)
+        onKeyPress(e.target.innerText)
+        setMessage('')
+        setHtmlMessage('')
+        scrollToBottom()
+      } else {
+        if (e.nativeEvent.keyCode === 13) {
+          e.preventDefault()
+          if (infoClass !== classNames(classes.backdrop, classes.blinkAnimation)) {
+            setInfoClass(classNames(classes.backdrop, classes.blinkAnimation))
+            setTimeout(() => setInfoClass(classNames(classes.backdrop)), 1000)
+          }
+        }
+      }
     },
     [
       onChange,
