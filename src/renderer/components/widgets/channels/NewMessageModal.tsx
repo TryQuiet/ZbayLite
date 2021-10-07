@@ -120,8 +120,8 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
                   inputValue={values.recipient || ''}
                   options={usersArray.map(option => option.nickname)}
                   value={values.recipient}
-                  onChange={(v: string) => setFieldValue('recipient', v)}
-                  onInputChange={(v: string) => {
+                  onChange={(_event: React.ChangeEvent<{}>, v: string) => setFieldValue('recipient', v)}
+                  onInputChange={(_event: React.ChangeEvent<{}>, v: string) => {
                     setFieldValue('recipient', v)
                   }}
                   renderInput={params => (
@@ -130,7 +130,6 @@ export const NewMessageModal: React.FC<NewMessageModalProps> = ({
                       className={classes.gutter}
                       variant='outlined'
                       multiline
-                      maxRows={7}
                       placeholder={'Enter Zcash address or Zbay username'}
                       margin='normal'
                       fullWidth
