@@ -4,7 +4,7 @@ import { JoinChannelModal } from './JoinChannelModal'
 import { renderComponent } from '../../../testUtils/renderComponent'
 
 describe('JoinChannelModal', () => {
-  it('renders component', () => {
+  it.skip('renders component', () => {
     const users = {
       username: '',
       onionAddress: '',

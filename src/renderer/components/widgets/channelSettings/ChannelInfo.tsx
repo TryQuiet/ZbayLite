@@ -146,7 +146,6 @@ export const ChannelInfo: React.FC<ChannelInfoProps> = ({
                         </Grid>
                         <Grid item className={classes.checkboxDiv}>
                           <CheckboxWithLabel
-                            color='primary'
                             name='updateOnlyRegistered'
                             label='Allow only registered users to send messages'
                             labelClass={classes.checkboxLabel}
@@ -155,7 +154,6 @@ export const ChannelInfo: React.FC<ChannelInfoProps> = ({
                         </Grid>
                         <Grid item className={classes.checkboxDiv}>
                           <CheckboxWithLabel
-                            color='primary'
                             name='updateMinFee'
                             label='Set the price to post an offer (default is 0.00 ZEC)'
                             labelClass={classes.checkboxLabel}
