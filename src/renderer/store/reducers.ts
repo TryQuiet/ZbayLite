@@ -4,6 +4,7 @@ import { persistReducer } from 'redux-persist'
 import nectarReducers from '@zbayapp/nectar'
 
 import { StoreType } from './handlers/types'
+import { modalsReducer } from '../sagas/modals/modals.slice'
 
 // import identityHandlers from './handlers/identity'
 import notificationsHandlers from './handlers/notifications'
@@ -50,6 +51,8 @@ const persistConfig = {
     'contacts',
     'app',
     'users',
+    'modals',
+    'Modals',
     'channels',
     'vault',
     'offers',
@@ -68,6 +71,7 @@ const persistConfig = {
 
 export const reducers = {
   ...nectarReducers.reducers,
+  Modals: modalsReducer,
   // [StoreKeys.Certificates]: certificatesReducer,
   waggle: waggleHandlers.reducer,
   [StoreKeys.DirectMessages]: directMessages.reducer,
