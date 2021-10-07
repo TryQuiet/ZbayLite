@@ -112,7 +112,6 @@ export const ChannelSettingsModal: React.FC<ChannelSettingsModalProps> = ({
                   value='channelInfo'
                   label='Channel info'
                   classes={{
-                    tabRoot: classes.tab,
                     selected: classes.selected
                   }}
                 />
@@ -122,7 +121,6 @@ export const ChannelSettingsModal: React.FC<ChannelSettingsModalProps> = ({
                   value='moderators'
                   label='Moderators'
                   classes={{
-                    tabRoot: classes.tab,
                     selected: classes.selected
                   }}
                 />
@@ -131,7 +129,7 @@ export const ChannelSettingsModal: React.FC<ChannelSettingsModalProps> = ({
               <Tab
                 value='notifications'
                 label='Notifications'
-                classes={{ tabRoot: classes.tab, selected: classes.selected }}
+                classes={{ selected: classes.selected }}
               />
             </Tabs>
           </AppBar>
