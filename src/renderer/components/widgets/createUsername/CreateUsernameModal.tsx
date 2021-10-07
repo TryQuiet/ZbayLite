@@ -12,6 +12,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import Modal from '../../ui/Modal/Modal'
 import UsernameCreated from './UsernameCreated'
 import { LoadingButton } from '../../ui/LoadingButton/LoadingButton'
+import { Identity } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
+import { ErrorState } from '@zbayapp/nectar/lib/sagas/errors/errors.slice'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -158,15 +160,18 @@ const submitForm = (handleSubmit, values, setFormSent) => {
 
 interface CreateUsernameModalProps {
   handleClose: () => void
-  initialValue: { nickname: string }
+  initialValue: string
   handleCreateCommunity?: (val: string) => void
   handleJoinCommunity?: (val: string) => void
   handleLaunchCommunity?: (val: string) => void
   handleLaunchRegistrar?: (val: string) => void
   handleRegisterUsername?: (val: string) => void
-  certificateRegistrationError?: string
+  certificateRegistrationError?: ErrorState
   certificate?: string
-  id?: string
+  id?: Identity
+  triggerSelector?: () => void
+  open?: boolean
+  handleOpen?: () => void
 }
 
 export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
@@ -240,7 +245,7 @@ export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
               </Button>
             </Grid>
             <Formik
-              onSubmit={values => submitForm(handleRegisterUsername, values.nickname, setFormSent)}
+              onSubmit={values => submitForm(handleRegisterUsername, values, setFormSent)}
               initialValues={initialValue}
               validationSchema={() => getValidationSchema()}>
               {() => {

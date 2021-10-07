@@ -7,12 +7,7 @@ import { CreateUsernameModal } from './CreateUsernameModal'
 describe('CreateUsernameModal', () => {
   it('renders component', () => {
     const result = renderComponent(
-      <CreateUsernameModal
-        handleClose={jest.fn()}
-        initialValue={{
-          nickname: 'test'
-        }}
-      />
+      <CreateUsernameModal handleClose={jest.fn()} initialValue={'test'} />
     )
     expect(result.baseElement).toMatchInlineSnapshot(`
       <body
@@ -197,7 +192,7 @@ describe('CreateUsernameModal', () => {
                               name="nickname"
                               placeholder="Enter a username"
                               type="text"
-                              value="test"
+                              value=""
                             />
                             <fieldset
                               aria-hidden="true"
@@ -206,7 +201,7 @@ describe('CreateUsernameModal', () => {
                             >
                               <legend
                                 class="PrivateNotchedOutline-legend-234"
-                                style="width: 0px;"
+                                style="width: 0.01px;"
                               >
                                 <span>
                                   ​
