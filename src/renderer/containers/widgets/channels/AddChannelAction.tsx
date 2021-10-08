@@ -1,23 +1,13 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import * as R from 'ramda'
 
 import AddChannelAction from '../../../components/widgets/channels/AddChannelAction'
-import { actionCreators } from '../../../store/handlers/modals'
+import { useModal } from '../../hooks'
+import { ModalName } from '../../../sagas/modals/modals.types'
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      openCreateModal: actionCreators.openModal('createChannel')
-    },
-    dispatch
-  )
+export const AddChannelActionContainer = () => {
+  const modal = useModal(ModalName.createChannel)
 
-export default R.compose(
-  React.memo,
-  connect(
-    null,
-    mapDispatchToProps
-  )
-)(AddChannelAction)
+  return <AddChannelAction openCreateModal={modal.handleOpen} />
+}
+
+export default AddChannelActionContainer

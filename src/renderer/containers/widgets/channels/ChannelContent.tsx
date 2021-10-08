@@ -25,6 +25,8 @@ export const mapDispatchToProps = dispatch =>
     dispatch
   )
 
+  
+
 export default R.compose(
   React.memo,
   connect(mapStateToProps, mapDispatchToProps)

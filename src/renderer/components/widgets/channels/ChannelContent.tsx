@@ -36,15 +36,12 @@ interface ChannelMessagesProps {
 export const ChannelContent: React.FC<ChannelMessagesProps> = ({
   inputState,
   contactId,
-  signerPubKey,
   measureRef,
   contentRect,
   channelType,
-  offer,
   tab,
   mentions,
   removeMention,
-  sendInvitation
 }) => {
   const classes = useStyles({})
   const ChannelMessages = channelTypeToMessages[channelType]
@@ -55,8 +52,6 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
           <ChannelMessages
             tab={tab}
             contactId={contactId}
-            offer={offer}
-            signerPubKey={signerPubKey}
             inputState={inputState}
             contentRect={contentRect}
           />

@@ -13,7 +13,7 @@ const useData = () => {
     initialValue: '',
     modalName,
     open: useSelector(modalsSelectors.open(modalName)),
-    certificateRegistrationError: useSelector(errors.selectors.certificateRegistration),
+    certificateRegistrationError: useSelector(errors.selectors.currentCommunityErrorByType),
     certificate: useSelector(identity.selectors.currentIdentity)?.userCertificate,
     id: useSelector(identity.selectors.currentIdentity)
   }

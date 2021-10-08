@@ -28,7 +28,7 @@ export const initialState: App = {
 
 const loadVersion = createAction(actionTypes.SET_APP_VERSION, () => remote.app.getVersion())
 const setModalTab = createAction<string>(actionTypes.SET_CURRENT_MODAL_TAB)
-const clearModalTab = createAction<null>(actionTypes.CLEAR_CURRENT_MODAL_TAB)
+const clearModalTab = createAction(actionTypes.CLEAR_CURRENT_MODAL_TAB)
 
 export const actions = {
   loadVersion,
