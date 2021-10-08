@@ -23,7 +23,6 @@ export const AddChannelAction: React.FC<AddChannelActionProps> = ({ openCreateMo
       >
         <MenuActionItem onClick={openCreateModal} title='Create' />
       </MenuAction>
-      <CreateChannelModal />
     </React.Fragment>
   )
 }
