@@ -33,7 +33,8 @@ jest.mock('redux-persist-electron-storage', () => () => new mockStorage())
 
 jest.mock('react-jdenticon', () => () => 'Jdenticon')
 
-const mockFetch: typeof fetch = () => Promise.resolve({} as Response)
+// eslint-disable-next-line
+const mockFetch: typeof fetch = async () => await Promise.resolve({} as Response)
 global.fetch = mockFetch
 
 registerRequireContextHook()
