@@ -200,6 +200,10 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     refSelected.current = selected
   }, [selected])
 
+  const isRefSelected = (refSelected: number | undefined): refSelected is number => {
+    return typeof refSelected === 'number'
+  }
+
   React.useEffect(() => {
     refMentionsToSelect.current = mentionsToSelect
   }, [mentionsToSelect])
@@ -299,6 +303,9 @@ export const ChannelInput: React.FC<IChannelInput> = ({
 
   const onKeyDownCb = useCallback(
     e => {
+      if (!isRefSelected(refSelected.current)) {
+        throw new Error('refSelected is on unexpected type')
+      }
       if (refMentionsToSelect.current.length) {
         if (e.nativeEvent.keyCode === 40) {
           if (refSelected.current + 1 >= refMentionsToSelect.current.length) {
@@ -453,7 +460,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
                           setMessage(message + emoji.emoji)
                           setOpenEmoji(false)
                         }}
-                        /* eslint-enable */
+                      /* eslint-enable */
                       />
                     </div>
                   </ClickAwayListener>

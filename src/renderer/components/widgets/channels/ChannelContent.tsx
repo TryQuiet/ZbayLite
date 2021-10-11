@@ -76,8 +76,7 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
                   }
                 }}
                 handleInvite={() => {
-                  if (mention?.nickname)
-                    sendInvitation(mention.nickname)
+                  if (mention?.nickname) { sendInvitation(mention.nickname) }
                 }}
               />
             </Grid>

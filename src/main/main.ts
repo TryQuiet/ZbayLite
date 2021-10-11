@@ -283,17 +283,16 @@ app.on('ready', async () => {
   log('created windows')
 
   if (!isBrowserWindow(mainWindow)) {
-    throw new Error(`mainWindow is on unexpected type {mainWindow}`)
+    throw new Error('mainWindow is on unexpected type {mainWindow}')
   }
 
   mainWindow.webContents.on('did-fail-load', () => {
     log('failed loading')
   })
 
-
   mainWindow.webContents.on('did-finish-load', async () => {
     if (!isBrowserWindow(mainWindow)) {
-      throw new Error(`mainWindow is on unexpected type {mainWindow}`)
+      throw new Error('mainWindow is on unexpected type {mainWindow}')
     }
     waggleProcess = await runWaggle(mainWindow.webContents)
     if (process.platform === 'win32' && process.argv) {
@@ -306,13 +305,12 @@ app.on('ready', async () => {
       await checkForUpdate(mainWindow)
       setInterval(async () => {
         if (!isBrowserWindow(mainWindow)) {
-          throw new Error(`mainWindow is on unexpected type {mainWindow}`)
+          throw new Error('mainWindow is on unexpected type {mainWindow}')
         }
         await checkForUpdate(mainWindow)
       }, 15 * 60000)
     }
   })
-
 
   ipcMain.on('proceed-update', () => {
     autoUpdater.quitAndInstall()
