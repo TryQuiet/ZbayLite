@@ -281,36 +281,36 @@ app.on('ready', async () => {
 
   await createWindow()
   log('created windows')
-  if (isBrowserWindow(mainWindow)) {
-    mainWindow.webContents.on('did-fail-load', () => {
-      log('failed loading')
-    })
+
+  if (!isBrowserWindow(mainWindow)) {
+    throw new Error('mainWindow is on unexpected type {mainWindow}')
   }
 
-  if (isBrowserWindow(mainWindow)) {
-    mainWindow.webContents.on('did-finish-load', async () => {
-      if (isBrowserWindow(mainWindow)) {
-        waggleProcess = await runWaggle(mainWindow.webContents)
-      }
-      if (process.platform === 'win32' && process.argv) {
-        const payload = process.argv[1]
-        if (payload) {
-          checkForPayloadOnStartup(payload)
-        }
-      }
-      if (!isDev) {
-        if (isBrowserWindow(mainWindow)) {
-          await checkForUpdate(mainWindow)
-        }
-        setInterval(async () => {
-          if (isBrowserWindow(mainWindow)) {
-            await checkForUpdate(mainWindow)
-          }
-        }, 15 * 60000)
+  mainWindow.webContents.on('did-fail-load', () => {
+    log('failed loading')
+  })
 
+  mainWindow.webContents.on('did-finish-load', async () => {
+    if (!isBrowserWindow(mainWindow)) {
+      throw new Error('mainWindow is on unexpected type {mainWindow}')
+    }
+    waggleProcess = await runWaggle(mainWindow.webContents)
+    if (process.platform === 'win32' && process.argv) {
+      const payload = process.argv[1]
+      if (payload) {
+        checkForPayloadOnStartup(payload)
       }
-    })
-  }
+    }
+    if (!isDev) {
+      await checkForUpdate(mainWindow)
+      setInterval(async () => {
+        if (!isBrowserWindow(mainWindow)) {
+          throw new Error('mainWindow is on unexpected type {mainWindow}')
+        }
+        await checkForUpdate(mainWindow)
+      }, 15 * 60000)
+    }
+  })
 
   ipcMain.on('proceed-update', () => {
     autoUpdater.quitAndInstall()
