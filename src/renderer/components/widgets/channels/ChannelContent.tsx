@@ -27,7 +27,7 @@ interface ChannelMessagesProps {
   contentRect: string
   channelType: CHANNEL_TYPE
   offer: string
-  tab: (arg: number) => void
+  tab?: (arg: number) => void
   mentions: { channelId: Mentions[] }
   removeMention: (name: string) => void
   sendInvitation: (name: string) => void
@@ -68,13 +68,15 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
           mentions.channelId.map(mention => (
             <Grid item>
               <InviteMentionInfo
-                nickname={mention.nickname}
-                timeStamp={mention.timeStamp}
+                nickname={mention?.nickname ? mention.nickname : ''}
+                timeStamp={mention?.timeStamp ? mention.timeStamp : 0}
                 handleClose={() => {
-                  removeMention(mention.nickname)
+                  if (removeMention && mention?.nickname)
+                    removeMention(mention.nickname)
                 }}
                 handleInvite={() => {
-                  sendInvitation(mention.nickname)
+                  if (mention?.nickname)
+                    sendInvitation(mention.nickname)
                 }}
               />
             </Grid>

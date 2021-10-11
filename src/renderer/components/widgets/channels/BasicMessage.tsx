@@ -81,7 +81,7 @@ export const getTimeFormat = () => {
   return 't'
 }
 
-export const transformToLowercase = string => {
+export const transformToLowercase = (string: string) => {
   const hasPM = string.search('PM')
   return hasPM !== -1 ? string.replace('PM', 'pm') : string.replace('AM', 'am')
 }
