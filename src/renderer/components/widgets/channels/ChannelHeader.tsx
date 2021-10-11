@@ -107,7 +107,7 @@ export interface ChannelHeaderProps {
   updateShowInfoMsg: (arg: boolean) => void
   directMessage: boolean
   channelType: CHANNEL_TYPE
-  tab: number
+  tab?: number
   setTab: (arg: number) => void
   channel: Channel
   offer: string

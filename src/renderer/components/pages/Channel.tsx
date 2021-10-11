@@ -8,6 +8,7 @@ import PageHeader from '../ui/Page/PageHeader'
 import { channelTypeToHeader, channelTypeToInput } from './ChannelMapping'
 import ChannelContent from '../../containers/widgets/channels/ChannelContent'
 import { CHANNEL_TYPE } from './ChannelTypes'
+import { ChannelHeaderProps } from '../widgets/channels/ChannelHeader'
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -16,7 +17,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-interface IChannelComponentProps {
+type IChannelComponentProps = ChannelHeaderProps & {
   channelType: CHANNEL_TYPE
   contactId?: string
   offer?: string

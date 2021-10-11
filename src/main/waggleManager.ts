@@ -1,5 +1,5 @@
 import TlgManager from 'waggle'
-import fp from 'find-free-port'
+import fp from 'find-free-port' // todo_types
 import { BrowserWindow } from 'electron'
 import electronStore from '../shared/electronStore'
 import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
@@ -23,7 +23,7 @@ export const getPorts = async (): Promise<{
   }
 }
 
-export const runWaggle = async (webContents: BrowserWindow['webContents']): Promise<{connectionsManager: ConnectionsManager; dataServer: DataServer}> => {
+export const runWaggle = async (webContents: BrowserWindow['webContents']): Promise<{ connectionsManager: ConnectionsManager; dataServer: DataServer }> => {
   const ports = await getPorts()
   const appDataPath = electronStore.get('appDataPath')
 

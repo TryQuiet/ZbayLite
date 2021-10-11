@@ -13,7 +13,7 @@ import { DataServer } from 'waggle/lib/socket/DataServer'
 import {
   setEngine,
   CryptoEngine
-} from 'pkijs'
+} from 'pkijs' // todo_types
 import { Crypto } from '@peculiar/webcrypto'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
@@ -42,7 +42,11 @@ setEngine('newEngine', webcrypto, new CryptoEngine({
   subtle: webcrypto.subtle
 }))
 
-let mainWindow: BrowserWindow
+let mainWindow: BrowserWindow | null
+
+const isBrowserWindow = (window: BrowserWindow | null): window is BrowserWindow => {
+  return window instanceof BrowserWindow
+}
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -118,7 +122,7 @@ app.on('open-url', (event, url) => {
   }
 })
 
-const checkForPayloadOnStartup = payload => {
+const checkForPayloadOnStartup = (payload: string) => {
   const isInvitation = payload.includes('invitation')
   const isNewChannel = payload.includes('importchannel')
   if (mainWindow && (isInvitation || isNewChannel)) {
@@ -167,21 +171,27 @@ const createWindow = async () => {
     mainWindow = null
   })
   mainWindow.on('resize', () => {
-    const [width, height] = mainWindow.getSize()
-    browserHeight = height
-    browserWidth = width
+    if (isBrowserWindow(mainWindow)) {
+      const [width, height] = mainWindow.getSize()
+      browserHeight = height
+      browserWidth = width
+    }
   })
   electronLocalshortcut.register(mainWindow, 'CommandOrControl+L', () => {
-    mainWindow.webContents.send('openLogs')
+    if (isBrowserWindow(mainWindow)) {
+      mainWindow.webContents.send('openLogs')
+    }
   })
   electronLocalshortcut.register(mainWindow, 'F12', () => {
-    mainWindow.webContents.openDevTools()
+    if (isBrowserWindow(mainWindow)) {
+      mainWindow.webContents.openDevTools()
+    }
   })
 }
 
 let isUpdatedStatusCheckingStarted = false
 
-const isNetworkError = errorObject => {
+const isNetworkError = (errorObject: { message: string }) => {
   return (
     errorObject.message === 'net::ERR_INTERNET_DISCONNECTED' ||
     errorObject.message === 'net::ERR_PROXY_CONNECTION_FAILED' ||
@@ -192,7 +202,7 @@ const isNetworkError = errorObject => {
   )
 }
 
-export const checkForUpdate = async win => {
+export const checkForUpdate = async (win: BrowserWindow) => {
   if (!isUpdatedStatusCheckingStarted) {
     try {
       await autoUpdater.checkForUpdates()
@@ -236,7 +246,7 @@ export const checkForUpdate = async win => {
   }
 }
 
-let waggleProcess: { connectionsManager: ConnectionsManager; dataServer: DataServer } = null
+let waggleProcess: { connectionsManager: ConnectionsManager; dataServer: DataServer } | null = null
 app.on('ready', async () => {
   // const template = [
   //   {
@@ -271,25 +281,36 @@ app.on('ready', async () => {
 
   await createWindow()
   log('created windows')
-  mainWindow.webContents.on('did-fail-load', () => {
-    log('failed loading')
-  })
+  if (isBrowserWindow(mainWindow)) {
+    mainWindow.webContents.on('did-fail-load', () => {
+      log('failed loading')
+    })
+  }
 
-  mainWindow.webContents.on('did-finish-load', async () => {
-    waggleProcess = await runWaggle(mainWindow.webContents)
-    if (process.platform === 'win32' && process.argv) {
-      const payload = process.argv[1]
-      if (payload) {
-        checkForPayloadOnStartup(payload)
+  if (isBrowserWindow(mainWindow)) {
+    mainWindow.webContents.on('did-finish-load', async () => {
+      if (isBrowserWindow(mainWindow)) {
+        waggleProcess = await runWaggle(mainWindow.webContents)
       }
-    }
-    if (!isDev) {
-      await checkForUpdate(mainWindow)
-      setInterval(async () => {
-        await checkForUpdate(mainWindow)
-      }, 15 * 60000)
-    }
-  })
+      if (process.platform === 'win32' && process.argv) {
+        const payload = process.argv[1]
+        if (payload) {
+          checkForPayloadOnStartup(payload)
+        }
+      }
+      if (!isDev) {
+        if (isBrowserWindow(mainWindow)) {
+          await checkForUpdate(mainWindow)
+        }
+        setInterval(async () => {
+          if (isBrowserWindow(mainWindow)) {
+            await checkForUpdate(mainWindow)
+          }
+        }, 15 * 60000)
+
+      }
+    })
+  }
 
   ipcMain.on('proceed-update', () => {
     autoUpdater.quitAndInstall()

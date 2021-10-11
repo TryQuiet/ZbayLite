@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const handleChange = (setCurrentTab, clearCurrentOpenTab, value) => {
+const handleChange = (setCurrentTab: (value: string) => void, clearCurrentOpenTab: () => void, value: string) => {
   clearCurrentOpenTab()
   setCurrentTab(value)
 }
