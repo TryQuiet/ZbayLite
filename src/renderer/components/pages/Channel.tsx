@@ -27,7 +27,7 @@ type InputProps = Omit<IChannelComponentProps, 'channelType'> & {
   setTab: (arg: number) => void // for now
 }
 
-export const Channel: React.FC<IChannelComponentProps> = ({ channelType, ...props }) => {
+export const Channel: React.FC<ChannelHeaderProps & IChannelComponentProps> = ({ channelType, ...props }) => {
   const classes = useStyles({})
   const [tab, setTab] = useState(0)
 

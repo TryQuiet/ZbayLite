@@ -68,11 +68,12 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
           mentions.channelId.map(mention => (
             <Grid item>
               <InviteMentionInfo
-                nickname={mention?.nickname ? mention.nickname : ''}
-                timeStamp={mention?.timeStamp ? mention.timeStamp : 0}
+                nickname={mention?.nickname ?? ''}
+                timeStamp={mention?.timeStamp ?? 0}
                 handleClose={() => {
-                  if (removeMention && mention?.nickname)
+                  if (mention?.nickname) {
                     removeMention(mention.nickname)
+                  }
                 }}
                 handleInvite={() => {
                   if (mention?.nickname)
