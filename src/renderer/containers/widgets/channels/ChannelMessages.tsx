@@ -50,9 +50,6 @@ export const ChannelMessages = ({ contentRect }) => {
     channelSelectors.displayableMessageLimit
   )
 
-  const isDisplayableMessageLimit = (displayableMessageLimit: number | undefined): displayableMessageLimit is number => {
-    return typeof displayableMessageLimit === 'number'
-  }
   // const isOwner = useSelector(ownedChannelsSelectors.isOwner)
   const channelId = useSelector(channelSelectors.channelId)
   const users = []
@@ -77,9 +74,6 @@ export const ChannelMessages = ({ contentRect }) => {
   //   }
   // }, [triggerScroll])
   useEffect(() => {
-    if (!isDisplayableMessageLimit(displayableMessageLimit)) {
-      throw new Error('displayableMessageLimit is on unexpected type')
-    }
     if (scrollPosition === 0 && displayableMessageLimit < messagesLength) {
       setDisplayableLimit(displayableMessageLimit + loadNextMessagesLimit)
       setNewMessagesLoading(true)
