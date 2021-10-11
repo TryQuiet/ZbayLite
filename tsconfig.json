@@ -41,7 +41,8 @@
     "downlevelIteration": true,
     "typeRoots": [
       "src/renderer/expanded-theme.ts",
-      "node_modules/@types"
+      "node_modules/@types",
+      "@types"
     ],
     "resolveJsonModule": true
   },
