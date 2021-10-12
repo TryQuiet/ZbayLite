@@ -163,7 +163,7 @@ export const ChannelInput: React.FC<IChannelInput> = ({
 }) => {
   const classes = useStyles({})
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement>()
+  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement>(null)
   const [mentionsToSelect, setMentionsToSelect] = React.useState<any[]>([])
 
   const messageRef = React.useRef<string>()
@@ -185,9 +185,11 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     setFocused(true)
   }
   const scrollToBottom = () => {
-    const scroll = document.getElementById('messages-scroll').parentElement
+    const scroll = document.getElementById('messages-scroll')?.parentElement
     setTimeout(() => {
-      scroll.scrollTop = scroll.scrollHeight
+      if (scroll?.scrollTop) {
+        scroll.scrollTop = scroll.scrollHeight
+      }
     }, 100)
   }
 
@@ -219,7 +221,9 @@ export const ChannelInput: React.FC<IChannelInput> = ({
     setHtmlMessage(initialMessage)
     if (!isFirstRenderRef.current) {
       return () => {
-        onChange(messageRef.current)
+        if (messageRef?.current) {
+          onChange(messageRef.current)
+        }
       }
     }
     isFirstRenderRef.current = false
@@ -289,6 +293,12 @@ export const ChannelInput: React.FC<IChannelInput> = ({
 
   const mentionSelectAction = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault()
+    if (refSelected?.current && refMentionsToSelect?.current) {
+      if (refMentionsToSelect.current[refSelected.current]) {
+
+      }
+    }
+
     const nickname = refMentionsToSelect.current[refSelected.current].nickname
     setHtmlMessage(htmlMessage => {
       const wrapped = `<span class="${classes.highlight}">@${nickname}</span>&nbsp;`
@@ -306,25 +316,27 @@ export const ChannelInput: React.FC<IChannelInput> = ({
       if (!isRefSelected(refSelected.current)) {
         throw new Error('refSelected is on unexpected type')
       }
-      if (refMentionsToSelect.current.length) {
-        if (e.nativeEvent.keyCode === 40) {
-          if (refSelected.current + 1 >= refMentionsToSelect.current.length) {
-            setSelected(0)
-          } else {
-            setSelected(refSelected.current + 1)
+      if (refMentionsToSelect?.current) {
+        if (refMentionsToSelect.current.length) {
+          if (e.nativeEvent.keyCode === 40) {
+            if (refSelected.current + 1 >= refMentionsToSelect.current.length) {
+              setSelected(0)
+            } else {
+              setSelected(refSelected.current + 1)
+            }
+            e.preventDefault()
           }
-          e.preventDefault()
-        }
-        if (e.nativeEvent.keyCode === 38) {
-          if (refSelected.current - 1 < 0) {
-            setSelected(refMentionsToSelect.current.length - 1)
-          } else {
-            setSelected(refSelected.current - 1)
+          if (e.nativeEvent.keyCode === 38) {
+            if (refSelected.current - 1 < 0) {
+              setSelected(refMentionsToSelect.current.length - 1)
+            } else {
+              setSelected(refSelected.current - 1)
+            }
+            e.preventDefault()
           }
-          e.preventDefault()
-        }
-        if (e.nativeEvent.keyCode === 13 || e.nativeEvent.keyCode === 9) {
-          mentionSelectAction(e)
+          if (e.nativeEvent.keyCode === 13 || e.nativeEvent.keyCode === 9) {
+            mentionSelectAction(e)
+          }
         }
       }
       if (
@@ -384,8 +396,8 @@ export const ChannelInput: React.FC<IChannelInput> = ({
               onMouseEnter={() => {
                 setSelected(index)
               }}
-              participant={members.has(target.address)}
-              channelName={channelName}
+              participant={members ? members.has(target.address) : false}
+              channelName={channelName ?? ''}
               onClick={e => {
                 mentionSelectAction(e)
               }}

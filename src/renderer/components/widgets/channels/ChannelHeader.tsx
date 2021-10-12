@@ -131,10 +131,12 @@ export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
   name
 }) => {
   const classes = useStyles({})
-  const debounce = (fn, ms) => {
-    let timer
+  const debounce = (fn, ms: number) => {
+    let timer: NodeJS.Timeout | null
     return _ => {
-      clearTimeout(timer)
+      if (timer) {
+        clearTimeout(timer)
+      }
       timer = setTimeout(_ => {
         timer = null
         fn.apply(this) // // eslint-disable-line

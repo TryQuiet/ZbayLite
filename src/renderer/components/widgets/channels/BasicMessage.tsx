@@ -93,9 +93,12 @@ export const BasicMessage: React.FC<IBasicMessageProps> = ({
   setActionsOpen
 }) => {
   const classes = useStyles({})
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
+  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null)
+
+  const handleClick: React.ComponentProps<typeof Grid>['onClick'] = (event) => {
+    if (event) {
+      setAnchorEl(event.currentTarget) // todo_types
+    }
   }
   const handleClose = () => setAnchorEl(null)
   const username = message.nickname
