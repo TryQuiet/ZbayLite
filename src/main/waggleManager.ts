@@ -1,5 +1,5 @@
 import TlgManager from 'waggle'
-import fp from 'find-free-port' // todo_types
+import fp from 'find-free-port'
 import { BrowserWindow } from 'electron'
 import electronStore from '../shared/electronStore'
 import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'

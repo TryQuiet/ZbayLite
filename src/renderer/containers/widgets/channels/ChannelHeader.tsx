@@ -15,7 +15,8 @@ export const useChannelInputData = (contactId?: string) => {
   const data = {
     channel: {
       name: contactId === 'general' ? 'zbay' : contact.username,
-      address: contactId
+      address: contactId,
+      displayableMessageLimit: 50
     },
     name: contact.username,
     members: useSelector(channelSelectors.channelParticipiants),
