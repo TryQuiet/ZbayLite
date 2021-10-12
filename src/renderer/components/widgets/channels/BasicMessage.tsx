@@ -97,7 +97,7 @@ export const BasicMessage: React.FC<IBasicMessageProps> = ({
 
   const handleClick: React.ComponentProps<typeof Grid>['onClick'] = (event) => {
     if (event) {
-      setAnchorEl(event.currentTarget) // todo_types
+      setAnchorEl(event.currentTarget)
     }
   }
   const handleClose = () => setAnchorEl(null)

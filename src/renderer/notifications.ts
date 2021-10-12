@@ -2,7 +2,7 @@
 import { soundTypeToAudio } from '../shared/sounds'
 import electronStore from '../shared/electronStore'
 import history from '../shared/history'
-import { DisplayableMessage } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.types'
+import { DisplayableMessage } from '@zbayapp/nectar'
 
 export const createNotification = async ({ title, body, data }: { title: string; body: string; data: any }) => {
   const sound = parseInt(electronStore.get('notificationCenter.user.sound'))

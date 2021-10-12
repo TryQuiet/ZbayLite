@@ -13,7 +13,7 @@ import { DataServer } from 'waggle/lib/socket/DataServer'
 import {
   setEngine,
   CryptoEngine
-} from 'pkijs' // todo_types
+} from 'pkijs'
 import { Crypto } from '@peculiar/webcrypto'
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')

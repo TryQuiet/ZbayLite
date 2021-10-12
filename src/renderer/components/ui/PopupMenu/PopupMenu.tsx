@@ -103,7 +103,7 @@ export const PopupMenu: React.FC<IPopupMenuProps> = ({
                 className={classNames({
                   [classes[splitPlacement]]: true
                 })}
-                ref={arrowRef} // todo_types
+                ref={arrowRef}
               />
             </div>
           </Grow>
