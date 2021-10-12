@@ -34,14 +34,10 @@ interface ChannelMessagesProps {
 }
 
 export const ChannelContent: React.FC<ChannelMessagesProps> = ({
-  inputState,
   contactId,
-  signerPubKey,
   measureRef,
   contentRect,
   channelType,
-  offer,
-  tab,
   mentions,
   removeMention,
   sendInvitation
@@ -53,11 +49,7 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
       <Grid item xs>
         <RootRef rootRef={measureRef}>
           <ChannelMessages
-            tab={tab}
             contactId={contactId}
-            offer={offer}
-            signerPubKey={signerPubKey}
-            inputState={inputState}
             contentRect={contentRect}
           />
         </RootRef>
