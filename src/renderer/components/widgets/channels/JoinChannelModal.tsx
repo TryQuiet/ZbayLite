@@ -192,15 +192,15 @@ export const JoinChannelModal: React.FC<JoinChannelModalProps> = ({
                       )}
                     />
                   ) : (
-                      <>
-                        <Typography variant='body2' className={classes.description}>
-                          {`${values.channel.description}`}
-                        </Typography>
-                        <Grid container alignItems='center' className={classes.informationBox}>
+                    <>
+                      <Typography variant='body2' className={classes.description}>
+                        {`${values.channel.description}`}
+                      </Typography>
+                      <Grid container alignItems='center' className={classes.informationBox}>
                           After joining, it may take some time for messages to fully load.
                       </Grid>
-                      </>
-                    )}
+                    </>
+                  )}
 
                   {step !== 0 ? (
                     <LoadindButton
@@ -214,10 +214,10 @@ export const JoinChannelModal: React.FC<JoinChannelModalProps> = ({
                       disabled={loading}
                     />
                   ) : (
-                      <Typography variant='caption' className={classes.info}>
+                    <Typography variant='caption' className={classes.info}>
                         If you have an invite link, open it in a browser
-                      </Typography>
-                    )}
+                    </Typography>
+                  )}
                 </Grid>
               </Form>
             )
