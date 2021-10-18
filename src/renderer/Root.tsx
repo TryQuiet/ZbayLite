@@ -22,6 +22,8 @@ import SecurityModal from './containers/widgets/settings/SecurityModal'
 import UpdateModal from './containers/widgets/update/UpdateModal'
 import QuitAppDialog from './containers/ui/QuitAppDialog'
 import theme from './theme'
+import CreateCommunity from './containers/widgets/createCommunity/createCommunity'
+import JoinCommunity from './containers/widgets/joinCommunity/joinCommunity'
 
 export default () => {
   const persistor = persistStore(store)
@@ -43,6 +45,8 @@ export default () => {
               <SecurityModal />
               <UpdateModal />
               <QuitAppDialog />
+              <Route path='/createCommunity' component={CreateCommunity} />
+              <Route path='/joinCommunity' component={JoinCommunity} />
               <Route path='/' component={Index} />
               <Route path='/main' component={Main} />
             </SnackbarProvider>
