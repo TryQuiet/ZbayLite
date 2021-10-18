@@ -114,12 +114,14 @@
     "@storybook/react": "^6.3.9",
     "@testing-library/react": "^12.1.1",
     "@testing-library/react-hooks": "^7.0.0",
+    "@types/electron-localshortcut": "^3.1.0",
     "@types/isomorphic-fetch": "0.0.35",
     "@types/jest": "^26.0.23",
     "@types/keymirror": "^0.1.1",
     "@types/luxon": "^1.25.0",
     "@types/ramda": "^0.27.31",
     "@types/react": "^16.9.54",
+    "@types/react-copy-to-clipboard": "^5.0.1",
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.6",
@@ -136,7 +138,7 @@
     "concurrently": "^4.1.0",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.0",
-    "electron": "12.0.2",
+    "electron": "12.1.0",
     "electron-build-env": "^0.2.0",
     "electron-builder": "^22.10.5",
     "electron-devtools-installer": "^3.1.1",
@@ -188,14 +190,14 @@
   },
   "jest": {
     "setupFiles": [
-      "<rootDir>/src/shared/setupTests.js"
+      "<rootDir>/src/shared/setupTests.ts"
     ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest",
       "^.+\\.jsx?$": "babel-jest"
     },
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/shared/testing/fileMock.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/shared/testing/fileMock.ts",
       "\\.(scss|css|less)$": "identity-obj-proxy"
     },
     "testRegex": "src/.*\\.test\\.(t|j)sx?$",
@@ -217,7 +219,7 @@
     "@types/ps-node": "^0.1.0",
     "@types/redux-debounced": "^0.2.19",
     "@zbayapp/identity": "^3.3.2",
-    "@zbayapp/nectar": "^1.10.0",
+    "@zbayapp/nectar": "^1.10.1",
     "asn1js": "^2.1.1",
     "async": "^3.1.0",
     "atob": "^2.1.2",

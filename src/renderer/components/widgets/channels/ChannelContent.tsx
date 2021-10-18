@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import RootRef from '@material-ui/core/RootRef'
 
 import { channelTypeToMessages } from '../../pages/ChannelMapping'
-import InviteMentionInfo from './ChannelInput/InviteMentionInfo'
 import { CHANNEL_TYPE } from '../../pages/ChannelTypes'
 import { Mentions } from '../../../store/handlers/mentions'
 
@@ -22,26 +21,20 @@ const useStyles = makeStyles((theme) => ({
 interface ChannelMessagesProps {
   inputState: string
   contactId: string
-  signerPubKey: string
-  measureRef: () => void
+  measureRef: React.RefObject<unknown>
   contentRect: string
   channelType: CHANNEL_TYPE
-  offer: string
-  tab: (arg: number) => void
+  tab?: (arg: number) => void
   mentions: { channelId: Mentions[] }
   removeMention: (name: string) => void
-  sendInvitation: (name: string) => void
 }
 
 export const ChannelContent: React.FC<ChannelMessagesProps> = ({
-  inputState,
   contactId,
   measureRef,
   contentRect,
   channelType,
-  tab,
   mentions,
-  removeMention,
 }) => {
   const classes = useStyles({})
   const ChannelMessages = channelTypeToMessages[channelType]
@@ -50,9 +43,8 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
       <Grid item xs>
         <RootRef rootRef={measureRef}>
           <ChannelMessages
-            tab={tab}
+            channelId={contactId}
             contactId={contactId}
-            inputState={inputState}
             contentRect={contentRect}
           />
         </RootRef>
@@ -62,16 +54,6 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
           mentions.channelId &&
           mentions.channelId.map(mention => (
             <Grid item>
-              <InviteMentionInfo
-                nickname={mention.nickname}
-                timeStamp={mention.timeStamp}
-                handleClose={() => {
-                  removeMention(mention.nickname)
-                }}
-                handleInvite={() => {
-                  sendInvitation(mention.nickname)
-                }}
-              />
             </Grid>
           ))}
       </Grid>
