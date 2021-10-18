@@ -19,11 +19,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 interface ChannelMessagesProps {
-  inputState: string
   contactId: string
-  measureRef: React.RefObject<unknown>
+  measureRef?: React.RefObject<unknown>
   contentRect: string
-  channelType: CHANNEL_TYPE
+  channelType?: CHANNEL_TYPE
   tab?: (arg: number) => void
   mentions: { channelId: Mentions[] }
   removeMention: (name: string) => void
@@ -43,7 +42,7 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
       <Grid item xs>
         <RootRef rootRef={measureRef}>
           <ChannelMessages
-            channelId={contactId}
+          channelId={contactId}
             contactId={contactId}
             contentRect={contentRect}
           />

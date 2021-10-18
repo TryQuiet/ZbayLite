@@ -1,33 +1,40 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import * as R from 'ramda'
-import { bindActionCreators } from 'redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import ChannelContent from '../../../components/widgets/channels/ChannelContent'
 import channelSelectors from '../../../store/selectors/channel'
-// import identitySelectors from '../../../store/selectors/identity'
 import mentionsSelectors from '../../../store/selectors/mentions'
 import mentionsHandlers from '../../../store/handlers/mentions'
 
-export const mapStateToProps = state => ({
-  inputState: channelSelectors.inputLocked(state),
-  // signerPubKey: identitySelectors.signerPubKey(state),
-  mentions: mentionsSelectors.mentions(state),
-  channelId: channelSelectors.channelId(state)
-})
+export const useChannelContentData = () => {
+  const data = {
+    inputState: useSelector(channelSelectors.inputLocked),
+    mentions: useSelector(mentionsSelectors.mentions),
+    channelId: useSelector(channelSelectors.channelId)
+  }
+  return data
+}
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      removeMention: mentionsHandlers.epics.removeMention
-      // sendInvitation: mentionsHandlers.epics.sendInvitation
-    },
-    dispatch
+export const useChannelContentActions = () => {
+  const dispatch = useDispatch()
+
+  const removeMention = (nickname: string) =>
+    dispatch(mentionsHandlers.epics.removeMention(nickname))
+
+  return { removeMention }
+}
+const ChannelContentContainer = () => {
+  const { mentions, channelId } = useChannelContentData()
+  const { removeMention } = useChannelContentActions()
+
+  return (
+    <ChannelContent
+      mentions={mentions as any}
+      contactId={channelId}
+      removeMention={removeMention}
+      contentRect={''}
+    />
   )
+}
 
-  
-
-export default R.compose(
-  React.memo,
-  connect(mapStateToProps, mapDispatchToProps)
-)(ChannelContent)
+export default ChannelContentContainer
