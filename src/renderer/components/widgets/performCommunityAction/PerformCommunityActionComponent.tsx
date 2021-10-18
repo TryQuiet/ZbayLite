@@ -10,6 +10,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import Modal from '../../ui/Modal/Modal'
 import { LoadingButton } from '../../ui/LoadingButton/LoadingButton'
 
+import { CommunityAction } from './community.keys'
+
 const useStyles = makeStyles(theme => ({
   root: {},
   focus: {
@@ -135,9 +137,10 @@ const submitForm = (handleSubmit, values, setFormSent) => {
   handleSubmit(values)
 }
 
-export interface CreateCommunityComponentProps {
+export interface PerformCommunityActionProps {
   open?: boolean
-  handleCreateCommunity: () => void
+  communityAction: CommunityAction
+  handleCommunityAction: () => void
   initialValue: string
   registrar?: string
   error?: string
@@ -145,8 +148,9 @@ export interface CreateCommunityComponentProps {
   handleClose: () => void
 }
 
-export const CreateCommunityComponent: React.FC<CreateCommunityComponentProps> = ({
-  handleCreateCommunity,
+export const PerformCommunityActionComponent: React.FC<PerformCommunityActionProps> = ({
+  communityAction,
+  handleCommunityAction,
   initialValue,
   registrar,
   error,
@@ -165,7 +169,7 @@ export const CreateCommunityComponent: React.FC<CreateCommunityComponentProps> =
             <Typography variant={'h3'}>Create your community</Typography>
           </Grid>
           <Formik
-            onSubmit={values => submitForm(handleCreateCommunity, values, setFormSent)}
+            onSubmit={values => submitForm(handleCommunityAction, values, setFormSent)}
             initialValues={initialValue}>
             {() => {
               return (
@@ -217,4 +221,4 @@ export const CreateCommunityComponent: React.FC<CreateCommunityComponentProps> =
   )
 }
 
-export default CreateCommunityComponent
+export default PerformCommunityActionComponent
