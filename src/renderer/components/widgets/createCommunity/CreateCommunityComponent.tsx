@@ -135,7 +135,7 @@ const submitForm = (handleSubmit, values, setFormSent) => {
   handleSubmit(values)
 }
 
-interface CreateCommunityComponentProps {
+export interface CreateCommunityComponentProps {
   open?: boolean
   handleCreateCommunity: () => void
   initialValue: string
@@ -185,7 +185,7 @@ export const CreateCommunityComponent: React.FC<CreateCommunityComponentProps> =
                     </Grid>
                     <Grid item xs={12} className={classes.infoDiv}>
                       <Typography variant='caption' className={classes.info}>
-                        If you have n invite link, open it in a browser
+                        If you have an invite link, open it in a browser
                       </Typography>
                     </Grid>
                   </Grid>
