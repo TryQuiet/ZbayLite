@@ -227,9 +227,7 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
               )
             }}
           </Formik>
-          <Grid>
-            <Typography>{dictionary.redirection}</Typography>
-          </Grid>
+          {dictionary.redirection}
         </React.Fragment>
       </Grid>
     </Modal>

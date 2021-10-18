@@ -18,10 +18,10 @@ export const CreateCommunityDictionary = (
   if (handleRedirection) {
     link = (
       <TextWithLink
-        text={'You can $s instead'}
+        text={'You can %link instead'}
         links={[
           {
-            tag: '$s',
+            tag: 'link',
             label: 'join a community',
             action: handleRedirection
           }
@@ -44,10 +44,10 @@ export const JoinCommunityDictionary = (handleRedirection?: () => void): Perform
   if (handleRedirection) {
     link = (
       <TextWithLink
-        text={'You can $s instead'}
+        text={'You can %link instead'}
         links={[
           {
-            tag: '$s',
+            tag: 'link',
             label: 'create a new community',
             action: handleRedirection
           }

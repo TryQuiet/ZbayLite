@@ -12,11 +12,11 @@ const Template: ComponentStory<typeof TextWithLink> = args => {
 export const Component = Template.bind({})
 
 const args: TextWithLinkProps = {
-  text: 'Here is simple text',
+  text: 'Here is %a text',
   links: [
     {
-      tag: 'simple',
-      label: 'simple',
+      tag: 'a',
+      label: 'linked',
       action: () => {
         console.log('link clicked')
       }

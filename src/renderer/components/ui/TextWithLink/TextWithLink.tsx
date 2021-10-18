@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Grid, Typography, TypographyProps } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
@@ -11,6 +12,7 @@ const useStyles = makeStyles(theme => ({
 
 export interface TextWithLinkProps {
   text: string
+  tagPrefix?: string
   links: [
     {
       tag: string
@@ -20,13 +22,18 @@ export interface TextWithLinkProps {
   ]
 }
 
-export const TextWithLink: React.FC<TextWithLinkProps> = ({ text, links }) => {
+export const TextWithLink: React.FC<TextWithLinkProps & TypographyProps> = ({
+  text,
+  tagPrefix = '%',
+  links,
+  ...props
+}) => {
   const classes = useStyles({})
 
   const format = (action: () => void, label: string) => {
     return (
       <a
-        href=''
+        href='#'
         className={classes.link}
         onClick={e => {
           e.preventDefault()
@@ -37,17 +44,25 @@ export const TextWithLink: React.FC<TextWithLinkProps> = ({ text, links }) => {
     )
   }
 
-  var parts: (string | JSX.Element)[] = text.split(/(\s+)/);
+  var parts: (string | JSX.Element)[] = text.split(/(\s+)/)
 
   links.map(link => {
     for (var i = 1; i < parts.length; i++) {
-      if(link.tag === parts[i]) {
+      if (`${tagPrefix + link.tag}` === parts[i]) {
         parts[i] = format(link.action, link.label)
       }
     }
   })
 
-  return <div>{parts}</div>;
+  return (
+    <Grid>
+      <Typography {...props}>
+        {parts.map((e, index) => {
+          return <span key={index}>{e}</span>
+        })}
+      </Typography>
+    </Grid>
+  )
 }
 
 export default TextWithLink
