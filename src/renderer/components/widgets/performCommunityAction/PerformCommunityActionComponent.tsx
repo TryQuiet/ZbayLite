@@ -11,6 +11,7 @@ import Modal from '../../ui/Modal/Modal'
 import { LoadingButton } from '../../ui/LoadingButton/LoadingButton'
 
 import { CommunityAction } from './community.keys'
+import { CreateCommunityDictionary, JoinCommunityDictionary } from './PerformCommunityAction.dictionary'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -108,6 +109,7 @@ const CustomInputComponent = ({
   isTouched,
   form: { errors, values },
   error,
+  placeholder,
   ...props
 }) => {
   const { value, ...rest } = field
@@ -121,7 +123,7 @@ const CustomInputComponent = ({
         [classes.margin]: true,
         [classes.error]: isTouched && formErrors
       })}
-      placeholder={'Enter a username'}
+      placeholder={placeholder}
       error={isTouched && formErrors}
       helperText={isTouched && formErrors}
       defaultValue={values.name || ''}
@@ -161,12 +163,13 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
   const [formSent, setFormSent] = useState(false)
   const responseReceived = Boolean(error || registrar)
   const waitingForResponse = formSent && !responseReceived
+  const dictionary = communityAction === CommunityAction.Create ? CreateCommunityDictionary : JoinCommunityDictionary;
   return (
     <Modal open={true} handleClose={handleClose}>
       <Grid container className={classes.main} direction='column'>
         <React.Fragment>
           <Grid className={classes.title} item>
-            <Typography variant={'h3'}>Create your community</Typography>
+            <Typography variant={'h3'}>{dictionary.header}</Typography>
           </Grid>
           <Formik
             onSubmit={values => submitForm(handleCommunityAction, values, setFormSent)}
@@ -177,7 +180,7 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
                   <Grid container>
                     <Grid className={classes.field} item xs={12}>
                       <Typography variant='caption' className={classes.label}>
-                        Community name{' '}
+                        {dictionary.label}{' '}
                       </Typography>
                       <Field
                         name='name'
@@ -185,11 +188,12 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
                         component={CustomInputComponent}
                         isTouched={isTouched}
                         error={error}
+                        placeholder={dictionary.placeholder}
                       />
                     </Grid>
                     <Grid item xs={12} className={classes.infoDiv}>
                       <Typography variant='caption' className={classes.info}>
-                        If you have an invite link, open it in a browser
+                        {dictionary.hint}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -201,7 +205,7 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
                         size='small'
                         color='primary'
                         fullWidth
-                        text={'Continue'}
+                        text={dictionary.button ?? 'Continue'}
                         classes={{ button: classes.button }}
                         disabled={waitingForResponse}
                         inProgress={waitingForResponse}
