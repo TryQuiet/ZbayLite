@@ -11,7 +11,10 @@ import Modal from '../../ui/Modal/Modal'
 import { LoadingButton } from '../../ui/LoadingButton/LoadingButton'
 
 import { CommunityAction } from './community.keys'
-import { CreateCommunityDictionary, JoinCommunityDictionary } from './PerformCommunityAction.dictionary'
+import {
+  CreateCommunityDictionary,
+  JoinCommunityDictionary
+} from './PerformCommunityAction.dictionary'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -143,6 +146,7 @@ export interface PerformCommunityActionProps {
   open?: boolean
   communityAction: CommunityAction
   handleCommunityAction: () => void
+  handleRedirection: () => void
   initialValue: string
   registrar?: string
   error?: string
@@ -153,6 +157,7 @@ export interface PerformCommunityActionProps {
 export const PerformCommunityActionComponent: React.FC<PerformCommunityActionProps> = ({
   communityAction,
   handleCommunityAction,
+  handleRedirection,
   initialValue,
   registrar,
   error,
@@ -163,7 +168,10 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
   const [formSent, setFormSent] = useState(false)
   const responseReceived = Boolean(error || registrar)
   const waitingForResponse = formSent && !responseReceived
-  const dictionary = communityAction === CommunityAction.Create ? CreateCommunityDictionary : JoinCommunityDictionary;
+  const dictionary =
+    communityAction === CommunityAction.Create
+      ? CreateCommunityDictionary(handleRedirection)
+      : JoinCommunityDictionary(handleRedirection)
   return (
     <Modal open={true} handleClose={handleClose}>
       <Grid container className={classes.main} direction='column'>
@@ -219,6 +227,9 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
               )
             }}
           </Formik>
+          <Grid>
+            <Typography>{dictionary.redirection}</Typography>
+          </Grid>
         </React.Fragment>
       </Grid>
     </Modal>
