@@ -19,6 +19,7 @@ export const connect = async (): Promise<Socket> => {
 
 export function* startConnection(): Generator {
   const socket = yield* call(connect)
+  // @ts-expect-error
   yield* fork(nectar.useIO, socket)
 }
 

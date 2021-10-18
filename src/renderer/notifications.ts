@@ -24,29 +24,6 @@ export const createNotification = async ({
   return notification
 }
 
-export const displayMessageNotification = async ({
-  senderName,
-  message,
-  channelName,
-  address = ''
-}: {
-  senderName: string
-  message: DisplayableMessage
-  channelName: string
-  address: string
-}) => {
-  if (!message) {
-    return
-  }
-  return await createNotification({
-    title: `New message in ${channelName}`,
-    body: `${senderName || 'Anonymous'}: ${message?.substring(0, 64)}${
-      message?.length > 64 ? '...' : ''
-    }`,
-    data: `/main/channel/${address}`
-  })
-}
-
 export const displayDirectMessageNotification = async ({
   message,
   username
@@ -65,6 +42,5 @@ export const displayDirectMessageNotification = async ({
 }
 
 export default {
-  createNotification,
-  displayMessageNotification
+  createNotification
 }

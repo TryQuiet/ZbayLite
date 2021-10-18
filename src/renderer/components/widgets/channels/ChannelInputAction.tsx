@@ -10,7 +10,7 @@ interface ChannelInputActionProps {
 }
 
 export const ChannelInputAction: React.FC<ChannelInputActionProps> = ({
-  disabled = false,
+  disabled = false
 }) => {
   return (
     <MenuAction

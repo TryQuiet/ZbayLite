@@ -6,6 +6,8 @@ import channelSelectors from '../../../store/selectors/channel'
 import mentionsSelectors from '../../../store/selectors/mentions'
 import mentionsHandlers from '../../../store/handlers/mentions'
 
+import { CHANNEL_TYPE } from '../../../components/pages/ChannelTypes'
+
 export const useChannelContentData = () => {
   const data = {
     inputState: useSelector(channelSelectors.inputLocked),
@@ -23,7 +25,7 @@ export const useChannelContentActions = () => {
 
   return { removeMention }
 }
-const ChannelContentContainer = () => {
+const ChannelContentContainer = ({ channelType, tab }: {channelType: CHANNEL_TYPE; tab: number}) => {
   const { mentions, channelId } = useChannelContentData()
   const { removeMention } = useChannelContentActions()
 
@@ -33,6 +35,8 @@ const ChannelContentContainer = () => {
       contactId={channelId}
       removeMention={removeMention}
       contentRect={''}
+      channelType={channelType}
+      tab={tab}
     />
   )
 }

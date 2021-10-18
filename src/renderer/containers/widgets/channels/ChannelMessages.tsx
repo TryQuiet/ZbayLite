@@ -6,7 +6,7 @@ import ChannelMessagesComponent from '../../../components/widgets/channels/Chann
 import channelSelectors from '../../../store/selectors/channel'
 // import userSelector from '../../../store/selectors/users'
 import contactsSelectors from '../../../store/selectors/contacts'
-import appSelectors from '../../../store/selectors/app'
+// import appSelectors from '../../../store/selectors/app'
 
 import channelHandlers, { actions } from '../../../store/handlers/channel'
 import electronStore from '../../../../shared/electronStore'
@@ -47,7 +47,6 @@ export const ChannelMessages = ({ contentRect }) => {
   // const users = useSelector(userSelector.users)
   // const publicChannels = useSelector(publicChannelsSelector.publicChannels)
   // const network = useSelector(nodeSelector.network)
-
 
   useEffect(() => {
     setAddress(contactId)

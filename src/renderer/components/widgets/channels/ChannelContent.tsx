@@ -23,7 +23,7 @@ interface ChannelMessagesProps {
   measureRef?: React.RefObject<unknown>
   contentRect: string
   channelType?: CHANNEL_TYPE
-  tab?: (arg: number) => void
+  tab?: number
   mentions: { channelId: Mentions[] }
   removeMention: (name: string) => void
 }
@@ -32,8 +32,7 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
   contactId,
   measureRef,
   contentRect,
-  channelType,
-  mentions,
+  channelType
 }) => {
   const classes = useStyles({})
   const ChannelMessages = channelTypeToMessages[channelType]
@@ -42,19 +41,11 @@ export const ChannelContent: React.FC<ChannelMessagesProps> = ({
       <Grid item xs>
         <RootRef rootRef={measureRef}>
           <ChannelMessages
-          channelId={contactId}
+            channelId={contactId}
             contactId={contactId}
             contentRect={contentRect}
           />
         </RootRef>
-      </Grid>
-      <Grid item className={classes.mentionsDiv}>
-        {channelType === CHANNEL_TYPE.NORMAL &&
-          mentions.channelId &&
-          mentions.channelId.map(mention => (
-            <Grid item>
-            </Grid>
-          ))}
       </Grid>
     </Grid>
   )

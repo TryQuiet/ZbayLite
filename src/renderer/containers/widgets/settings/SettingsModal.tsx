@@ -2,17 +2,16 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import SettingsModal from '../../../components/widgets/settings/SettingsModal'
-import { ModalName } from '../../../store/handlers/modals'
+import { ModalName } from '../../../sagas/modals/modals.types'
 import { actions } from '../../../store/handlers/app'
 import appSelectors from '../../../store/selectors/app'
-import notificationCenterSelector from '../../../store/selectors/notificationCenter'
 import { useModal } from '../../hooks'
 
 const useSettingsModalData = () => {
   const data = {
     modalTabToOpen: useSelector(appSelectors.currentModalTab),
     user: 'settingsModalUser',
-    blockedUsers: useSelector(notificationCenterSelector.blockedUsers)
+    blockedUsers: []
   }
   return data
 }

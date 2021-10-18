@@ -7,7 +7,7 @@ export const useModal = (name: ModalName) => {
   const dispatch = useDispatch()
 
   const open = useSelector(modalsSelectors.open(name))
-  const handleOpen =() =>  dispatch(modalsActions.openModal(name))
+  const handleOpen = () => dispatch(modalsActions.openModal(name))
   const handleClose = () => dispatch(modalsActions.closeModal(name))
 
   return {
