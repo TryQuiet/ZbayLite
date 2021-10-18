@@ -5,7 +5,7 @@ import modalsSelectors from '../../../store/selectors/modals'
 import modalsHandlers, { ModalName } from '../../../store/handlers/modals'
 
 import CreateUsernameModalComponent from '../../../components/widgets/createUsername/CreateUsernameModal'
-import { identity, communities } from '@zbayapp/nectar'
+import { identity } from '@zbayapp/nectar'
 
 const useData = () => {
   const modalName = ModalName.createUsernameModal
@@ -31,26 +31,6 @@ const CreateUsernameModal = () => {
   } = useData()
   const dispatch = useDispatch()
 
-  const handleCreateCommunity = (communityName: string) => {
-    console.log('create new community')
-    console.log(communityName)
-    dispatch(communities.actions.createNewCommunity(communityName))
-  }
-  const handleJoinCommunity = (registrarAddress: string) => {
-    console.log('join community')
-    console.log(registrarAddress)
-    dispatch(communities.actions.joinCommunity(registrarAddress))
-  }
-  const handleLaunchCommunity = (id: string) => {
-    console.log('launching Community')
-    console.log(id)
-    // dispatch(communities.actions.launchCommunity(id))
-  }
-  const handleLaunchRegistrar = (id: string) => {
-    console.log('launching registrar')
-    console.log(id)
-    dispatch(communities.actions.launchRegistrar())
-  }
   const handleRegisterUsername = (username) => {
     console.log('handle register username')
     console.log(username)
@@ -71,10 +51,6 @@ const CreateUsernameModal = () => {
   return (
     <CreateUsernameModalComponent
       // handleSubmit={handleSubmit}
-      handleCreateCommunity={handleCreateCommunity}
-      handleJoinCommunity={handleJoinCommunity}
-      handleLaunchCommunity={handleLaunchCommunity}
-      handleLaunchRegistrar={handleLaunchRegistrar}
       handleRegisterUsername={handleRegisterUsername}
       triggerSelector={triggerSelector}
       initialValue={initialValue}
