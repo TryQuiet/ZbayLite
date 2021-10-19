@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { communities, identity } from '@zbayapp/nectar'
 import { CommunityAction } from '../../../components/widgets/performCommunityAction/community.keys'
@@ -6,7 +6,7 @@ import PerformCommunityActionComponent from '../../../components/widgets/perform
 import { ModalName } from '../../../sagas/modals/modals.types'
 import { useModal } from '../../hooks'
 
-const JoinCommunity: FC = () => {
+const JoinCommunity = () => {
   const dispatch = useDispatch()
 
   const community = useSelector(communities.selectors.currentCommunity)
@@ -23,8 +23,7 @@ const JoinCommunity: FC = () => {
   }, [community, joinCommunityModal, dispatch])
 
   useEffect(() => {
-    console.log(credentials)
-    if(credentials?.hiddenService) {
+    if (credentials?.hiddenService) {
       createUsernameModal.handleOpen()
       joinCommunityModal.handleClose()
     }
@@ -35,7 +34,7 @@ const JoinCommunity: FC = () => {
   }
 
   const handleRedirection = () => {
-    if(!createCommunityModal.open) {
+    if (!createCommunityModal.open) {
       createCommunityModal.handleOpen()
     } else {
       joinCommunityModal.handleClose()
