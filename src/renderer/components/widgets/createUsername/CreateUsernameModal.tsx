@@ -171,6 +171,7 @@ interface CreateUsernameModalProps {
 }
 
 export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
+  open,
   handleClose,
   initialValue,
   handleRegisterUsername,
@@ -185,7 +186,7 @@ export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
   const responseReceived = Boolean(certificateRegistrationError || certificate)
   const waitingForResponse = formSent && !responseReceived
   return (
-    <Modal open={false} handleClose={handleClose} isCloseDisabled={!certificate}>
+    <Modal open={open} handleClose={handleClose} isCloseDisabled={!certificate}>
       <Grid container className={classes.main} direction='column'>
         {!certificate ? (
           <React.Fragment>

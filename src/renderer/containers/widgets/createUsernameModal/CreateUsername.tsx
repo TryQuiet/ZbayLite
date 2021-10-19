@@ -49,7 +49,7 @@ const CreateUsernameModal = () => {
       handleRegisterUsername={handleRegisterUsername}
       triggerSelector={triggerSelector}
       initialValue={initialValue}
-      open={open}
+      open={modal.open}
       handleOpen={modal.handleOpen}
       handleClose={modal.handleClose}
       certificateRegistrationError={certificateRegistrationError}
