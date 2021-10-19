@@ -5,9 +5,12 @@ import { CommunityAction } from '../../../components/widgets/performCommunityAct
 import PerformCommunityActionComponent from '../../../components/widgets/performCommunityAction/PerformCommunityActionComponent'
 import { ModalName } from '../../../sagas/modals/modals.types'
 import { useModal } from '../../hooks'
+import { socketSelectors } from '../../../sagas/socket/socket.selectors'
 
 const CreateCommunity = () => {
   const dispatch = useDispatch()
+
+  const isConnected = useSelector(socketSelectors.isConnected)
 
   const id = useSelector(identity.selectors.currentIdentity)
 
@@ -41,6 +44,7 @@ const CreateCommunity = () => {
       communityAction={CommunityAction.Create}
       handleCommunityAction={handleCommunityAction}
       handleRedirection={handleRedirection}
+      isConnectionReady={isConnected}
     />
   )
 }

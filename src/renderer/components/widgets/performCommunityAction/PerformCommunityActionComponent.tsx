@@ -152,6 +152,7 @@ export interface PerformCommunityActionProps {
   error?: string
   handleClose: () => void
   isClosedDisabled?: boolean,
+  isConnectionReady?: boolean,
 }
 
 export const PerformCommunityActionComponent: React.FC<PerformCommunityActionProps> = ({
@@ -163,7 +164,8 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
   registrar,
   error,
   handleClose,
-  isClosedDisabled = true
+  isClosedDisabled = true,
+  isConnectionReady = true
 }) => {
   const classes = useStyles({})
   const [isTouched, setTouched] = useState(false)
@@ -217,7 +219,7 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
                         fullWidth
                         text={dictionary.button ?? 'Continue'}
                         classes={{ button: classes.button }}
-                        disabled={waitingForResponse}
+                        disabled={waitingForResponse || !isConnectionReady}
                         inProgress={waitingForResponse}
                         onClick={() => {
                           setTouched(true)

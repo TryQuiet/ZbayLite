@@ -13,6 +13,7 @@ const Template: ComponentStory<typeof PerformCommunityActionComponent> = args =>
 export const Component = Template.bind({})
 
 const args: PerformCommunityActionProps = {
+  open: true,
   communityAction: CommunityAction.Create,
   handleCommunityAction: function (): void {
     console.log('Handle community action')

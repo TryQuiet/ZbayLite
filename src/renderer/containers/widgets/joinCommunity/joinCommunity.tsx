@@ -51,6 +51,7 @@ const JoinCommunity = () => {
       communityAction={CommunityAction.Join}
       handleCommunityAction={handleCommunityAction}
       handleRedirection={handleRedirection}
+      isConnectionReady={isConnected}
     />
   )
 }
