@@ -5,9 +5,12 @@ import { CommunityAction } from '../../../components/widgets/performCommunityAct
 import PerformCommunityActionComponent from '../../../components/widgets/performCommunityAction/PerformCommunityActionComponent'
 import { ModalName } from '../../../sagas/modals/modals.types'
 import { useModal } from '../../hooks'
+import { socketSelectors } from '../../../sagas/socket/socket.selectors'
 
 const JoinCommunity = () => {
   const dispatch = useDispatch()
+
+  const isConnected = useSelector(socketSelectors.isConnected)
 
   const community = useSelector(communities.selectors.currentCommunity)
   const id = useSelector(identity.selectors.currentIdentity)
