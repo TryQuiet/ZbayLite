@@ -9,7 +9,7 @@ describe('ChannelInfo', () => {
     const result = renderComponent(
       <ChannelInfo
         initialValues={{
-          updateChannelDescription: '',
+          updateChannelDescription: ''
         }}
         updateChannelSettings={() => { }}
       />
