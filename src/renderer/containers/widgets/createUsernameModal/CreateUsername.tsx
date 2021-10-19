@@ -2,12 +2,11 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import modalsSelectors from '../../../store/selectors/modals'
-import modalsHandlers from '../../../store/handlers/modals'
 
 import CreateUsernameModalComponent from '../../../components/widgets/createUsername/CreateUsernameModal'
 import { identity, communities } from '@zbayapp/nectar'
-import {useModal} from '../../hooks'
-import {ModalName} from '../../../sagas/modals/modals.types'
+import { useModal } from '../../hooks'
+import { ModalName } from '../../../sagas/modals/modals.types'
 
 const useData = () => {
   const modalName = ModalName.createUsernameModal
@@ -26,7 +25,6 @@ const useData = () => {
 const CreateUsernameModal = () => {
   const {
     initialValue,
-    modalName,
     certificateRegistrationError,
     certificate,
     open, id
@@ -63,7 +61,7 @@ const CreateUsernameModal = () => {
 
   }
 
-const modal = useModal(ModalName.createUsernameModal)
+  const modal = useModal(ModalName.createUsernameModal)
 
   // const handleOpen = () => {
   //   dispatch(modalsHandlers.actionCreators.openModal(modalName))
