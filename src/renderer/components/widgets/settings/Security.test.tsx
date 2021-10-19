@@ -10,8 +10,6 @@ describe('Security', () => {
         openSeedModal={jest.fn()}
         allowAll={true}
         toggleAllowAll={jest.fn()}
-        isRescanned={true}
-        onRescan={jest.fn()}
         whitelisted={[]}
         removeSiteHost={jest.fn()}
       />
