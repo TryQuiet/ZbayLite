@@ -185,7 +185,7 @@ export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
   const responseReceived = Boolean(certificateRegistrationError || certificate)
   const waitingForResponse = formSent && !responseReceived
   return (
-    <Modal open={!certificate} handleClose={handleClose} isCloseDisabled={!certificate}>
+    <Modal open={false} handleClose={handleClose} isCloseDisabled={!certificate}>
       <Grid container className={classes.main} direction='column'>
         {!certificate ? (
           <React.Fragment>

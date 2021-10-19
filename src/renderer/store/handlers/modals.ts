@@ -23,7 +23,9 @@ export enum ModalName {
   joinChannel = 'joinChannel',
   newMessageSeparate = 'newMessageSeparate',
   quitApp = 'quitApp',
-  lightWalletSecurityModal = 'lightWalletSecurityModal'
+  lightWalletSecurityModal = 'lightWalletSecurityModal',
+  joinCommunityModal = 'joinCommunityModal',
+  createCommunityModal = 'createCommunityModal'
 }
 
 class Modals {

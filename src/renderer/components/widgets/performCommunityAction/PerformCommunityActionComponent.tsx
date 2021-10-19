@@ -145,16 +145,16 @@ const submitForm = (handleSubmit, values, setFormSent) => {
 export interface PerformCommunityActionProps {
   open?: boolean
   communityAction: CommunityAction
-  handleCommunityAction: () => void
+  handleCommunityAction: (value: string) => void
   handleRedirection: () => void
   initialValue: string
   registrar?: string
   error?: string
-  handleOpen?: () => void
   handleClose: () => void
 }
 
 export const PerformCommunityActionComponent: React.FC<PerformCommunityActionProps> = ({
+  open,
   communityAction,
   handleCommunityAction,
   handleRedirection,
@@ -173,7 +173,7 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
       ? CreateCommunityDictionary(handleRedirection)
       : JoinCommunityDictionary(handleRedirection)
   return (
-    <Modal open={true} handleClose={handleClose}>
+    <Modal open={open} handleClose={handleClose} >
       <Grid container className={classes.main} direction='column'>
         <React.Fragment>
           <Grid className={classes.title} item>

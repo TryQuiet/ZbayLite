@@ -35,6 +35,8 @@ export default () => {
             <SnackbarProvider maxSnack={3}>
               <ChannelSettingsModal />
               <CreateChannelModal />
+              <JoinCommunity />
+              <CreateCommunity />
               <CreateUsernameModal />
               <CssBaseline />
               <ErrorModal />
@@ -45,8 +47,6 @@ export default () => {
               <SecurityModal />
               <UpdateModal />
               <QuitAppDialog />
-              <Route path='/createCommunity' component={CreateCommunity} />
-              <Route path='/joinCommunity' component={JoinCommunity} />
               <Route path='/' component={Index} />
               <Route path='/main' component={Main} />
             </SnackbarProvider>
