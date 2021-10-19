@@ -10,11 +10,8 @@ describe('ChannelInfo', () => {
       <ChannelInfo
         initialValues={{
           updateChannelDescription: '',
-          updateMinFee: false
         }}
         updateChannelSettings={() => { }}
-        rateZec={1}
-        rateUsd={1}
       />
     )
     expect(result.baseElement).toMatchInlineSnapshot()

@@ -1,4 +1,3 @@
-//hej
 import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -42,7 +41,6 @@ export const useNotificationsActions = (currentFilter: number) => {
 
   return { setChannelsNotification, openNotificationsTab, openSettingsModal }
 }
-
 
 export const Notifications = () => {
   const { channelData, currentFilter } = useNotificationsData()

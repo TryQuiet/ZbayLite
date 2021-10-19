@@ -7,13 +7,9 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
-import InputAdornment from '@material-ui/core/InputAdornment'
 
 import TextField from '../../ui/TextField/TextField'
 import CheckboxWithLabel from '../../ui/Checkbox/CheckboxWithLabel'
-import { LinkedTextField } from '../../ui/TextField/LinkedTextField'
-import Icon from '../../ui/Icon/Icon'
-import exchange from '../../../static/images/zcash/exchange.svg'
 
 const useStyles = makeStyles((theme) => ({
   submitButton: {},
@@ -113,7 +109,7 @@ export const ChannelInfo: React.FC<ChannelInfoProps> = ({
                 validationSchema={formSchema}
                 initialValues={initialValues}
               >
-                {({ values, isSubmitting, errors, isValid }) => {
+                {({ values, isSubmitting, isValid }) => {
                   return (
                     <Form >
                       <Grid container direction='column' alignItems='flex-start'>
