@@ -1,10 +1,8 @@
 import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import * as R from 'ramda'
 
 import SecurityComponent from '../../../components/widgets/settings/Security'
 import modalsHandlers, { ModalName } from '../../../store/handlers/modals'
-import electronStore from '../../../../shared/electronStore'
 import whitelistSelector from '../../../store/selectors/whitelist'
 import whitelistHandlers from '../../../store/handlers/whitelist'
 
@@ -42,8 +40,6 @@ export const useSecurityActions = (allowAll: boolean) => {
     dispatch(modalsHandlers.actionCreators.openModal(ModalName.seedModal))
   }, [dispatch])
 
-  // onRescan: appHandlers.epics.restartAndRescan,
-
   return { toggleAllowAll, removeImageHost, removeSiteHost, openSeedModal }
 }
 
@@ -51,17 +47,11 @@ export const Security = () => {
   const { allowAll, whitelisted } = useSecurityData()
   const { openSeedModal, removeSiteHost, toggleAllowAll } = useSecurityActions(allowAll)
 
-  const channelsToRescan = electronStore.get('channelsToRescan')
-  const isNodeRescanned = electronStore.get('isRescanned')
-  const isRescanned = isNodeRescanned === true && R.isEmpty(channelsToRescan)
-
   return (
     <SecurityComponent
       allowAll={allowAll}
       toggleAllowAll={toggleAllowAll}
       openSeedModal={openSeedModal}
-      isRescanned={isRescanned}
-      onRescan={() => { }}
       whitelisted={whitelisted}
       removeSiteHost={removeSiteHost}
     />

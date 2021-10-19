@@ -112,15 +112,6 @@ describe('Security', () => {
             <div
               class="MuiGrid-root MuiGrid-item"
             >
-              <p
-                class="MuiTypography-root MuiTypography-body2"
-              >
-                Zbay has been re-synced.
-              </p>
-            </div>
-            <div
-              class="MuiGrid-root MuiGrid-item"
-            >
               <h5
                 class="MuiTypography-root MuiTypography-h5"
               >
