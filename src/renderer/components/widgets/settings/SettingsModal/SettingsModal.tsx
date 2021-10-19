@@ -91,7 +91,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const scrollbarRef = React.useRef()
   const [offset, setOffset] = React.useState(0)
   const TabComponent = tabs[modalTabToOpen || currentTab]
-  console.log('TabComponent', TabComponent)
   const adjustOffset = () => {
     if (contentRef.clientWidth > 800) {
       setOffset((contentRef.clientWidth - 800) / 2)
@@ -156,13 +155,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   classes={{ selected: classes.selected }}
                 />
               )}
-              {/* {isOwner && ( */}
+              {isOwner && (
                 <Tab
-                  value='inviteafriend'
+                  value='invite'
                   label='Invite a friend'
                   classes={{ selected: classes.selected }}
                 />
-              {/* )} */}
+              )}
             </Tabs>
           </AppBar>
         </Grid>

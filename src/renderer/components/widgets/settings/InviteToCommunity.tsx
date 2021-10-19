@@ -1,8 +1,8 @@
-import React, { FC } from "react"
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
 import Button from "@material-ui/core/Button"
+import Grid from '@material-ui/core/Grid'
+import { makeStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
+import React, { FC } from "react"
 import CopyToClipboard from "react-copy-to-clipboard"
 
 const useStyles = makeStyles((theme) => ({
@@ -70,7 +70,7 @@ const InvitationUrl: FC<InvitationUrlProps> = ({
 }) => {
   const classes = useStyles({})
   return (
-    <Grid container item>
+    <Grid item>
       <Grid item>
         <Typography variant='body2'>
           {url}

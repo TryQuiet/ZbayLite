@@ -24,7 +24,7 @@ const useSettingsModalActions = () => {
 }
 
 const SettingsModalContainer = () => {
-  const [currentTab, setCurrentTab] = useState('invite')
+  const [currentTab, setCurrentTab] = useState('account')
   const { modalTabToOpen, user, isOwner, blockedUsers } = useSettingsModalData()
   const { clearCurrentOpenTab } = useSettingsModalActions()
   const modal = useModal(ModalName.accountSettingsModal)
