@@ -2,10 +2,12 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import modalsSelectors from '../../../store/selectors/modals'
-import modalsHandlers, { ModalName } from '../../../store/handlers/modals'
+import modalsHandlers from '../../../store/handlers/modals'
 
 import CreateUsernameModalComponent from '../../../components/widgets/createUsername/CreateUsernameModal'
 import { identity, communities } from '@zbayapp/nectar'
+import {useModal} from '../../hooks'
+import {ModalName} from '../../../sagas/modals/modals.types'
 
 const useData = () => {
   const modalName = ModalName.createUsernameModal
@@ -61,12 +63,14 @@ const CreateUsernameModal = () => {
 
   }
 
-  const handleOpen = () => {
-    dispatch(modalsHandlers.actionCreators.openModal(modalName))
-  }
-  const handleClose = () => {
-    dispatch(modalsHandlers.closeModalHandler(modalName))
-  }
+const modal = useModal(ModalName.createUsernameModal)
+
+  // const handleOpen = () => {
+  //   dispatch(modalsHandlers.actionCreators.openModal(modalName))
+  // }
+  // const handleClose = () => {
+  //   dispatch(modalsHandlers.closeModalHandler(modalName))
+  // }
 
   return (
     <CreateUsernameModalComponent
@@ -79,8 +83,8 @@ const CreateUsernameModal = () => {
       triggerSelector={triggerSelector}
       initialValue={initialValue}
       open={open}
-      handleOpen={handleOpen}
-      handleClose={handleClose}
+      handleOpen={modal.handleOpen}
+      handleClose={modal.handleClose}
       certificateRegistrationError={certificateRegistrationError}
       certificate={certificate}
       id={id}
