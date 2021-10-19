@@ -63,13 +63,6 @@ const CreateUsernameModal = () => {
 
   const modal = useModal(ModalName.createUsernameModal)
 
-  // const handleOpen = () => {
-  //   dispatch(modalsHandlers.actionCreators.openModal(modalName))
-  // }
-  // const handleClose = () => {
-  //   dispatch(modalsHandlers.closeModalHandler(modalName))
-  // }
-
   return (
     <CreateUsernameModalComponent
       // handleSubmit={handleSubmit}
