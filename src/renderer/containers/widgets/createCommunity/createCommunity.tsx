@@ -9,18 +9,18 @@ import { useModal } from '../../hooks'
 const CreateCommunity = () => {
   const dispatch = useDispatch()
 
-  const credentials = useSelector(identity.selectors.currentIdentity)
+  const id = useSelector(identity.selectors.currentIdentity)
 
   const createCommunityModal = useModal(ModalName.createCommunityModal)
   const joinCommunityModal = useModal(ModalName.joinCommunityModal)
   const createUsernameModal = useModal(ModalName.createUsernameModal)
 
   useEffect(() => {
-    if (credentials?.hiddenService) {
+    if (id?.hiddenService) {
       createUsernameModal.handleOpen()
-      joinCommunityModal.handleClose()
+      createCommunityModal.handleClose()
     }
-  }, [credentials])
+  }, [id])
 
   const handleCommunityAction = (value: string) => {
     dispatch(communities.actions.createNewCommunity(value))

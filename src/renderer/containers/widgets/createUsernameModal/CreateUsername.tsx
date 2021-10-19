@@ -1,60 +1,35 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import modalsSelectors from '../../../store/selectors/modals'
-
+import { errors, identity, socketActionTypes } from '@zbayapp/nectar'
 import CreateUsernameModalComponent from '../../../components/widgets/createUsername/CreateUsernameModal'
-import { identity, communities } from '@zbayapp/nectar'
-import { useModal } from '../../hooks'
 import { ModalName } from '../../../sagas/modals/modals.types'
-
-const useData = () => {
-  const modalName = ModalName.createUsernameModal
-  const data = {
-    initialValue: '',
-    modalName,
-    open: useSelector(modalsSelectors.open(modalName)),
-    // certificateRegistrationError: useSelector(errors.selectors.currentCommunityErrorByType(socketActionTypes.REGISTRAR)),
-    certificateRegistrationError: undefined,
-    certificate: useSelector(identity.selectors.currentIdentity)?.userCertificate,
-    id: useSelector(identity.selectors.currentIdentity)
-  }
-  return data
-}
+import { useModal } from '../../hooks'
 
 const CreateUsernameModal = () => {
-  const {
-    initialValue,
-    certificateRegistrationError,
-    certificate,
-    open, id
-  } = useData()
   const dispatch = useDispatch()
 
-  const handleRegisterUsername = (username) => {
-    console.log('handle register username')
-    console.log(username)
-    dispatch(identity.actions.registerUsername(username))
+  const certificate = useSelector(identity.selectors.currentIdentity)?.userCertificate
+  const error = useSelector(errors.selectors.currentCommunityErrorByType(socketActionTypes.REGISTRAR))
+
+  const createUsernameModal = useModal(ModalName.createUsernameModal)
+
+  useEffect(() => {
+    if (certificate) {
+      createUsernameModal.handleClose()
+    }
+  }, [certificate])
+
+  const handleRegisterUsername = (payload: {nickname: string}) => {
+    dispatch(identity.actions.registerUsername(payload.nickname))
   }
-
-  const triggerSelector = () => {
-
-  }
-
-  const modal = useModal(ModalName.createUsernameModal)
 
   return (
     <CreateUsernameModalComponent
-      // handleSubmit={handleSubmit}
+      {...createUsernameModal}
+      initialValue={''}
       handleRegisterUsername={handleRegisterUsername}
-      triggerSelector={triggerSelector}
-      initialValue={initialValue}
-      open={modal.open}
-      handleOpen={modal.handleOpen}
-      handleClose={modal.handleClose}
-      certificateRegistrationError={certificateRegistrationError}
+      certificateRegistrationError={error}
       certificate={certificate}
-      id={id}
     />
   )
 }

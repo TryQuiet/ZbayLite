@@ -10,7 +10,7 @@ const JoinCommunity = () => {
   const dispatch = useDispatch()
 
   const community = useSelector(communities.selectors.currentCommunity)
-  const credentials = useSelector(identity.selectors.currentIdentity)
+  const id = useSelector(identity.selectors.currentIdentity)
 
   const joinCommunityModal = useModal(ModalName.joinCommunityModal)
   const createCommunityModal = useModal(ModalName.createCommunityModal)
@@ -23,11 +23,11 @@ const JoinCommunity = () => {
   }, [community, joinCommunityModal, dispatch])
 
   useEffect(() => {
-    if (credentials?.hiddenService) {
+    if (id?.hiddenService) {
       createUsernameModal.handleOpen()
       joinCommunityModal.handleClose()
     }
-  }, [credentials])
+  }, [id])
 
   const handleCommunityAction = (value: string) => {
     dispatch(communities.actions.joinCommunity(value))
