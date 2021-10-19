@@ -143,7 +143,7 @@ const submitForm = (handleSubmit, values, setFormSent) => {
 }
 
 export interface PerformCommunityActionProps {
-  open?: boolean
+  open: boolean
   communityAction: CommunityAction
   handleCommunityAction: (value: string) => void
   handleRedirection: () => void
@@ -151,6 +151,7 @@ export interface PerformCommunityActionProps {
   registrar?: string
   error?: string
   handleClose: () => void
+  isClosedDisabled?: boolean,
 }
 
 export const PerformCommunityActionComponent: React.FC<PerformCommunityActionProps> = ({
@@ -161,7 +162,8 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
   initialValue,
   registrar,
   error,
-  handleClose
+  handleClose,
+  isClosedDisabled = true
 }) => {
   const classes = useStyles({})
   const [isTouched, setTouched] = useState(false)
@@ -173,7 +175,7 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
       ? CreateCommunityDictionary(handleRedirection)
       : JoinCommunityDictionary(handleRedirection)
   return (
-    <Modal open={open} handleClose={handleClose} >
+    <Modal open={open} handleClose={handleClose} isCloseDisabled={isClosedDisabled}>
       <Grid container className={classes.main} direction='column'>
         <React.Fragment>
           <Grid className={classes.title} item>

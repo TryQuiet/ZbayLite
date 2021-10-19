@@ -1,23 +1,36 @@
-import { communities } from '@zbayapp/nectar';
-import React from "react";
-import { useDispatch } from 'react-redux';
-import { CommunityAction } from "../../../components/widgets/performCommunityAction/community.keys";
-import PerformCommunityActionComponent from "../../../components/widgets/performCommunityAction/PerformCommunityActionComponent";
-import { ModalName } from '../../../sagas/modals/modals.types';
-import { actionCreators, useModal } from '../../../store/handlers/modals';
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { communities } from '@zbayapp/nectar'
+import { CommunityAction } from '../../../components/widgets/performCommunityAction/community.keys'
+import PerformCommunityActionComponent from '../../../components/widgets/performCommunityAction/PerformCommunityActionComponent'
+import { ModalName } from '../../../sagas/modals/modals.types'
+import { useModal } from '../../hooks'
 
 const CreateCommunity = () => {
   const dispatch = useDispatch()
-  const handleOnClick = () => actionCreators.openModal(ModalName.joinCommunityModal)
-  const modal = useModal(ModalName.createCommunityModal)
-  const handleCommunityAction = (value: string) => {dispatch(communities.actions.createNewCommunity(value))}
+
+  const createCommunityModal = useModal(ModalName.createCommunityModal)
+  const joinCommunityModal = useModal(ModalName.joinCommunityModal)
+
+  const handleCommunityAction = (value: string) => {
+    dispatch(communities.actions.createNewCommunity(value))
+  }
+
+  const handleRedirection = () => {
+    if(!joinCommunityModal.open) {
+      joinCommunityModal.handleOpen()
+    } else {
+      createCommunityModal.handleClose()
+    }
+  }
+
   return (
     <PerformCommunityActionComponent
-      {...modal}
+      {...createCommunityModal}
       initialValue={''}
       communityAction={CommunityAction.Create}
       handleCommunityAction={handleCommunityAction}
-      handleRedirection={handleOnClick}
+      handleRedirection={handleRedirection}
     />
   )
 }
