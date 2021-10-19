@@ -12,11 +12,13 @@ import Tab from '../../../ui/Tab/Tab'
 import AccountSettingsForm from '../../../../containers/widgets/settings/AccountSettingsForm'
 import Security from '../../../../containers/widgets/settings/Security'
 import Notifications from '../../../../containers/widgets/settings/Notifications'
+import InviteToCommunity from '../../../../containers/widgets/settings/InviteToCommunity'
 
 const tabs = {
   account: AccountSettingsForm,
   security: Security,
-  notifications: Notifications
+  notifications: Notifications,
+  invite: InviteToCommunity
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -69,6 +71,7 @@ interface SettingsModalProps {
   currentTab: string
   setCurrentTab: (value: string) => void
   user: string
+  isOwner: boolean
   blockedUsers: string[]
 }
 
@@ -80,6 +83,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   currentTab,
   setCurrentTab,
   user,
+  isOwner,
   blockedUsers
 }) => {
   const classes = useStyles({})
@@ -87,6 +91,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const scrollbarRef = React.useRef()
   const [offset, setOffset] = React.useState(0)
   const TabComponent = tabs[modalTabToOpen || currentTab]
+  console.log('TabComponent', TabComponent)
   const adjustOffset = () => {
     if (contentRef.clientWidth > 800) {
       setOffset((contentRef.clientWidth - 800) / 2)
@@ -151,6 +156,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   classes={{ selected: classes.selected }}
                 />
               )}
+              {/* {isOwner && ( */}
+                <Tab
+                  value='inviteafriend'
+                  label='Invite a friend'
+                  classes={{ selected: classes.selected }}
+                />
+              {/* )} */}
             </Tabs>
           </AppBar>
         </Grid>
