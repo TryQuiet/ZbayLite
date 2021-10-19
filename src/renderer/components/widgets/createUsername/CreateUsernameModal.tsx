@@ -4,7 +4,6 @@ import { Formik, Form, Field } from 'formik'
 import classNames from 'classnames'
 
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
@@ -12,10 +11,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import Modal from '../../ui/Modal/Modal'
 import UsernameCreated from './UsernameCreated'
 import { LoadingButton } from '../../ui/LoadingButton/LoadingButton'
-import { Identity } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
 import { ErrorState } from '@zbayapp/nectar/lib/sagas/errors/errors.slice'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {},
   focus: {
     '& .MuiOutlinedInput-root': {
@@ -159,30 +157,25 @@ const submitForm = (handleSubmit, values, setFormSent) => {
 }
 
 interface CreateUsernameModalProps {
-  handleClose: () => void
+  open: boolean
   initialValue: string
-  handleRegisterUsername?: (val: string) => void
+  handleRegisterUsername?: (payload: { nickname: string }) => void
   certificateRegistrationError?: ErrorState
   certificate?: string
-  id?: Identity
-  triggerSelector?: () => void
-  open?: boolean
-  handleOpen?: () => void
+  handleClose: () => void
 }
 
 export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
   open,
-  handleClose,
   initialValue,
   handleRegisterUsername,
   certificateRegistrationError,
   certificate,
-  id
+  handleClose
 }) => {
   const classes = useStyles({})
   const [isTouched, setTouched] = useState(false)
   const [formSent, setFormSent] = useState(false)
-  const [val, setVal] = useState('')
   const responseReceived = Boolean(certificateRegistrationError || certificate)
   const waitingForResponse = formSent && !responseReceived
   return (
@@ -220,11 +213,7 @@ export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
                         </Typography>
                       </Grid>
                     </Grid>
-                    <Grid
-                      container
-                      direction={'row'}
-                      justify={'flex-start'}
-                      spacing={2}>
+                    <Grid container direction={'row'} justify={'flex-start'} spacing={2}>
                       <Grid item xs={'auto'} className={classes.buttonDiv}>
                         <LoadingButton
                           type='submit'
