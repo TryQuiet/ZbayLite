@@ -86,27 +86,17 @@ export const formSchema = Yup.object().shape({
 interface ChannelInfoProps {
   initialValues: {
     updateChannelDescription: string
-    updateMinFee: boolean
     firstName?: string
-    amountUsd?: number
-    amountZec?: number
   }
-  updateChannelSettings: () => void
-  rateZec: number
-  rateUsd: number
+  updateChannelSettings?: () => void
 }
 
 export const ChannelInfo: React.FC<ChannelInfoProps> = ({
   initialValues = {
     updateChannelDescription: '',
-    updateMinFee: false,
-    firstName: '',
-    amountUsd: 0,
-    amountZec: 0
+    firstName: ''
   },
-  updateChannelSettings,
-  rateZec,
-  rateUsd
+  updateChannelSettings
 }) => {
   const classes = useStyles({})
   return (
@@ -160,59 +150,6 @@ export const ChannelInfo: React.FC<ChannelInfoProps> = ({
                             rootClass={classes.rootClass}
                           />
                         </Grid>
-                        {values.updateMinFee && (
-                          <Grid item container className={classes.divMoney}>
-                            <Grid item className={classes.moneyDiv}>
-                              <LinkedTextField
-                                name='amountUsd'
-                                type='number'
-                                placeholder='0.00'
-                                fullWidth
-                                otherField='amountZec'
-                                transformer={rateZec}
-                                precise={4}
-                                InputProps={{
-                                  error: !!errors.amountZec,
-                                  endAdornment: (
-                                    <InputAdornment position='end'>
-                                      <span className={classes.inputMark}>USD</span>
-                                    </InputAdornment>
-                                  ),
-                                  className: classes.moneyInput
-                                }}
-                              />
-                            </Grid>
-                            <Grid
-                              item
-                              container
-                              alignItems='center'
-                              justify='center'
-                              className={classes.exchangeDiv}
-                            >
-                              <Icon src={exchange} />
-                            </Grid>
-                            <Grid item className={classes.moneyDiv}>
-                              <LinkedTextField
-                                name='amountZec'
-                                type='number'
-                                placeholder='0.00'
-                                fullWidth
-                                otherField='amountUsd'
-                                transformer={rateUsd}
-                                precise={2}
-                                InputProps={{
-                                  error: !!errors.amountUsd,
-                                  endAdornment: (
-                                    <InputAdornment position='end'>
-                                      <span className={classes.inputMark}>ZEC</span>
-                                    </InputAdornment>
-                                  ),
-                                  className: classes.moneyInput
-                                }}
-                              />
-                            </Grid>
-                          </Grid>
-                        )}
                         <Grid item className={classes.submitButton}>
                           <Button
                             variant='contained'
