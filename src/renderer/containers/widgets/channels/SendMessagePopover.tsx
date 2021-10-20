@@ -36,15 +36,19 @@ export const useSendMessagePopoverActions = () => {
   return { createNewContact }
 }
 
-export const SendMessagePopover = () => {
+export const SendMessagePopover = ({ username, anchorEl, handleClose }) => {
   const { users, waggleUsers } = useSendMessagePopoverData()
   const { createNewContact } = useSendMessagePopoverActions()
 
   return (
     <SendMessagePopoverComponent
+      username={username}
+      anchorEl={anchorEl}
       users={users}
       waggleUsers={waggleUsers}
       createNewContact={createNewContact}
+      handleClose={handleClose}
+      isUnregistered={false}
     />
   )
 }
