@@ -6,17 +6,6 @@ import { actionCreators, ModalName } from '../../../store/handlers/modals'
 import notificationCenterHandlers from '../../../store/handlers/notificationCenter'
 import { notificationFilterType } from '../../../../shared/static'
 
-// interface useChannelMenuActionDataReturnType {
-//   targetAddress: string
-// }
-
-// export const useChannelMenuActionData = (): useChannelMenuActionDataReturnType => {
-//   const data = {
-//     targetAddress: useSelector(dmChannelSelectors.targetRecipientAddress)
-//   }
-//   return data
-// }
-
 export const useChannelMenuActionActions = () => {
   const dispatch = useDispatch()
 
@@ -32,7 +21,6 @@ export const useChannelMenuActionActions = () => {
 }
 
 export const ChannelMenuAction = ({ onDelete, ...props }) => {
-  // const { targetAddress } = useChannelMenuActionData()
   const { onInfo, onMute } = useChannelMenuActionActions()
 
   return (
