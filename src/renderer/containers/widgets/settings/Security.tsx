@@ -2,7 +2,8 @@ import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import SecurityComponent from '../../../components/widgets/settings/Security'
-import modalsHandlers, { ModalName } from '../../../store/handlers/modals'
+import modalsHandlers from '../../../store/handlers/modals'
+import { ModalName } from '../../../sagas/modals/modals.types'
 import whitelistSelector from '../../../store/selectors/whitelist'
 import whitelistHandlers from '../../../store/handlers/whitelist'
 

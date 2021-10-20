@@ -2,7 +2,8 @@ import React, { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 
 import ChannelMenuActionComponent from '../../../components/widgets/channels/ChannelMenuAction'
-import { actionCreators, ModalName } from '../../../store/handlers/modals'
+import { actionCreators } from '../../../store/handlers/modals'
+import { ModalName } from '../../../sagas/modals/modals.types'
 import notificationCenterHandlers from '../../../store/handlers/notificationCenter'
 import { notificationFilterType } from '../../../../shared/static'
 

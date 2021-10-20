@@ -5,7 +5,8 @@ import { publicChannels, users } from '@zbayapp/nectar'
 import ChannelMessageComponent from '../../../components/widgets/channels/ChannelMessage'
 import channelHandlers from '../../../store/handlers/channel'
 import whitelistSelectors from '../../../store/selectors/whitelist'
-import { actionCreators, ModalName } from '../../../store/handlers/modals'
+import { actionCreators } from '../../../store/handlers/modals'
+import { ModalName } from '../../../sagas/modals/modals.types'
 import whitelistHandlers from '../../../store/handlers/whitelist'
 
 export const useChannelMessageData = () => {

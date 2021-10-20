@@ -4,7 +4,8 @@ import { shell } from 'electron'
 
 import OpenlinkModalComponent from '../../components/ui/OpenlinkModal/OpenlinkModal'
 import whitelistHandlers from '../../store/handlers/whitelist'
-import { ModalName, useModal } from '../../store/handlers/modals'
+import { useModal } from '../hooks'
+import { ModalName } from '../../sagas/modals/modals.types'
 import modalsSelectors from '../../store/selectors/modals'
 
 export interface useOpenExternalLinkModalDataReturnTypes {

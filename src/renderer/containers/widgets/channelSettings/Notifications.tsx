@@ -7,7 +7,8 @@ import notificationCenterSelectors from '../../../store/selectors/notificationCe
 import channelSelectors from '../../../store/selectors/channel'
 import appHandlers from '../../../store/handlers/app'
 import contactsSelectors from '../../../store/selectors/contacts'
-import { actionCreators, ModalName } from '../../../store/handlers/modals'
+import { actionCreators } from '../../../store/handlers/modals'
+import { ModalName } from '../../../sagas/modals/modals.types'
 import { Contact } from '../../../store/handlers/contacts'
 
 interface useNotificationsDataReturnType {
