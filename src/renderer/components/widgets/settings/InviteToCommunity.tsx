@@ -1,9 +1,9 @@
-import Button from "@material-ui/core/Button"
+import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import React, { FC } from "react"
-import CopyToClipboard from "react-copy-to-clipboard"
+import React, { FC } from 'react'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 const useStyles = makeStyles((theme) => ({
   title: {},
@@ -101,11 +101,11 @@ export const InviteToCommunity: FC<InviteFriendProps> = ({
         </Grid>
       </Grid>
       <Grid item>
-      <Grid item>
-        <Typography variant='body2'>
+        <Grid item>
+          <Typography variant='body2'>
           Get a link to invite friends to <span className={classes.bold}>{communityName}</span>
-        </Typography>
-      </Grid>
+          </Typography>
+        </Grid>
       </Grid>
 
       <Grid>

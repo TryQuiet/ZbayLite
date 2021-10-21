@@ -151,8 +151,8 @@ export interface PerformCommunityActionProps {
   registrar?: string
   error?: string
   handleClose: () => void
-  isClosedDisabled?: boolean,
-  isConnectionReady?: boolean,
+  isClosedDisabled?: boolean
+  isConnectionReady?: boolean
 }
 
 export const PerformCommunityActionComponent: React.FC<PerformCommunityActionProps> = ({

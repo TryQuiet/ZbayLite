@@ -15,7 +15,7 @@ export class ModalsInitialState {
   [ModalName.newMessageSeparate]: boolean = false;
   [ModalName.quitApp]: boolean = false;
   [ModalName.joinCommunityModal]: boolean = false;
-  [ModalName.createCommunityModal]: boolean = false;
+  [ModalName.createCommunityModal]: boolean = false
 }
 
 export const modalsSlice = createSlice({

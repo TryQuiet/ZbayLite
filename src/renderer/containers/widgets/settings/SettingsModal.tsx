@@ -7,7 +7,6 @@ import { actions } from '../../../store/handlers/app'
 import appSelectors from '../../../store/selectors/app'
 import { useModal } from '../../hooks'
 
-
 const useSettingsModalData = () => {
   const data = {
     modalTabToOpen: useSelector(appSelectors.currentModalTab),
