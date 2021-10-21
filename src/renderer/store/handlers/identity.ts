@@ -4,7 +4,8 @@ import { createAction, handleActions } from 'redux-actions'
 import { remote } from 'electron'
 
 import notificationCenterHandlers from './notificationCenter'
-import modalsHandlers, { ModalName } from './modals'
+import { ModalName } from '../../sagas/modals/modals.types'
+
 import {
   actionTypes
 } from '../../../shared/static'
@@ -12,6 +13,7 @@ import electronStore from '../../../shared/electronStore'
 
 import { ActionsType, PayloadType } from './types'
 import debug from 'debug'
+import { useModal } from '../../containers/hooks'
 
 const log = Object.assign(debug('zbay:identity'), {
   error: debug('zbay:identity:err'),
@@ -218,7 +220,8 @@ export const setIdentityEpic = _identityToSet => async (dispatch, _getState) => 
     // dispatch(setLoadingMessage('Loading users and messages'))
   } catch (err) { }
   if (isNewUser === true) {
-    dispatch(modalsHandlers.actionCreators.openModal(ModalName.createUsernameModal)())
+    const modal = useModal(ModalName.createUsernameModal)
+    modal.handleOpen()
   }
 
   // dispatch(setLoadingMessage(''))
