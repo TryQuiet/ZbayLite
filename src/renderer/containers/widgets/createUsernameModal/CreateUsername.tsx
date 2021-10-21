@@ -29,7 +29,7 @@ const CreateUsernameModal = () => {
       {...createUsernameModal}
       initialValue={''}
       handleRegisterUsername={handleRegisterUsername}
-      certificateRegistrationError={error.message}
+      certificateRegistrationError={error?.message}
       certificate={certificate}
     />
   )
