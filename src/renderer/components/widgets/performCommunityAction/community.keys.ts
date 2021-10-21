@@ -1,4 +1,4 @@
 export enum CommunityAction {
-    Create = 'createCommunity',
-    Join = 'joinCommunity'
+  Create = 'createCommunity',
+  Join = 'joinCommunity'
 }

@@ -22,19 +22,34 @@ describe('TextWithLink', () => {
     expect(result.baseElement).toMatchInlineSnapshot(`
       <body>
         <div>
-          <div>
-            Here
-             
-            is
-             
-            <a
-              class="makeStyles-link-1"
-              href=""
+          <div
+            class="MuiGrid-root"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1"
             >
-              simple
-            </a>
-             
-            text
+              <span>
+                Here
+              </span>
+              <span>
+                 
+              </span>
+              <span>
+                is
+              </span>
+              <span>
+                 
+              </span>
+              <span>
+                simple
+              </span>
+              <span>
+                 
+              </span>
+              <span>
+                text
+              </span>
+            </p>
           </div>
         </div>
       </body>

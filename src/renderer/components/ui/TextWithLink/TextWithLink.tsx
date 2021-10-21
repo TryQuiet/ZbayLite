@@ -44,7 +44,7 @@ export const TextWithLink: React.FC<TextWithLinkProps & TypographyProps> = ({
     )
   }
 
-  var parts: (string | JSX.Element)[] = text.split(/(\s+)/)
+  var parts: Array<string | JSX.Element> = text.split(/(\s+)/)
 
   links.map(link => {
     for (var i = 1; i < parts.length; i++) {
