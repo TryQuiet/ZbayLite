@@ -9,7 +9,8 @@ const CreateUsernameModal = () => {
   const dispatch = useDispatch()
 
   const certificate = useSelector(identity.selectors.currentIdentity)?.userCertificate
-  const error = useSelector(errors.selectors.currentCommunityErrorByType(socketActionTypes.REGISTRAR))
+  const communityErrors = useSelector(errors.selectors.currentCommunityErrorsByType)
+  const error = communityErrors?.[socketActionTypes.REGISTRAR]
 
   const createUsernameModal = useModal(ModalName.createUsernameModal)
 
@@ -28,7 +29,7 @@ const CreateUsernameModal = () => {
       {...createUsernameModal}
       initialValue={''}
       handleRegisterUsername={handleRegisterUsername}
-      certificateRegistrationError={error}
+      certificateRegistrationError={error.message}
       certificate={certificate}
     />
   )

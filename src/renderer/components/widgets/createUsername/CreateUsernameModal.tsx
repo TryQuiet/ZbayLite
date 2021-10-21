@@ -11,7 +11,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Modal from '../../ui/Modal/Modal'
 import UsernameCreated from './UsernameCreated'
 import { LoadingButton } from '../../ui/LoadingButton/LoadingButton'
-import { ErrorState } from '@zbayapp/nectar/lib/sagas/errors/errors.slice'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -160,7 +159,7 @@ interface CreateUsernameModalProps {
   open: boolean
   initialValue: string
   handleRegisterUsername?: (payload: { nickname: string }) => void
-  certificateRegistrationError?: ErrorState
+  certificateRegistrationError?: string
   certificate?: string
   handleClose: () => void
 }
