@@ -208,20 +208,6 @@ export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
           justify='flex-end'
           alignContent='center'
           alignItems='center'>
-          {channelType === CHANNEL_TYPE.NORMAL && (
-            <Grid item className={classes.switch}>
-              <Tabs
-                value={tab}
-                /* eslint-disable-next-line */
-                onChange={(e, value) => {
-                  setTab(value)
-                }}
-                classes={{ root: classes.tabs, indicator: classes.indicator }}>
-                <Tab label='All' classes={{ root: classes.tab, selected: classes.selected }} />
-                <Tab label='For sale' classes={{ root: classes.tab, selected: classes.selected }} />
-              </Tabs>
-            </Grid>
-          )}
           <Grid item>
             <ActionsMenu directMessage={directMessage} />
             {directMessage ? <DirectMessagesInfoModal /> : <ChannelInfoModal channel={channel} />}

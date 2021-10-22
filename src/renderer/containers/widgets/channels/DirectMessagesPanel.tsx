@@ -13,7 +13,8 @@ import { ModalName } from '../../../sagas/modals/modals.types'
 
 export const useDirectMessagesPanelData = () => {
   const data = {
-    channels: useSelector(publicChannels.selectors.publicChannels),
+    // channels: useSelector(publicChannels.selectors.publicChannels),
+    channels: [],
     selected: useSelector(channelSelectors.channelInfo)
   }
   return data
