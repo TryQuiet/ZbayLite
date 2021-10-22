@@ -139,7 +139,7 @@ const CustomInputComponent = ({
 
 const submitForm = (handleSubmit, values, setFormSent) => {
   setFormSent(true)
-  handleSubmit(values)
+  handleSubmit(values.name)
 }
 
 export interface PerformCommunityActionProps {
