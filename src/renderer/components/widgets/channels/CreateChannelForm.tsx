@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core'
 import LoadingButton from '../../ui/LoadingButton/LoadingButton'
 import { TextInput } from '../../../forms/components/textInput'
 import { useForm } from 'react-hook-form'
-import { channelNameField } from '../../../forms/fields/createUserFields'
+import { channelNameField } from '../../../forms/fields/createChannelFields'
 
 const useStyles = makeStyles((theme) => ({
   fullContainer: {
