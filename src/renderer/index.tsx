@@ -21,7 +21,7 @@ if (window) {
 }
 
 ipcRenderer.on('newUpdateAvailable', event => {
-  store.dispatch(updateHandlers.epics.checkForUpdate())
+  store.dispatch(updateHandlers.epics.checkForUpdate() as any)
 })
 
 ipcRenderer.on('connectToWebsocket', (event) => {
@@ -44,17 +44,17 @@ ipcRenderer.on('waggleInitialized', (event) => {
   store.dispatch(publicChannels.actions.subscribeForTopic(ZbayChannel))
 })
 
-window.jdenticon_config = {
-  lightness: {
-    color: [0.31, 0.44],
-    grayscale: [0.52, 0.57]
-  },
-  saturation: {
-    color: 0.82,
-    grayscale: 0.84
-  },
-  backColor: '#f3f0f6ff'
-}
+// window.jdenticon_config = {
+//   lightness: {
+//     color: [0.31, 0.44],
+//     grayscale: [0.52, 0.57]
+//   },
+//   saturation: {
+//     color: 0.82,
+//     grayscale: 0.84
+//   },
+//   backColor: '#f3f0f6ff'
+// }
 
 render(<Root />, document.getElementById('root'))
 
