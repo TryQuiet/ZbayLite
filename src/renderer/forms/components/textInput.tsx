@@ -1,14 +1,16 @@
 import React from 'react'
-import { DeepMap, FieldError, FieldValues } from 'react-hook-form'
+import { DeepMap, FieldError, FieldValues, Noop } from 'react-hook-form'
 import Typography from '@material-ui/core/Typography'
 import TextField, { TextFieldProps } from '@material-ui/core/TextField'
 
 export type TextInputProps = TextFieldProps & {
   errors: DeepMap<FieldValues, FieldError>
   classes: string
+  onchange: (...event: any[]) => void
+  onblur: Noop
 }
 
-export const TextInput: React.FC<TextInputProps> = ({ errors, defaultValue, classes, name = '', ...props }) => {
+export const TextInput: React.FC<TextInputProps> = ({ errors, defaultValue, classes, onchange, onblur, name = '', ...props }) => {
   const hasError = Boolean(errors?.[name])
 
   return (
@@ -19,6 +21,8 @@ export const TextInput: React.FC<TextInputProps> = ({ errors, defaultValue, clas
         name={name}
         className={classes}
         variant={'outlined'}
+        onChange={onchange}
+        onBlur={onblur}
         {...props}
       />
 

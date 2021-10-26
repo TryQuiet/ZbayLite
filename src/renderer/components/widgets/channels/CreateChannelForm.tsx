@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core'
 
 import LoadingButton from '../../ui/LoadingButton/LoadingButton'
 import { TextInput } from '../../../forms/components/textInput'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { channelNameField } from '../../../forms/fields/createChannelFields'
 
 const useStyles = makeStyles((theme) => ({
@@ -65,7 +65,7 @@ const channelFields = {
 export const CreateChannelForm: React.FC<CreateChannelFormProps> = ({ setStep }) => {
   const classes = useStyles({})
 
-  const { register, handleSubmit, formState: { errors } } = useForm<CreateChannelValues>({
+  const { handleSubmit, formState: { errors }, control } = useForm<CreateChannelValues>({
     mode: 'onTouched'
   })
 
@@ -94,19 +94,26 @@ export const CreateChannelForm: React.FC<CreateChannelFormProps> = ({ setStep })
           Create a new private channel (temporarily disabled)
         </Typography>
         <Typography variant='body2'>Channel name</Typography>
-        <TextInput
-          name='name'
+        <Controller
+          control={control}
           defaultValue={''}
-          variant='outlined'
-          errors={errors}
-          classes={''}
-
-          {...channelFields.channelName.fieldProps}
-          fullWidth
-          {...register('channelName', channelFields.channelName.validation)}
-          inputRef={register('channelName', channelFields.channelName.validation).ref}
-
-          placeholder={'Enter a channel name'}
+          rules={channelFields.channelName.validation}
+          name={'channelName'}
+          render={({ field }) => (
+            <TextInput
+              name='name'
+              defaultValue={''}
+              variant='outlined'
+              errors={errors}
+              classes={''}
+              {...channelFields.channelName.fieldProps}
+              fullWidth
+              onchange={field.onChange}
+              onblur={field.onBlur}
+              value={field.value}
+              placeholder={'Enter a channel name'}
+            />
+          )}
         />
         <div className={classes.gutter}>
           {/* {true && ( // disabled for now

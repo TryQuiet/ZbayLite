@@ -14,7 +14,7 @@ import {
   JoinCommunityDictionary
 } from './PerformCommunityAction.dictionary'
 import { TextInput } from '../../../forms/components/textInput'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { communityNameField } from '../../../forms/fields/createUserFields'
 
 const useStyles = makeStyles(theme => ({
@@ -154,7 +154,7 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
       ? CreateCommunityDictionary(handleRedirection)
       : JoinCommunityDictionary(handleRedirection)
 
-  const { register, handleSubmit, formState: { errors } } = useForm<CreateCommunityValues>({
+  const { handleSubmit, formState: { errors }, control } = useForm<CreateCommunityValues>({
     mode: 'onTouched'
   })
 
@@ -174,20 +174,29 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
                 <Typography variant='caption' className={classes.label}>
                   {dictionary.label}{' '}
                 </Typography>
-                <TextInput
-                  {...communityFields.communityName.fieldProps}
-                  fullWidth
-                  {...register('communityName', communityFields.communityName.validation)}
-                  inputRef={register('communityName', communityFields.communityName.validation).ref}
-                  classes={classNames({
-                    [classes.focus]: true,
-                    [classes.margin]: true,
-                    [classes.error]: errors.communityName
-                  })}
-                  placeholder={'Enter a username'}
-                  errors={errors}
-                  defaultValue={initialValue || ''}
-                  onPaste={e => e.preventDefault()}
+                <Controller
+                  control={control}
+                  defaultValue={''}
+                  rules={communityFields.communityName.validation}
+                  name={'communityName'}
+                  render={({ field }) => (
+                    <TextInput
+                      {...communityFields.communityName.fieldProps}
+                      fullWidth
+                      classes={classNames({
+                        [classes.focus]: true,
+                        [classes.margin]: true,
+                        [classes.error]: errors.communityName
+                      })}
+                      placeholder={'Enter a username'}
+                      errors={errors}
+                      defaultValue={initialValue || ''}
+                      onPaste={e => e.preventDefault()}
+                      onchange={field.onChange}
+                      onblur={field.onBlur}
+                      value={field.value}
+                    />
+                  )}
                 />
               </Grid>
               <Grid item xs={12} className={classes.infoDiv}>

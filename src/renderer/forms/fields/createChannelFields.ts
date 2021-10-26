@@ -1,7 +1,7 @@
 import { FieldErrors, ChannelNameErrors } from '../fieldsErrors'
 import { FieldData } from '../types'
 
-export const channelNameField = (name = 'name'): FieldData => {
+export const channelNameField = (name = 'channelName'): FieldData => {
   return {
     fieldProps: {
       label: '',

@@ -1,7 +1,7 @@
 import { UsernameErrors, FieldErrors, CommunityNameErrors } from '../fieldsErrors'
 import { FieldData } from '../types'
 
-export const userNameField = (name = 'name'): FieldData => {
+export const userNameField = (name = 'userName'): FieldData => {
   return {
     fieldProps: {
       label: '',
@@ -27,7 +27,7 @@ export const userNameField = (name = 'name'): FieldData => {
   }
 }
 
-export const communityNameField = (name = 'name'): FieldData => {
+export const communityNameField = (name = 'communityName'): FieldData => {
   return {
     fieldProps: {
       label: '',

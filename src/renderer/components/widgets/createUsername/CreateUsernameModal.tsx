@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import classNames from 'classnames'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
@@ -135,7 +135,8 @@ export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
   const [formSent, setFormSent] = useState(false)
   const responseReceived = Boolean(certificateRegistrationError || certificate)
   const waitingForResponse = formSent && !responseReceived
-  const { register, handleSubmit, formState: { errors }, setError } = useForm<CreateUserValues>({
+
+  const { handleSubmit, formState: { errors }, setError, control } = useForm<CreateUserValues>({
     mode: 'onTouched'
   })
 
@@ -162,23 +163,31 @@ export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
                   <Typography variant='caption' className={classes.label}>
                     Choose your favorite username:{' '}
                   </Typography>
-
-                  <TextInput
-                    {...userFields.userName.fieldProps}
-                    fullWidth
-                    {...register('userName', userFields.userName.validation)}
-                    inputRef={register('userName', userFields.userName.validation).ref}
-                    classes={classNames({
-                      [classes.focus]: true,
-                      [classes.margin]: true,
-                      [classes.error]: errors.userName
-                    })}
-                    placeholder={'Enter a username'}
-                    errors={errors}
-                    defaultValue={initialValue || ''}
-                    onPaste={e => e.preventDefault()}
+                  <Controller
+                    control={control}
+                    defaultValue={''}
+                    rules={userFields.userName.validation}
+                    name={'userName'}
+                    render={({ field }) => (
+                      <TextInput
+                        {...userFields.userName.fieldProps}
+                        fullWidth
+                        classes={classNames({
+                          [classes.focus]: true,
+                          [classes.margin]: true,
+                          [classes.error]: errors.userName
+                        })}
+                        placeholder={'Enter a username'}
+                        errors={errors}
+                        defaultValue={initialValue || ''}
+                        onPaste={e => e.preventDefault()}
+                        variant='outlined'
+                        onchange={field.onChange}
+                        onblur={field.onBlur}
+                        value={field.value}
+                      />
+                    )}
                   />
-
                 </Grid>
                 <Grid item xs={12} className={classes.infoDiv}>
                   <Typography variant='caption' className={classes.info}>
