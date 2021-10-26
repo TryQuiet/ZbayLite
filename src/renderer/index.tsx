@@ -20,11 +20,11 @@ if (window) {
   window.localStorage.setItem('debug', process.env.DEBUG)
 }
 
-ipcRenderer.on('newUpdateAvailable', event => {
+ipcRenderer.on('newUpdateAvailable', (_event) => {
   store.dispatch(updateHandlers.epics.checkForUpdate() as any)
 })
 
-ipcRenderer.on('connectToWebsocket', (event) => {
+ipcRenderer.on('connectToWebsocket', (_event) => {
   store.dispatch(socketActions.startConnection)
 })
 
@@ -37,7 +37,7 @@ const ZbayChannel = {
   keys: { ivk: 'zxviews1qvzslllpqcqqpq8z3uyzunfm57xqlpysl5es4nm7eve5y4kkm6p7rhh6xdr27kxsql4dkk0qcad6cm7hxzclq4kzd8ukandz9p8edyw75jvqlxenvwa6ydzlqzch4wt3kdf2vma9gg25qjgc7fxn7pth0qf68ljww6qe379p4xun4za7mgk2qgzkpxlj9wu4ukyta8rfk348v78wn4zrhx2889d3mkj9yhmr0ua95jwv4ln8pyjv0ps5mw78kvadwl6ajxyn6dp2ahgvaau3x' }
 }
 
-ipcRenderer.on('waggleInitialized', (event) => {
+ipcRenderer.on('waggleInitialized', (_event) => {
   log('waggle Initialized')
   store.dispatch(waggleHandlers.actions.setIsWaggleConnected(true))
   // TODO: Refactor when adding communities
