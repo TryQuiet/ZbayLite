@@ -1,9 +1,9 @@
-name: CI
+name: CI-Linux
 
 on:
   push:
     branches:
-      - test-build
+      - master
 jobs:
   build_on_linux:
     runs-on: ubuntu-18.04

@@ -1,10 +1,10 @@
 
-name: CI
+name: CI-MacOS
 
 on:
   push:
     branches:
-      - test-build
+      - master
 
 jobs:
   build_on_mac:

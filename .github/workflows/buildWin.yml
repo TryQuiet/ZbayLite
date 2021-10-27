@@ -1,9 +1,9 @@
-name: CI
+name: CI-Windows
 
 on:
   push:
     branches:
-      - test-build
+      - master
 
 jobs:
   build_on_windows:
