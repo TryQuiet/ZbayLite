@@ -5,7 +5,7 @@ const webpack = require('webpack')
 module.exports = {
   mode: 'production',
   output: {
-    path: path.resolve(__dirname, '../dist/main'),
+    path: path.resolve(__dirname, '../dist/src/main'),
     filename: '[name].js'
   },
   resolve: {
@@ -15,7 +15,7 @@ module.exports = {
     rules: [
       {
         test: /\.(t|j)sx?$/,
-        loader: ['awesome-typescript-loader?module=es6'],
+        loader: ['ts-loader'],
         exclude: [/node_modules/]
       },
       {
@@ -43,7 +43,7 @@ module.exports = {
   },
   target: 'electron-renderer',
   entry: {
-    index: './src/renderer/index.js'
+    index: './src/renderer/index.tsx'
   },
   plugins: [
     new HtmlWebpackPlugin({
