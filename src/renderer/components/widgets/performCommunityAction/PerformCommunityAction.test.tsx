@@ -6,12 +6,12 @@ import { CommunityAction } from "../../../components/widgets/performCommunityAct
 import PerformCommunityActionComponent from "../../../components/widgets/performCommunityAction/PerformCommunityActionComponent";
 import { renderComponent } from '../../../testUtils/renderComponent';
 
-describe('Create community view', () => {
+describe('PerformCommunityAction component (create community mode)', () => {
   const action = CommunityAction.Create
 
   it('creates community on submit if connection is ready', async () => {
     const handleCommunityAction = jest.fn()
-    const hop = <PerformCommunityActionComponent
+    const component = <PerformCommunityActionComponent
       open={true}
       handleClose={() => {}}
       initialValue={''}
@@ -20,13 +20,15 @@ describe('Create community view', () => {
       handleRedirection={() => {}}
       isConnectionReady={true}
     />
-      const result = renderComponent(hop)
-      const textInput = await result.findByPlaceholderText('Community name') // TOOD: why findByRole('input') does not work?
+      const result = renderComponent(component)
+      const textInput = result.queryByPlaceholderText('Community name')
+      expect(textInput).not.toBeNull()
       userEvent.type(textInput, 'My Community')
-      const button = await result.findByRole('button')
-      expect(button).toBeEnabled()
-      await waitFor(() => userEvent.click(button))
-      expect(handleCommunityAction).toBeCalledWith('My Community')
+      const submitButton = result.queryByRole('button')
+      expect(submitButton).not.toBeNull()
+      expect(submitButton).toBeEnabled()
+      userEvent.click(submitButton)
+      waitFor(() => expect(handleCommunityAction).toBeCalledWith('My Community'))
   })
   
   it('blocks submit button if connection is not ready', async () => {
@@ -41,34 +43,34 @@ describe('Create community view', () => {
       isConnectionReady={false}
     />
       const result = renderComponent(component)
-      const textInput = await result.findByPlaceholderText('Community name')
-      userEvent.type(textInput, 'My Community')
-      const button = await result.findByRole('button')
-      expect(button).toBeDisabled()
-      expect(handleCommunityAction).not.toBeCalled()
+      const submitButton = result.queryByRole('button')
+      expect(submitButton).not.toBeNull()
+      expect(submitButton).toBeDisabled()
   })
 
-  it('switches to "join community" view if user clicks on link', async () => {
+  it('handles redirection if user clicks on the link', async () => {
     const handleRedirection = jest.fn()
+    const handleCommunityAction = jest.fn()
     const component = <PerformCommunityActionComponent
       open={true}
       handleClose={() => {}}
       initialValue={''}
       communityAction={action}
-      handleCommunityAction={() => {}}
+      handleCommunityAction={handleCommunityAction}
       handleRedirection={handleRedirection}
       isConnectionReady={true}
     />
     const result = renderComponent(component)
-    const switchLink = await result.findByText('join a community')
-    await waitFor(() => userEvent.click(switchLink))
+    const switchLink = result.queryByText('join a community')
+    expect(switchLink).not.toBeNull()
+    userEvent.click(switchLink)
     expect(handleRedirection).toBeCalled()
+    expect(handleCommunityAction).not.toBeCalled()
   })
 })
 
-describe('Join community view', () => {
+describe('PerformCommunityAction component (join community mode)', () => {
   const action = CommunityAction.Join
-
   it('joins community on submit if connection is ready', async () => {
     const registrarUrl = 'http://registrarurl.onion'
     const handleCommunityAction = jest.fn()
@@ -82,12 +84,14 @@ describe('Join community view', () => {
       isConnectionReady={true}
     />
       const result = renderComponent(component)
-      const textInput = await result.findByPlaceholderText('Invite link')
+      const textInput = result.queryByPlaceholderText('Invite link')
+      expect(textInput).not.toBeNull()
       userEvent.type(textInput, registrarUrl)
-      const button = await result.findByRole('button')
-      expect(button).toBeEnabled()
-      await waitFor(() => userEvent.click(button))
-      expect(handleCommunityAction).toBeCalledWith(registrarUrl)
+      const submitButton = result.queryByRole('button')
+      expect(submitButton).not.toBeNull()
+      expect(submitButton).toBeEnabled()
+      userEvent.click(submitButton)
+      waitFor(() => expect(handleCommunityAction).toBeCalledWith(registrarUrl))
   })
   
   it('blocks submit button if connection is not ready', async () => {
@@ -102,14 +106,16 @@ describe('Join community view', () => {
       isConnectionReady={false}
     />
       const result = renderComponent(component)
-      const textInput = await result.findByPlaceholderText('Invite link')
+      const textInput = result.queryByPlaceholderText('Invite link')
+      expect(textInput).not.toBeNull()
       userEvent.type(textInput, 'My Community')
-      const button = await result.findByRole('button')
-      expect(button).toBeDisabled()
+      const submitButton = result.queryByRole('button')
+      expect(submitButton).not.toBeNull()
+      expect(submitButton).toBeDisabled()
       expect(handleCommunityAction).not.toBeCalled()
   })
 
-  it('switches to "create community" view if user clicks on link', async () => {
+  it('handles redirection if user clicks on the link', async () => {
     const handleRedirection = jest.fn()
     const component = <PerformCommunityActionComponent
       open={true}
@@ -121,8 +127,9 @@ describe('Join community view', () => {
       isConnectionReady={true}
     />
     const result = renderComponent(component)
-    const switchLink = await result.findByText('create a new community')
-    await waitFor(() => userEvent.click(switchLink))
+    const switchLink = result.queryByText('create a new community')
+    expect(switchLink).not.toBeNull()
+    userEvent.click(switchLink)
     expect(handleRedirection).toBeCalled()
   })
 })
