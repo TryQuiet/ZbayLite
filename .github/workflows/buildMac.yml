@@ -4,7 +4,7 @@ name: CI-MacOS
 on:
   push:
     branches:
-      - master
+      - test-build
 
 jobs:
   build_on_mac:
