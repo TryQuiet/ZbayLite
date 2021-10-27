@@ -14,6 +14,12 @@ export enum CommunityNameErrors {
   WrongCharacter = 'Community name must be lowercase and cannot contain any special characters'
 }
 
+export enum InviteLinkErrors {
+  NameToShort = 'Invitation link must have at least 62 characters',
+  NameToLong = 'Invitation link must have less than 69 characters',
+  WrongCharacter = 'Invitation link should be the proper onion address'
+}
+
 export enum ChannelNameErrors {
   NameToShort = 'Channel name must have at least 3 characters',
   NameToLong = 'Channel name must have less than 20 characters',
