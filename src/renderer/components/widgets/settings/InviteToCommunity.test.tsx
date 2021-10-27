@@ -1,9 +1,9 @@
-import '@testing-library/jest-dom';
-import { waitFor, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import React from 'react';
-import { InviteToCommunity } from '../../../components/widgets/settings/InviteToCommunity';
-import { renderComponent } from '../../../testUtils/renderComponent';
+import '@testing-library/jest-dom'
+import { waitFor, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import React from 'react'
+import { InviteToCommunity } from '../../../components/widgets/settings/InviteToCommunity'
+import { renderComponent } from '../../../testUtils/renderComponent'
 
 describe('InviteToCommunity', () => {
   it('renders properly', () => {

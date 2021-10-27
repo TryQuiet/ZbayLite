@@ -1,10 +1,10 @@
-import '@testing-library/jest-dom';
-import { waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import React from "react";
-import { CommunityAction } from "../../../components/widgets/performCommunityAction/community.keys";
-import PerformCommunityActionComponent from "../../../components/widgets/performCommunityAction/PerformCommunityActionComponent";
-import { renderComponent } from '../../../testUtils/renderComponent';
+import '@testing-library/jest-dom'
+import { waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import React from 'react'
+import { CommunityAction } from '../../../components/widgets/performCommunityAction/community.keys'
+import PerformCommunityActionComponent from '../../../components/widgets/performCommunityAction/PerformCommunityActionComponent'
+import { renderComponent } from '../../../testUtils/renderComponent'
 
 describe('PerformCommunityAction component (create community mode)', () => {
   const action = CommunityAction.Create
@@ -20,17 +20,17 @@ describe('PerformCommunityAction component (create community mode)', () => {
       handleRedirection={() => {}}
       isConnectionReady={true}
     />
-      const result = renderComponent(component)
-      const textInput = result.queryByPlaceholderText('Community name')
-      expect(textInput).not.toBeNull()
-      userEvent.type(textInput, 'My Community')
-      const submitButton = result.queryByRole('button')
-      expect(submitButton).not.toBeNull()
-      expect(submitButton).toBeEnabled()
-      userEvent.click(submitButton)
-      waitFor(() => expect(handleCommunityAction).toBeCalledWith('My Community'))
+    const result = renderComponent(component)
+    const textInput = result.queryByPlaceholderText('Community name')
+    expect(textInput).not.toBeNull()
+    userEvent.type(textInput, 'My Community')
+    const submitButton = result.queryByRole('button')
+    expect(submitButton).not.toBeNull()
+    expect(submitButton).toBeEnabled()
+    userEvent.click(submitButton)
+    await waitFor(() => expect(handleCommunityAction).toBeCalledWith('My Community'))
   })
-  
+
   it('blocks submit button if connection is not ready', async () => {
     const handleCommunityAction = jest.fn()
     const component = <PerformCommunityActionComponent
@@ -42,10 +42,10 @@ describe('PerformCommunityAction component (create community mode)', () => {
       handleRedirection={() => {}}
       isConnectionReady={false}
     />
-      const result = renderComponent(component)
-      const submitButton = result.queryByRole('button')
-      expect(submitButton).not.toBeNull()
-      expect(submitButton).toBeDisabled()
+    const result = renderComponent(component)
+    const submitButton = result.queryByRole('button')
+    expect(submitButton).not.toBeNull()
+    expect(submitButton).toBeDisabled()
   })
 
   it('handles redirection if user clicks on the link', async () => {
@@ -83,17 +83,17 @@ describe('PerformCommunityAction component (join community mode)', () => {
       handleRedirection={() => {}}
       isConnectionReady={true}
     />
-      const result = renderComponent(component)
-      const textInput = result.queryByPlaceholderText('Invite link')
-      expect(textInput).not.toBeNull()
-      userEvent.type(textInput, registrarUrl)
-      const submitButton = result.queryByRole('button')
-      expect(submitButton).not.toBeNull()
-      expect(submitButton).toBeEnabled()
-      userEvent.click(submitButton)
-      waitFor(() => expect(handleCommunityAction).toBeCalledWith(registrarUrl))
+    const result = renderComponent(component)
+    const textInput = result.queryByPlaceholderText('Invite link')
+    expect(textInput).not.toBeNull()
+    userEvent.type(textInput, registrarUrl)
+    const submitButton = result.queryByRole('button')
+    expect(submitButton).not.toBeNull()
+    expect(submitButton).toBeEnabled()
+    userEvent.click(submitButton)
+    await waitFor(() => expect(handleCommunityAction).toBeCalledWith(registrarUrl))
   })
-  
+
   it('blocks submit button if connection is not ready', async () => {
     const handleCommunityAction = jest.fn()
     const component = <PerformCommunityActionComponent
@@ -105,14 +105,14 @@ describe('PerformCommunityAction component (join community mode)', () => {
       handleRedirection={() => {}}
       isConnectionReady={false}
     />
-      const result = renderComponent(component)
-      const textInput = result.queryByPlaceholderText('Invite link')
-      expect(textInput).not.toBeNull()
-      userEvent.type(textInput, 'My Community')
-      const submitButton = result.queryByRole('button')
-      expect(submitButton).not.toBeNull()
-      expect(submitButton).toBeDisabled()
-      expect(handleCommunityAction).not.toBeCalled()
+    const result = renderComponent(component)
+    const textInput = result.queryByPlaceholderText('Invite link')
+    expect(textInput).not.toBeNull()
+    userEvent.type(textInput, 'My Community')
+    const submitButton = result.queryByRole('button')
+    expect(submitButton).not.toBeNull()
+    expect(submitButton).toBeDisabled()
+    expect(handleCommunityAction).not.toBeCalled()
   })
 
   it('handles redirection if user clicks on the link', async () => {
