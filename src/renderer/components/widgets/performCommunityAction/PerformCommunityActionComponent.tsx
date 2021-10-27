@@ -188,7 +188,7 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
                         [classes.margin]: true,
                         [classes.error]: errors.communityName
                       })}
-                      placeholder={'Enter a username'}
+                      placeholder={dictionary.placeholder}
                       errors={errors}
                       defaultValue={initialValue || ''}
                       onPaste={e => e.preventDefault()}
