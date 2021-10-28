@@ -102,7 +102,7 @@ describe('PerformCommunityAction component (create community mode)', () => {
 describe('PerformCommunityAction component (join community mode)', () => {
   const action = CommunityAction.Join
   it('joins community on submit if connection is ready and registrar url is correct', async () => {
-    const registrarUrl = 'http://nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad.onion'
+    const registrarUrl = 'nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad'
     const handleCommunityAction = jest.fn()
     const component = <PerformCommunityActionComponent
       open={true}
@@ -125,9 +125,10 @@ describe('PerformCommunityAction component (join community mode)', () => {
   })
 
   it.each([
-    ['nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad', InviteLinkErrors.NameToShort],
-    ['http://nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad', InviteLinkErrors.WrongCharacter],
-    ['http://nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olada.onion', InviteLinkErrors.NameTooLong]
+    ['nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad088888', InviteLinkErrors.WrongCharacter],
+    ['nqnw4kc4c77fb47lk52m5l57h4tc', InviteLinkErrors.WrongCharacter],
+    ['nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olaż', InviteLinkErrors.WrongCharacter],
+    ['http://nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad.onion', InviteLinkErrors.WrongCharacter]
   ])('user inserting invalid url %s should see "%s" error', async (registrarUrl: string, error: string) => {
     const handleCommunityAction = jest.fn()
     const component = <PerformCommunityActionComponent

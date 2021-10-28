@@ -15,9 +15,7 @@ export enum CommunityNameErrors {
 }
 
 export enum InviteLinkErrors {
-  NameToShort = 'Invitation link must have at least 62 characters',
-  NameTooLong = 'Invitation link must have less than 70 characters',
-  WrongCharacter = 'Invitation link should be the proper onion address'
+  WrongCharacter = 'Invitation link is not valid'
 }
 
 export enum ChannelNameErrors {

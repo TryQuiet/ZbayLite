@@ -75,7 +75,7 @@ describe('InviteToCommunity', () => {
   })
 
   it('reveals registrar url when user clicks on the button', async () => {
-    const registrarUrl = 'http://registrarurl.onion'
+    const registrarUrl = 'nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad'
     renderComponent(
       <InviteToCommunity
         communityName={'My new community'}

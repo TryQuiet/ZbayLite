@@ -37,16 +37,8 @@ export const inviteLinkField = (name = 'name'): FieldData => {
     },
     validation: {
       required: FieldErrors.Required,
-      minLength: {
-        value: 62,
-        message: InviteLinkErrors.NameToShort
-      },
-      maxLength: {
-        value: 69,
-        message: InviteLinkErrors.NameTooLong
-      },
       pattern: {
-        value: /^(http:\/\/)?[a-z0-9]+.onion/g,
+        value: /^[a-z0-9]{56}$/g,
         message: InviteLinkErrors.WrongCharacter
       }
     }
