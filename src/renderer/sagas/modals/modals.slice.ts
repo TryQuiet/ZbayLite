@@ -4,8 +4,8 @@ import { ModalName } from './modals.types'
 
 export type OpenModalPayload = {
   name: ModalName,
-  args?
-}
+  args?: CreateUsernameModalProps 
+} 
 
 export class ModalsInitialState {
   [ModalName.createChannel] = { open: false };

@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { modalsSelectors } from '../sagas/modals/modals.selectors'
-import { modalsActions } from '../sagas/modals/modals.slice'
+import { modalsActions, OpenModalPayload } from '../sagas/modals/modals.slice'
 import { ModalName } from '../sagas/modals/modals.types'
 
-export const useModal = <T>(name: ModalName) => {
+export const useModal = <T extends OpenModalPayload['args']>(name: ModalName) => {
   const dispatch = useDispatch()
 
   const open = useSelector(modalsSelectors.open(name))
