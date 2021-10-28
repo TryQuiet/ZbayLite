@@ -126,7 +126,6 @@ interface PerformCommunityActionFormValues {
 
 const submitForm = (handleSubmit, values: PerformCommunityActionFormValues, setFormSent) => {
   setFormSent(true)
-  console.log('AAA', values)
   handleSubmit(values.name)
 }
 
@@ -151,7 +150,6 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
       ? CreateCommunityDictionary(handleRedirection)
       : JoinCommunityDictionary(handleRedirection)
 
-  console.log('DD', dictionary.field)
   const { handleSubmit, formState: { errors }, control } = useForm<PerformCommunityActionFormValues>({
     mode: 'onTouched'
   })
@@ -186,7 +184,7 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
                         [classes.margin]: true,
                         [classes.error]: errors.name
                       })}
-                      placeholder={dictionary.field.fieldProps.placeholder}
+                      placeholder={dictionary.placeholder}
                       errors={errors}
                       defaultValue={initialValue || ''}
                       onchange={field.onChange}

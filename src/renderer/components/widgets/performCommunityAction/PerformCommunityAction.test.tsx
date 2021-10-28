@@ -21,14 +21,15 @@ describe('PerformCommunityAction component (create community mode)', () => {
       isConnectionReady={true}
     />
     const result = renderComponent(component)
+    const communityName = 'communityname'
     const textInput = result.queryByPlaceholderText('Community name')
     expect(textInput).not.toBeNull()
-    userEvent.type(textInput, 'My Community')
+    userEvent.type(textInput, communityName)
     const submitButton = result.queryByRole('button')
     expect(submitButton).not.toBeNull()
     expect(submitButton).toBeEnabled()
     userEvent.click(submitButton)
-    await waitFor(() => expect(handleCommunityAction).toBeCalledWith('My Community'))
+    await waitFor(() => expect(handleCommunityAction).toBeCalledWith(communityName))
   })
 
   it('blocks submit button if connection is not ready', async () => {
@@ -71,8 +72,8 @@ describe('PerformCommunityAction component (create community mode)', () => {
 
 describe('PerformCommunityAction component (join community mode)', () => {
   const action = CommunityAction.Join
-  it('joins community on submit if connection is ready', async () => {
-    const registrarUrl = 'http://registrarurl.onion'
+  it('joins community on submit if connection is ready and registrar url is correct', async () => {
+    const registrarUrl = 'http://nqnw4kc4c77fb47lk52m5l57h4tcxceo7ymxekfn7yh5m66t4jv2olad.onion'
     const handleCommunityAction = jest.fn()
     const component = <PerformCommunityActionComponent
       open={true}

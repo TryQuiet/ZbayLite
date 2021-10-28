@@ -6,6 +6,7 @@ import TextWithLink from '../../ui/TextWithLink/TextWithLink'
 export interface PerformCommunityActionDictionary {
   header: string
   label: string
+  placeholder: string
   hint?: string
   button?: string
   field: FieldData
@@ -33,6 +34,7 @@ export const CreateCommunityDictionary = (
   return {
     header: 'Create your community',
     label: 'Community name',
+    placeholder: 'Community name',
     hint: '',
     button: 'Continue',
     field: communityNameField(),
@@ -59,6 +61,7 @@ export const JoinCommunityDictionary = (handleRedirection?: () => void): Perform
   return {
     header: 'Join community',
     label: 'Paste your invite link to join an existing community',
+    placeholder: 'Invite link',
     hint: '',
     button: 'Continue',
     field: inviteLinkField(),

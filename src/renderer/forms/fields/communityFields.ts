@@ -4,7 +4,7 @@ import { FieldData } from '../types'
 export const communityNameField = (name = 'name'): FieldData => {
     return {
       fieldProps: {
-        label: 'Community name',
+        label: '',
         name,
         type: 'text',
         placeholder: 'Community name'
@@ -30,7 +30,7 @@ export const communityNameField = (name = 'name'): FieldData => {
   export const inviteLinkField = (name = 'name'): FieldData => {
     return {
       fieldProps: {
-        label: 'Paste your invite link to join an existing community',
+        label: '',
         name,
         type: 'text',
         placeholder: 'Invite link'
