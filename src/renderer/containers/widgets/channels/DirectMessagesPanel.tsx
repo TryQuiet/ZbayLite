@@ -6,7 +6,6 @@ import SidebarHeader from '../../../components/ui/Sidebar/SidebarHeader'
 import QuickActionButton from '../../../components/widgets/sidebar/QuickActionButton'
 import BaseChannelsList from '../../../components/widgets/channels/BaseChannelsList'
 import channelSelectors from '../../../store/selectors/channel'
-import { publicChannels } from '@zbayapp/nectar'
 
 import { useModal } from '../../hooks'
 import { ModalName } from '../../../sagas/modals/modals.types'

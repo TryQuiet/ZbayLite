@@ -8,8 +8,7 @@ import channelSelectors from '../../../store/selectors/channel'
 import contactsSelectors from '../../../store/selectors/contacts'
 import notificationCenter from '../../../store/selectors/notificationCenter'
 import { notificationFilterType } from '../../../../shared/static'
-import { publicChannels, messages, identity, users } from '@zbayapp/nectar'
-
+import { publicChannels } from '@zbayapp/nectar'
 
 export const useChannelHeaderData = (contactId: string) => {
   const contact = useSelector(contactsSelectors.contact(contactId))

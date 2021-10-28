@@ -3,7 +3,6 @@ import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Clear from '@material-ui/icons/Clear'
-import { Tabs, Tab } from '@material-ui/core'
 import classNames from 'classnames'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -116,7 +115,6 @@ export interface ChannelHeaderProps {
 }
 
 export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
-  tab,
   setTab,
   channel = { displayableMessageLimit: 50 },
   directMessage = false,
