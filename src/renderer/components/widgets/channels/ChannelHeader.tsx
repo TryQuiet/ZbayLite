@@ -128,12 +128,11 @@ export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
 }) => {
   const classes = useStyles({})
   const debounce = (fn, ms: number) => {
-    let timer: NodeJS.Timeout | null
+    let timer: any | null // This variable can't have specified typing because of the compilation errors
     return _ => {
       if (timer) {
         clearTimeout(timer)
       }
-      // @ts-expect-error
       timer = setTimeout(_ => {
         timer = null
         fn.apply(this) // eslint-disable-line
