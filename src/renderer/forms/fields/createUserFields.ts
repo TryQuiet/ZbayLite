@@ -17,7 +17,7 @@ export const userNameField = (name = 'userName'): FieldData => {
       },
       maxLength: {
         value: 20,
-        message: UsernameErrors.NameToLong
+        message: UsernameErrors.NameTooLong
       },
       pattern: {
         value: /^[a-z0-9]+$/g,

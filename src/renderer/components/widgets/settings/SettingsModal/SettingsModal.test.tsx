@@ -332,8 +332,9 @@ describe('SettingsModal', () => {
         user='string'
       />
     )
-
     expect(screen.queryByRole('tab', { name: /Account/i })).not.toBeNull()
+    expect(screen.queryByRole('tab', { name: /Notifications/i })).not.toBeNull()
+    expect(screen.queryByRole('tab', { name: /Security/i })).not.toBeNull()
     expect(screen.queryByRole('tab', { name: /Invite a friend/i })).toBeNull()
   })
 })

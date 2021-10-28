@@ -17,7 +17,7 @@ export const communityNameField = (name = 'name'): FieldData => {
       },
       maxLength: {
         value: 20,
-        message: CommunityNameErrors.NameToLong
+        message: CommunityNameErrors.NameTooLong
       },
       pattern: {
         value: /^[a-z0-9]+$/g,
@@ -43,7 +43,7 @@ export const inviteLinkField = (name = 'name'): FieldData => {
       },
       maxLength: {
         value: 69,
-        message: InviteLinkErrors.NameToLong
+        message: InviteLinkErrors.NameTooLong
       },
       pattern: {
         value: /^(http:\/\/)?[a-z0-9]+.onion/g,
