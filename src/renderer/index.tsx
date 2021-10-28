@@ -5,6 +5,7 @@ import { ipcRenderer } from 'electron'
 import Root from './Root'
 import store from './store'
 import updateHandlers from './store/handlers/update'
+import waggleHandlers from './store/handlers/waggle'
 
 import debug from 'debug'
 
@@ -24,6 +25,12 @@ ipcRenderer.on('newUpdateAvailable', (_event) => {
 
 ipcRenderer.on('connectToWebsocket', (_event) => {
   store.dispatch(socketActions.startConnection)
+})
+
+ipcRenderer.on('waggleInitialized', (_event) => {
+  log('waggle Initialized')
+  store.dispatch(waggleHandlers.actions.setIsWaggleConnected(true))
+  // TODO: Refactor when adding communities
 })
 
 // window.jdenticon_config = {
