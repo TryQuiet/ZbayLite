@@ -133,9 +133,10 @@ export const ChannelHeader: React.FC<ChannelHeaderProps> = ({
       if (timer) {
         clearTimeout(timer)
       }
+      // @ts-expect-error
       timer = setTimeout(_ => {
         timer = null
-        fn.apply(this) // // eslint-disable-line
+        fn.apply(this) // eslint-disable-line
       }, ms)
     }
   }
