@@ -1,4 +1,4 @@
-import { UsernameErrors, FieldErrors, CommunityNameErrors } from '../fieldsErrors'
+import { FieldErrors, UsernameErrors } from '../fieldsErrors'
 import { FieldData } from '../types'
 
 export const userNameField = (name = 'userName'): FieldData => {
