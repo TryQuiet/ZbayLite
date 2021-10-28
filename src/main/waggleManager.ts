@@ -34,7 +34,7 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
   await dataServer.listen()
 
   const isDev = process.env.NODE_ENV === 'development'
-  let resourcesPath = isDev ? null : process.resourcesPath
+  const resourcesPath = isDev ? null : process.resourcesPath
 
   const connectionsManager = new TlgManager.ConnectionsManager({
     port: ports.libp2pHiddenService,
