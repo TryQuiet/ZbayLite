@@ -9,7 +9,6 @@ import waggleHandlers from './store/handlers/waggle'
 
 import debug from 'debug'
 
-import { publicChannels } from '@zbayapp/nectar'
 import { socketActions } from './sagas/socket/socket.slice'
 
 const log = Object.assign(debug('zbay:renderer'), {

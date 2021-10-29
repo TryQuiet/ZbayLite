@@ -15,8 +15,6 @@ import {
 } from './PerformCommunityAction.dictionary'
 import { TextInput } from '../../../forms/components/textInput'
 import { Controller, useForm } from 'react-hook-form'
-import { communityAddressField } from '../../../forms/fields/joinCommunityField'
-import { communityNameField } from '../../../forms/fields/communityNameField'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -121,13 +119,13 @@ export interface PerformCommunityActionProps {
   isConnectionReady?: boolean
 }
 
-interface CreateCommunityValues {
-  communityName: string
+interface PerformCommunityActionFormValues {
+  name: string
 }
 
-const submitForm = (handleSubmit, values: CreateCommunityValues, setFormSent) => {
+const submitForm = (handleSubmit, values: PerformCommunityActionFormValues, setFormSent) => {
   setFormSent(true)
-  handleSubmit(values.communityName)
+  handleSubmit(values.name)
 }
 
 export const PerformCommunityActionComponent: React.FC<PerformCommunityActionProps> = ({
@@ -146,25 +144,17 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
   const [formSent, setFormSent] = useState(false)
   const responseReceived = Boolean(error || registrar)
   const waitingForResponse = formSent && !responseReceived
-  const communityFields =
-    communityAction == CommunityAction.Create
-      ? communityNameField()
-      : communityAddressField()
+
   const dictionary =
     communityAction === CommunityAction.Create
       ? CreateCommunityDictionary(handleRedirection)
       : JoinCommunityDictionary(handleRedirection)
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    control
-  } = useForm<CreateCommunityValues>({
+  const { handleSubmit, formState: { errors }, control } = useForm<PerformCommunityActionFormValues>({
     mode: 'onTouched'
   })
 
-  const onSubmit = (values: CreateCommunityValues) =>
-    submitForm(handleCommunityAction, values, setFormSent)
+  const onSubmit = (values: PerformCommunityActionFormValues) => submitForm(handleCommunityAction, values, setFormSent)
 
   return (
     <Modal open={open} handleClose={handleClose} isCloseDisabled={isClosedDisabled}>
@@ -183,16 +173,16 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
                 <Controller
                   control={control}
                   defaultValue={''}
-                  rules={communityFields.validation}
-                  name={'communityName'}
+                  rules={dictionary.field.validation}
+                  name={'name'}
                   render={({ field }) => (
                     <TextInput
-                      {...communityFields.fieldProps}
+                      {...dictionary.field.fieldProps}
                       fullWidth
                       classes={classNames({
                         [classes.focus]: true,
                         [classes.margin]: true,
-                        [classes.error]: errors.communityName
+                        [classes.error]: errors.name
                       })}
                       placeholder={dictionary.placeholder}
                       errors={errors}
