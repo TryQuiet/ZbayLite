@@ -112,8 +112,6 @@ export interface PerformCommunityActionProps {
   handleCommunityAction: (value: string) => void
   handleRedirection: () => void
   initialValue: string
-  registrar?: string
-  error?: string
   handleClose: () => void
   isClosedDisabled?: boolean
   isConnectionReady?: boolean
@@ -129,8 +127,6 @@ export const PerformCommunityActionComponent: React.FC<PerformCommunityActionPro
   handleCommunityAction,
   handleRedirection,
   initialValue,
-  registrar,
-  error,
   handleClose,
   isClosedDisabled = true,
   isConnectionReady = true

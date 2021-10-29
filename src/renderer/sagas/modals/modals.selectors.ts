@@ -12,9 +12,9 @@ export const open = (modal: ModalName) =>
   })
 
 export const props = (modal: ModalName) =>
-createSelector(ModalsSlice, reducerState => {
-  return reducerState[modal]?.args || {}
-})
+  createSelector(ModalsSlice, reducerState => {
+    return reducerState[modal]?.args || {}
+  })
 
 export const modalsSelectors = {
   open,

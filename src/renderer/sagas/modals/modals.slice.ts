@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { CreateUsernameModalProps } from '../../containers/widgets/createUsernameModal/CreateUsername'
 import { ModalName } from './modals.types'
 
-export type OpenModalPayload = {
-  name: ModalName,
-  args?: CreateUsernameModalProps 
-} 
+export interface OpenModalPayload {
+  name: ModalName
+  args?: CreateUsernameModalProps
+}
 
 export class ModalsInitialState {
   [ModalName.createChannel] = { open: false };
@@ -20,6 +20,7 @@ export class ModalsInitialState {
     open: false,
     args: undefined
   };
+
   [ModalName.channelInfo] = { open: false };
   [ModalName.channelSettingsModal] = { open: false };
   [ModalName.publishChannel] = { open: false };

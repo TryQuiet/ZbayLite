@@ -8,13 +8,11 @@ import { socketSelectors } from '../../../sagas/socket/socket.selectors'
 import { CreateUsernameModalProps } from '../createUsernameModal/CreateUsername'
 
 const CreateCommunity = () => {
-
   const isConnected = useSelector(socketSelectors.isConnected)
 
   const createCommunityModal = useModal(ModalName.createCommunityModal)
   const joinCommunityModal = useModal(ModalName.joinCommunityModal)
   const createUsernameModal = useModal<CreateUsernameModalProps>(ModalName.createUsernameModal)
-
 
   const handleCommunityAction = (name: string) => {
     createUsernameModal.handleOpen({

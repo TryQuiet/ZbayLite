@@ -25,7 +25,6 @@ const JoinCommunity = () => {
     }
   }, [community, joinCommunityModal, dispatch])
 
-
   const handleCommunityAction = (address: string) => {
     createUsernameModal.handleOpen({
       communityAction: CommunityAction.Join,
