@@ -38,7 +38,7 @@ export const Main: React.FC<MainProps> = ({
 }) => {
   const classes = useStyles({})
   const debounce = (fn, ms: number) => {
-    let timer: any | null // This variable can't have specified typing because of the compilation errors
+    let timer: NodeJS.Timeout | null
     return _ => {
       if (timer) {
         clearTimeout(timer)

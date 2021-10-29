@@ -13,7 +13,6 @@ import { Crypto } from '@peculiar/webcrypto'
 const webcrypto = new Crypto()
 setEngine('newEngine', webcrypto, new CryptoEngine({
   name: '',
-  // @ts-ignore
   crypto: webcrypto,
   subtle: webcrypto.subtle
 }))

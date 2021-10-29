@@ -36,7 +36,6 @@ const windowSize: IWindowSize = {
 
 setEngine(
   'newEngine',
-  // @ts-ignore
   webcrypto,
   new CryptoEngine({
     name: '',
