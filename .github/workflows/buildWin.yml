@@ -3,7 +3,7 @@ name: CI-Windows
 on:
   push:
     branches:
-      - master
+      - build-for-qa
 
 jobs:
   build_on_windows:
