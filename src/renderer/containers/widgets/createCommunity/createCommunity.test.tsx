@@ -8,9 +8,11 @@ import { StoreKeys as NectarStoreKeys } from '@zbayapp/nectar/lib/sagas/store.ke
 import { StoreKeys } from '../../../store/store.keys'
 import { renderComponent } from '../../../testUtils/renderComponent'
 import CreateCommunity from './createCommunity'
+import CreateUsernameModal from '../createUsernameModal/CreateUsername';
 import { ModalName } from '../../../sagas/modals/modals.types'
 import { screen } from '@testing-library/dom'
 import { CreateCommunityDictionary } from '../../../components/widgets/performCommunityAction/PerformCommunityAction.dictionary'
+import userEvent from '@testing-library/user-event';
 
 const reducers = {
   [NectarStoreKeys.Communities]: communities.reducer,
@@ -28,7 +30,7 @@ export const prepareStore = (reducers, mockedState?: { [key in StoreKeys]?: any 
   return createStore(combinedReducers, mockedState)
 }
 
-test('Create community modal is open and user can see proper title', async () => {
+test('User enters community name and is being redirected to username registration after hitting button', async () => {
   const store = prepareStore(reducers, {
       [StoreKeys.Socket]: {
           ...new SocketState(),
@@ -40,11 +42,20 @@ test('Create community modal is open and user can see proper title', async () =>
       }
   })
 
-  renderComponent(<CreateCommunity />, store)
+  renderComponent(<><CreateCommunity /><CreateUsernameModal /></>, store)
 
-  const header = CreateCommunityDictionary().header
-  const title = await screen.getByText(header)
-  expect(title).toBeVisible()
+  // Confirm proper modal title is displayed
+  const dictionary = CreateCommunityDictionary()
+  const createCommunityTitle = screen.getByText(dictionary.header)
+  expect(createCommunityTitle).toBeVisible()
 
+  // Enter community name and hit button
+  const createCommunityInput = screen.getByPlaceholderText(dictionary.placeholder)
+  const createCommunityButton = screen.getByText(dictionary.button)
+  userEvent.type(createCommunityInput, 'rockets')
+  userEvent.click(createCommunityButton)
 
+  // Confirm user is being redirected to username registration
+  const createUsernameTitle = await screen.findByText('Register a username')
+  expect(createUsernameTitle).toBeVisible()
 })
