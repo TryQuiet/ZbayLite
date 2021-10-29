@@ -44,5 +44,7 @@ test('Create community modal is open and user can see proper title', async () =>
 
   const header = CreateCommunityDictionary().header
   const title = await screen.getByText(header)
-  expect(title).not.toBeVisible()
+  expect(title).toBeVisible()
+
+
 })
