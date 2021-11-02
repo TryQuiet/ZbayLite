@@ -210,6 +210,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
+    "@babel/runtime": "^7.16.0",
     "@electron/remote": "^1.1.0",
     "@material-ui/core": "^4.7.1",
     "@material-ui/icons": "^4.2.1",
@@ -265,7 +266,7 @@
     "luxon": "^1.11.4",
     "material-ui-formik-components": "^0.5.2",
     "notistack": "^0.8.2",
-    "pkijs": "^2.1.95",
+    "pkijs": "^2.1.97",
     "prop-types": "^15.7.1",
     "protons": "^2.0.0",
     "ps-node": "^0.1.6",
