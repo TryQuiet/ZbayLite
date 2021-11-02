@@ -40,5 +40,6 @@ worker/index.node
 .webpack
 dist
 node_modules
+**/spectron/*.AppImage
 
 src/renderer/zcash/index.node
