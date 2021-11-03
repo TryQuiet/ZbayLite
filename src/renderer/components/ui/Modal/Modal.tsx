@@ -143,6 +143,7 @@ export const Modal: React.FC<IModalProps> = ({
                       onClick={() => {
                         if (handleClose) { return handleClose({}, 'backdropClick') }
                       }}
+                      data-testId={'closeButton'}
                     >
                       <ClearIcon />
                     </IconButton>
