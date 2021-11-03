@@ -1,3 +1,15 @@
+
+# [4.1.0] - WIP
+
+## Changed
+
+* Added possibility to get back to join/create from username registration screen
+* https://github.com/vue-electron/vuex-electron/issues/17 - the app will write to disk once a second, which should prevent windows defender from checking the file and changing the name.
+
+# [4.0.0]
+
+* Join and create community
+
 # [3.6.0] 27 August 2021
 
 ## Broke
