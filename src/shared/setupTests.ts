@@ -6,10 +6,12 @@ import mockStorage from 'redux-persist-memory-storage'
 import { setEngine, CryptoEngine } from 'pkijs'
 
 import { Crypto } from '@peculiar/webcrypto'
+import { io } from 'socket.io-client'
 
 const webcrypto = new Crypto()
 setEngine(
   'newEngine',
+  // @ts-expect-error
   webcrypto,
   new CryptoEngine({
     name: '',
@@ -17,6 +19,12 @@ setEngine(
     subtle: webcrypto.subtle
   })
 )
+
+jest.mock('socket.io-client', () => ({
+  io: jest.fn()
+}))
+
+export const ioMock = io as jest.Mock
 
 jest.mock('electron-store-webpack-wrapper')
 
