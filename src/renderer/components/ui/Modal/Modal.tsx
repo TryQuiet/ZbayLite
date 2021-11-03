@@ -129,6 +129,7 @@ export const Modal: React.FC<IModalProps> = ({
                 item
                 justify={alignCloseLeft ? 'flex-start' : 'flex-end'}
                 className={classes.actions}
+                data-testid={`${title}Actions`}
               >
                 {canGoBack ? (
                   <IconButton onClick={() => {
@@ -143,7 +144,6 @@ export const Modal: React.FC<IModalProps> = ({
                       onClick={() => {
                         if (handleClose) { return handleClose({}, 'backdropClick') }
                       }}
-                      data-testId={'closeButton'}
                     >
                       <ClearIcon />
                     </IconButton>

@@ -18,7 +18,7 @@ export const reducers = {
   [StoreKeys.Modals]: modalsReducer
 }
 
-export const prepareStore = (reducers, mockedState?: { [key in StoreKeys]?: any }) => {
+export const prepareStore = (mockedState?: { [key in StoreKeys | NectarStoreKeys]?: any }) => {
   const combinedReducers = combineReducers(reducers)
   const sagaMiddleware = createSagaMiddleware()
   const store = createStore(

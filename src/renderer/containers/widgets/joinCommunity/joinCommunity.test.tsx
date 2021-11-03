@@ -4,7 +4,7 @@ import { screen } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
 import { renderComponent } from '../../../testUtils/renderComponent'
 import { prepareStore } from '../../../testUtils/prepareStore'
-import reducers from '../../../store/reducers'
+import { StoreKeys as NectarStoreKeys } from '@zbayapp/nectar/lib/sagas/store.keys'
 import { StoreKeys } from '../../../store/store.keys'
 import { SocketState } from '../../../sagas/socket/socket.slice'
 import { ModalName } from '../../../sagas/modals/modals.types'
@@ -12,10 +12,12 @@ import { ModalsInitialState } from '../../../sagas/modals/modals.slice'
 import JoinCommunity from './joinCommunity'
 import { JoinCommunityDictionary } from '../../../components/widgets/performCommunityAction/PerformCommunityAction.dictionary'
 import CreateUsernameModal from '../createUsernameModal/CreateUsername'
+import { CommunitiesState } from '@zbayapp/nectar/lib/sagas/communities/communities.slice'
+import { IdentityState } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
 
 describe('join community', () => {
   it('user goes form joning community to username registration, then comes back', async () => {
-    const { store, runSaga } = prepareStore(reducers, {
+    const { store, runSaga } = prepareStore({
       [StoreKeys.Socket]: {
         ...new SocketState(),
         isConnected: true
@@ -23,6 +25,12 @@ describe('join community', () => {
       [StoreKeys.Modals]: {
         ...new ModalsInitialState(),
         [ModalName.joinCommunityModal]: { open: true }
+      },
+      [NectarStoreKeys.Communities]: {
+        ...new CommunitiesState()
+      },
+      [NectarStoreKeys.Identity]: {
+        ...new IdentityState()
       }
     })
 
@@ -42,7 +50,7 @@ describe('join community', () => {
     // Enter community address and hit button
     const joinCommunityInput = screen.getByPlaceholderText(dictionary.placeholder)
     const joinCommunityButton = screen.getByText(dictionary.button)
-    userEvent.type(joinCommunityInput, 'address.onion')
+    userEvent.type(joinCommunityInput, '3lyn5yjwwb74he5olv43eej7knt34folvrgrfsw6vzitvkxmc5wpe4yd')
     userEvent.click(joinCommunityButton)
 
     // Confirm user is being redirected to username registration
@@ -50,7 +58,7 @@ describe('join community', () => {
     expect(createUsernameTitle).toBeVisible()
 
     // Close username registration modal
-    const closeButton = await screen.findByTestId('closeButton')
+    const closeButton = await screen.findByTestId('createUsernameActions')
     userEvent.click(closeButton)
     expect(joinCommunityTitle).toBeVisible()
   })
