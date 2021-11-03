@@ -58,7 +58,7 @@ describe('join community', () => {
     expect(createUsernameTitle).toBeVisible()
 
     // Close username registration modal
-    const closeButton = await screen.findByTestId('createUsernameActions')
+    const closeButton = await screen.findByTestId('createUsernameModalActions')
     userEvent.click(closeButton)
     expect(createCommunityTitle).toBeVisible()
   })

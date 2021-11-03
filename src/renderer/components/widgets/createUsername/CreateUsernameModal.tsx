@@ -149,7 +149,7 @@ export const CreateUsernameModal: React.FC<CreateUsernameModalProps> = ({
   }, [certificateRegistrationError])
 
   return (
-    <Modal title={'createUsername'} open={open} handleClose={handleClose}>
+    <Modal open={open} handleClose={handleClose} testIdPrefix='createUsername'>
       <Grid container className={classes.main} direction='column'>
         {!certificate ? (
           <>
