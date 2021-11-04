@@ -26,6 +26,9 @@ const CreateUsernameModal = () => {
   const joinCommunityModal = useModal(ModalName.joinCommunityModal)
   const createCommunityModal = useModal(ModalName.createCommunityModal)
 
+  const loadingCreateCommunity = useModal(ModalName.loadingCreateCommunity)
+  const loadingJoinCommunity = useModal(ModalName.loadingJoinCommunity)
+
   useEffect(() => {
     if (id?.hiddenService) {
       dispatch(identity.actions.registerUsername(username))
@@ -43,11 +46,15 @@ const CreateUsernameModal = () => {
   const handleAction = (payload: { nickname: string }) => {
     setUsername(payload.nickname)
     const value = createUsernameModal.communityData
-    const action =
-      createUsernameModal.communityAction === CommunityAction.Create
-        ? communities.actions.createNewCommunity(value)
-        : communities.actions.joinCommunity(value)
-    /* Launch/create community */
+    let action
+    if (createUsernameModal.communityAction === CommunityAction.Create) {
+      action = communities.actions.createNewCommunity(value)
+      loadingCreateCommunity.handleOpen()
+    } else {
+      action = communities.actions.joinCommunity(value)
+      loadingJoinCommunity.handleOpen()
+    }
+
     dispatch(action)
   }
 

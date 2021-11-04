@@ -17,9 +17,9 @@ export class ModalsInitialState {
     open: boolean
     args: CreateUsernameModalProps
   } = {
-    open: false,
-    args: undefined
-  };
+      open: false,
+      args: undefined
+    };
 
   [ModalName.channelInfo] = { open: false };
   [ModalName.channelSettingsModal] = { open: false };
@@ -28,7 +28,10 @@ export class ModalsInitialState {
   [ModalName.newMessageSeparate] = { open: false };
   [ModalName.quitApp] = { open: false };
   [ModalName.joinCommunityModal] = { open: false };
-  [ModalName.createCommunityModal] = { open: false }
+  [ModalName.createCommunityModal] = { open: false };
+  [ModalName.loadingCreateCommunity] = { open: false };
+  [ModalName.loadingJoinCommunity] = { open: false };
+  [ModalName.loadingStartApp] = { open: false }
 }
 
 export const modalsSlice = createSlice({
