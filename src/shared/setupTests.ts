@@ -11,7 +11,6 @@ import { io } from 'socket.io-client'
 const webcrypto = new Crypto()
 setEngine(
   'newEngine',
-  // @ts-expect-error
   webcrypto,
   new CryptoEngine({
     name: '',

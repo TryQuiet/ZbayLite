@@ -223,7 +223,7 @@
     "@types/ps-node": "^0.1.0",
     "@types/redux-debounced": "^0.2.19",
     "@zbayapp/identity": "^3.3.2",
-    "@zbayapp/nectar": "^1.14.1",
+    "@zbayapp/nectar": "^1.14.2",
     "asn1js": "^2.1.1",
     "async": "^3.1.0",
     "atob": "^2.1.2",
@@ -266,7 +266,6 @@
     "luxon": "^1.11.4",
     "material-ui-formik-components": "^0.5.2",
     "notistack": "^0.8.2",
-    "pkijs": "^2.1.97",
     "prop-types": "^15.7.1",
     "protons": "^2.0.0",
     "ps-node": "^0.1.6",
@@ -313,5 +312,8 @@
     "worker-loader": "^3.0.1",
     "ws": "^7.3.1",
     "yup": "^0.27.0"
+  },
+  "peerDependencies": {
+    "pkijs": "*"
   }
 }
