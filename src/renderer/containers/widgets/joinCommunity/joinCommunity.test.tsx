@@ -79,7 +79,7 @@ describe('User', () => {
       }
       if (action === SocketActionTypes.REGISTER_USER_CERTIFICATE) {
         const data = input as socketEventData<
-          [string, string, string]
+        [string, string, string]
         >
         const communityId = data[2]
         return socket.socketClient.emit(SocketActionTypes.SEND_USER_CERTIFICATE, {
