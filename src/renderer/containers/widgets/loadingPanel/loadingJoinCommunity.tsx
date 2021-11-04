@@ -16,8 +16,6 @@ const LoadingJoinCommunity = () => {
   const channels = useSelector(publicChannels.selectors.publicChannels)
   const numberOfChannels = channels.length
   const action = createUsernameModal.communityAction === CommunityAction.Create
-    ? true
-    : false
 
   useEffect(() => {
     if (isSpinnerOpen && action) {

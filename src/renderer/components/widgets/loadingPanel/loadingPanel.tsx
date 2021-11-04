@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import SpinnerLoader from '../../ui/Spinner/SpinnerLoader'
 import Modal from '../../ui/Modal/Modal'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   spinner: {
     top: '50%',
     position: 'relative',

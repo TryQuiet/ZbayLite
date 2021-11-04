@@ -17,9 +17,9 @@ export class ModalsInitialState {
     open: boolean
     args: CreateUsernameModalProps
   } = {
-      open: false,
-      args: undefined
-    };
+    open: false,
+    args: undefined
+  };
 
   [ModalName.channelInfo] = { open: false };
   [ModalName.channelSettingsModal] = { open: false };

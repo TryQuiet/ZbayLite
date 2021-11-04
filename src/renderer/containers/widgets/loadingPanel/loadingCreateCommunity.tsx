@@ -15,8 +15,6 @@ const LoadingCreateCommunity = () => {
 
   const invitationUrl = useSelector(communities.selectors.registrarUrl)
   const action = createUsernameModal.communityAction === CommunityAction.Join
-    ? true
-    : false
 
   useEffect(() => {
     if (isSpinnerOpen && action) {
