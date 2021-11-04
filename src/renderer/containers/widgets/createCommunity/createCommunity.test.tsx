@@ -35,7 +35,7 @@ const payload = (id: string): Partial<Identity> => ({
   }
 })
 
-describe('test', () => {
+describe('User', () => {
   let socket: MockedSocket
 
   beforeEach(() => {
@@ -43,7 +43,7 @@ describe('test', () => {
     ioMock.mockImplementation(() => socket)
   })
 
-  it('User creates community and registers username', async () => {
+  it('creates community and registers username', async () => {
     const { store, runSaga } = await prepareStore(
       {
         [StoreKeys.Socket]: {
