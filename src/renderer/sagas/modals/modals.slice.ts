@@ -28,7 +28,8 @@ export class ModalsInitialState {
   [ModalName.newMessageSeparate] = { open: false };
   [ModalName.quitApp] = { open: false };
   [ModalName.joinCommunityModal] = { open: false };
-  [ModalName.createCommunityModal] = { open: false }
+  [ModalName.createCommunityModal] = { open: false };
+  [ModalName.sentryWarningModal] = { open: false }
 }
 
 export const modalsSlice = createSlice({
