@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
 interface LoadingPanelComponentProps {
   open: boolean
   handleClose: () => void
-  isClosedDisabled: boolean
+  isClosedDisabled?: boolean
   message: string
 }
 
