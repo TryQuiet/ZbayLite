@@ -12,7 +12,14 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const LoadingPanelComponent = ({
+interface LoadingPanelComponentProps {
+  open: boolean
+  handleClose: () => void
+  isClosedDisabled: boolean
+  message: string
+}
+
+const LoadingPanelComponent: React.FC<LoadingPanelComponentProps> = ({
   open,
   handleClose,
   isClosedDisabled = true,

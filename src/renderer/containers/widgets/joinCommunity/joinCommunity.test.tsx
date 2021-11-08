@@ -117,7 +117,7 @@ describe('User', () => {
 
     await act(async () => {
       await runSaga(testJoinCommunitySaga).toPromise()
-      await runSaga(mockChannelsResponse)
+      await runSaga(mockChannelsResponse).toPromise()
     })
 
     expect(createUsernameTitle).not.toBeVisible()

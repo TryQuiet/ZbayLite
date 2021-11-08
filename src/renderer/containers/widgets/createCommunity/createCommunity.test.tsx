@@ -38,7 +38,7 @@ const payload = (id: string): Partial<Identity> => ({
 describe('User', () => {
   let socket: MockedSocket
   let communityId: string
-  let payloadId: Partial<Identity>
+  let payloadData: Partial<Identity>
 
   beforeEach(() => {
     socket = new MockedSocket()
@@ -75,7 +75,7 @@ describe('User', () => {
         const data = input as socketEventData<[string]>
 
         const id = data[0]
-        payloadId = payload(id)
+        payloadData = payload(id)
 
         return socket.socketClient.emit(SocketActionTypes.NEW_COMMUNITY, {
           id: id,
@@ -124,7 +124,7 @@ describe('User', () => {
 
     await act(async () => {
       await runSaga(testCreateCommunitySaga).toPromise()
-      await runSaga(mockAddressResponse)
+      await runSaga(mockAddressResponse).toPromise()
     })
 
     expect(createUsernameTitle).not.toBeVisible()
@@ -142,10 +142,10 @@ describe('User', () => {
     yield* apply(socket.socketClient, socket.socketClient.emit, [SocketActionTypes.REGISTRAR,
       {
         id: communityId,
-        peerId: payloadId.peerId.id,
+        peerId: payloadData.peerId.id,
         payload: {
-          privateKey: payloadId.hiddenService.privateKey,
-          onionAddress: payloadId.hiddenService.onionAddress,
+          privateKey: payloadData.hiddenService.privateKey,
+          onionAddress: payloadData.hiddenService.onionAddress,
           port: 7909
         }
       }

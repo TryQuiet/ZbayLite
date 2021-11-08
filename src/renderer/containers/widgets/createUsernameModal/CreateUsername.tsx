@@ -24,7 +24,6 @@ const CreateUsernameModal = () => {
 
   const invitationUrl = useSelector(communities.selectors.registrarUrl)
   const channels = useSelector(publicChannels.selectors.publicChannels)
-  const numberOfChannels = channels.length
   const createUsernameModal = useModal<CreateUsernameModalProps>(ModalName.createUsernameModal)
   const joinCommunityModal = useModal(ModalName.joinCommunityModal)
   const createCommunityModal = useModal(ModalName.createCommunityModal)
@@ -32,14 +31,14 @@ const CreateUsernameModal = () => {
 
   useEffect(() => {
     if (certificate &&
-      ((createUsernameModal.communityAction === CommunityAction.Join && numberOfChannels) ||
+      ((createUsernameModal.communityAction === CommunityAction.Join && channels.length) ||
         (createUsernameModal.communityAction === CommunityAction.Create && invitationUrl))) {
       loadingCommunity.handleClose()
       createUsernameModal.handleClose()
       joinCommunityModal.handleClose()
       createCommunityModal.handleClose()
     }
-  }, [numberOfChannels, invitationUrl, certificate])
+  }, [channels.length, invitationUrl, certificate])
 
   useEffect(() => {
     if (id?.hiddenService) {
