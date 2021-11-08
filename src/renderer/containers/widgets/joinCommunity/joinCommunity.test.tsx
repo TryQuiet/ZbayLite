@@ -37,7 +37,7 @@ const payload = (id: string): Partial<Identity> => ({
 
 describe('User', () => {
   let socket: MockedSocket
-  let idCommunity: string
+  let communityId: string
 
   beforeEach(() => {
     socket = new MockedSocket()
@@ -72,15 +72,15 @@ describe('User', () => {
     jest.spyOn(socket, 'emit').mockImplementation((action: SocketActionTypes, ...input: any[]) => {
       if (action === SocketActionTypes.CREATE_NETWORK) {
         const data = input as socketEventData<[string]>
-        idCommunity = data[0]
+        communityId = data[0]
         return socket.socketClient.emit(SocketActionTypes.NEW_COMMUNITY, {
-          id: idCommunity,
-          payload: payload(idCommunity)
+          id: communityId,
+          payload: payload(communityId)
         })
       }
       if (action === SocketActionTypes.REGISTER_USER_CERTIFICATE) {
         const data = input as socketEventData<
-        [string, string, string]
+          [string, string, string]
         >
         const communityId = data[2]
         return socket.socketClient.emit(SocketActionTypes.SEND_USER_CERTIFICATE, {
@@ -133,7 +133,7 @@ describe('User', () => {
 
   function* mockChannelsResponse(): Generator {
     yield* apply(socket.socketClient, socket.socketClient.emit, [SocketActionTypes.RESPONSE_GET_PUBLIC_CHANNELS, {
-      communityId: idCommunity,
+      communityId: communityId,
       channels: {
         general: {
           name: 'general',

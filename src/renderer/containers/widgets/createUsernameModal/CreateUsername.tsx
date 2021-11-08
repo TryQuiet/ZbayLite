@@ -27,13 +27,13 @@ const CreateUsernameModal = () => {
   const createUsernameModal = useModal<CreateUsernameModalProps>(ModalName.createUsernameModal)
   const joinCommunityModal = useModal(ModalName.joinCommunityModal)
   const createCommunityModal = useModal(ModalName.createCommunityModal)
-  const loadingCommunity = useModal(ModalName.loadingPanel)
+  const loadingCommunityModal = useModal(ModalName.loadingPanel)
 
   useEffect(() => {
     if (certificate &&
       ((createUsernameModal.communityAction === CommunityAction.Join && channels.length) ||
         (createUsernameModal.communityAction === CommunityAction.Create && invitationUrl))) {
-      loadingCommunity.handleClose()
+      loadingCommunityModal.handleClose()
       createUsernameModal.handleClose()
       joinCommunityModal.handleClose()
       createCommunityModal.handleClose()
@@ -59,7 +59,7 @@ const CreateUsernameModal = () => {
       ? LoadingMessages.CreateCommunity
       : LoadingMessages.JoinCommunity
 
-    loadingCommunity.handleOpen({
+    loadingCommunityModal.handleOpen({
       message
     })
     dispatch(action)
