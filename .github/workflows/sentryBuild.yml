@@ -3,7 +3,7 @@ name: CI-Linux-Sentry
 on:
   push:
     branches:
-      - master
+      - feature/sentry-setup
 jobs:
   build_on_linux:
     runs-on: ubuntu-18.04
