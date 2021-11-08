@@ -10,6 +10,7 @@ const LoadingStartApp = () => {
   return (
     <LoadingPanelComponent
       {...loadingStartApp}
+      isClosedDisabled={true}
     />
   )
 }
