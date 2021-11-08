@@ -4,7 +4,7 @@ import { ModalName } from './modals.types'
 
 export interface OpenModalPayload {
   name: ModalName
-  args?: CreateUsernameModalProps
+  args?: CreateUsernameModalProps | { message: string }
 }
 
 export class ModalsInitialState {
@@ -29,7 +29,14 @@ export class ModalsInitialState {
   [ModalName.quitApp] = { open: false };
   [ModalName.joinCommunityModal] = { open: false };
   [ModalName.createCommunityModal] = { open: false };
-  [ModalName.sentryWarningModal] = { open: false }
+  [ModalName.sentryWarningModal] = { open: false };
+  [ModalName.loadingPanel]: {
+    open: boolean
+    args: { message: string }
+  } = {
+    open: false,
+    args: undefined
+  }
 }
 
 export const modalsSlice = createSlice({
