@@ -53,6 +53,36 @@ const isBrowserWindow = (window: BrowserWindow | null): window is BrowserWindow 
 const gotTheLock = app.requestSingleInstanceLock()
 
 const extensionsFolderPath = `${app.getPath('userData')}/extensions`
+console.log('HERE IN MAIN')
+if (process.env.APP_TEST_DRIVER) {
+  process.on('message', onMessage)
+}
+
+async function onMessage ({ msgId, cmd, args }) {
+  console.log('----------------------------------')
+  let method = METHODS[cmd]
+  if (!method) method = () => new Error('Invalid method: ' + cmd)
+  try {
+    const resolve = await method(...args)
+    process.send({ msgId, resolve })
+  } catch (err) {
+    const reject = {
+      message: err.message,
+      stack: err.stack,
+      name: err.name
+    }
+    process.send({ msgId, reject })
+  }
+}
+
+const METHODS = {
+  isReady () {
+    // do any setup needed
+    return true
+  }
+  // define your RPC-able methods here
+}
+
 
 const applyDevTools = async () => {
   /* eslint-disable */
