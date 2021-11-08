@@ -1,50 +1,42 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import * as R from 'ramda'
+import { useSelector } from 'react-redux'
 import { remote } from 'electron'
 
-import ErrorModal from '../../components/ui/ErrorModal'
+import ErrorModal from '../../components/ui/ErrorModal/ErrorModal'
 import criticalErrorSelectors from '../../store/selectors/criticalError'
-import modalsHandlers, { withModal } from '../../store/handlers/modals'
-import notificationsHandlers from '../../store/handlers/notifications'
-import {
-  successNotification,
-  errorNotification
-} from '../../store/handlers/utils'
+import { useModal } from '../hooks'
+import { ModalName } from '../../sagas/modals/modals.types'
 
-export const mapStateToProps = state => ({
-  message: criticalErrorSelectors.message(state),
-  traceback: criticalErrorSelectors.traceback(state)
-})
+export const useErrorModalData = () => {
+  const data = {
+    message: useSelector(criticalErrorSelectors.message),
+    traceback: useSelector(criticalErrorSelectors.traceback)
+  }
+  return data
+}
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      handleExit: modalsHandlers.actionCreators.openModal('quitApp'),
-      successSnackbar: () =>
-        notificationsHandlers.actions.enqueueSnackbar(
-          successNotification({
-            message: 'Message has been sent'
-          })
-        ),
-      errorSnackbar: () =>
-        notificationsHandlers.actions.enqueueSnackbar(
-          errorNotification({
-            message: 'There was an error'
-          })
-        ),
-      restartApp: () => {
-        remote.app.relaunch()
-        remote.app.quit()
-      }
-    },
+export const useErrorModalActions = () => {
+  const restartApp = () => {
+    remote.app.relaunch()
+    remote.app.quit()
+  }
+  return { restartApp }
+}
 
-    dispatch
+const ErrorModalContainer = () => {
+  const { message, traceback } = useErrorModalData()
+  const { restartApp } = useErrorModalActions()
+  const modal = useModal(ModalName.quitApp)
+
+  return (
+    <ErrorModal
+      message={message}
+      traceback={traceback}
+      open={modal.open}
+      handleExit={modal.handleClose}
+      restartApp={restartApp}
+    />
   )
+}
 
-export default R.compose(
-  React.memo,
-  connect(mapStateToProps, mapDispatchToProps),
-  withModal('criticalError')
-)(ErrorModal)
+export default ErrorModalContainer

@@ -1,31 +1,48 @@
 import React from 'react'
-import * as R from 'ramda'
-import { connect } from 'react-redux'
-
-import { bindActionCreators } from 'redux'
-
-import { withModal } from '../../../store/handlers/modals'
-import JoinChannelModal from '../../../components/widgets/channels/JoinChannelModal'
-import publicChannels from '../../../store/selectors/publicChannels'
-import usersSelector from '../../../store/selectors/users'
+import { useSelector, useDispatch } from 'react-redux'
+import { publicChannels } from '@zbayapp/nectar'
+import JoinChannelModalComponent from '../../../components/widgets/channels/JoinChannelModal'
 import channelHandlers from '../../../store/handlers/channel'
-import notificationsHandlers from '../../../store/handlers/notifications'
+import { IChannelInfo } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.types'
+import { ModalName } from '../../../sagas/modals/modals.types'
+import { useModal } from '../../hooks'
 
-export const mapStateToProps = state => ({
-  publicChannels: publicChannels.publicChannels(state),
-  users: usersSelector.users(state)
-})
-export const mapDispatchToProps = (dispatch, _ownProps) =>
-  bindActionCreators(
-    {
-      joinChannel: channelHandlers.epics.linkChannelRedirect,
-      showNotification: notificationsHandlers.actions.enqueueSnackbar
-    },
-    dispatch
+const useJoinChannelData = () => {
+  const modalName = 'joinChannel'
+  const data = {
+    publicChannels: useSelector(publicChannels.selectors.publicChannels),
+    users: {},
+    modalName
+  }
+  return data
+}
+
+export const useJoinChannelActions = () => {
+  const dispatch = useDispatch()
+  const actions = {
+    joinChannel: (channel: IChannelInfo) => {
+      dispatch(channelHandlers.epics.linkChannelRedirect(channel))
+    }
+  }
+  return actions
+}
+
+export const JoinChannelModal = () => {
+  const { publicChannels, users } = useJoinChannelData()
+  const { joinChannel } = useJoinChannelActions()
+
+  const modal = useModal(ModalName.joinChannel)
+
+  return (
+    <JoinChannelModalComponent
+      publicChannels={publicChannels}
+      joinChannel={joinChannel}
+      // showNotification={showNotification}
+      open={modal.open}
+      users={users}
+      handleClose={modal.handleClose}
+    />
   )
+}
 
-export default R.compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  React.memo,
-  withModal('joinChannel')
-)(JoinChannelModal)
+export default JoinChannelModal

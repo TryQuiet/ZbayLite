@@ -5,20 +5,16 @@ import url from 'url'
 import { autoUpdater } from 'electron-updater'
 import config from './config'
 import electronStore from '../shared/electronStore'
-import Client from './cli/client'
-import { spawnTor, waggleVersion, runWaggle } from './waggleManager'
+import { waggleVersion, runWaggle } from './waggleManager'
 import debug from 'debug'
 import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
 import { DataServer } from 'waggle/lib/socket/DataServer'
 
-import {
-  setEngine,
-  CryptoEngine
-} from 'pkijs'
+import { setEngine, CryptoEngine } from 'pkijs'
 import { Crypto } from '@peculiar/webcrypto'
+
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
-
 })
 
 electronStore.set('appDataPath', app.getPath('appData'))
@@ -37,13 +33,22 @@ const windowSize: IWindowSize = {
   width: 800,
   height: 540
 }
-setEngine('newEngine', webcrypto, new CryptoEngine({
-  name: '',
-  crypto: webcrypto,
-  subtle: webcrypto.subtle
-}))
 
-let mainWindow: BrowserWindow
+setEngine(
+  'newEngine',
+  webcrypto,
+  new CryptoEngine({
+    name: '',
+    crypto: webcrypto,
+    subtle: webcrypto.subtle
+  })
+)
+
+let mainWindow: BrowserWindow | null
+
+const isBrowserWindow = (window: BrowserWindow | null): window is BrowserWindow => {
+  return window instanceof BrowserWindow
+}
 
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -119,7 +124,7 @@ app.on('open-url', (event, url) => {
   }
 })
 
-const checkForPayloadOnStartup = payload => {
+const checkForPayloadOnStartup = (payload: string) => {
   const isInvitation = payload.includes('invitation')
   const isNewChannel = payload.includes('importchannel')
   if (mainWindow && (isInvitation || isNewChannel)) {
@@ -159,7 +164,7 @@ const createWindow = async () => {
       pathname: path.join(__dirname, './index.html'),
       protocol: 'file:',
       slashes: true,
-      hash: '/zcashNode'
+      hash: '/'
     })
   )
   /* eslint-enable */
@@ -168,21 +173,27 @@ const createWindow = async () => {
     mainWindow = null
   })
   mainWindow.on('resize', () => {
-    const [width, height] = mainWindow.getSize()
-    browserHeight = height
-    browserWidth = width
+    if (isBrowserWindow(mainWindow)) {
+      const [width, height] = mainWindow.getSize()
+      browserHeight = height
+      browserWidth = width
+    }
   })
   electronLocalshortcut.register(mainWindow, 'CommandOrControl+L', () => {
-    mainWindow.webContents.send('openLogs')
+    if (isBrowserWindow(mainWindow)) {
+      mainWindow.webContents.send('openLogs')
+    }
   })
   electronLocalshortcut.register(mainWindow, 'F12', () => {
-    mainWindow.webContents.openDevTools()
+    if (isBrowserWindow(mainWindow)) {
+      mainWindow.webContents.openDevTools()
+    }
   })
 }
 
 let isUpdatedStatusCheckingStarted = false
 
-const isNetworkError = errorObject => {
+const isNetworkError = (errorObject: { message: string }) => {
   return (
     errorObject.message === 'net::ERR_INTERNET_DISCONNECTED' ||
     errorObject.message === 'net::ERR_PROXY_CONNECTION_FAILED' ||
@@ -193,7 +204,7 @@ const isNetworkError = errorObject => {
   )
 }
 
-export const checkForUpdate = async win => {
+export const checkForUpdate = async (win: BrowserWindow) => {
   if (!isUpdatedStatusCheckingStarted) {
     try {
       await autoUpdater.checkForUpdates()
@@ -237,9 +248,7 @@ export const checkForUpdate = async win => {
   }
 }
 
-// let client: Client
-let tor = null
-let waggleProcess: { connectionsManager: ConnectionsManager; dataServer: DataServer } = null
+let waggleProcess: { connectionsManager: ConnectionsManager; dataServer: DataServer } | null = null
 app.on('ready', async () => {
   // const template = [
   //   {
@@ -274,12 +283,19 @@ app.on('ready', async () => {
 
   await createWindow()
   log('created windows')
+
+  if (!isBrowserWindow(mainWindow)) {
+    throw new Error('mainWindow is on unexpected type {mainWindow}')
+  }
+
   mainWindow.webContents.on('did-fail-load', () => {
     log('failed loading')
   })
 
   mainWindow.webContents.on('did-finish-load', async () => {
-    tor = await spawnTor()
+    if (!isBrowserWindow(mainWindow)) {
+      throw new Error('mainWindow is on unexpected type {mainWindow}')
+    }
     waggleProcess = await runWaggle(mainWindow.webContents)
     if (process.platform === 'win32' && process.argv) {
       const payload = process.argv[1]
@@ -290,6 +306,9 @@ app.on('ready', async () => {
     if (!isDev) {
       await checkForUpdate(mainWindow)
       setInterval(async () => {
+        if (!isBrowserWindow(mainWindow)) {
+          throw new Error(`mainWindow is on unexpected type ${mainWindow}`)
+        }
         await checkForUpdate(mainWindow)
       }, 15 * 60000)
     }
@@ -298,20 +317,6 @@ app.on('ready', async () => {
   ipcMain.on('proceed-update', () => {
     autoUpdater.quitAndInstall()
   })
-
-  // Temporary disable ZCASH
-  const client = new Client()
-  const response = await client.postMessage('1', 'balance')
-  // @ts-expect-error
-  electronStore.set('balance', response.zbalance)
-  await client.terminate()
-
-  // ipcMain.on('rpcQuery', async (_event, arg) => {
-  //   const request = JSON.parse(arg)
-  //   const response = await client.postMessage(request.id, request.method, request.args)
-  //   if (mainWindow) {  //     mainWindow.webContents.send('rpcQuery', JSON.stringify({ id: request.id, data: response }))
-  //   }
-  // })
 })
 
 app.setAsDefaultProtocolClient('zbay')
@@ -319,11 +324,8 @@ app.setAsDefaultProtocolClient('zbay')
 app.on('before-quit', async e => {
   e.preventDefault()
   if (waggleProcess !== null) {
-    await waggleProcess.connectionsManager.closeStorage()
+    await waggleProcess.connectionsManager.closeAllServices()
     await waggleProcess.dataServer.close()
-  }
-  if (tor !== null) {
-    await tor.kill()
   }
   if (browserWidth && browserHeight) {
     electronStore.set('windowSize', {

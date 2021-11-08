@@ -5,8 +5,6 @@ import { remote } from 'electron'
 import { DateTime } from 'luxon'
 
 import history from '../../../shared/history'
-import messagesHandlers from './messages'
-import channelSelectors from '../selectors/channel'
 import contactsSelectors from '../selectors/contacts'
 
 import { actionTypes } from '../../../shared/static'
@@ -14,7 +12,8 @@ import contactsHandlers from './contacts'
 import electronStore from '../../../shared/electronStore'
 
 import { ActionsType, PayloadType } from './types'
-import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'
+// import { publicChannelsActions } from '../../sagas/publicChannels/publicChannels.reducer'xs
+import { publicChannels } from '@zbayapp/nectar'
 
 // TODO: to remove, but must be replaced in all the tests
 export const ChannelState = {
@@ -40,18 +39,19 @@ interface ILoader {
 
 // TODO: find type of message and members
 export class Channel {
-  spentFilterValue: BigNumber
+  spentFilterValue?: BigNumber
   id?: string
-  message: object
-  shareableUri: string
-  address: string
-  loader: ILoader
+  message?: object
+  shareableUri?: string
+  address?: string
+  loader?: ILoader
   members?: object
-  showInfoMsg: boolean
-  isSizeCheckingInProgress: boolean
+  showInfoMsg?: boolean
+  isSizeCheckingInProgress?: boolean
   messageSizeStatus?: boolean
-  displayableMessageLimit: number
-
+  displayableMessageLimit: number = 50
+  name?: string
+  description?: string
   constructor(values?: Partial<Channel>) {
     Object.assign(this, values)
     this[immerable] = true
@@ -99,6 +99,7 @@ export type ChannelActions = ActionsType<typeof actions>
 const loadChannel = key => async (dispatch, getState) => {
   console.log('loadChannel', key)
   try {
+    dispatch(publicChannels.actions.setCurrentChannel(key))
     dispatch(setChannelId(key))
     dispatch(setDisplayableLimit(30))
     const contact = contactsSelectors.contact(key)(getState())
@@ -108,34 +109,35 @@ const loadChannel = key => async (dispatch, getState) => {
     dispatch(setAddress(contact.address))
     dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: contact.key }))
     dispatch(contactsHandlers.actions.cleanNewMessages({ contactAddress: key }))
-  } catch (err) { }
+  } catch (err) {
+    console.log(err)
+  }
 }
-const linkChannelRedirect = targetChannel => async (dispatch, getState) => {
-  const contact = contactsSelectors.contact(targetChannel.address)(getState())
-  if (targetChannel.name === 'zbay') {
-    history.push('/main/channel/zs10zkaj29rcev9qd5xeuzck4ly5q64kzf6m6h9nfajwcvm8m2vnjmvtqgr0mzfjywswwkwke68t00')
-    return
-  }
-  if (contact.address) {
-    history.push(`/main/channel/${targetChannel.address}`)
-    return
-  }
+const linkChannelRedirect = targetChannel => async (dispatch, _getState) => {
+  // const contact = contactsSelectors.contact(targetChannel.address)(getState())
+  // if (targetChannel.name === 'zbay') {
+  //   history.push('/main/channel/zs10zkaj29rcev9qd5xeuzck4ly5q64kzf6m6h9nfajwcvm8m2vnjmvtqgr0mzfjywswwkwke68t00')
+  //   return
+  // }
+  // if (contact.address) {
+  //   history.push(`/main/channel/${targetChannel.address}`)
+  //   return
+  // }
 
-  dispatch(publicChannelsActions.subscribeForTopic(targetChannel))
-  await dispatch(
-    contactsHandlers.actions.addContact({
-      key: targetChannel.address,
-      contactAddress: targetChannel.address,
-      username: targetChannel.name
-    })
-  )
+  dispatch(publicChannels.actions.setCurrentChannel(targetChannel.address))
+  // await dispatch(
+  //   contactsHandlers.actions.addContact({
+  //     key: targetChannel.address,
+  //     contactAddress: targetChannel.address,
+  //     username: targetChannel.name
+  //   })
+  // )
 
   history.push(`/main/channel/${targetChannel.address}`)
 }
 
-const clearNewMessages = () => async (dispatch, getState) => {
-  const channelId = channelSelectors.channelId(getState())
-  dispatch(messagesHandlers.actions.cleanNewMessages({ channelId }))
+const clearNewMessages = () => async (_dispatch, _getState) => {
+
 }
 
 // TODO: we should have a global loader map

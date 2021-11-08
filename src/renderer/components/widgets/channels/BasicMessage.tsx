@@ -1,5 +1,4 @@
 import React from 'react'
-import { DateTime } from 'luxon'
 import classNames from 'classnames'
 import Jdenticon from 'react-jdenticon'
 
@@ -11,8 +10,6 @@ import { makeStyles, Theme } from '@material-ui/core/styles'
 
 import red from '@material-ui/core/colors/red'
 
-import Icon from '../../ui/Icon'
-import maskIcon from '../../../static/images/avatar-13-mask-light.svg'
 import { IBasicMessageProps } from './BasicMessage.d'
 import SendMessagePopover from '../../../containers/widgets/channels/SendMessagePopover'
 
@@ -84,7 +81,7 @@ export const getTimeFormat = () => {
   return 't'
 }
 
-export const transformToLowercase = string => {
+export const transformToLowercase = (string: string) => {
   const hasPM = string.search('PM')
   return hasPM !== -1 ? string.replace('PM', 'pm') : string.replace('AM', 'am')
 }
@@ -96,21 +93,16 @@ export const BasicMessage: React.FC<IBasicMessageProps> = ({
   setActionsOpen
 }) => {
   const classes = useStyles({})
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const handleClick = (event, isFromZbayUser) => {
-    if (isFromZbayUser) {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null)
+
+  const handleClick: React.ComponentProps<typeof Grid>['onClick'] = (event) => {
+    if (event) {
       setAnchorEl(event.currentTarget)
     }
   }
   const handleClose = () => setAnchorEl(null)
-  const sender = message.sender
-  const isUnregistered = message.isUnregistered
-  const username = sender.username.substring(0, 20) || 'unknown'
-  const time = DateTime.fromSeconds(message.createdAt)
-  const timeFormat = getTimeFormat()
-  const timeString = transformToLowercase(time.toFormat(timeFormat))
-  const status = message.status || 'broadcasted'
-  const isFromZbayUser = username !== 'unknown'
+  const username = message.nickname
+  const timeString = message.createdAt
   return (
     <ListItem
       className={classNames({
@@ -135,21 +127,12 @@ export const BasicMessage: React.FC<IBasicMessageProps> = ({
             wrap={'nowrap'}>
             <SendMessagePopover
               username={username}
-              address={message.sender.replyTo}
-              message={message}
-              publicKey={message.pubKey}
-              txid={message.id}
               anchorEl={anchorEl}
               handleClose={handleClose}
-              isUnregistered={isUnregistered}
             />
             <Grid item className={classes.avatar}>
               <div className={classes.alignAvatar}>
-                {isFromZbayUser ? (
-                  <Jdenticon size='32' value={username} />
-                ) : (
-                  <Icon src={maskIcon} />
-                )}
+                <Jdenticon size='32' value={username} />
               </div>
             </Grid>
             <Grid container item direction='row' justify='space-between'>
@@ -159,7 +142,7 @@ export const BasicMessage: React.FC<IBasicMessageProps> = ({
                 xs
                 alignItems='flex-start'
                 wrap='nowrap'
-                onClick={e => handleClick(e, isFromZbayUser)}>
+                onClick={e => handleClick(e)}>
                 <Grid item>
                   <Typography color='textPrimary' className={classes.username}>
                     {username}

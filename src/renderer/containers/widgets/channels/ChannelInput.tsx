@@ -1,63 +1,69 @@
+// @ts-nocheck
 import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import ChannelInputComponent from '../../../components/widgets/channels/ChannelInput'
 import channelHandlers from '../../../store/handlers/channel'
-// import messagesQueueHandlers from '../../../store/handlers/messagesQueue'
 import mentionsHandlers from '../../../store/handlers/mentions'
 import channelSelectors from '../../../store/selectors/channel'
-import usersSelectors from '../../../store/selectors/users'
-import { User } from '../../../store/handlers/users'
-import { publicChannelsActions } from '../../../sagas/publicChannels/publicChannels.reducer'
+import { publicChannels, messages, identity, users } from '@zbayapp/nectar'
 
 export const useChannelInputData = () => {
-  const channelSelectorsData = useSelector(channelSelectors.data)
+  const currentChannel = useSelector(publicChannels.selectors.currentChannel)
+  const channels = useSelector(publicChannels.selectors.publicChannels)
+
   const data = {
     message: useSelector(channelSelectors.message),
     id: useSelector(channelSelectors.id),
     inputState: useSelector(channelSelectors.inputLocked),
     members: useSelector(channelSelectors.members),
-    channelName: useSelector(channelSelectors.data)
-      ? channelSelectorsData.username
-      : ' Unnamed',
-    users: useSelector(usersSelectors.users),
-    myUser: useSelector(usersSelectors.myUser),
+    channelName: channels.find(channel => channel.address === currentChannel)?.name,
+    users: useSelector(users.selectors.certificatesMapping),
+    myUser: useSelector(identity.selectors.currentIdentity),
     isMessageTooLong: useSelector(channelSelectors.messageSizeStatus)
   }
-
   return data
 }
 
 export const useChannelInputActions = () => {
   const dispatch = useDispatch()
 
-  const onChange = useCallback((arg: { value: string; id: string }) => {
-    dispatch(channelHandlers.actions.setMessage(arg))
-  }, [dispatch])
+  const onChange = useCallback(
+    (arg: { value: string; id: string }) => {
+      dispatch(channelHandlers.actions.setMessage(arg))
+    },
+    [dispatch]
+  )
 
-  const resetDebounce = useCallback(() => {
-    // dispatch(messagesQueueHandlers.epics.resetMessageDebounce())
-  }, [dispatch])
-
-  const sendOnEnter = useCallback(() => {
-    dispatch(publicChannelsActions.sendMessage())
-  }, [dispatch])
+  const sendOnEnter = useCallback(
+    message => {
+      dispatch(messages.actions.sendMessage(message))
+    },
+    [dispatch]
+  )
 
   const checkMentions = useCallback(() => {
     dispatch(mentionsHandlers.epics.checkMentions())
   }, [dispatch])
 
-  return { onChange, resetDebounce, sendOnEnter, checkMentions }
+  return { onChange, sendOnEnter, checkMentions }
 }
 
 export const ChannelInput = () => {
   const [infoClass, setInfoClass] = React.useState<string>(null)
-  // eslint-disable-next-line
-  const [anchorEl, setAnchorEl] = React.useState({} as HTMLElement)
-  const [mentionsToSelect, setMentionsToSelect] = React.useState<User[]>([])
 
-  const { channelName, id, inputState, isMessageTooLong, members, message, myUser, users } = useChannelInputData()
-  const { checkMentions, onChange, resetDebounce, sendOnEnter } = useChannelInputActions()
+  const {
+    channelName,
+    id,
+    inputState,
+    isMessageTooLong,
+    members,
+    message,
+    myUser,
+    users
+  } = useChannelInputData()
+
+  const { checkMentions, onChange, sendOnEnter } = useChannelInputActions()
 
   return (
     <ChannelInputComponent
@@ -67,20 +73,15 @@ export const ChannelInput = () => {
       users={users}
       onChange={e => {
         onChange({ value: e, id })
-        resetDebounce()
       }}
-      onKeyPress={() => {
+      onKeyPress={message => {
         checkMentions()
-        sendOnEnter()
+        sendOnEnter(message)
       }}
       message={message}
       inputState={inputState}
-      inputPlaceholder={`#${channelName} as @${myUser.nickname}`}
+      inputPlaceholder={`#${channelName} as @${myUser ? myUser.zbayNickname : ''}`}
       channelName={channelName}
-      anchorEl={anchorEl}
-      setAnchorEl={setAnchorEl}
-      mentionsToSelect={mentionsToSelect}
-      setMentionsToSelect={setMentionsToSelect}
       members={members}
       isMessageTooLong={isMessageTooLong}
     />

@@ -1,34 +1,23 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import * as R from 'ramda'
+import { useSelector } from 'react-redux'
 
-import IdentityPanel from '../../components/ui/IdentityPanel'
-import identitySelectors from '../../store/selectors/identity'
-import usersSelectors from '../../store/selectors/users'
-import { actionCreators } from '../../store/handlers/modals'
+import IdentityPanelComponent from '../../components/ui/IdentityPanel/IdentityPanel'
+import { identity } from '@zbayapp/nectar'
+import { useModal } from '../hooks'
+import { ModalName } from '../../sagas/modals/modals.types'
 
-export const mapStateToProps = state => {
-  const identity = identitySelectors.data(state)
-  return {
-    identity: identity,
-    user: usersSelectors.registeredUser(identity.signerPubKey)(state)
+export const useIdentityPanelData = () => {
+  const data = {
+    identity: useSelector(identity.selectors.currentIdentity)
   }
+  return data
 }
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      handleSettings: actionCreators.openModal('accountSettingsModal'),
-      handleInvitation: actionCreators.openModal('invitationModal')
-    },
-    dispatch
-  )
+const IdentityPanel = () => {
+  const { identity } = useIdentityPanelData()
+  const modal = useModal(ModalName.accountSettingsModal)
 
-export default R.compose(
-  React.memo,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-)(IdentityPanel)
+  return <IdentityPanelComponent identity={identity} handleSettings={modal.handleOpen} />
+}
+
+export default IdentityPanel

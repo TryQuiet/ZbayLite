@@ -1,39 +1,42 @@
 import React from 'react'
-
-import { connect } from 'react-redux'
-import * as R from 'ramda'
+import { useDispatch } from 'react-redux'
 import { shell } from 'electron'
-import { bindActionCreators } from 'redux'
 
-import OpenlinkModalComponent from '../../components/ui/OpenlinkModal'
+import OpenlinkModalComponent from '../../components/ui/OpenlinkModal/OpenlinkModal'
 import whitelistHandlers from '../../store/handlers/whitelist'
+import { useModal } from '../hooks'
+import { ModalName } from '../../sagas/modals/modals.types'
 
-import { withModal } from '../../store/handlers/modals'
-import modalsSelectors from '../../store/selectors/modals'
+export interface useOpenExternalLinkModalActionsReturnTypes {
+  addToWhitelist: (url: string) => void
+  setWhitelistAll: () => void
+}
 
-export const mapStateToProps = state => ({
-  payload: modalsSelectors.payload('openexternallink')(state)
-})
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      addToWhitelist: whitelistHandlers.epics.addToWhitelist,
-      setWhitelistAll: whitelistHandlers.epics.setWhitelistAll
-    },
-    dispatch
+export const useOpenExternalLinkModalActions = (): useOpenExternalLinkModalActionsReturnTypes => {
+  const dispatch = useDispatch()
+  const addToWhitelist = (url: string) =>
+    dispatch(whitelistHandlers.epics.addToWhitelist(url, true))
+  const setWhitelistAll = () => dispatch(whitelistHandlers.epics.setWhitelistAll(true))
+  return { addToWhitelist, setWhitelistAll }
+}
+
+const OpenLinkModal = ({ ...rest }) => {
+  const modal = useModal(ModalName.openexternallink)
+  const { setWhitelistAll, addToWhitelist } = useOpenExternalLinkModalActions()
+
+  return (
+    <OpenlinkModalComponent
+      handleConfirm={async () => {
+        await shell.openExternal(rest.url)
+      }}
+      url={rest.url}
+      open={modal.open}
+      handleClose={modal.handleClose}
+      addToWhitelist={addToWhitelist}
+      setWhitelistAll={setWhitelistAll}
+      {...rest}
+    />
   )
+}
 
-const OpenlinkModal = ({ payload, ...rest }) => (
-  <OpenlinkModalComponent
-    handleConfirm={async () => {
-      await shell.openExternal(payload)
-    }}
-    url={payload}
-    {...rest}
-  />
-)
-
-export default R.compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withModal('openexternallink')
-)(OpenlinkModal)
+export default OpenLinkModal
