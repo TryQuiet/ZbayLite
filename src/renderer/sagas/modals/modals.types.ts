@@ -16,7 +16,5 @@ export enum ModalName {
   lightWalletSecurityModal = 'lightWalletSecurityModal',
   joinCommunityModal = 'joinCommunityModal',
   createCommunityModal = 'createCommunityModal',
-  loadingCreateCommunity = 'loadingCreateCommunity',
-  loadingJoinCommunity = 'loadingJoinCommunity',
-  loadingStartApp = 'loadingStartApp'
+  loadingPanel = 'loadingPanel'
 }

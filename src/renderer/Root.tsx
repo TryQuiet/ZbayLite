@@ -23,9 +23,7 @@ import QuitAppDialog from './containers/ui/QuitAppDialog'
 import theme from './theme'
 import CreateCommunity from './containers/widgets/createCommunity/createCommunity'
 import JoinCommunity from './containers/widgets/joinCommunity/joinCommunity'
-import LoadingCreateCommunity from './containers/widgets/loadingPanel/loadingCreateCommunity'
-import LoadingJoinCommunity from './containers/widgets/loadingPanel/loadingJoinCommunity'
-import LoadingStartApp from './containers/widgets/loadingPanel/loadingStartApp'
+import LoadingPanel from './containers/widgets/loadingPanel/loadingPanel'
 
 export default () => {
   const persistor = persistStore(store)
@@ -40,9 +38,7 @@ export default () => {
               <JoinCommunity />
               <CreateCommunity />
               <CreateUsernameModal />
-              <LoadingCreateCommunity />
-              <LoadingJoinCommunity />
-              <LoadingStartApp />
+              <LoadingPanel />
               <CssBaseline />
               <ErrorModal />
               <JoinChannelModal />

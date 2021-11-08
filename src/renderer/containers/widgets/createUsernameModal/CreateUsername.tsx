@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { communities, errors, identity, socketActionTypes } from '@zbayapp/nectar'
+import { communities, errors, identity, publicChannels, socketActionTypes } from '@zbayapp/nectar'
 import CreateUsernameModalComponent from '../../../components/widgets/createUsername/CreateUsernameModal'
 import { ModalName } from '../../../sagas/modals/modals.types'
 import { useModal } from '../../hooks'
 import { CommunityAction } from '../../../components/widgets/performCommunityAction/community.keys'
+import { LoadingMessages } from '../loadingPanel/loadingMessages'
 
 export interface CreateUsernameModalProps {
   communityAction: CommunityAction
@@ -18,16 +19,27 @@ const CreateUsernameModal = () => {
 
   const id = useSelector(identity.selectors.currentIdentity)
   const certificate = useSelector(identity.selectors.currentIdentity)?.userCertificate
-
   const communityErrors = useSelector(errors.selectors.currentCommunityErrorsByType)
   const error = communityErrors?.[socketActionTypes.REGISTRAR]
 
+  const invitationUrl = useSelector(communities.selectors.registrarUrl)
+  const channels = useSelector(publicChannels.selectors.publicChannels)
+  const numberOfChannels = channels.length
   const createUsernameModal = useModal<CreateUsernameModalProps>(ModalName.createUsernameModal)
   const joinCommunityModal = useModal(ModalName.joinCommunityModal)
   const createCommunityModal = useModal(ModalName.createCommunityModal)
+  const loadingCommunity = useModal(ModalName.loadingPanel)
 
-  const loadingCreateCommunity = useModal(ModalName.loadingCreateCommunity)
-  const loadingJoinCommunity = useModal(ModalName.loadingJoinCommunity)
+  useEffect(() => {
+    if (certificate &&
+      ((createUsernameModal.communityAction === CommunityAction.Join && numberOfChannels) ||
+        (createUsernameModal.communityAction === CommunityAction.Create && invitationUrl))) {
+      loadingCommunity.handleClose()
+      createUsernameModal.handleClose()
+      joinCommunityModal.handleClose()
+      createCommunityModal.handleClose()
+    }
+  }, [numberOfChannels, invitationUrl, certificate])
 
   useEffect(() => {
     if (id?.hiddenService) {
@@ -35,26 +47,22 @@ const CreateUsernameModal = () => {
     }
   }, [id?.hiddenService])
 
-  useEffect(() => {
-    if (certificate) {
-      createUsernameModal.handleClose()
-      joinCommunityModal.handleClose()
-      createCommunityModal.handleClose()
-    }
-  }, [certificate])
-
   const handleAction = (payload: { nickname: string }) => {
     setUsername(payload.nickname)
     const value = createUsernameModal.communityData
-    let action
-    if (createUsernameModal.communityAction === CommunityAction.Create) {
-      action = communities.actions.createNewCommunity(value)
-      loadingCreateCommunity.handleOpen()
-    } else {
-      action = communities.actions.joinCommunity(value)
-      loadingJoinCommunity.handleOpen()
-    }
+    const action =
+      createUsernameModal.communityAction === CommunityAction.Create
+        ? communities.actions.createNewCommunity(value)
+        : communities.actions.joinCommunity(value)
+    /* Launch/create community */
 
+    const message = createUsernameModal.communityAction === CommunityAction.Create
+      ? LoadingMessages.CreateCommunity
+      : LoadingMessages.JoinCommunity
+
+    loadingCommunity.handleOpen({
+      message
+    })
     dispatch(action)
   }
 
