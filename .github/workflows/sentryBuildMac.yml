@@ -3,8 +3,8 @@ name: CI-MacOS
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - 'v*'
 
 jobs:
   build_on_mac:

@@ -2,8 +2,8 @@ name: CI-Linux
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - 'v*'
 jobs:
   build_on_linux:
     runs-on: ubuntu-18.04
