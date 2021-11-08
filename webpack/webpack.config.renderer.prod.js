@@ -52,7 +52,7 @@ module.exports = {
     }),
     new webpack.EnvironmentPlugin({
       ZBAY_IS_TESTNET: 0,
-      REACT_APP_SENTRY: process.env.REACT_APP_SENTRY
+      REACT_APP_ENABLE_SENTRY: process.env.REACT_APP_ENABLE_SENTRY
     })
   ],
   devtool: 'eval-source-map'
