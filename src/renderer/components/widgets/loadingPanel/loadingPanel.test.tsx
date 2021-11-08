@@ -7,7 +7,7 @@ import LoadingPanelComponent from './loadingPanel'
 describe('CreateUsernameModal', () => {
   it('renders component', () => {
     const result = renderComponent(
-      <LoadingPanelComponent handleClose={jest.fn()} open={true} message={'message'} />
+      <LoadingPanelComponent handleClose={jest.fn()} open={true} message={'message'} isClosedDisabled={true} />
     )
     expect(result.baseElement).toMatchInlineSnapshot(`
       <body
