@@ -12,7 +12,6 @@ import { DataServer } from 'waggle/lib/socket/DataServer'
 
 import { setEngine, CryptoEngine } from 'pkijs'
 import { Crypto } from '@peculiar/webcrypto'
-
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
 })
@@ -22,6 +21,7 @@ electronStore.set('waggleInitialized', false)
 electronStore.set('waggleVersion', waggleVersion)
 
 export const isDev = process.env.NODE_ENV === 'development'
+export const isE2Etest = process.env.E2E_TEST === 'true'
 const webcrypto = new Crypto()
 
 interface IWindowSize {
@@ -56,7 +56,7 @@ const extensionsFolderPath = `${app.getPath('userData')}/extensions`
 
 const applyDevTools = async () => {
   /* eslint-disable */
-  if (!isDev) return
+  if (!isDev || isE2Etest) return
   /* eslint-disable */
   require('electron-debug')({
     showDevTools: true
@@ -141,7 +141,12 @@ const checkForPayloadOnStartup = (payload: string) => {
     }
   }
 }
-
+const aaa = url.format({
+  pathname: path.join(__dirname, './index.html'),
+  protocol: 'file:',
+  slashes: true,
+  hash: '/'
+})
 let browserWidth: number
 let browserHeight: number
 const createWindow = async () => {
@@ -158,14 +163,11 @@ const createWindow = async () => {
     autoHideMenuBar: true
   })
   mainWindow.setMinimumSize(600, 400)
+  
+  console.log('>>>>>>>>>>>>>>>>>>>>>', aaa)
   /* eslint-disable */
   mainWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, './index.html'),
-      protocol: 'file:',
-      slashes: true,
-      hash: '/'
-    })
+    aaa
   )
   /* eslint-enable */
   // Emitted when the window is closed.
@@ -322,6 +324,7 @@ app.on('ready', async () => {
 app.setAsDefaultProtocolClient('zbay')
 
 app.on('before-quit', async e => {
+  console.log('>>>>>>>>>>>>>>>>>>>>>', aaa)
   e.preventDefault()
   if (waggleProcess !== null) {
     await waggleProcess.connectionsManager.closeAllServices()
