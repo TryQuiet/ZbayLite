@@ -1,39 +1,46 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { communities, identity } from '@zbayapp/nectar'
+import { communities } from '@zbayapp/nectar'
 import { CommunityAction } from '../../../components/widgets/performCommunityAction/community.keys'
 import PerformCommunityActionComponent from '../../../components/widgets/performCommunityAction/PerformCommunityActionComponent'
 import { ModalName } from '../../../sagas/modals/modals.types'
 import { useModal } from '../../hooks'
 import { socketSelectors } from '../../../sagas/socket/socket.selectors'
+import { CreateUsernameModalProps } from '../createUsernameModal/CreateUsername'
+import { LoadingMessages } from '../loadingPanel/loadingMessages'
 
 const JoinCommunity = () => {
   const dispatch = useDispatch()
 
   const isConnected = useSelector(socketSelectors.isConnected)
-
   const community = useSelector(communities.selectors.currentCommunity)
-  const id = useSelector(identity.selectors.currentIdentity)
 
   const joinCommunityModal = useModal(ModalName.joinCommunityModal)
   const createCommunityModal = useModal(ModalName.createCommunityModal)
-  const createUsernameModal = useModal(ModalName.createUsernameModal)
+  const createUsernameModal = useModal<CreateUsernameModalProps>(ModalName.createUsernameModal)
+
+  const loadingStartApp = useModal(ModalName.loadingPanel)
 
   useEffect(() => {
-    if (!community && !joinCommunityModal.open) {
+    if (!community && !loadingStartApp.open && !isConnected) {
+      loadingStartApp.handleOpen({
+        message: LoadingMessages.StartApp
+      })
+    }
+  }, [community, loadingStartApp, dispatch])
+
+  useEffect(() => {
+    if (isConnected) {
+      loadingStartApp.handleClose()
       joinCommunityModal.handleOpen()
     }
-  }, [community, joinCommunityModal, dispatch])
+  }, [isConnected])
 
-  useEffect(() => {
-    if (id?.hiddenService) {
-      createUsernameModal.handleOpen()
-      joinCommunityModal.handleClose()
-    }
-  }, [id])
-
-  const handleCommunityAction = (value: string) => {
-    dispatch(communities.actions.joinCommunity(value))
+  const handleCommunityAction = (address: string) => {
+    createUsernameModal.handleOpen({
+      communityAction: CommunityAction.Join,
+      communityData: address
+    })
   }
 
   const handleRedirection = () => {

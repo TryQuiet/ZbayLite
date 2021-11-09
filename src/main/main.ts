@@ -10,14 +10,11 @@ import debug from 'debug'
 import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
 import { DataServer } from 'waggle/lib/socket/DataServer'
 
-import {
-  setEngine,
-  CryptoEngine
-} from 'pkijs'
+import { setEngine, CryptoEngine } from 'pkijs'
 import { Crypto } from '@peculiar/webcrypto'
+
 const log = Object.assign(debug('zbay:main'), {
   error: debug('zbay:main:err')
-
 })
 
 electronStore.set('appDataPath', app.getPath('appData'))
@@ -36,11 +33,16 @@ const windowSize: IWindowSize = {
   width: 800,
   height: 540
 }
-setEngine('newEngine', webcrypto, new CryptoEngine({
-  name: '',
-  crypto: webcrypto,
-  subtle: webcrypto.subtle
-}))
+
+setEngine(
+  'newEngine',
+  webcrypto,
+  new CryptoEngine({
+    name: '',
+    crypto: webcrypto,
+    subtle: webcrypto.subtle
+  })
+)
 
 let mainWindow: BrowserWindow | null
 
@@ -305,7 +307,7 @@ app.on('ready', async () => {
       await checkForUpdate(mainWindow)
       setInterval(async () => {
         if (!isBrowserWindow(mainWindow)) {
-          throw new Error('mainWindow is on unexpected type {mainWindow}')
+          throw new Error(`mainWindow is on unexpected type ${mainWindow}`)
         }
         await checkForUpdate(mainWindow)
       }, 15 * 60000)
@@ -322,6 +324,7 @@ app.setAsDefaultProtocolClient('zbay')
 app.on('before-quit', async e => {
   e.preventDefault()
   if (waggleProcess !== null) {
+    await waggleProcess.connectionsManager.closeAllServices()
     await waggleProcess.dataServer.close()
   }
   if (browserWidth && browserHeight) {

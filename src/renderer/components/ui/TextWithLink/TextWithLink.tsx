@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Grid, Typography, TypographyProps } from '@material-ui/core'
+import { Typography, TypographyProps } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme => ({
@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
 export interface TextWithLinkProps {
   text: string
   tagPrefix?: string
+  testIdPrefix?: string
   links: [
     {
       tag: string
@@ -26,6 +27,7 @@ export const TextWithLink: React.FC<TextWithLinkProps & TypographyProps> = ({
   text,
   tagPrefix = '%',
   links,
+  testIdPrefix = '',
   ...props
 }) => {
   const classes = useStyles({})
@@ -38,7 +40,8 @@ export const TextWithLink: React.FC<TextWithLinkProps & TypographyProps> = ({
         onClick={e => {
           e.preventDefault()
           action()
-        }}>
+        }}
+        data-testid={`${testIdPrefix}Link`}>
         {label}
       </a>
     )
@@ -55,13 +58,11 @@ export const TextWithLink: React.FC<TextWithLinkProps & TypographyProps> = ({
   })
 
   return (
-    <Grid>
-      <Typography {...props}>
-        {parts.map((e, index) => {
-          return <span key={index}>{e}</span>
-        })}
-      </Typography>
-    </Grid>
+    <Typography {...props}>
+      {parts.map((e, index) => {
+        return <span key={index}>{e}</span>
+      })}
+    </Typography>
   )
 }
 
