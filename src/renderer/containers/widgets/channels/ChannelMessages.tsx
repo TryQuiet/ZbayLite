@@ -23,7 +23,6 @@ export const ChannelMessages = ({ contentRect }) => {
   const displayableMessageLimit = 50 // for now
 
   const publicChannels = useSelector(pubChannels.selectors.publicChannels)
-  console.log(publicChannels)
   const onLinkedChannel = (props) =>
     dispatch(channelHandlers.epics.linkChannelRedirect(props))
   const setDisplayableLimit = (arg0?: number) =>
