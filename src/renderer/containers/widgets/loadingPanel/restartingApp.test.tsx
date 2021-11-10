@@ -63,7 +63,7 @@ describe('User', () => {
     }
   }
 
-  it('display channel component and do not display join community modal', async () => {
+  it('User can immediately see the general channel view after restarting the app with already created community', async () => {
     const { store } = await prepareStore(
       {
         [StoreKeys.Socket]: {
