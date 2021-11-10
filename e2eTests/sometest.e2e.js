@@ -30,11 +30,12 @@ test('User can create new community and register', async t => {
     await t.expect(usernameInput.exists).ok()
     await t.typeText(usernameInput, 'testuser')
     await t.click(submitButton)
+    await t.debug()
 
     // wait for the spinner to disappear
-    await t.expect(Selector('span').withText('Creating community').exists).notOk('"Creating community" spinner should disappear', { timeout: 15000 })
+    // await t.expect(Selector('span').withText('Creating community').exists).notOk('"Creating community" spinner should disappear', { timeout: 25000 })
     
-    await t.expect(Selector('h5').withText('#general')).ok('User sees "general" channel')
+    await t.expect(Selector('h5').withText('#general').exists).ok('User sees "general" channel', {timeout: 25000})
     // wait for h5 '#general'
     // h4 '<nickname>'
     // take a screenshot?

@@ -53,8 +53,13 @@ const isBrowserWindow = (window: BrowserWindow | null): window is BrowserWindow 
 const gotTheLock = app.requestSingleInstanceLock()
 
 const extensionsFolderPath = `${app.getPath('userData')}/extensions`
-
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 const applyDevTools = async () => {
+  console.log("THIS IS INSTANCE", getRandomInt(0, 1000))
   /* eslint-disable */
   if (!isDev || isE2Etest) return
   /* eslint-disable */
@@ -251,6 +256,7 @@ export const checkForUpdate = async (win: BrowserWindow) => {
 }
 
 let waggleProcess: { connectionsManager: ConnectionsManager; dataServer: DataServer } | null = null
+let waggleProcessStarted: boolean = false
 app.on('ready', async () => {
   // const template = [
   //   {
@@ -294,11 +300,15 @@ app.on('ready', async () => {
     log('failed loading')
   })
 
-  mainWindow.webContents.on('did-finish-load', async () => {
+  mainWindow.webContents.once('did-finish-load', async () => {
+    console.log('DID LOAD')
     if (!isBrowserWindow(mainWindow)) {
       throw new Error('mainWindow is on unexpected type {mainWindow}')
     }
-    waggleProcess = await runWaggle(mainWindow.webContents)
+    if (!waggleProcessStarted) {
+      waggleProcessStarted = true
+      waggleProcess = await runWaggle(mainWindow.webContents)
+    }
     if (process.platform === 'win32' && process.argv) {
       const payload = process.argv[1]
       if (payload) {
