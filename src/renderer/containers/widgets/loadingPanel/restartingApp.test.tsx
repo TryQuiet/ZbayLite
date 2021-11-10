@@ -5,18 +5,17 @@ import { renderComponent } from '../../../testUtils/renderComponent'
 import { prepareStore } from '../../../testUtils/prepareStore'
 import { StoreKeys } from '../../../store/store.keys'
 import { SocketState } from '../../../sagas/socket/socket.slice'
-import { ModalsInitialState } from '../../../sagas/modals/modals.slice'
 import LoadingPanel from './loadingPanel'
 import JoinCommunity from '../joinCommunity/joinCommunity'
-import { ModalName } from '../../../sagas/modals/modals.types'
-import { JoinCommunityDictionary } from '../../../components/widgets/performCommunityAction/PerformCommunityAction.dictionary'
+import { CreateCommunityDictionary, JoinCommunityDictionary } from '../../../components/widgets/performCommunityAction/PerformCommunityAction.dictionary'
 import MockedSocket from 'socket.io-mock'
 import { ioMock } from '../../../../shared/setupTests'
 import { Community } from '@zbayapp/nectar/lib/sagas/communities/communities.slice'
 import ChannelHeader from '../channels/ChannelHeader'
 import { CommunityChannels } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.slice'
-import { createEntityAdapter } from '@reduxjs/toolkit'
 import { CHANNEL_TYPE } from '../../../components/pages/ChannelTypes'
+import CreateCommunity from '../createCommunity/createCommunity'
+import { channelsByCommunityAdapter } from '@zbayapp/nectar'
 
 const communityPayload = {
   id: 'communityId',
@@ -28,11 +27,7 @@ const communityPayload = {
   }
 }
 
-const channelsByCommunityAdapter = createEntityAdapter<CommunityChannels>({
-  selectId: (community) => community.id
-})
-
-describe('User', () => {
+describe('Restart app works correctly', () => {
   let socket: MockedSocket
 
   beforeEach(() => {
@@ -63,16 +58,12 @@ describe('User', () => {
     }
   }
 
-  it('User can immediately see the general channel view after restarting the app with already created community', async () => {
+  it('Displays channel component, not displays join/create community component', async () => {
     const { store } = await prepareStore(
       {
         [StoreKeys.Socket]: {
           ...new SocketState(),
           isConnected: true
-        },
-        [StoreKeys.Modals]: {
-          ...new ModalsInitialState(),
-          [ModalName.joinCommunityModal]: { open: false }
         },
         Communities: {
           currentCommunity: communityPayload.id,
@@ -99,6 +90,7 @@ describe('User', () => {
       <>
         <LoadingPanel />
         <JoinCommunity />
+        <CreateCommunity />
         <ChannelHeader channelType={CHANNEL_TYPE.NORMAL} />
       </>,
       store
@@ -106,10 +98,14 @@ describe('User', () => {
 
     const channelName = await screen.findByText('#testChannel')
 
-    const dictionary = JoinCommunityDictionary()
-    const joinCommunityTitle = screen.queryByText(dictionary.header)
+    const joinDictionary = JoinCommunityDictionary()
+    const joinCommunityTitle = screen.queryByText(joinDictionary.header)
+
+    const createDictionary = CreateCommunityDictionary()
+    const createCommunityTitle = screen.queryByText(createDictionary.header)
 
     expect(channelName).toBeVisible()
     expect(joinCommunityTitle).toBeNull()
+    expect(createCommunityTitle).toBeNull()
   })
 })
