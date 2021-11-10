@@ -20,7 +20,7 @@ describe('PerformCommunityAction component (create community mode)', () => {
       handleCommunityAction={handleCommunityAction}
       handleRedirection={() => { }}
       isConnectionReady={true}
-      community={null}
+      community={false}
     />
     const result = renderComponent(component)
     const communityName = 'communityname'
@@ -48,7 +48,7 @@ describe('PerformCommunityAction component (create community mode)', () => {
       handleCommunityAction={handleCommunityAction}
       handleRedirection={() => { }}
       isConnectionReady={true}
-      community={null}
+      community={false}
     />
     const result = renderComponent(component)
     const textInput = result.queryByPlaceholderText('Community name')
@@ -73,7 +73,7 @@ describe('PerformCommunityAction component (create community mode)', () => {
       handleCommunityAction={handleCommunityAction}
       handleRedirection={() => { }}
       isConnectionReady={false}
-      community={null}
+      community={false}
     />
     const result = renderComponent(component)
     const submitButton = result.queryByRole('button')
@@ -92,7 +92,7 @@ describe('PerformCommunityAction component (create community mode)', () => {
       handleCommunityAction={handleCommunityAction}
       handleRedirection={handleRedirection}
       isConnectionReady={true}
-      community={null}
+      community={false}
     />
     const result = renderComponent(component)
     const switchLink = result.queryByText('join a community')
@@ -116,7 +116,7 @@ describe('PerformCommunityAction component (join community mode)', () => {
       handleCommunityAction={handleCommunityAction}
       handleRedirection={() => { }}
       isConnectionReady={true}
-      community={null}
+      community={false}
     />
     const result = renderComponent(component)
     const textInput = result.queryByPlaceholderText('Invite link')
@@ -144,7 +144,7 @@ describe('PerformCommunityAction component (join community mode)', () => {
       handleCommunityAction={handleCommunityAction}
       handleRedirection={() => { }}
       isConnectionReady={true}
-      community={null}
+      community={false}
     />
     const result = renderComponent(component)
     const textInput = result.queryByPlaceholderText('Invite link')
@@ -169,7 +169,7 @@ describe('PerformCommunityAction component (join community mode)', () => {
       handleCommunityAction={handleCommunityAction}
       handleRedirection={() => { }}
       isConnectionReady={false}
-      community={null}
+      community={false}
     />
     const result = renderComponent(component)
     const textInput = result.queryByPlaceholderText('Invite link')
@@ -191,7 +191,7 @@ describe('PerformCommunityAction component (join community mode)', () => {
       handleCommunityAction={() => { }}
       handleRedirection={handleRedirection}
       isConnectionReady={true}
-      community={null}
+      community={false}
     />
     const result = renderComponent(component)
     const switchLink = result.queryByText('create a new community')

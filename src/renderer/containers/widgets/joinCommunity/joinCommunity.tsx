@@ -63,7 +63,7 @@ const JoinCommunity = () => {
       handleCommunityAction={handleCommunityAction}
       handleRedirection={handleRedirection}
       isConnectionReady={isConnected}
-      community={community}
+      community={Boolean(community)}
     />
   )
 }

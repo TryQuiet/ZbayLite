@@ -15,7 +15,6 @@ import {
 } from './PerformCommunityAction.dictionary'
 import { TextInput } from '../../../forms/components/textInput'
 import { Controller, useForm } from 'react-hook-form'
-import { Community } from '@zbayapp/nectar/lib/sagas/communities/communities.slice'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -115,7 +114,7 @@ export interface PerformCommunityActionProps {
   initialValue: string
   handleClose: () => void
   isConnectionReady?: boolean
-  community: Community | null
+  community: boolean
 }
 
 interface PerformCommunityActionFormValues {
