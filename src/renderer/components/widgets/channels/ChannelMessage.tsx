@@ -254,7 +254,6 @@ export const ChannelMessage: React.FC<ChannelMessageProps> = ({
   const classes = useStyles({})
   const [showImage, setShowImage] = React.useState(false)
   const [imageUrl, setImageUrl] = React.useState(null)
-  const [parsedMessage, setParsedMessage] = React.useState([])
   const [allMessages, setAllMessages] = React.useState([])
   const [openModal, setOpenModal] = React.useState(false)
   // const status = message.status || null
