@@ -1,7 +1,15 @@
 export enum StoreKeys {
-  Certificates = 'certificates',
-  Identity = 'identity',
-  Channel = 'channel',
+  App = 'app',
+  Socket = 'socket',
+  Waggle = 'waggle',
+  Modals = 'Modals',
   DirectMessages = 'directMessages',
-  Users = 'users'
+  DirectMessageChannel = 'directMessageChannel',
+  Notifications = 'notifications',
+  NotificationCenter = 'notificationCenter',
+  Channel = 'channel',
+  Contacts = 'contacts',
+  Mentions = 'mentions',
+  Whitelist = 'whitelist',
+  CriticalError = 'criticalError'
 }

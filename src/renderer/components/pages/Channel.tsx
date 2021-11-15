@@ -3,11 +3,12 @@ import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid } from '@material-ui/core'
 
-import Page from '../ui/page/Page'
-import PageHeader from '../ui/page/PageHeader'
+import Page from '../ui/Page/Page'
+import PageHeader from '../ui/Page/PageHeader'
 import { channelTypeToHeader, channelTypeToInput } from './ChannelMapping'
 import ChannelContent from '../../containers/widgets/channels/ChannelContent'
 import { CHANNEL_TYPE } from './ChannelTypes'
+import { ChannelHeaderProps } from '../widgets/channels/ChannelHeader'
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -16,17 +17,16 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-interface IChannelComponentProps {
+type IChannelComponentProps = ChannelHeaderProps & {
   channelType: CHANNEL_TYPE
   contactId?: string
-  offer?: string
 }
 
 type InputProps = Omit<IChannelComponentProps, 'channelType'> & {
   setTab: (arg: number) => void // for now
 }
 
-export const Channel: React.FC<IChannelComponentProps> = ({ channelType, ...props }) => {
+export const Channel: React.FC<ChannelHeaderProps & IChannelComponentProps> = ({ channelType, contactId, ...props }) => {
   const classes = useStyles({})
   const [tab, setTab] = useState(0)
 
@@ -36,7 +36,7 @@ export const Channel: React.FC<IChannelComponentProps> = ({ channelType, ...prop
   return (
     <Page>
       <PageHeader>
-        <Header {...props} tab={tab} setTab={setTab} channelType={channelType} />
+        <Header {...props} tab={tab} setTab={setTab} contactId={contactId} channelType={channelType} />
       </PageHeader>
       <Grid item xs className={classes.messages}>
         <ChannelContent tab={tab} {...props} channelType={channelType} />

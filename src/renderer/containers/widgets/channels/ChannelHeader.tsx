@@ -1,45 +1,48 @@
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import { useSelector } from 'react-redux'
 
-import ChannelHeader from '../../../components/widgets/channels/ChannelHeader'
-// import channelsHandlers from '../../../store/handlers/channels'
-import notificationCenterHandlers from '../../../store/handlers/notificationCenter'
+import React from 'react'
+import ChannelHeader, { ChannelHeaderProps } from '../../../components/widgets/channels/ChannelHeader'
+import { publicChannels } from '@zbayapp/nectar'
 
-import channelSelectors from '../../../store/selectors/channel'
-import contactsSelectors from '../../../store/selectors/contacts'
-import identitySelectors from '../../../store/selectors/identity'
-import notificationCenter from '../../../store/selectors/notificationCenter'
-
-import { messageType, notificationFilterType } from '../../../../shared/static'
-
-export const mapStateToProps = (state, props) => {
-  const contact = contactsSelectors.contact(props.contactId)(state)
-  return {
+export const useChannelHeaderData = (contactId: string) => {
+  const data = {
     channel: {
-      name: props.contactId === 'general' ? 'zbay' : contact.username,
-      address: props.contactId
+      name: useSelector(publicChannels.selectors.currentChannel),
+      address: contactId,
+      displayableMessageLimit: 50
     },
-    name: contact.username,
-    userAddress: identitySelectors.address(state),
-    members: channelSelectors.channelParticipiants(state),
-    showAdSwitch: !!contactsSelectors
-      .messages(props.contactId)(state)
-      .find(msg => msg.type === messageType.AD),
-    mutedFlag:
-      notificationCenter.channelFilterById(
-        channelSelectors.data(state) ? channelSelectors.data(state).key : 'none'
-      )(state) === notificationFilterType.MUTE
+    mutedFlag: false
   }
+
+  return data
 }
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      // updateShowInfoMsg: channelsHandlers.epics.updateShowInfoMsg,
-      unmute: () =>
-        notificationCenterHandlers.epics.setChannelsNotification(
-          notificationFilterType.ALL_MESSAGES
-        )
-    },
-    dispatch
+
+export const ChannelHeaderContainer: React.FC<ChannelHeaderProps> = ({
+  updateShowInfoMsg,
+  directMessage,
+  channelType,
+  tab,
+  setTab,
+  channel,
+  mutedFlag,
+  unmute,
+  contactId
+}
+) => {
+  channel = useChannelHeaderData(contactId).channel
+  mutedFlag = useChannelHeaderData(contactId).mutedFlag
+  return (
+    <ChannelHeader
+      unmute={unmute}
+      channel={channel}
+      mutedFlag={mutedFlag}
+      setTab={setTab}
+      tab={tab}
+      directMessage={directMessage}
+      updateShowInfoMsg={updateShowInfoMsg}
+      channelType={channelType}
+    />
   )
-export default connect(mapStateToProps, mapDispatchToProps)(ChannelHeader)
+}
+
+export default ChannelHeaderContainer

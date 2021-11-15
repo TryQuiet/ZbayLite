@@ -1,72 +1,43 @@
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import * as R from 'ramda'
-import { withRouter } from 'react-router-dom'
+import React from 'react'
+import { useDispatch } from 'react-redux'
 import ChannelMenuAction from '../../../components/widgets/channels/ChannelMenuAction'
-import { actionCreators } from '../../../store/handlers/modals'
-// import importedChannelHandler from '../../../store/handlers/importedChannel'
-import dmChannelSelectors from '../../../store/selectors/directMessageChannel'
-import channelSelectors from '../../../store/selectors/channel'
-import notificationCenterSelectors from '../../../store/selectors/notificationCenter'
-import publicChannelsSelectors from '../../../store/selectors/publicChannels'
-import notificationCenterHandlers from '../../../store/handlers/notificationCenter'
-import { notificationFilterType } from '../../../../shared/static'
+import appHandlers from '../../../store/handlers/app'
+import { useModal } from '../../hooks'
+import { ModalName } from '../../../sagas/modals/modals.types'
 
-const filterToText = {
-  [notificationFilterType.ALL_MESSAGES]: 'Every new message',
-  [notificationFilterType.MENTIONS]: 'Just @mentions',
-  [notificationFilterType.NONE]: 'Nothing',
-  [notificationFilterType.MUTE]: 'Muted'
+const useChannelMenuActionActions = () => {
+  const dispatch = useDispatch()
+  const onDelete = () => { }
+  const openNotificationsTab = () => dispatch(appHandlers.actions.setModalTab('notifications'))
+
+  return { onDelete, openNotificationsTab }
 }
-export const mapStateToProps = state => {
-  return {
-    targetAddress: dmChannelSelectors.targetRecipientAddress(state),
-    isOwner: channelSelectors.isOwner(state),
-    publicChannels: publicChannelsSelectors.publicChannels(state),
-    channel: channelSelectors.data(state) || {},
-    mutedFlag:
-      notificationCenterSelectors.channelFilterById(
-        channelSelectors.data(state)
-          ? channelSelectors.data(state).address
-          : 'none'
-      )(state) === notificationFilterType.MUTE,
-    notificationFilter:
-      // eslint-disable-next-line
-      filterToText[
-        notificationCenterSelectors.channelFilterById(
-          channelSelectors.channel(state)
-            ? channelSelectors.channel(state).address
-            : 'none'
-        )(state)
-      ]
+
+const useChannelMenuActionData = () => {
+  const data = {
+    mutedFlag: false,
+    notificationFilter: ''
   }
+  return data
 }
 
-export const mapDispatchToProps = (dispatch) => {
-  bindActionCreators(
-    {
-      onInfo: actionCreators.openModal('channelInfo'),
-      onMute: () =>
-        notificationCenterHandlers.epics.setChannelsNotification(
-          notificationFilterType.MUTE
-        ),
-      onUnmute: () =>
-        notificationCenterHandlers.epics.setChannelsNotification(
-          notificationFilterType.ALL_MESSAGES
-        ),
-      // onDelete: () => importedChannelHandler.epics.removeChannel(history),
-      publishChannel: actionCreators.openModal('publishChannel'),
-      onSettings: actionCreators.openModal('channelSettingsModal')
-      // openNotificationsTab: () =>
-      //   appHandlers.actions.setModalTab('notifications')
-    },
-    dispatch
+const ChannelMenuActionContainer = () => {
+  const channelInfoModal = useModal(ModalName.channelInfo)
+  const channelSettingsModal = useModal(ModalName.channelSettingsModal)
+
+  const { openNotificationsTab, onDelete } = useChannelMenuActionActions()
+  const { mutedFlag, notificationFilter } = useChannelMenuActionData()
+
+  return (
+    <ChannelMenuAction
+      onSettings={channelSettingsModal.handleOpen}
+      onInfo={channelInfoModal.handleOpen}
+      onDelete={onDelete}
+      mutedFlag={mutedFlag}
+      notificationFilter={notificationFilter}
+      openNotificationsTab={openNotificationsTab}
+    />
   )
 }
 
-export default R.compose(
-  withRouter,
-  // @ts-expect-error
-  connect(mapStateToProps, mapDispatchToProps)
-  // @ts-expect-error
-)(ChannelMenuAction)
+export default ChannelMenuActionContainer

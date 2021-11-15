@@ -1,65 +1,42 @@
 
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { publicChannels as pubChannels } from '@zbayapp/nectar'
 import ChannelMessagesComponent from '../../../components/widgets/channels/ChannelMessages'
-import channelSelectors from '../../../store/selectors/channel'
-// import dmQueueMessages from '../../../store/selectors/directMessagesQueue'
-// import queueMessages from '../../../store/selectors/messagesQueue'
-import userSelector from '../../../store/selectors/users'
-import contactsSelectors from '../../../store/selectors/contacts'
-// import nodeSelector from '../../../store/selectors/node'
-import appSelectors from '../../../store/selectors/app'
-// import ownedChannelsSelectors from '../../../store/selectors/ownedChannels'
-import publicChannelsSelector from '../../../store/selectors/publicChannels'
-import { MessageType } from '../../../../shared/static.types'
-import channelHandlers, { actions } from '../../../store/handlers/channel'
+// import userSelector from '../../../store/selectors/users'
+// import appSelectors from '../../../store/selectors/app'
 
+import channelHandlers from '../../../store/handlers/channel'
 import electronStore from '../../../../shared/electronStore'
 import { loadNextMessagesLimit } from '../../../../shared/static'
 
-export const ChannelMessages = ({ tab, contentRect }) => {
+export const ChannelMessages = ({ contentRect }) => {
   const isDev = process.env.NODE_ENV === 'development'
 
   const [scrollPosition, setScrollPosition] = React.useState(-1)
-  const [_isRescanned, setIsRescanned] = React.useState(true)
-  const [newMessagesLoading, setNewMessagesLoading] = React.useState(false)
 
   const dispatch = useDispatch()
-  // const qMessages = useSelector(queueMessages.queue)
-  // const qDmMessages = useSelector(dmQueueMessages.queue)
-  const contactId = useSelector(channelSelectors.id)
-  const setAddress = (contactId) => dispatch(actions.setAddress(contactId))
-  // const triggerScroll = qDmMessages.length + qMessages.length > 0
+  const messages = useSelector(
+    pubChannels.selectors.currentChannelDisplayableMessages
+  )
+  const messagesLength = 0 // for now
+  const displayableMessageLimit = 50 // for now
 
+  const publicChannels = useSelector(pubChannels.selectors.publicChannels)
   const onLinkedChannel = (props) =>
     dispatch(channelHandlers.epics.linkChannelRedirect(props))
   const setDisplayableLimit = (arg0?: number) =>
     dispatch(channelHandlers.actions.setDisplayableLimit(arg0))
-  // const onRescan = () => dispatch(appHandlers.epics.restartAndRescan())
-  const messages = useSelector(contactsSelectors.directMessages(contactId))
-    .visibleMessages
-  const messagesLength = useSelector(
-    contactsSelectors.messagesLength(contactId)
-  )
-  const displayableMessageLimit = useSelector(
-    channelSelectors.displayableMessageLimit
-  )
+  // const messages = useSelector(contactsSelectors.directMessages(contactId))
+  //   .visibleMessages
+  console.log(messages, 'messages')
+
   // const isOwner = useSelector(ownedChannelsSelectors.isOwner)
-  const channelId = useSelector(channelSelectors.channelId)
-  const users = useSelector(userSelector.users)
-  const loader = useSelector(channelSelectors.loader)
-  const publicChannels = useSelector(publicChannelsSelector.publicChannels)
+  const users = []
+  // const users = useSelector(userSelector.users)
+  // const publicChannels = useSelector(publicChannelsSelector.publicChannels)
   // const network = useSelector(nodeSelector.network)
-  const isInitialLoadFinished = useSelector(appSelectors.isInitialLoadFinished)
 
-  useEffect(() => {
-    setAddress(contactId)
-  }, [contactId])
-
-  useEffect(() => {
-    setScrollPosition(-1)
-    setIsRescanned(!electronStore.get(`channelsToRescan.${channelId}`))
-  }, [channelId, contactId])
   // useEffect(() => {
   //   if (triggerScroll) {
   //     setScrollPosition(-1)
@@ -68,45 +45,19 @@ export const ChannelMessages = ({ tab, contentRect }) => {
   useEffect(() => {
     if (scrollPosition === 0 && displayableMessageLimit < messagesLength) {
       setDisplayableLimit(displayableMessageLimit + loadNextMessagesLimit)
-      setNewMessagesLoading(true)
     }
   }, [scrollPosition])
 
-  // const oldestMessage = messages ? messages[messages.length - 1] : null
   const usersRegistration = []
-  // const _publicChannelsRegistration = []
-  let publicChannelsRegistration
-  // if (channelId === zcashChannels.general[network].address) {
-  //   if (oldestMessage) {
-  //     usersRegistration = Array.from(Object.values(users)).filter(
-  //       (msg) => msg.createdAt >= oldestMessage.createdAt
-  //     )
-  //     _publicChannelsRegistration = Array.from(Object.values(publicChannels)).filter(
-  //       msg => msg.timestamp >= oldestMessage.createdAt
-  //     )
-  //     publicChannelsRegistration = R.clone(_publicChannelsRegistration)
-  //     for (const ch of publicChannelsRegistration) {
-  //       delete Object.assign(ch, { createdAt: parseInt(ch.timestamp) }).timestamp
-  //     }
-  //   }
-  // }
+  const publicChannelsRegistration = []
   const isNewUser = electronStore.get('isNewUser')
 
   return (
     <ChannelMessagesComponent
       scrollPosition={scrollPosition}
       setScrollPosition={setScrollPosition}
-      newMessagesLoading={newMessagesLoading}
-      setNewMessagesLoading={setNewMessagesLoading}
       isNewUser={isNewUser}
-      // onRescan={onRescan}
-      channelId={channelId}
-      messages={
-        tab === 0
-          ? messages
-          : messages.filter((msg) => msg.type === MessageType.AD)
-      }
-      contactId={contactId}
+      messages={messages}
       contentRect={contentRect}
       // isOwner={isOwner}
       publicChannelsRegistration={publicChannelsRegistration}
@@ -114,7 +65,6 @@ export const ChannelMessages = ({ tab, contentRect }) => {
       users={users}
       onLinkedChannel={onLinkedChannel}
       publicChannels={publicChannels}
-      isInitialLoadFinished={loader.loading ? false : isInitialLoadFinished}
       isDev={isDev}
     />
   )

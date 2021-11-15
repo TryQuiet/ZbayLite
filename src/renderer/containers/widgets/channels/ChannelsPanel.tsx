@@ -1,81 +1,61 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import * as R from 'ramda'
+import { useSelector } from 'react-redux'
 import Grid from '@material-ui/core/Grid'
-import { bindActionCreators } from 'redux'
+import { publicChannels, IChannelInfo } from '@zbayapp/nectar'
 
 import BaseChannelsList from '../../../components/widgets/channels/BaseChannelsList'
-import SidebarHeader from '../../../components/ui/SidebarHeader'
-import contactsSelectors from '../../../store/selectors/contacts'
-import channelSelectors from '../../../store/selectors/channel'
-import { actionCreators } from '../../../store/handlers/modals'
+import SidebarHeader from '../../../components/ui/Sidebar/SidebarHeader'
 import QuickActionButton from '../../../components/widgets/sidebar/QuickActionButton'
-import { Icon } from '../../../components/ui/Icon'
+import { Icon } from '../../../components/ui/Icon/Icon'
 import SearchIcon from '../../../static/images/st-search.svg'
+import { useModal } from '../../hooks'
+import { ModalName } from '../../../sagas/modals/modals.types'
 
-export const mapStateToProps = state => ({
-  channels: contactsSelectors.channelsList(state),
-  selected: channelSelectors.channelInfo(state)
-  // fundsLocked:
-  //   channelSelectors.inputLocked(state) === INPUT_STATE.DISABLE ||
-  //   channelSelectors.inputLocked(state) === INPUT_STATE.LOCKED
-})
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      openCreateModal: actionCreators.openModal('createChannel'),
-      openJoinChannel: actionCreators.openModal('joinChannel'),
-      openDepositMonet: actionCreators.openModal('depositMoney')
-    },
-    dispatch
-  )
+interface useChannelPanelDataReturnTypes {
+  channels: IChannelInfo[]
+  selected: string
+}
+
+const useChannelsPanelData = (): useChannelPanelDataReturnTypes => {
+  const data = {
+    channels: useSelector(publicChannels.selectors.publicChannels),
+    selected: useSelector(publicChannels.selectors.currentChannel)
+  }
+  return data
+}
+
 export const ChannelsPanel = ({
-  title,
-  openCreateModal,
-  openJoinChannel,
-  fundsLocked,
-  openDepositMonet,
-  ...props
+  title
 }) => {
+  const data = useChannelsPanelData()
+
+  const joinChannelModal = useModal(ModalName.joinChannel)
+  const createChannelModal = useModal(ModalName.createChannel)
+
   return (
     <Grid container item xs direction='column'>
       <Grid item>
         <SidebarHeader
           title={title}
-          action={openCreateModal}
+          action={createChannelModal.handleOpen}
           tooltipText='Create new channel'
-          actionTitle={openJoinChannel}
+          actionTitle={joinChannelModal.handleOpen}
         />
       </Grid>
       <Grid item>
-        <BaseChannelsList {...props} />
-      </Grid>
-      {/*
-      <Grid item>
-        <QuickActionButton
-          text='Create Channel'
-          action={fundsLocked ? openDepositMonet : openCreateModal}
+        <BaseChannelsList
+          channels={data.channels}
+          selected={data.selected}
         />
       </Grid>
-      */}
       <Grid item>
         <QuickActionButton
           text='Find Channel'
-          action={openJoinChannel}
+          action={joinChannelModal.handleOpen}
           icon={<Icon src={SearchIcon} />}
         />
       </Grid>
     </Grid>
   )
 }
-export default R.compose(connect(mapStateToProps, mapDispatchToProps))(
-  React.memo(ChannelsPanel, (before, after) => {
-    return (
-      Object.is(before.channels, after.channels) &&
-      Object.is(before.selected, after.selected) &&
-      Object.is(before.contentRect, after.contentRect) &&
-      Object.is(before.offers, after.offers) &&
-      Object.is(before.fundsLocked, after.fundsLocked)
-    )
-  })
-)
+export default ChannelsPanel

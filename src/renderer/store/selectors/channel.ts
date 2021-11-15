@@ -1,12 +1,9 @@
 import { createSelector } from 'reselect'
-import identitySelectors from './identity'
-import { messageType } from '../../../shared/static'
-import publicChannels from './publicChannels'
+import { publicChannels } from '@zbayapp/nectar'
 import directMessagesSelectors from './directMessages'
 import waggleSelectors from './waggle'
 
 import { Store } from '../reducers'
-import { DisplayableMessage } from '../../zbay/messages.types'
 import { Channel } from '../handlers/channel'
 
 import debug from 'debug'
@@ -28,7 +25,7 @@ export const channelInfo = createSelector(channel, (ch): ChannelInfo => {
 }) // TODO refactor
 
 const isPublicChannel = createSelector(
-  publicChannels.publicChannels,
+  publicChannels.selectors.publicChannels,
   channel,
   (pubChannels, channel) => {
     if (pubChannels && channel) {
@@ -62,31 +59,30 @@ const data = createSelector(contacts, id, (channels, id) => channels[id])
 export const isSizeCheckingInProgress = createSelector(channel, c => c.isSizeCheckingInProgress)
 export const messageSizeStatus = createSelector(channel, c => c.messageSizeStatus)
 export const displayableMessageLimit = createSelector(channel, c => c.displayableMessageLimit)
-export const isOwner = createSelector(
-  id,
-  contacts,
-  identitySelectors.signerPubKey,
-  (id, con, myKey) => {
-    const contact = con[id]
-    if (!contact) {
-      return false
-    }
-    const settingsMsg = Array.from(Object.values(contact.messages)).filter(
-      msg => msg.type === messageType.CHANNEL_SETTINGS
-    )[0]
-    if (settingsMsg && settingsMsg.message.owner === myKey) {
-      return true
-    }
-    return false
-  }
-)
+// export const isOwner = createSelector(
+//   id,
+//   contacts,
+//   null,
+//   (id, con, myKey) => {
+//     const contact = con[id]
+//     if (!contact) {
+//       return false
+//     }
+//     const settingsMsg = Array.from(Object.values(contact.messages)).filter(
+//       msg => msg.type === messageType.CHANNEL_SETTINGS
+//     )[0]
+//     if (settingsMsg && settingsMsg.message.owner === myKey) {
+//       return true
+//     }
+//     return false
+//   }
+// )
 export const channelSettingsMessage = createSelector(data, data => {
   if (!data) {
     return null
   }
   const settingsMsg = Array.from(Object.values(data.messages)).filter(
-    msg =>
-      msg.type === messageType.CHANNEL_SETTINGS || msg.type === messageType.CHANNEL_SETTINGS_UPDATE
+    _msg => null
   )
   if (!settingsMsg.length) {
     return null
@@ -135,7 +131,7 @@ const concatMessages = (mainMsg, messagesToConcat) => {
   }
 }
 
-export const mergeIntoOne = (messages: DisplayableMessage[]) => {
+export const mergeIntoOne = (messages: any[]) => {
   if (messages.length === 0) return
   const result = []
   const timeOfStackMessages = 300 // in seconds
@@ -233,7 +229,7 @@ export default {
   messageSizeStatus,
   isSizeCheckingInProgress,
   id,
-  isOwner,
+  // isOwner,
   channelDesription,
   displayableMessageLimit,
   isPublicChannel,

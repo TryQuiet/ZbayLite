@@ -5,19 +5,11 @@ import * as R from 'ramda'
 import List from '@material-ui/core/List'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { MessageType } from '../../../../shared/static.types'
 import ChannelMessage from '../../../containers/widgets/channels/ChannelMessage'
-import WelcomeMessage from './WelcomeMessage'
-import ChannelItemTransferMessage from '../../../containers/widgets/channels/ItemTransferMessage'
-import ChannelAdMessage from '../../../containers/widgets/channels/ListingMessage'
 import MessagesDivider from '../MessagesDivider'
-import UserRegisteredMessage from './UserRegisteredMessage'
-import ChannelRegisteredMessage from './ChannelRegisteredMessage'
 
-import { UsersStore } from './../../../store/handlers/users'
-
-import { DisplayableMessage } from './../../../zbay/messages.types'
 import { loadNextMessagesLimit } from '../../../../shared/static'
+import { DisplayableMessage } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.types'
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -46,15 +38,8 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const messagesTypesToDisplay = [1, 2, 4, 11, 41]
-const welcomeMessages = {
-  offer: (item, username) =>
-    `This is a private conversation with @${username} about their #${item} offer. Feel free to ask them a question about the product or provide other details about your purchase!`,
-  main:
-    "Congrats! You created a channel. You can share the channel link with others by accessing the “•••” menu at the top. Once you're registered as the channel owner (this can take a few minutes) you’ll be able to publish your channel and change its settings. Have a great time!"
-}
 interface IChannelMessagesProps {
-  messages: DisplayableMessage[]
+  messages?: any[]
   isOwner?: boolean
   contactId?: string
   usersRegistration?: any[]
@@ -65,11 +50,15 @@ interface IChannelMessagesProps {
   setScrollPosition?: (arg?: any) => void
   newMessagesLoading?: boolean
   setNewMessagesLoading?: (arg: boolean) => void
-  users?: UsersStore
+  users?: any
   onLinkedChannel?: (arg0: any) => void
   publicChannels?: any
   onRescan?: () => void
-  contentRect?: string
+  contentRect?: {
+    bounds: {
+      height: number
+    }
+  }
   isInitialLoadFinished?: boolean
   channelId?: string
   name?: string
@@ -90,20 +79,13 @@ interface IChannelMessagesProps {
 // TODO: scrollbar smart pagination
 export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   messages,
-  isOwner,
   scrollPosition,
   setScrollPosition,
   newMessagesLoading,
   setNewMessagesLoading,
-  contactId,
   usersRegistration,
   publicChannelsRegistration,
-  users,
-  channelId,
-  onLinkedChannel,
-  publicChannels,
-  isNewUser,
-  isDev
+  channelId
 }) => {
   const classes = useStyles({})
   const msgRef = React.useRef<HTMLUListElement>()
@@ -132,15 +114,13 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
 
   let groupedMessages: { [key: string]: DisplayableMessage[] }
   if (messages.length !== 0) {
-    groupedMessages = R.groupBy<DisplayableMessage>(msg => {
-      const d = new Date(msg.createdAt * 1000)
-      d.setHours(0)
-      d.setMinutes(0)
-      d.setSeconds(0)
-      return (d.getTime() / 1000).toString()
+    groupedMessages = R.groupBy<any>(msg => {
+      if (msg.createdAt.split('').indexOf(',') === -1) {
+        return 'Today'
+      }
+      return msg.createdAt.split(',')[0]
     })(
       messages
-        .filter(msg => messagesTypesToDisplay.includes(msg.type))
         .concat(usersRegistration)
         .concat(publicChannelsRegistration)
         .reverse()
@@ -197,14 +177,10 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
         id='messages-scroll'
         className={classes.list}>
         {/* // style={{ marginTop: offset }}> */}
-        {isOwner && <WelcomeMessage message={welcomeMessages.main} />}
-        {/* {isOffer && !showLoader && (
-          <WelcomeMessage message={welcomeMessages['offer'](tag, username)} />
-        )} */}
         {Object.keys(groupedMessages || []).map(key => {
           const messagesArray = groupedMessages[key]
           const today = DateTime.utc()
-          const groupName = DateTime.fromSeconds(parseInt(key)).toFormat('cccc, LLL d')
+          const groupName = key
           const displayTitle = DateTime.fromSeconds(parseInt(key)).hasSame(today, 'day')
             ? 'Today'
             : groupName
@@ -212,80 +188,15 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
             <>
               <MessagesDivider title={displayTitle} />
               {messagesArray.map(msg => {
-                const MessageComponent = typeToMessageComponent[msg.type]
-                if (!msg.type) {
-                  if (msg.keys) {
-                    return (
-                      <ChannelRegisteredMessage
-                        message={msg}
-                        address={users[msg.owner] ? users[msg.owner].address : ''}
-                        username={
-                          users[msg.owner]
-                            ? users[msg.owner].nickname
-                            : `anon${msg.owner.substring(0, 16)}`
-                        }
-                        onChannelClick={() => {
-                          onLinkedChannel(publicChannels[msg.name])
-                        }}
-                      />
-                    )
-                  } else if (!isDev && msg.nickname.startsWith('dev99')) {
-                    return
-                  } else {
-                    return <UserRegisteredMessage message={msg} />
-                  }
-                }
-                return <MessageComponent key={msg.id} message={msg} contactId={contactId} />
+                const MessageComponent = ChannelMessage
+                return <MessageComponent key={msg.id} message={msg} />
               })}
             </>
           )
         })}
-        {/* {isDM && name && (
-          <Grid container className={classes.root}>
-            <Grid item xs className={classes.item}>
-              <Typography variant='caption' className={classes.info}>
-                {isConnected ? (
-                  <span>
-                    Connected to <span className={classes.bold}>@{name}</span> via Tor. Your message
-                    will be sent directly, not via Zcash memo.
-                  </span>
-                ) : (
-                  <span>
-                      Disconnected from <span className={classes.bold}>@{name}</span>. Your message
-                    will be sent via Zcash memo.
-                  </span>
-                )}
-              </Typography>
-            </Grid>
-          </Grid>
-        )} */}
-        {isNewUser && (
-          <WelcomeMessage
-            message={
-              <span>
-                Welcome to Zbay! To start quickly, Zbay includes username and channel registration
-                data in the app itself. To verify this data, which takes ~1 hour but may add some
-                security,
-                <span className={classes.link}>
-                  {' '}
-                  restart & re-sync
-                </span>
-                . Otherwise, say hi and introduce yourself!
-              </span>
-            }
-          />
-        )}
       </List>
     </Scrollbars>
   )
-}
-
-const typeToMessageComponent = {
-  [MessageType.BASIC]: ChannelMessage,
-  [MessageType.ITEM_BASIC]: ChannelMessage,
-  [MessageType.ITEM_TRANSFER]: ChannelItemTransferMessage,
-  [MessageType.TRANSFER]: ChannelItemTransferMessage,
-  [MessageType.AD]: ChannelAdMessage
 }
 
 ChannelMessages.defaultProps = {

@@ -1,49 +1,79 @@
-import * as R from 'ramda'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { communities, errors, identity, publicChannels, socketActionTypes } from '@zbayapp/nectar'
+import CreateUsernameModalComponent from '../../../components/widgets/createUsername/CreateUsernameModal'
+import { ModalName } from '../../../sagas/modals/modals.types'
+import { useModal } from '../../hooks'
+import { CommunityAction } from '../../../components/widgets/performCommunityAction/community.keys'
+import { LoadingMessages } from '../loadingPanel/loadingMessages'
 
-import electronStore from '../../../../shared/electronStore'
-import usersHandlers from '../../../store/handlers/users'
-import identitySelectors from '../../../store/selectors/identity'
-import usersSelectors from '../../../store/selectors/users'
-// import feesSelectors from '../../../store/selectors/fees'
-// import ratesSelectors from '../../../store/selectors/rates'
-import certificatesSelector from '../../../store/certificates/certificates.selector'
-
-import CreateUsernameModal from '../../../components/widgets/createUsername/CreateUsernameModal'
-import { withModal } from '../../../store/handlers/modals'
-export const mapStateToProps = state => {
-  return {
-    initialValues: {
-      nickname: usersSelectors.registeredUser(
-        identitySelectors.signerPubKey(state)
-      )(state)
-        ? usersSelectors
-          .registeredUser(identitySelectors.signerPubKey(state))(state)
-          .nickname
-        : '',
-      takenUsernames: identitySelectors.registrationStatus(state)
-    },
-    // usernameFee: feesSelectors.userFee(state),
-    // zecRate: ratesSelectors.rate('usd')(state),
-    enoughMoney: true,
-    isNewUser: electronStore.get('isNewUser'),
-    certificateRegistrationError: certificatesSelector.certificateRegistrationError(state),
-    certificate: certificatesSelector.ownCertificate(state)
-  }
+export interface CreateUsernameModalProps {
+  communityAction: CommunityAction
+  communityData: string
 }
 
-export const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      handleSubmit: ({ nickname }) => {
-        return usersHandlers.epics.createOrUpdateUser({ nickname, debounce: true })
-      }
-    },
-    dispatch
-  )
+const CreateUsernameModal = () => {
+  const dispatch = useDispatch()
 
-export default R.compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withModal('createUsernameModal')
-)(CreateUsernameModal)
+  const [username, setUsername] = useState('')
+
+  const id = useSelector(identity.selectors.currentIdentity)
+  const certificate = useSelector(identity.selectors.currentIdentity)?.userCertificate
+  const communityErrors = useSelector(errors.selectors.currentCommunityErrorsByType)
+  const error = communityErrors?.[socketActionTypes.REGISTRAR]
+
+  const invitationUrl = useSelector(communities.selectors.registrarUrl)
+  const channels = useSelector(publicChannels.selectors.publicChannels)
+  const createUsernameModal = useModal<CreateUsernameModalProps>(ModalName.createUsernameModal)
+  const joinCommunityModal = useModal(ModalName.joinCommunityModal)
+  const createCommunityModal = useModal(ModalName.createCommunityModal)
+  const loadingCommunityModal = useModal(ModalName.loadingPanel)
+
+  useEffect(() => {
+    if (certificate &&
+      ((createUsernameModal.communityAction === CommunityAction.Join && channels.length) ||
+        (createUsernameModal.communityAction === CommunityAction.Create && invitationUrl))) {
+      loadingCommunityModal.handleClose()
+      createUsernameModal.handleClose()
+      joinCommunityModal.handleClose()
+      createCommunityModal.handleClose()
+    }
+  }, [channels.length, invitationUrl, certificate])
+
+  useEffect(() => {
+    if (id?.hiddenService) {
+      dispatch(identity.actions.registerUsername(username))
+    }
+  }, [id?.hiddenService])
+
+  const handleAction = (payload: { nickname: string }) => {
+    setUsername(payload.nickname)
+    const value = createUsernameModal.communityData
+    const action =
+      createUsernameModal.communityAction === CommunityAction.Create
+        ? communities.actions.createNewCommunity(value)
+        : communities.actions.joinCommunity(value)
+    /* Launch/create community */
+
+    const message = createUsernameModal.communityAction === CommunityAction.Create
+      ? LoadingMessages.CreateCommunity
+      : LoadingMessages.JoinCommunity
+
+    loadingCommunityModal.handleOpen({
+      message
+    })
+    dispatch(action)
+  }
+
+  return (
+    <CreateUsernameModalComponent
+      {...createUsernameModal}
+      initialValue={''}
+      handleRegisterUsername={handleAction}
+      certificateRegistrationError={error?.message}
+      certificate={certificate}
+    />
+  )
+}
+
+export default CreateUsernameModal

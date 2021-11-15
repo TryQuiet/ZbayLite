@@ -1,10 +1,11 @@
 import React from 'react'
-import * as R from 'ramda'
 
-import { withModal } from '../../../store/handlers/modals'
+import { useModal } from '../../hooks'
+import { ModalName } from '../../../sagas/modals/modals.types'
 import CreateChannelModal from '../../../components/widgets/channels/CreateChannelModal'
 
-export default R.compose(
-  React.memo,
-  withModal('createChannel')
-)(CreateChannelModal)
+export const CreateChannelModalContainer: React.FC<{}> = () => {
+  const modal = useModal(ModalName.createChannel)
+  return <CreateChannelModal {...modal} />
+}
+export default CreateChannelModalContainer

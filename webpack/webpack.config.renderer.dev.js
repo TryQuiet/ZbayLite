@@ -2,7 +2,6 @@ const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const spawn = require('child_process').spawn
-const WriteFilePlugin = require('write-file-webpack-plugin')
 const WebpackOnBuildPlugin = require('on-build-webpack')
 
 var mainRunning = false
@@ -10,7 +9,7 @@ var mainRunning = false
 module.exports = {
   mode: 'development',
   output: {
-    path: path.resolve(__dirname, '../dist/main'),
+    path: path.resolve(__dirname, '../dist/src/main'),
     filename: '[name].js'
   },
   resolve: {
@@ -20,16 +19,16 @@ module.exports = {
     rules: [
       {
         test: /\.(t|j)sx?$/,
-        loader: ['awesome-typescript-loader?module=es6'],
+        loader: ['ts-loader'],
         exclude: [/node_modules/]
       },
       {
         test: /\.css?$/,
-        loaders: [ 'style-loader', 'css-loader' ]
+        loaders: ['style-loader', 'css-loader']
       },
       {
         test: /\.scss?$/,
-        loaders: [ 'style-loader', 'css-loader' ]
+        loaders: ['style-loader', 'css-loader']
       },
       {
         test: /\.(ttf|eot|svg|png|woff(2)?)(\?[a-z0-9=&.]+)?$/,
@@ -43,7 +42,7 @@ module.exports = {
   },
   target: 'electron-renderer',
   entry: {
-    index: './src/renderer/index.js'
+    index: './src/renderer/index.tsx'
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -51,7 +50,6 @@ module.exports = {
       template: 'src/renderer/index.html'
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new WriteFilePlugin(),
     new WebpackOnBuildPlugin(() => {
       if (!mainRunning) {
         console.log('Starting main process...')
@@ -72,7 +70,10 @@ module.exports = {
     })
   ],
   devServer: {
-    hot: true
+    hot: true,
+    devMiddleware: {
+      writeToDisk: true
+    }
   },
   devtool: 'eval-source-map'
 }
