@@ -4,7 +4,7 @@ import { ModalName } from './modals.types'
 
 export interface OpenModalPayload {
   name: ModalName
-  args?: CreateUsernameModalProps | { message: string }
+  args?: CreateUsernameModalProps | { message?: string }
 }
 
 export class ModalsInitialState {

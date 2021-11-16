@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import List from '@material-ui/core/List'
+
 import { Scrollbars } from 'rc-scrollbars'
 import { DateTime } from 'luxon'
-import * as R from 'ramda'
-import List from '@material-ui/core/List'
-import { makeStyles } from '@material-ui/core/styles'
-
-import ChannelMessage from '../../../containers/widgets/channels/ChannelMessage'
-import MessagesDivider from '../MessagesDivider'
 
 import { loadNextMessagesLimit } from '../../../../shared/static'
+
+import MessagesDivider from '../MessagesDivider'
+
 import { DisplayableMessage } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.types'
+
+import ChannelMessage from '../../../containers/widgets/channels/ChannelMessage'
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -38,72 +40,26 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-interface IChannelMessagesProps {
-  messages?: any[]
-  isOwner?: boolean
-  contactId?: string
-  usersRegistration?: any[]
-  publicChannelsRegistration?: any[]
-  isDM?: boolean
-  isNewUser?: boolean // required?
-  scrollPosition?: number
-  setScrollPosition?: (arg?: any) => void
+export interface IChannelMessagesProps {
+  channel: string
+  messages?: DisplayableMessage[]
   newMessagesLoading?: boolean
   setNewMessagesLoading?: (arg: boolean) => void
-  users?: any
-  onLinkedChannel?: (arg0: any) => void
-  publicChannels?: any
-  onRescan?: () => void
-  contentRect?: {
-    bounds: {
-      height: number
-    }
-  }
-  isInitialLoadFinished?: boolean
-  channelId?: string
-  name?: string
-  isConnected?: boolean
-  isDev?: boolean
 }
 
-// const renderView = props => {
-// Note: flex breaks scroll handle position
-//   const style = {
-//     ...props.style,
-//     display: 'flex',
-//     flexDirection: 'column-reverse'
-//   }
-// return <div {...props} style={style} />
-// }
-
 // TODO: scrollbar smart pagination
-export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
-  messages,
-  scrollPosition,
-  setScrollPosition,
+export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
+  channel,
+  messages = [],
   newMessagesLoading,
-  setNewMessagesLoading,
-  usersRegistration,
-  publicChannelsRegistration,
-  channelId
+  setNewMessagesLoading
 }) => {
   const classes = useStyles({})
-  const msgRef = React.useRef<HTMLUListElement>()
-  const scrollbarRef = React.useRef<Scrollbars>()
 
-  // TODO work on scroll behavior
-  // React.useEffect(() => {
-  //   setTimeout(() => {
-  //     setLastScrollHeight(scrollbarRef.current.getScrollHeight())
-  //   }, 0)
-  // }, [contactId])
-  // React.useEffect(() => {
-  //   if (scrollbarRef.current) {
-  //     const currentHeight = scrollbarRef.current.getScrollHeight()
-  //     setLastScrollHeight(currentHeight)
-  //     scrollbarRef.current.scrollTop(currentHeight - lastScrollHeight)
-  //   }
-  // }, [messages.size])
+  const [scrollPosition, setScrollPosition] = React.useState(-1)
+
+  const messagesRef = React.useRef<HTMLUListElement>()
+  const scrollbarRef = React.useRef<Scrollbars>()
 
   const onScrollFrame = React.useCallback(
     e => {
@@ -114,21 +70,21 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
 
   let groupedMessages: { [key: string]: DisplayableMessage[] }
   if (messages.length !== 0) {
-    groupedMessages = R.groupBy<any>(msg => {
-      if (msg.createdAt.split('').indexOf(',') === -1) {
-        return 'Today'
+    groupedMessages = messages.reduce(function (item, message: DisplayableMessage) {
+      let index: string
+      if (message.createdAt.split('').indexOf(',') === -1) {
+        index = 'Today'
+      } else {
+        index = message.createdAt.split(',')[0]
       }
-      return msg.createdAt.split(',')[0]
-    })(
-      messages
-        .concat(usersRegistration)
-        .concat(publicChannelsRegistration)
-        .reverse()
-    )
+      item[index] = item[index] || []
+      item[index].push(message)
+      return item
+    }, Object.create(null))
   }
 
+  /* Scroll to the bottom on entering the channel or resizing window */
   useEffect(() => {
-    /** Scroll to the bottom on entering the channel or resizing window */
     if (scrollbarRef.current && (scrollPosition === -1 || scrollPosition === 1)) {
       setTimeout(() => {
         scrollbarRef.current.scrollToBottom()
@@ -139,22 +95,10 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
     }
     window.addEventListener('resize', eventListener)
     return () => window.removeEventListener('resize', eventListener)
-  }, [channelId, groupedMessages, scrollbarRef])
+  }, [channel, groupedMessages, scrollbarRef])
 
-  // useEffect(() => {
-  //   /** Note: This was used before (it pulls messages to the bottom of channel) but currently it enlarges rendering view in scrollbar
-  //    * creating empty space above already loaded messages */
-  //   if (msgRef.current && scrollbarRef.current) {
-  //     const margin =
-  //       msgRef.current.offsetHeight < scrollbarRef.current.getClientHeight()
-  //         ? scrollbarRef.current.getClientHeight() - msgRef.current.offsetHeight
-  //         : 0
-  //     setOffset(margin)
-  //   }
-  // }, [msgRef, scrollbarRef])
-
+  /* Set new position of a scrollbar handle */
   useEffect(() => {
-    /** Set new position of a scrollbar handle */
     if (scrollbarRef.current && newMessagesLoading) {
       const oneMessageHeight = scrollbarRef.current.getScrollHeight() / messages.length
       const newMessagesBlockHeight = oneMessageHeight * loadNextMessagesLimit
@@ -166,17 +110,8 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   }, [newMessagesLoading])
 
   return (
-    <Scrollbars
-      ref={scrollbarRef}
-      autoHideTimeout={500}
-      // renderView={renderView}
-      onScrollFrame={onScrollFrame}>
-      <List
-        disablePadding
-        ref={msgRef}
-        id='messages-scroll'
-        className={classes.list}>
-        {/* // style={{ marginTop: offset }}> */}
+    <Scrollbars ref={scrollbarRef} autoHideTimeout={500} onScrollFrame={onScrollFrame}>
+      <List disablePadding ref={messagesRef} id='messages-scroll' className={classes.list}>
         {Object.keys(groupedMessages || []).map(key => {
           const messagesArray = groupedMessages[key]
           const today = DateTime.utc()
@@ -187,9 +122,8 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
           return (
             <>
               <MessagesDivider title={displayTitle} />
-              {messagesArray.map(msg => {
-                const MessageComponent = ChannelMessage
-                return <MessageComponent key={msg.id} message={msg} />
+              {messagesArray.map(message => {
+                return <ChannelMessage key={message.id} message={message} />
               })}
             </>
           )
@@ -199,12 +133,4 @@ export const ChannelMessages: React.FC<IChannelMessagesProps> = ({
   )
 }
 
-ChannelMessages.defaultProps = {
-  messages: [],
-  usersRegistration: [],
-  publicChannelsRegistration: [],
-  isOwner: false,
-  isDM: false
-}
-
-export default ChannelMessages
+export default ChannelMessagesComponent

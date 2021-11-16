@@ -7,6 +7,8 @@ import { StoreKeys } from '../../../store/store.keys'
 import { SocketState } from '../../../sagas/socket/socket.slice'
 import LoadingPanel from './loadingPanel'
 import JoinCommunity from '../joinCommunity/joinCommunity'
+import CreateCommunity from '../createCommunity/createCommunity'
+import Channel from '../../pages/Channel'
 import {
   CreateCommunityDictionary,
   JoinCommunityDictionary
@@ -14,14 +16,11 @@ import {
 import MockedSocket from 'socket.io-mock'
 import { ioMock } from '../../../../shared/setupTests'
 import { Community } from '@zbayapp/nectar/lib/sagas/communities/communities.slice'
-import ChannelHeader from '../channels/ChannelHeader'
 import {
   CommunityChannels,
   PublicChannelsState
 } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.slice'
 import { channelsByCommunityAdapter } from '@zbayapp/nectar'
-import { CHANNEL_TYPE } from '../../../components/pages/ChannelTypes'
-import CreateCommunity from '../createCommunity/createCommunity'
 
 const communityPayload = {
   id: 'communityId',
@@ -103,7 +102,7 @@ describe('Restart app works correctly', () => {
         <LoadingPanel />
         <JoinCommunity />
         <CreateCommunity />
-        <ChannelHeader channelType={CHANNEL_TYPE.NORMAL} />
+        <Channel />
       </>,
       store
     )

@@ -122,7 +122,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export interface IChannelInput {
+export interface ChannelInputProps {
   channelAddress: string
   channelName?: string
   channelParticipants?: Array<{ nickname: string }>
@@ -135,7 +135,7 @@ export interface IChannelInput {
   setInfoClass: (arg: string) => void
 }
 
-export const ChannelInput: React.FC<IChannelInput> = ({
+export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
   channelAddress,
   channelName = '',
   channelParticipants = [],
@@ -476,4 +476,4 @@ export const ChannelInput: React.FC<IChannelInput> = ({
   )
 }
 
-export default ChannelInput
+export default ChannelInputComponent

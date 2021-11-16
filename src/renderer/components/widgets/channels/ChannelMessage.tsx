@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
 
 import { shell } from 'electron'
+
 import Jdenticon from 'react-jdenticon'
 import isImageUrl from 'is-image-url'
+
 import reactStringReplace from 'react-string-replace'
+
 import Grid from '@material-ui/core/Grid'
+
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
+
 import { DisplayableMessage } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.types'
 
 import BasicMessage from '../../../containers/widgets/channels/BasicMessage'
@@ -14,6 +19,7 @@ import Tooltip from '../../ui/Tooltip/Tooltip'
 import imagePlacegolder from '../../../static/images/imagePlacegolder.svg'
 import Icon from '../../ui/Icon/Icon'
 import OpenlinkModal from '../../../containers/ui/OpenlinkModal'
+
 import { User } from '@zbayapp/nectar/lib/sagas/users/users.slice'
 
 const useStyles = makeStyles((theme) => ({
@@ -224,6 +230,7 @@ const checkLinking = (
 
 interface ChannelMessageProps {
   message: DisplayableMessage
+
   onResend?: (DisplayableMessage: DisplayableMessage) => void
   publicChannels: any
   onLinkedChannel: (string) => void
@@ -238,7 +245,7 @@ interface ChannelMessageProps {
   torEnabled?: boolean
 }
 
-export const ChannelMessage: React.FC<ChannelMessageProps> = ({
+export const ChannelMessageComponent: React.FC<ChannelMessageProps> = ({
   message,
   publicChannels,
   onLinkedChannel,
@@ -252,12 +259,14 @@ export const ChannelMessage: React.FC<ChannelMessageProps> = ({
   autoload
 }) => {
   const classes = useStyles({})
+
   const [showImage, setShowImage] = React.useState(false)
   const [imageUrl, setImageUrl] = React.useState(null)
+
   const [allMessages, setAllMessages] = React.useState([])
+
   const [openModal, setOpenModal] = React.useState(false)
-  // const status = message.status || null
-  const messageData = message.message
+
   const autoloadImage =
     imageUrl
       ? autoload.includes(new URL(imageUrl).hostname)
@@ -271,7 +280,7 @@ export const ChannelMessage: React.FC<ChannelMessageProps> = ({
       users,
       onLinkedChannel,
       onLinkedUser,
-      messageData,
+      message,
       setImageUrl,
       openExternalLink,
       allowAll,
@@ -286,7 +295,8 @@ export const ChannelMessage: React.FC<ChannelMessageProps> = ({
       }
     }
     setAllMessages(arrayOfGroupedMessages)
-  }, [messageData, whitelisted, allowAll])
+  }, [message, whitelisted, allowAll])
+
   React.useEffect(() => {
     if (allowAll || whitelisted.includes(imageUrl)) {
       setShowImage(true)
@@ -367,4 +377,4 @@ export const ChannelMessage: React.FC<ChannelMessageProps> = ({
   )
 }
 
-export default ChannelMessage
+export default ChannelMessageComponent
