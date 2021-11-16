@@ -1,7 +1,7 @@
 import React from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 
-import { ChannelInputComponent, ChannelInputProps} from './ChannelInput'
+import { ChannelInputComponent, ChannelInputProps } from './ChannelInput'
 import { withTheme } from '../../../../storybook/decorators'
 
 const Template: ComponentStory<typeof ChannelInputComponent> = args => {

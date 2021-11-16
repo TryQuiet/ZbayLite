@@ -77,10 +77,10 @@ const args: ChannelComponentProps = {
       message: 'Great, thanks!',
       createdAt: '1637063364.29',
       nickname: 'bartek'
-    },
+    }
   ],
   onDelete: function (): void {},
-  onInputChange: function (value: string): void {},
+  onInputChange: function (_value: string): void {},
   onInputEnter: function (message: string): void {
     console.log('send message', message)
   },

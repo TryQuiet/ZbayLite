@@ -99,7 +99,7 @@ export interface BasicMessageProps {
 export const BasicMessageComponent: React.FC<BasicMessageProps> = ({ message }) => {
   const classes = useStyles({})
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null)
+  // const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null)
 
   const handleClick: React.ComponentProps<typeof Grid>['onClick'] = event => {
     if (event) {
@@ -107,7 +107,7 @@ export const BasicMessageComponent: React.FC<BasicMessageProps> = ({ message }) 
     }
   }
 
-  const handleClose = () => setAnchorEl(null)
+  // const handleClose = () => setAnchorEl(null)
 
   return (
     <ListItem

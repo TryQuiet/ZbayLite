@@ -96,7 +96,7 @@ export const ChannelHeaderComponent: React.FC<ChannelHeaderProps & ChannelMenuAc
 }) => {
   const classes = useStyles({})
 
-  const [ descriptionVisible, setDescriptionVisible ] = useState(true)
+  const [descriptionVisible, setDescriptionVisible] = useState(true)
 
   const debounce = (fn, ms: number) => {
     let timer: ReturnType<typeof setTimeout> | null

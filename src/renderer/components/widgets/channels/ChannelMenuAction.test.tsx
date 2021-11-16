@@ -18,6 +18,25 @@ describe('ChannelMenuAction', () => {
         notificationFilter={'1'}
       />
     )
-    expect(result.baseElement).toMatchInlineSnapshot()
+    expect(result.baseElement).toMatchInlineSnapshot(`
+      <body>
+        <div>
+          <button
+            class="MuiButtonBase-root MuiIconButton-root makeStyles-button-6"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiIconButton-label"
+            >
+              <img
+                class="makeStyles-icon-5"
+                src="test-file-stub"
+              />
+            </span>
+          </button>
+        </div>
+      </body>
+    `)
   })
 })

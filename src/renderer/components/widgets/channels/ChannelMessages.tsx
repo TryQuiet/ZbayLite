@@ -71,7 +71,7 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
   if (messages.length !== 0) {
     groupedMessages = messages.reduce(function (item, message: DisplayableMessage) {
       let index: string
-      if (message.createdAt.split('').indexOf(',') === -1) {
+      if (!message.createdAt.split('').includes(',')) {
         index = 'Today'
       } else {
         index = message.createdAt.split(',')[0]

@@ -1,7 +1,7 @@
 import React from 'react'
 import { DateTime } from 'luxon'
 
-import { BasicMessage } from './BasicMessage'
+import { BasicMessageComponent } from './BasicMessage'
 import { now } from '../../../testUtils'
 
 import { renderComponent } from '../../../testUtils/renderComponent'
@@ -26,12 +26,7 @@ describe('BasicMessage', () => {
     const result = renderComponent(
       <HashRouter>
         <Provider store={store}>
-          <BasicMessage
-            message={message}
-            actionsOpen={false}
-            setActionsOpen={jest.fn()}
-            allowModeration
-          />
+          <BasicMessageComponent message={message} />
         </Provider>
       </HashRouter>
     )
@@ -57,29 +52,42 @@ describe('BasicMessage', () => {
                   </div>
                 </div>
                 <div
-                  class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-justify-xs-space-between"
+                  class="MuiGrid-root MuiGrid-container MuiGrid-item"
                 >
                   <div
-                    class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-wrap-xs-nowrap MuiGrid-align-items-xs-flex-start MuiGrid-grid-xs-true"
+                    class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-justify-xs-space-between"
                   >
                     <div
-                      class="MuiGrid-root MuiGrid-item"
+                      class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-wrap-xs-nowrap MuiGrid-align-items-xs-flex-start MuiGrid-grid-xs-true"
                     >
-                      <p
-                        class="MuiTypography-root makeStyles-username-5 MuiTypography-body1 MuiTypography-colorTextPrimary"
+                      <div
+                        class="MuiGrid-root MuiGrid-item"
                       >
-                        string
-                      </p>
+                        <p
+                          class="MuiTypography-root makeStyles-username-5 MuiTypography-body1 MuiTypography-colorTextPrimary"
+                        >
+                          string
+                        </p>
+                      </div>
+                      <div
+                        class="MuiGrid-root MuiGrid-item"
+                      >
+                        <p
+                          class="MuiTypography-root makeStyles-time-13 MuiTypography-body1"
+                        >
+                          string
+                        </p>
+                      </div>
                     </div>
-                    <div
-                      class="MuiGrid-root MuiGrid-item"
+                  </div>
+                  <div
+                    class="MuiGrid-root MuiGrid-item"
+                  >
+                    <p
+                      class="MuiTypography-root makeStyles-message-6 MuiTypography-body1"
                     >
-                      <p
-                        class="MuiTypography-root makeStyles-time-13 MuiTypography-body1"
-                      >
-                        string
-                      </p>
-                    </div>
+                      string
+                    </p>
                   </div>
                 </div>
               </div>

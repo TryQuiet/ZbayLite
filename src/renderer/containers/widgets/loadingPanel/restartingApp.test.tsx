@@ -20,10 +20,13 @@ import {
   CommunityChannels,
   PublicChannelsState
 } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.slice'
-import { channelsByCommunityAdapter } from '@zbayapp/nectar'
+import { channelsByCommunityAdapter, IChannelInfo } from '@zbayapp/nectar'
+import { publicChannelsAdapter } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.adapter'
+
+const communityId = 'communityId'
 
 const communityPayload = {
-  id: 'communityId',
+  id: communityId,
   registrarUrl: 'ugmx77q2tnm5fliyfxfeen5hsuzjtbsz44tsldui2ju7vl5xj4d447yd:7909',
   name: 'name',
   CA: {
@@ -34,6 +37,21 @@ const communityPayload = {
   }
 }
 
+const generalChannel: IChannelInfo = {
+  name: 'general',
+  description: 'description',
+  owner: 'holmes',
+  timestamp: 1636971603355,
+  address: 'general'
+}
+
+const communityChannels = new CommunityChannels(communityId)
+communityChannels.currentChannel = 'general'
+communityChannels.channels = publicChannelsAdapter.setAll(
+  publicChannelsAdapter.getInitialState(),
+  [generalChannel]
+)
+
 describe('Restart app works correctly', () => {
   let socket: MockedSocket
 
@@ -41,29 +59,6 @@ describe('Restart app works correctly', () => {
     socket = new MockedSocket()
     ioMock.mockImplementation(() => socket)
   })
-
-  const communityChannelsState = new CommunityChannels('communityId')
-
-  const communityChannels = {
-    ...communityChannelsState,
-    currentChannel: 'testChannel',
-    channelMessages: {
-      currentChannel: {
-        ids: ['0'],
-        messages: {
-          0: {
-            id: '0',
-            message: 'message0',
-            createdAt: 0,
-            channelId: '',
-            pubKey: '12',
-            signature: '',
-            type: 1
-          }
-        }
-      }
-    }
-  }
 
   it('Displays channel component, not displays join/create community component', async () => {
     const { store } = await prepareStore(
@@ -107,7 +102,7 @@ describe('Restart app works correctly', () => {
       store
     )
 
-    const channelName = await screen.findByText('#testChannel')
+    const channelName = await screen.findByText('#general')
 
     const joinDictionary = JoinCommunityDictionary()
     const joinCommunityTitle = screen.queryByText(joinDictionary.header)
