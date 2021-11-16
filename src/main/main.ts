@@ -53,13 +53,8 @@ const isBrowserWindow = (window: BrowserWindow | null): window is BrowserWindow 
 const gotTheLock = app.requestSingleInstanceLock()
 
 const extensionsFolderPath = `${app.getPath('userData')}/extensions`
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min;
-}
+
 const applyDevTools = async () => {
-  console.log("THIS IS INSTANCE", getRandomInt(0, 1000))
   /* eslint-disable */
   if (!isDev || isE2Etest) return
   /* eslint-disable */
@@ -168,8 +163,6 @@ const createWindow = async () => {
     autoHideMenuBar: true
   })
   mainWindow.setMinimumSize(600, 400)
-  
-  console.log('>>>>>>>>>>>>>>>>>>>>>', aaa)
   /* eslint-disable */
   mainWindow.loadURL(
     aaa
@@ -334,7 +327,6 @@ app.on('ready', async () => {
 app.setAsDefaultProtocolClient('zbay')
 
 app.on('before-quit', async e => {
-  console.log('>>>>>>>>>>>>>>>>>>>>>', aaa)
   e.preventDefault()
   if (waggleProcess !== null) {
     await waggleProcess.connectionsManager.closeAllServices()
