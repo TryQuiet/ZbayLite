@@ -101,11 +101,11 @@ export const BasicMessageComponent: React.FC<BasicMessageProps> = ({ message }) 
 
   // const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null)
 
-  const handleClick: React.ComponentProps<typeof Grid>['onClick'] = event => {
-    if (event) {
-      setAnchorEl(event.currentTarget)
-    }
-  }
+  // const handleClick: React.ComponentProps<typeof Grid>['onClick'] = event => {
+  //   if (event) {
+  //     setAnchorEl(event.currentTarget)
+  //   }
+  // }
 
   // const handleClose = () => setAnchorEl(null)
 
@@ -147,7 +147,8 @@ export const BasicMessageComponent: React.FC<BasicMessageProps> = ({ message }) 
                   xs
                   alignItems='flex-start'
                   wrap='nowrap'
-                  onClick={e => handleClick(e)}>
+                  // onClick={e => handleClick(e)}
+                >
                   <Grid item>
                     <Typography color='textPrimary' className={classes.username}>
                       {message.nickname}
