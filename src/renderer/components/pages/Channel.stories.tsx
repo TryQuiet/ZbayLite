@@ -67,7 +67,7 @@ const args: ChannelComponentProps = {
     {
       id: 'v4mrwjudxz',
       type: 1,
-      message: 'How are you?',
+      message: 'How are you? My day was awesome. I removed a lot of unused props from container and I simplified code a lot. I like coding, coding is like building things with LEGO. I could admit it\'s a little bit harder and there\'s a lot that can go wrong but I like it anyway.',
       createdAt: '1636994106.671',
       nickname: 'holmes'
     },

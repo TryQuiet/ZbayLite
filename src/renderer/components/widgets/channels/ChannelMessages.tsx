@@ -8,10 +8,9 @@ import { DateTime } from 'luxon'
 import { loadNextMessagesLimit } from '../../../../shared/static'
 
 import MessagesDivider from '../MessagesDivider'
+import BasicMessageComponent from './BasicMessage'
 
 import { DisplayableMessage } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.types'
-
-import ChannelMessage from '../../../containers/widgets/channels/ChannelMessage'
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -123,7 +122,7 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
             <>
               <MessagesDivider title={displayTitle} />
               {messagesArray.map(message => {
-                return <ChannelMessage key={message.id} message={message} />
+                return <BasicMessageComponent message={message} />
               })}
             </>
           )
