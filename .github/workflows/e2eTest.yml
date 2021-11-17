@@ -19,6 +19,10 @@ jobs:
       - name: Build project
         run: npm run build:renderer:prod
       - name: Run tests
+        env:
+          E2E_TEST: true
+          NODE_ENV: development
+          DEBUG: 'waggle*,zbay*,testcafe:*electron*'
         uses: DevExpress/testcafe-action@latest
         with:
             args: "--hostname localhost \"electron:.\" \"./**/*.e2e.js\""
