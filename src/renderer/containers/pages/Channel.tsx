@@ -14,7 +14,7 @@ const Channel = () => {
   const user = useSelector(identity.selectors.currentIdentity)
   const channels = useSelector(publicChannels.selectors.publicChannels)
   const currentChannelAddress = useSelector(publicChannels.selectors.currentChannel)
-  const currentChannel = channels.find(channel => channel.address === currentChannelAddress)
+  const currentChannel = channels.find(channel => channel?.address === currentChannelAddress)
   const displayableMessages = useSelector(
     publicChannels.selectors.currentChannelDisplayableMessages
   )
@@ -37,19 +37,23 @@ const Channel = () => {
   )
 
   return (
-    <ChannelComponent
-      user={user}
-      channel={currentChannel}
-      channelSettingsModal={channelSettingsModal}
-      channelInfoModal={channelInfoModal}
-      messages={displayableMessages}
-      onDelete={function (): void {}}
-      onInputChange={onInputChange}
-      onInputEnter={onInputEnter}
-      mutedFlag={false}
-      notificationFilter={''}
-      openNotificationsTab={function (): void {}}
-    />
+    <>
+      {currentChannel && (
+        <ChannelComponent
+          user={user}
+          channel={currentChannel}
+          channelSettingsModal={channelSettingsModal}
+          channelInfoModal={channelInfoModal}
+          messages={displayableMessages}
+          onDelete={function (): void {}}
+          onInputChange={onInputChange}
+          onInputEnter={onInputEnter}
+          mutedFlag={false}
+          notificationFilter={''}
+          openNotificationsTab={function (): void {}}
+        />
+      )}
+    </>
   )
 }
 
