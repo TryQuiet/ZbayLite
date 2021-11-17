@@ -7,8 +7,12 @@ on:
     branches: [ master, develop ]
 
 jobs:
-  check:
-    runs-on: ubuntu-18.04
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-latest, windows-latest]
+
     steps:
       - uses: actions/checkout@v1.0.0
       - uses: actions/setup-node@master
