@@ -11,7 +11,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-latest, windows-latest]
+        # "macos-latest" UnableToAccessScreenRecordingAPIError: The find-window process cannot access the Screen Recording API. https://github.com/DevExpress/testcafe/issues/5352
+        os: [ubuntu-20.04, windows-latest]
 
     steps:
       - uses: actions/checkout@v1.0.0
@@ -29,4 +30,5 @@ jobs:
           DEBUG: 'waggle*,zbay*,testcafe:*electron*'
         uses: DevExpress/testcafe-action@latest
         with:
-            args: "--color --hostname localhost \"electron:.\" \"./**/*.e2e.js\""
+          skip-install: true
+          args: "--color --hostname localhost \"electron:.\" \"./**/*.e2e.js\""
