@@ -141,12 +141,6 @@ const checkForPayloadOnStartup = (payload: string) => {
     }
   }
 }
-const aaa = url.format({
-  pathname: path.join(__dirname, './index.html'),
-  protocol: 'file:',
-  slashes: true,
-  hash: '/'
-})
 let browserWidth: number
 let browserHeight: number
 const createWindow = async () => {
@@ -165,7 +159,12 @@ const createWindow = async () => {
   mainWindow.setMinimumSize(600, 400)
   /* eslint-disable */
   mainWindow.loadURL(
-    aaa
+    url.format({
+      pathname: path.join(__dirname, './index.html'),
+      protocol: 'file:',
+      slashes: true,
+      hash: '/'
+    })
   )
   /* eslint-enable */
   // Emitted when the window is closed.
@@ -294,7 +293,6 @@ app.on('ready', async () => {
   })
 
   mainWindow.webContents.once('did-finish-load', async () => {
-    console.log('DID LOAD')
     if (!isBrowserWindow(mainWindow)) {
       throw new Error('mainWindow is on unexpected type {mainWindow}')
     }
