@@ -18,7 +18,7 @@ import { Identity } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
 const useStyles = makeStyles(theme => ({
   root: {},
   messages: {
-    height: '100%',
+    height: 0,
     backgroundColor: theme.palette.colors.white
   }
 }))
