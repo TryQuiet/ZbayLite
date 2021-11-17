@@ -1,0 +1,24 @@
+name: End to end tests
+
+on:
+  pull_request:
+    branches: ['*']
+  push:
+    branches: [ master, develop ]
+
+jobs:
+  check:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1.0.0
+      - uses: actions/setup-node@master
+        with:
+          node-version: "12"
+      - name: Install project dependencies
+        run: npm ci
+      - name: Build project
+        run: npm run build:renderer:prod
+      - name: Run tests
+        uses: DevExpress/testcafe-action@latest
+        with:
+            args: "--hostname localhost \"electron:.\" \"./**/*.e2e.js\""
