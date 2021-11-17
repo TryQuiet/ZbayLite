@@ -1,6 +1,6 @@
 ## Running tests locally
 
-`build:renderer:prod`
+`build:prod`
 
 `start:e2e`
 

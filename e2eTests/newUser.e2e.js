@@ -3,7 +3,7 @@ import {fixture, test, Selector} from 'testcafe'
 fixture `Electron test`
     .page('../dist/src/main/index.html#/');
 
-const longTimeout = 50000
+const longTimeout = 100000
 
 test('User can create new community and register', async t => {
     // User opens app for the first time, sees spinner, waits for spinner to disappear

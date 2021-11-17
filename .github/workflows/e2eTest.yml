@@ -25,4 +25,4 @@ jobs:
           DEBUG: 'waggle*,zbay*,testcafe:*electron*'
         uses: DevExpress/testcafe-action@latest
         with:
-            args: "--hostname localhost \"electron:.\" \"./**/*.e2e.js\""
+            args: "--color --hostname localhost \"electron:.\" \"./**/*.e2e.js\""
