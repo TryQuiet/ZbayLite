@@ -29,10 +29,18 @@ test('User can create new community and register', async t => {
     const usernameInput = Selector('input').withAttribute('name', 'userName').filterVisible()
     const submitButton = Selector('button').withText("Register")
     await t.expect(usernameInput.exists).ok()
-    await t.typeText(usernameInput, 'testuser')
+    const username = 'testuser'
+    await t.typeText(usernameInput, username)
     await t.click(submitButton)
 
     // User waits for the spinner to disappear and then sees general channel
     await t.expect(Selector('span').withText('Creating community').exists).notOk(`"Creating community" spinner is still visible after ${longTimeout}ms`, { timeout: longTimeout })
     await t.expect(Selector('h6').withText('#general').exists).ok('User can\'t see "general" channel')
+
+    // User types a message, hits enter
+    const messageInput = Selector('div').withAttribute('placeholder', `Message #general as @${username}`)
+    await t.expect(messageInput.exists).ok()
+    await t.typeText(messageInput, 'Hello everyone')
+    await t.pressKey('enter')
+    // TODO: assert that the message appears in general channel
 })
