@@ -7,7 +7,6 @@ import ChannelComponent, { ChannelComponentProps } from './Channel'
 import { DisplayableMessage } from '@zbayapp/nectar'
 
 const Template: ComponentStory<typeof ChannelComponent> = args => {
-  
   const [messages, setMessages] = useState<DisplayableMessage[]>([
     {
       id: 'id',
@@ -31,7 +30,7 @@ const Template: ComponentStory<typeof ChannelComponent> = args => {
       nickname: 'bartek'
     }
   ])
-  
+
   const sendMessage = useCallback((message: string) => {
     const displayableMessage = {
       id: 'id',
