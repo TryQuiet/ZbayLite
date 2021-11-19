@@ -3,14 +3,13 @@ import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 
 import { Scrollbars } from 'rc-scrollbars'
-import { DateTime } from 'luxon'
 
 import { loadNextMessagesLimit } from '../../../../shared/static'
 
 import MessagesDivider from '../MessagesDivider'
 import BasicMessageComponent from './BasicMessage'
 
-import { DisplayableMessage } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.types'
+import { MessagesGroupedByDay } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.types'
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -41,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 
 export interface IChannelMessagesProps {
   channel: string
-  messages?: DisplayableMessage[]
+  messages?: MessagesGroupedByDay
   newMessagesLoading?: boolean
   setNewMessagesLoading?: (arg: boolean) => void
 }
@@ -67,21 +66,6 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
     [setScrollPosition]
   )
 
-  let groupedMessages: { [key: string]: DisplayableMessage[] }
-  if (messages.length !== 0) {
-    groupedMessages = messages.reduce(function (item, message: DisplayableMessage) {
-      let index: string
-      if (!message.createdAt.split('').includes(',')) {
-        index = 'Today'
-      } else {
-        index = message.createdAt.split(',')[0]
-      }
-      item[index] = item[index] || []
-      item[index].push(message)
-      return item
-    }, Object.create(null))
-  }
-
   /* Scroll to the bottom on entering the channel or resizing window */
   useEffect(() => {
     if (scrollbarRef.current && (scrollPosition === -1 || scrollPosition === 1)) {
@@ -94,7 +78,7 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
     }
     window.addEventListener('resize', eventListener)
     return () => window.removeEventListener('resize', eventListener)
-  }, [channel, groupedMessages, scrollbarRef])
+  }, [channel, messages, scrollbarRef])
 
   /* Set new position of a scrollbar handle */
   useEffect(() => {
@@ -111,13 +95,9 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
   return (
     <Scrollbars ref={scrollbarRef} autoHideTimeout={500} onScrollFrame={onScrollFrame}>
       <List disablePadding ref={messagesRef} id='messages-scroll' className={classes.list}>
-        {Object.keys(groupedMessages || []).map(key => {
-          const messagesArray = groupedMessages[key]
-          const today = DateTime.utc()
-          const groupName = key
-          const displayTitle = DateTime.fromSeconds(parseInt(key)).hasSame(today, 'day')
-            ? 'Today'
-            : groupName
+        {messages.map((dayItem) => {
+          const messagesArray = dayItem.messages
+          const displayTitle = dayItem.day
           return (
             <>
               <MessagesDivider title={displayTitle} />
