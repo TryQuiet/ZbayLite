@@ -3,12 +3,13 @@ import '@testing-library/jest-dom/extend-expect'
 import { screen } from '@testing-library/dom'
 import { renderComponent } from '../../../testUtils/renderComponent'
 import { prepareStore } from '../../../testUtils/prepareStore'
-import { community, communityChannels } from '../../../testUtils/mockedData'
+import { community, communityChannels, createIdentity } from '../../../testUtils/mockedData'
 import { StoreKeys } from '../../../store/store.keys'
 import {
   storeKeys as NectarStoreKeys,
   channelsByCommunityAdapter,
-  communitiesAdapter
+  communitiesAdapter,
+  identityAdapter
 } from '@zbayapp/nectar'
 import { SocketState } from '../../../sagas/socket/socket.slice'
 import LoadingPanel from './loadingPanel'
@@ -23,6 +24,7 @@ import MockedSocket from 'socket.io-mock'
 import { ioMock } from '../../../../shared/setupTests'
 import { CommunitiesState } from '@zbayapp/nectar/lib/sagas/communities/communities.slice'
 import { PublicChannelsState } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.slice'
+import { IdentityState } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
 
 describe('Restart app works correctly', () => {
   let socket: MockedSocket
@@ -50,6 +52,10 @@ describe('Restart app works correctly', () => {
             channelsByCommunityAdapter.getInitialState(),
             [communityChannels]
           )
+        },
+        [NectarStoreKeys.Identity]: {
+          ...new IdentityState(),
+          identities: identityAdapter.setAll(identityAdapter.getInitialState(), [createIdentity()])
         }
       },
       socket // Fork Nectar's sagas

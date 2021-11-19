@@ -17,7 +17,7 @@ import MockedSocket from 'socket.io-mock'
 import { act } from 'react-dom/test-utils'
 import { ioMock } from '../../../../shared/setupTests'
 import { SocketActionTypes } from '@zbayapp/nectar/lib/sagas/socket/const/actionTypes'
-import { createIdentity } from '../../../testUtils/mockedData'
+import { createIdentity, socketEventData } from '../../../testUtils/mockedData'
 
 describe('User', () => {
   let socket: MockedSocket
@@ -50,8 +50,6 @@ describe('User', () => {
       </>,
       store
     )
-
-    type socketEventData<T extends unknown[]> = [...T]
 
     jest.spyOn(socket, 'emit').mockImplementation((action: SocketActionTypes, ...input: any[]) => {
       if (action === SocketActionTypes.CREATE_NETWORK) {
