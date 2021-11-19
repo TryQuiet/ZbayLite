@@ -42,7 +42,10 @@ const Template: ComponentStory<typeof ChannelComponent> = args => {
     setMessages(messages => [...messages, displayableMessage])
   }, [])
 
-  args.messages = messages
+  args.messages = [{
+    day: 'Today',
+    messages: messages
+  }]
   args.onInputEnter = sendMessage
 
   return <ChannelComponent {...args} />
@@ -87,21 +90,21 @@ const args: ChannelComponentProps = {
   },
   channelSettingsModal: {
     open: false,
-    handleOpen: function (_args?: any): any {},
-    handleClose: function (): any {}
+    handleOpen: function (_args?: any): any { },
+    handleClose: function (): any { }
   },
   channelInfoModal: {
     open: false,
-    handleOpen: function (_args?: any): any {},
-    handleClose: function (): any {}
+    handleOpen: function (_args?: any): any { },
+    handleClose: function (): any { }
   },
   messages: [],
-  onDelete: function (): void {},
-  onInputChange: function (_value: string): void {},
-  onInputEnter: function (_message: string): void {},
+  onDelete: function (): void { },
+  onInputChange: function (_value: string): void { },
+  onInputEnter: function (_message: string): void { },
   mutedFlag: false,
   notificationFilter: '',
-  openNotificationsTab: function (): void {}
+  openNotificationsTab: function (): void { }
 }
 
 Component.args = args
