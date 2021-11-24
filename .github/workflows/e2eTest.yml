@@ -32,3 +32,7 @@ jobs:
         with:
           skip-install: true
           args: "--color --hostname localhost \"electron:.\" \"./**/*.e2e.js\""
+      - uses: actions/upload-artifact@v2
+        with:
+          name: test-screenshots
+          path: screenshots/**/
