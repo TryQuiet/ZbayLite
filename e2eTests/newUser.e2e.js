@@ -46,7 +46,7 @@ test('User can create new community, register and send few messages to general c
   // Sent message is visible on the messages' list
   const messagesList = Selector('ul').withAttribute('id', 'messages-scroll')
   const messagesGroup = messagesList.find('div').withAttribute('class', /-messageCard-/)
-  await t.expect(messagesGroup.exists).ok()
+  await t.expect(messagesGroup.exists).ok({ timeout: 10000 })
   await t.expect(messagesGroup.count).eql(1)
 
   const messageGroupContent = messagesGroup.find('p').withAttribute('class', /-message-/)
