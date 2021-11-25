@@ -70,7 +70,7 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
   useEffect(() => {
     if (scrollbarRef.current && (scrollPosition === -1 || scrollPosition === 1)) {
       setTimeout(() => {
-        scrollbarRef.current.scrollToBottom()
+        scrollbarRef.current?.scrollToBottom()
       })
     }
     const eventListener = () => {
