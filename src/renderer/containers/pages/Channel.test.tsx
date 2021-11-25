@@ -5,22 +5,15 @@ import { apply, fork, take } from 'typed-redux-saga'
 import { renderComponent } from '../../testUtils/renderComponent'
 import { prepareStore } from '../../testUtils/prepareStore'
 import { StoreKeys } from '../../store/store.keys'
-import {
-  publicChannels,
-  getFactory
-} from '@zbayapp/nectar'
+import { publicChannels, getFactory } from '@zbayapp/nectar'
 import { SocketState } from '../../sagas/socket/socket.slice'
 import MockedSocket from 'socket.io-mock'
 import { act } from 'react-dom/test-utils'
 import { ioMock } from '../../../shared/setupTests'
 import { identityActions } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
 import Channel from './Channel'
-import {
-  communitiesActions
-} from '@zbayapp/nectar/lib/sagas/communities/communities.slice'
-import {
-  publicChannelsActions
-} from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.slice'
+import { communitiesActions } from '@zbayapp/nectar/lib/sagas/communities/communities.slice'
+import { publicChannelsActions } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.slice'
 import { SocketActionTypes } from '@zbayapp/nectar/lib/sagas/socket/const/actionTypes'
 import { socketEventData } from '../../testUtils/socket'
 
@@ -117,28 +110,21 @@ describe('Channel', () => {
     })
 
     // Data from below will build but it won't be stored
-    const bartek =
-    (
-      await factory.build<ReturnType<typeof identityActions.addNewIdentity>['payload']>(
-        'Identity',
-        { id: community.id, zbayNickname: 'bartek' }
-        )
-      // @ts-ignore
-      ).payload
+    const bartek = (
+      await factory.build<typeof identityActions.addNewIdentity>('Identity', {
+        id: community.id,
+        zbayNickname: 'bartek'
+      })
+    ).payload
 
-    const bartek_message =
-    (
-      await factory.build<ReturnType<typeof publicChannelsActions.signMessage>['payload']>(
-        'SignedMessage',
-        {
-          identity: bartek
-        }
-        )
-      // @ts-ignore
-      ).payload
+    const bartek_message = (
+      await factory.build<typeof publicChannelsActions.signMessage>('SignedMessage', {
+        identity: bartek
+      })
+    ).payload
 
     renderComponent(
-       <>
+      <>
         <Channel />
       </>,
       store
