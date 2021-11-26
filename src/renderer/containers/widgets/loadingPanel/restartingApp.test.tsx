@@ -3,14 +3,8 @@ import '@testing-library/jest-dom/extend-expect'
 import { screen } from '@testing-library/dom'
 import { renderComponent } from '../../../testUtils/renderComponent'
 import { prepareStore } from '../../../testUtils/prepareStore'
-import { community, communityChannels, createIdentity } from '../../../testUtils/mockedData'
 import { StoreKeys } from '../../../store/store.keys'
-import {
-  storeKeys as NectarStoreKeys,
-  channelsByCommunityAdapter,
-  communitiesAdapter,
-  identityAdapter
-} from '@zbayapp/nectar'
+import { getFactory } from '@zbayapp/nectar'
 import { SocketState } from '../../../sagas/socket/socket.slice'
 import LoadingPanel from './loadingPanel'
 import JoinCommunity from '../joinCommunity/joinCommunity'
@@ -22,9 +16,8 @@ import {
 } from '../../../components/widgets/performCommunityAction/PerformCommunityAction.dictionary'
 import MockedSocket from 'socket.io-mock'
 import { ioMock } from '../../../../shared/setupTests'
-import { CommunitiesState } from '@zbayapp/nectar/lib/sagas/communities/communities.slice'
-import { PublicChannelsState } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.slice'
-import { IdentityState } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
+import { communitiesActions } from '@zbayapp/nectar/lib/sagas/communities/communities.slice'
+import { identityActions } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
 
 describe('Restart app works correctly', () => {
   let socket: MockedSocket
@@ -40,26 +33,21 @@ describe('Restart app works correctly', () => {
         [StoreKeys.Socket]: {
           ...new SocketState(),
           isConnected: true
-        },
-        [NectarStoreKeys.Communities]: {
-          ...new CommunitiesState(),
-          currentCommunity: community.id,
-          communities: communitiesAdapter.setAll(communitiesAdapter.getInitialState(), [community])
-        },
-        [NectarStoreKeys.PublicChannels]: {
-          ...new PublicChannelsState(),
-          channels: channelsByCommunityAdapter.setAll(
-            channelsByCommunityAdapter.getInitialState(),
-            [communityChannels]
-          )
-        },
-        [NectarStoreKeys.Identity]: {
-          ...new IdentityState(),
-          identities: identityAdapter.setAll(identityAdapter.getInitialState(), [createIdentity()])
         }
       },
       socket // Fork Nectar's sagas
     )
+
+    const factory = await getFactory(store)
+
+    const community = await factory.create<
+    ReturnType<typeof communitiesActions.addNewCommunity>['payload']
+    >('Community')
+
+    await factory.create<ReturnType<typeof identityActions.addNewIdentity>['payload']>('Identity', {
+      id: community.id,
+      zbayNickname: 'holmes'
+    })
 
     renderComponent(
       <>

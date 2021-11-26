@@ -60,13 +60,13 @@ describe('Channel', () => {
 
     const factory = await getFactory(store)
 
-    const community = await factory.create<
-      ReturnType<typeof communitiesActions.addNewCommunity>['payload']
-    >('Community')
+    // const community = await factory.create<
+    // ReturnType<typeof communitiesActions.addNewCommunity>['payload']
+    // >('Community')
 
     const holmes = await factory.create<
-      ReturnType<typeof identityActions.addNewIdentity>['payload']
-    >('Identity', { id: community.id, zbayNickname: 'holmes' })
+    ReturnType<typeof identityActions.addNewIdentity>['payload']
+    >('Identity', { zbayNickname: 'holmes' })
 
     renderComponent(
       <>
@@ -96,15 +96,15 @@ describe('Channel', () => {
     const factory = await getFactory(store)
 
     const community = await factory.create<
-      ReturnType<typeof communitiesActions.addNewCommunity>['payload']
+    ReturnType<typeof communitiesActions.addNewCommunity>['payload']
     >('Community')
 
     const holmes = await factory.create<
-      ReturnType<typeof identityActions.addNewIdentity>['payload']
+    ReturnType<typeof identityActions.addNewIdentity>['payload']
     >('Identity', { id: community.id, zbayNickname: 'holmes' })
 
-    const holmes_message = await factory.create<
-      ReturnType<typeof publicChannelsActions.signMessage>['payload']
+    const holmesMessage = await factory.create<
+    ReturnType<typeof publicChannelsActions.signMessage>['payload']
     >('SignedMessage', {
       identity: holmes
     })
@@ -117,7 +117,7 @@ describe('Channel', () => {
       })
     ).payload
 
-    const bartek_message = (
+    const bartekMessage = (
       await factory.build<typeof publicChannelsActions.signMessage>('SignedMessage', {
         identity: bartek
       })
@@ -130,44 +130,44 @@ describe('Channel', () => {
       store
     )
 
-    const persisted_message = await screen.findByText(holmes_message.message.message)
-    expect(persisted_message).toBeVisible()
+    const persistedMessage = await screen.findByText(holmesMessage.message.message)
+    expect(persistedMessage).toBeVisible()
 
     jest.spyOn(socket, 'emit').mockImplementation((action: SocketActionTypes, ...input: any[]) => {
       if (action === SocketActionTypes.ASK_FOR_MESSAGES) {
         const data = (input as socketEventData<
-          [
-            {
-              peerId: string
-              channelAddress: string
-              ids: string[]
-              communityId: string
-            }
-          ]
+        [
+          {
+            peerId: string
+            channelAddress: string
+            ids: string[]
+            communityId: string
+          }
+        ]
         >)[0]
         if (data.ids.length > 1) {
           fail('Requested too many massages')
         }
-        if (data.ids[0] !== bartek_message.message.id) {
+        if (data.ids[0] !== bartekMessage.message.id) {
           fail('Missing message has not been requested')
         }
         return socket.socketClient.emit(SocketActionTypes.RESPONSE_ASK_FOR_MESSAGES, {
           channelAddress: data.channelAddress,
-          messages: [bartek_message.message],
+          messages: [bartekMessage.message],
           communityId: data.communityId
         })
       }
     })
 
     // New message is not yet fetched from db
-    expect(screen.queryByText(bartek_message.message.id)).toBeNull()
+    expect(screen.queryByText(bartekMessage.message.id)).toBeNull()
 
     await act(async () => {
       await runSaga(testReceiveMessage).toPromise()
     })
 
-    const new_message = await screen.findByText(bartek_message.message.message)
-    expect(new_message).toBeVisible()
+    const newMessage = await screen.findByText(bartekMessage.message.message)
+    expect(newMessage).toBeVisible()
 
     function* mockSendMessagesIds(): Generator {
       yield* apply(socket.socketClient, socket.socketClient.emit, [
@@ -175,7 +175,7 @@ describe('Channel', () => {
         {
           peerId: holmes.peerId.id,
           channelAddress: 'general',
-          ids: [holmes_message.message.id, bartek_message.message.id],
+          ids: [holmesMessage.message.id, bartekMessage.message.id],
           communityId: community.id
         }
       ])

@@ -6,7 +6,7 @@ import { apply, take } from 'typed-redux-saga'
 import { renderComponent } from '../../../testUtils/renderComponent'
 import { prepareStore } from '../../../testUtils/prepareStore'
 import { StoreKeys } from '../../../store/store.keys'
-import { communities, identity } from '@zbayapp/nectar'
+import { communities, getFactory, identity } from '@zbayapp/nectar'
 import { SocketState } from '../../../sagas/socket/socket.slice'
 import { ModalsInitialState } from '../../../sagas/modals/modals.slice'
 import JoinCommunity from './joinCommunity'
@@ -17,7 +17,8 @@ import MockedSocket from 'socket.io-mock'
 import { act } from 'react-dom/test-utils'
 import { ioMock } from '../../../../shared/setupTests'
 import { SocketActionTypes } from '@zbayapp/nectar/lib/sagas/socket/const/actionTypes'
-import { createIdentity, socketEventData } from '../../../testUtils/mockedData'
+import { socketEventData } from '../../../testUtils/socket'
+import { identityActions } from '@zbayapp/nectar/lib/sagas/identity/identity.slice'
 
 describe('User', () => {
   let socket: MockedSocket
@@ -51,30 +52,37 @@ describe('User', () => {
       store
     )
 
-    jest.spyOn(socket, 'emit').mockImplementation((action: SocketActionTypes, ...input: any[]) => {
-      if (action === SocketActionTypes.CREATE_NETWORK) {
-        const data = input as socketEventData<[string]>
-        communityId = data[0]
-        return socket.socketClient.emit(SocketActionTypes.NEW_COMMUNITY, {
-          id: communityId,
-          payload: createIdentity(communityId)
-        })
-      }
-      if (action === SocketActionTypes.REGISTER_USER_CERTIFICATE) {
-        const data = input as socketEventData<
-        [string, string, string]
-        >
-        const communityId = data[2]
-        return socket.socketClient.emit(SocketActionTypes.SEND_USER_CERTIFICATE, {
-          id: communityId,
-          payload: {
-            peers: [''],
-            certificate: 'MIIBTDCB8wIBATAKBggqhkjOPQQDAjASMRAwDgYDVQQDEwdaYmF5IENBMB4XDTEwMTIyODEwMTAxMFoXDTMwMTIyODEwMTAxMFowEjEQMA4GA1UEAxMHWmJheSBDQTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABEaV1l/7BOvPh0fFteSubIJ2r66YM4XoMMEfUhHiJE6O0ojfHdNrsItg+pHmpIQyEe+3YGWxIhgjL65+liE8ypqjPzA9MA8GA1UdEwQIMAYBAf8CAQMwCwYDVR0PBAQDAgCGMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAKBggqhkjOPQQDAgNIADBFAiARHtkv7GlhfkFbtRGU1r19UJFkhA7Vu+EubBnJPjD9/QIhALje1S3bp8w8jjVf70jGc2/uRmDCo/bNyQRpApBaD5vY',
-            rootCa: 'rootCa'
-          }
-        })
-      }
-    })
+    const factory = await getFactory(store)
+
+    jest
+      .spyOn(socket, 'emit')
+      .mockImplementation(async (action: SocketActionTypes, ...input: any[]) => {
+        if (action === SocketActionTypes.CREATE_NETWORK) {
+          const data = input as socketEventData<[string]>
+          communityId = data[0]
+          const holmes = (
+            await factory.build<typeof identityActions.addNewIdentity>('Identity', {
+              id: communityId,
+              zbayNickname: 'holmes'
+            })
+          ).payload
+          return socket.socketClient.emit(SocketActionTypes.NEW_COMMUNITY, {
+            id: communityId,
+            payload: holmes
+          })
+        }
+        if (action === SocketActionTypes.REGISTER_USER_CERTIFICATE) {
+          const data = input as socketEventData<[string, string, string]>
+          const communityId = data[2]
+          return socket.socketClient.emit(SocketActionTypes.SEND_USER_CERTIFICATE, {
+            id: communityId,
+            payload: {
+              certificate:
+                'MIIBTDCB8wIBATAKBggqhkjOPQQDAjASMRAwDgYDVQQDEwdaYmF5IENBMB4XDTEwMTIyODEwMTAxMFoXDTMwMTIyODEwMTAxMFowEjEQMA4GA1UEAxMHWmJheSBDQTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABEaV1l/7BOvPh0fFteSubIJ2r66YM4XoMMEfUhHiJE6O0ojfHdNrsItg+pHmpIQyEe+3YGWxIhgjL65+liE8ypqjPzA9MA8GA1UdEwQIMAYBAf8CAQMwCwYDVR0PBAQDAgCGMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAKBggqhkjOPQQDAgNIADBFAiARHtkv7GlhfkFbtRGU1r19UJFkhA7Vu+EubBnJPjD9/QIhALje1S3bp8w8jjVf70jGc2/uRmDCo/bNyQRpApBaD5vY'
+            }
+          })
+        }
+      })
 
     // Confirm proper modal title is displayed
     const dictionary = JoinCommunityDictionary()
@@ -104,27 +112,30 @@ describe('User', () => {
 
     expect(createUsernameTitle).not.toBeVisible()
     expect(joinCommunityTitle).not.toBeVisible()
-  })
 
-  function* testJoinCommunitySaga(): Generator {
-    yield* take(communities.actions.joinCommunity)
-    yield* take(communities.actions.responseCreateCommunity)
-    yield* take(identity.actions.registerUsername)
-    yield* take(identity.actions.storeUserCertificate)
-  }
+    function* testJoinCommunitySaga(): Generator {
+      yield* take(communities.actions.joinCommunity)
+      yield* take(communities.actions.responseCreateCommunity)
+      yield* take(identity.actions.registerUsername)
+      yield* take(identity.actions.storeUserCertificate)
+    }
 
-  function* mockChannelsResponse(): Generator {
-    yield* apply(socket.socketClient, socket.socketClient.emit, [SocketActionTypes.RESPONSE_GET_PUBLIC_CHANNELS, {
-      communityId: communityId,
-      channels: {
-        general: {
-          name: 'general',
-          description: 'string',
-          owner: 'string',
-          timestamp: 0,
-          address: 'string'
+    function* mockChannelsResponse(): Generator {
+      yield* apply(socket.socketClient, socket.socketClient.emit, [
+        SocketActionTypes.RESPONSE_GET_PUBLIC_CHANNELS,
+        {
+          communityId: communityId,
+          channels: {
+            general: {
+              name: 'general',
+              description: 'string',
+              owner: 'owner',
+              timestamp: 0,
+              address: 'string'
+            }
+          }
         }
-      }
-    }])
-  }
+      ])
+    }
+  })
 })

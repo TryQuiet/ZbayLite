@@ -1,6 +1,5 @@
 import React from 'react'
 import { renderComponent } from '../../../testUtils/renderComponent'
-import { now } from '../../../testUtils'
 import { DateTime } from 'luxon'
 import { ChannelMessagesComponent } from './ChannelMessages'
 
@@ -14,7 +13,7 @@ describe('ChannelMessages', () => {
       nickname: 'string'
     }
 
-    jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => now)
+    jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => DateTime.utc(2019, 3, 7, 13, 3, 48))
 
     const messages = [{
       day: 'Today',
