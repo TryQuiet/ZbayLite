@@ -8,6 +8,7 @@ export interface OpenModalPayload {
 }
 
 export class ModalsInitialState {
+  [ModalName.applicationUpdate] = { open: false };
   [ModalName.createChannel] = { open: false };
   [ModalName.accountSettingsModal] = { open: false };
   [ModalName.openexternallink] = { open: false };

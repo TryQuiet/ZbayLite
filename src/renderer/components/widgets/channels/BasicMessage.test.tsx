@@ -2,7 +2,6 @@ import React from 'react'
 import { DateTime } from 'luxon'
 
 import { BasicMessageComponent } from './BasicMessage'
-import { now } from '../../../testUtils'
 
 import { renderComponent } from '../../../testUtils/renderComponent'
 import { HashRouter } from 'react-router-dom'
@@ -12,7 +11,7 @@ import store from '../../../store'
 describe('BasicMessage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => now)
+    jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => DateTime.utc(2019, 3, 7, 13, 3, 48))
   })
 
   it('renders component', async () => {

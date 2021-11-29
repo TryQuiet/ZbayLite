@@ -70,7 +70,7 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
   useEffect(() => {
     if (scrollbarRef.current && (scrollPosition === -1 || scrollPosition === 1)) {
       setTimeout(() => {
-        scrollbarRef.current.scrollToBottom()
+        scrollbarRef.current?.scrollToBottom()
       })
     }
     const eventListener = () => {
@@ -99,12 +99,12 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
           const messagesArray = dayItem.messages
           const displayTitle = dayItem.day
           return (
-            <>
+            <div key={displayTitle}>
               <MessagesDivider title={displayTitle} />
               {messagesArray.map(message => {
-                return <BasicMessageComponent message={message} />
+                return <BasicMessageComponent key={message.id} message={message} />
               })}
-            </>
+            </div>
           )
         })}
       </List>

@@ -6,8 +6,6 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import orange from '@material-ui/core/colors/orange'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import MentionPoper from './MentionPoper'
-import MentionElement from './MentionElement'
 import ChannelInputInfoMessage from './ChannelInputInfoMessage'
 import { INPUT_STATE } from './InputState.enum'
 import Icon from '../../../ui/Icon/Icon'
@@ -137,7 +135,6 @@ export interface ChannelInputProps {
 
 export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
   channelAddress,
-  channelName = '',
   channelParticipants = [],
   inputPlaceholder,
   inputState = INPUT_STATE.AVAILABLE,
@@ -149,7 +146,7 @@ export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
 }) => {
   const classes = useStyles({})
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement>(null)
+  const [_anchorEl, setAnchorEl] = React.useState<HTMLDivElement>(null)
   const [mentionsToSelect, setMentionsToSelect] = React.useState([])
 
   const messageRef = React.useRef<string>()
@@ -170,7 +167,7 @@ export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
   const [message, setMessage] = React.useState(initialMessage)
 
   window.onfocus = () => {
-    inputRef.current.el.current.focus()
+    inputRef?.current?.el.current.focus()
     setFocused(true)
   }
 
@@ -375,7 +372,7 @@ export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
         })}
         direction='column'
         justify='center'>
-        <MentionPoper anchorEl={anchorEl} selected={selected}>
+        {/* <MentionPoper anchorEl={anchorEl} selected={selected}>
           {mentionsToSelect.map((target, index) => (
             <MentionElement
               key={index}
@@ -390,7 +387,7 @@ export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
               }}
             />
           ))}
-        </MentionPoper>
+        </MentionPoper> */}
         <Grid
           container
           direction='row'
