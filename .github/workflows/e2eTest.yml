@@ -7,12 +7,12 @@ on:
     branches: [ master, develop ]
 
 jobs:
-  build:
+  e2e:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         # "macos-latest" UnableToAccessScreenRecordingAPIError: The find-window process cannot access the Screen Recording API. https://github.com/DevExpress/testcafe/issues/5352
-        os: [ubuntu-20.04, windows-latest]
+        os: [windows-latest]
 
     steps:
       - uses: actions/checkout@v1.0.0
@@ -24,9 +24,14 @@ jobs:
       - name: Build project
         run: npm run build:prod
       - name: Run tests
-        uses: GabrielBB/xvfb-action@v1
+        env:
+          E2E_TEST: true
+          NODE_ENV: development
+          DEBUG: 'waggle*,zbay*,testcafe:*'
+        uses: DevExpress/testcafe-action@latest
         with:
-          run: npm run start:e2e
+          skip-install: true
+          args: "--color --hostname localhost -p '${DATE}_${TIME}_${TEST_ID}.png' -S --screenshots-full-page \"electron:.\" \"./**/*.e2e.js\""
       - name: Print current working directory and files
         if: always()
         run: pwd && ls -alh && ls screenshots
