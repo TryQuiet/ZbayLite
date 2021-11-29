@@ -24,14 +24,9 @@ jobs:
       - name: Build project
         run: npm run build:prod
       - name: Run tests
-        env:
-          E2E_TEST: true
-          NODE_ENV: development
-          DEBUG: 'waggle*,zbay*,testcafe:*'
-        uses: DevExpress/testcafe-action@latest
+        uses: GabrielBB/xvfb-action@v1
         with:
-          skip-install: true
-          args: "--color --hostname localhost -p '${DATE}_${TIME}_${TEST_ID}.png' -S --screenshots-full-page \"electron:.\" \"./**/*.e2e.js\""
+          run: npm run start:e2e
       - name: Print current working directory and files
         if: always()
         run: pwd && ls -alh && ls screenshots
