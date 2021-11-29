@@ -135,7 +135,6 @@ export interface ChannelInputProps {
 
 export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
   channelAddress,
-  channelName = '',
   channelParticipants = [],
   inputPlaceholder,
   inputState = INPUT_STATE.AVAILABLE,
@@ -147,7 +146,7 @@ export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
 }) => {
   const classes = useStyles({})
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement>(null)
+  const [_anchorEl, setAnchorEl] = React.useState<HTMLDivElement>(null)
   const [mentionsToSelect, setMentionsToSelect] = React.useState([])
 
   const messageRef = React.useRef<string>()
