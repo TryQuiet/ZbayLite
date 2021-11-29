@@ -99,12 +99,12 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
           const messagesArray = dayItem.messages
           const displayTitle = dayItem.day
           return (
-            <>
+            <div key={displayTitle}>
               <MessagesDivider title={displayTitle} />
               {messagesArray.map(message => {
-                return <BasicMessageComponent message={message} />
+                return <BasicMessageComponent key={message.id} message={message} />
               })}
-            </>
+            </div>
           )
         })}
       </List>

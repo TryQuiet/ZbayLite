@@ -39,10 +39,10 @@
     "skipLibCheck": true /* Skip type checking of declaration files. */,
     "downlevelIteration": true,
     "typeRoots": [
+      "@types",
       "src/renderer/expanded-theme.ts",
       "node_modules/@types",
-      "node_modules/@zbayapp/nectar/@types",
-      "@types"
+      "node_modules/@zbayapp/nectar/@types"
     ],
     "resolveJsonModule": true
   },

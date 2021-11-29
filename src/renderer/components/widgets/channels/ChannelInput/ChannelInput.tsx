@@ -6,8 +6,6 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import orange from '@material-ui/core/colors/orange'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import MentionPoper from './MentionPoper'
-import MentionElement from './MentionElement'
 import ChannelInputInfoMessage from './ChannelInputInfoMessage'
 import { INPUT_STATE } from './InputState.enum'
 import Icon from '../../../ui/Icon/Icon'
@@ -170,7 +168,7 @@ export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
   const [message, setMessage] = React.useState(initialMessage)
 
   window.onfocus = () => {
-    inputRef.current.el.current.focus()
+    inputRef?.current?.el.current.focus()
     setFocused(true)
   }
 
@@ -375,7 +373,7 @@ export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
         })}
         direction='column'
         justify='center'>
-        <MentionPoper anchorEl={anchorEl} selected={selected}>
+        {/* <MentionPoper anchorEl={anchorEl} selected={selected}>
           {mentionsToSelect.map((target, index) => (
             <MentionElement
               key={index}
@@ -390,7 +388,7 @@ export const ChannelInputComponent: React.FC<ChannelInputProps> = ({
               }}
             />
           ))}
-        </MentionPoper>
+        </MentionPoper> */}
         <Grid
           container
           direction='row'
