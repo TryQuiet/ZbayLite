@@ -1,14 +1,18 @@
-import { fixture, test, Selector } from 'testcafe'
+import { fixture, test, Selector, ClientFunction } from 'testcafe'
 
 fixture`Electron test`
   .page('../dist/src/main/index.html#/');
 
 const longTimeout = 100000
 
+const getPageHTML = ClientFunction(() => {
+  // Debugging purposes
+  return document.documentElement.outerHTML;
+}); 
+
 test('User can create new community, register and send few messages to general channel', async t => {
   // User opens app for the first time, sees spinner, waits for spinner to disappear
   await t.expect(Selector('span').withText('Starting Zbay').exists).notOk(`"Starting Zbay" spinner is still visible after ${longTimeout}ms`, { timeout: longTimeout })
-  await t.takeScreenshot()
   // User sees "join community" page and switches to "create community" view by clicking on the link
   const joinCommunityTitle = await Selector('h3').withText('Join community')()
   await t.expect(joinCommunityTitle).ok('User can\'t see "Join community" title')
@@ -45,8 +49,13 @@ test('User can create new community, register and send few messages to general c
 
   // Sent message is visible on the messages' list
   const messagesList = Selector('ul').withAttribute('id', 'messages-scroll')
+  console.log('messagesList::', await messagesList.innerText)
+  await t.expect(messagesList.exists).ok('Could not find "messages-scroll" placeholder', { timeout: 30000 })
+  console.log(await getPageHTML())
+  
   const messagesGroup = messagesList.find('div').withAttribute('class', /-messageCard-/)
-  await t.expect(messagesGroup.exists).ok({ timeout: 10000 })
+  console.log('messageGroup::', await messagesGroup.innerText)
+  await t.expect(messagesGroup.exists).ok({ timeout: 30000 })
   await t.expect(messagesGroup.count).eql(1)
 
   const messageGroupContent = messagesGroup.find('p').withAttribute('class', /-message-/)

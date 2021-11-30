@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         # "macos-latest" UnableToAccessScreenRecordingAPIError: The find-window process cannot access the Screen Recording API. https://github.com/DevExpress/testcafe/issues/5352
-        os: [windows-latest]
+        os: [ubuntu-20.04, windows-latest]
 
     steps:
       - uses: actions/checkout@v1.0.0
@@ -27,13 +27,13 @@ jobs:
         env:
           E2E_TEST: true
           NODE_ENV: development
-          DEBUG: 'waggle*,zbay*,testcafe:*'
+          DEBUG: 'waggle*,zbay*,testcafe*electron*'
         uses: DevExpress/testcafe-action@latest
         with:
           skip-install: true
-          args: "--color --hostname localhost -p '${DATE}_${TIME}_${TEST_ID}.png' -S --screenshots-full-page \"electron:.\" \"./**/*.e2e.js\""
+          args: "--color --hostname localhost -p '${DATE}_${TIME}_${TEST_ID}.png' -S --screenshots-full-page --selector-timeout 10000 \"electron:.\" \"./**/*.e2e.js\""
       - name: Print current working directory and files
-        if: always()
+        if: always() && matrix.os == 'ubuntu-20.04'
         run: pwd && ls -alh && ls screenshots
       - name: Install tree
         if: always() && matrix.os == 'ubuntu-20.04'
