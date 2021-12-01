@@ -121,23 +121,11 @@ describe('ChannelMessages', () => {
                           >
                             <p
                               class="MuiTypography-root makeStyles-message-152 MuiTypography-body1"
+                              data-testid="messagesGroupContent-string"
                             >
-                              <p
-                                class="MuiTypography-root makeStyles-time-159 MuiTypography-body1"
-                              >
-                                1636995488.44
-                              </p>
-                            </div>
+                              string
+                            </p>
                           </div>
-                        </div>
-                        <div
-                          class="MuiGrid-root MuiGrid-item"
-                        >
-                          <p
-                            class="MuiTypography-root makeStyles-message-152 MuiTypography-body1"
-                          >
-                            string
-                          </p>
                         </div>
                       </div>
                     </div>

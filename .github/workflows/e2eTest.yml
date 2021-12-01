@@ -31,17 +31,11 @@ jobs:
         uses: DevExpress/testcafe-action@latest
         with:
           skip-install: true
-          args: "--color --hostname localhost -p '${DATE}_${TIME}_${TEST_ID}.png' -S --screenshots-full-page --selector-timeout 10000 \"electron:.\" \"./**/*.e2e.js\""
+          args: "--color --hostname localhost -p '${DATE}_${TIME}_${TEST_ID}.png' -S --screenshots-full-page --selector-timeout 10000 \"electron:.\" \"./**/*.e2e.ts\""
       - name: Print current working directory and files
-        if: always() && matrix.os == 'ubuntu-20.04'
+        if: failure() && matrix.os == 'ubuntu-20.04'
         run: pwd && ls -alh && ls screenshots
-      - name: Install tree
-        if: always() && matrix.os == 'ubuntu-20.04'
-        run: sudo apt install -y tree
-      - name: Run tree
-        if: always() && matrix.os == 'ubuntu-20.04'
-        run: tree screenshots
-      - name: Archive test screenshots
+      - name: Archive test screenshots  # Taking screenshots doesn't work right now on CI
         uses: actions/upload-artifact@v2
         if: always()
         with:
