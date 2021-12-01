@@ -9,7 +9,7 @@ import { loadNextMessagesLimit } from '../../../../shared/static'
 import MessagesDivider from '../MessagesDivider'
 import BasicMessageComponent from './BasicMessage'
 
-import { MessagesGroupedByDay } from '@zbayapp/nectar/lib/sagas/publicChannels/publicChannels.types'
+import { DisplayableMessage } from '@zbayapp/nectar'
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
 
 export interface IChannelMessagesProps {
   channel: string
-  messages?: MessagesGroupedByDay
+  messages?: { [date: string]: DisplayableMessage[] }
   newMessagesLoading?: boolean
   setNewMessagesLoading?: (arg: boolean) => void
 }
@@ -48,7 +48,7 @@ export interface IChannelMessagesProps {
 // TODO: scrollbar smart pagination
 export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
   channel,
-  messages = [],
+  messages = {},
   newMessagesLoading,
   setNewMessagesLoading
 }) => {
@@ -81,27 +81,25 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
   }, [channel, messages, scrollbarRef])
 
   /* Set new position of a scrollbar handle */
-  useEffect(() => {
-    if (scrollbarRef.current && newMessagesLoading) {
-      const oneMessageHeight = scrollbarRef.current.getScrollHeight() / messages.length
-      const newMessagesBlockHeight = oneMessageHeight * loadNextMessagesLimit
-      setTimeout(() => {
-        scrollbarRef.current.scrollTop(newMessagesBlockHeight)
-      })
-      setNewMessagesLoading(false)
-    }
-  }, [newMessagesLoading])
+  // useEffect(() => {
+  //   if (scrollbarRef.current && newMessagesLoading) {
+  //     const oneMessageHeight = scrollbarRef.current.getScrollHeight() / messages.length
+  //     const newMessagesBlockHeight = oneMessageHeight * loadNextMessagesLimit
+  //     setTimeout(() => {
+  //       scrollbarRef.current.scrollTop(newMessagesBlockHeight)
+  //     })
+  //     setNewMessagesLoading(false)
+  //   }
+  // }, [newMessagesLoading])
 
   return (
     <Scrollbars ref={scrollbarRef} autoHideTimeout={500} onScrollFrame={onScrollFrame}>
       <List disablePadding ref={messagesRef} id='messages-scroll' className={classes.list}>
-        {messages.map((dayItem) => {
-          const messagesArray = dayItem.messages
-          const displayTitle = dayItem.day
+        {Object.keys(messages).map((day) => {
           return (
-            <div key={displayTitle}>
-              <MessagesDivider title={displayTitle} />
-              {messagesArray.map(message => {
+            <div key={day}>
+              <MessagesDivider title={day} />
+              {messages[day].map(message => {
                 return <BasicMessageComponent key={message.id} message={message} />
               })}
             </div>

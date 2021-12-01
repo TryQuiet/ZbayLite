@@ -9,18 +9,16 @@ describe('ChannelMessages', () => {
       id: 'string',
       type: 1,
       message: 'string',
-      createdAt: '1636995488.44',
+      createdAt: 1636995488.44,
+      date: 'string',
       nickname: 'string'
     }
 
     jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => DateTime.utc(2019, 3, 7, 13, 3, 48))
 
-    const messages = [
-      {
-        day: 'Today',
-        messages: [message]
-      }
-    ]
+    const messages = {
+      Today: [message]
+    }
 
     const result = renderComponent(
       <ChannelMessagesComponent channel={'general'} messages={messages} />

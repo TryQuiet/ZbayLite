@@ -13,7 +13,8 @@ describe('ChannelRegisteredMessage', async () => {
       id: 'string',
       type: 1,
       message: 'string',
-      createdAt: 'string',
+      createdAt: 0,
+      date: 'string',
       nickname: 'string'
     }
     const result = renderComponent(

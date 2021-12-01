@@ -156,7 +156,7 @@ export const BasicMessageComponent: React.FC<BasicMessageProps> = ({ message }) 
                   </Grid>
                   {status !== 'failed' && (
                     <Grid item>
-                      <Typography className={classes.time}>{message.createdAt}</Typography>
+                      <Typography className={classes.time}>{message.date}</Typography>
                     </Grid>
                   )}
                 </Grid>

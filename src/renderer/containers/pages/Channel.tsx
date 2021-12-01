@@ -16,7 +16,7 @@ const Channel = () => {
   const currentChannelAddress = useSelector(publicChannels.selectors.currentChannel)
   const currentChannel = channels.find(channel => channel?.address === currentChannelAddress)
   const displayableMessages = useSelector(
-    publicChannels.selectors.currentChannelMessagesGroupedByDay
+    publicChannels.selectors.currentChannelMessagesMergedBySender
   )
 
   const channelSettingsModal = useModal(ModalName.channelSettingsModal)

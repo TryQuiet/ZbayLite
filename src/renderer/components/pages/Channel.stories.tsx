@@ -12,21 +12,25 @@ const Template: ComponentStory<typeof ChannelComponent> = args => {
       id: 'id',
       type: 1,
       message: 'Hello',
-      createdAt: '0',
+      createdAt: 0,
+      date: '10:00',
       nickname: 'holmes'
     },
     {
       id: 'id',
       type: 1,
-      message: 'How are you? My day was awesome. I removed a lot of unused props from container and I simplified code a lot. I like coding, coding is like building things with LEGO. I could admit it\'s a little bit harder and there\'s a lot that can go wrong but I like it anyway.',
-      createdAt: '0',
+      message:
+        "How are you? My day was awesome. I removed a lot of unused props from container and I simplified code a lot. I like coding, coding is like building things with LEGO. I could admit it's a little bit harder and there's a lot that can go wrong but I like it anyway.",
+      createdAt: 0,
+      date: '10:01',
       nickname: 'holmes'
     },
     {
       id: 'id',
       type: 1,
       message: 'Great, thanks!',
-      createdAt: '0',
+      createdAt: 0,
+      date: '10:02',
       nickname: 'bartek'
     }
   ])
@@ -36,16 +40,17 @@ const Template: ComponentStory<typeof ChannelComponent> = args => {
       id: 'id',
       type: 1,
       message: message,
-      createdAt: '0',
+      createdAt: 0,
+      date: '10:02',
       nickname: 'wiktor'
     }
     setMessages(messages => [...messages, displayableMessage])
   }, [])
 
-  args.messages = [{
-    day: 'Today',
-    messages: messages
-  }]
+  args.messages = {
+    ['Today']: messages
+  }
+
   args.onInputEnter = sendMessage
 
   return <ChannelComponent {...args} />
@@ -90,21 +95,21 @@ const args: ChannelComponentProps = {
   },
   channelSettingsModal: {
     open: false,
-    handleOpen: function (_args?: any): any { },
-    handleClose: function (): any { }
+    handleOpen: function (_args?: any): any {},
+    handleClose: function (): any {}
   },
   channelInfoModal: {
     open: false,
-    handleOpen: function (_args?: any): any { },
-    handleClose: function (): any { }
+    handleOpen: function (_args?: any): any {},
+    handleClose: function (): any {}
   },
-  messages: [],
-  onDelete: function (): void { },
-  onInputChange: function (_value: string): void { },
-  onInputEnter: function (_message: string): void { },
+  messages: {},
+  onDelete: function (): void {},
+  onInputChange: function (_value: string): void {},
+  onInputEnter: function (_message: string): void {},
   mutedFlag: false,
   notificationFilter: '',
-  openNotificationsTab: function (): void { }
+  openNotificationsTab: function (): void {}
 }
 
 Component.args = args
