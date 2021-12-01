@@ -35,6 +35,7 @@ test('User can create new community, register and send few messages to general c
   // User waits for the spinner to disappear and then sees general channel
   await t.expect(Selector('span').withText('Creating community').exists).notOk(`"Creating community" spinner is still visible after ${longTimeout}ms`, { timeout: longTimeout })
   await t.expect(Selector('h6').withText('#general').exists).ok('User can\'t see "general" channel')
+  await t.takeScreenshot()
 
   // User types a message, hits enter
   const messageInput = Selector('div').withAttribute('placeholder', `Message #general as @${username}`)
@@ -58,5 +59,6 @@ test('User can create new community, register and send few messages to general c
   await t.typeText(messageInput, 'Welcome')
   await t.pressKey('enter')
   await t.expect(messagesGroup.count).eql(1)
+  await t.takeScreenshot()
   await t.expect(messageGroupContent.textContent).eql('Hello\xa0everyone\nWelcome')
 })
