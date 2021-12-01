@@ -8,6 +8,7 @@ const longTimeout = 100000
 test('User can create new community, register and send few messages to general channel', async t => {
   // User opens app for the first time, sees spinner, waits for spinner to disappear
   await t.expect(Selector('span').withText('Starting Zbay').exists).notOk(`"Starting Zbay" spinner is still visible after ${longTimeout}ms`, { timeout: longTimeout })
+
   // User sees "join community" page and switches to "create community" view by clicking on the link
   const joinCommunityTitle = await Selector('h3').withText('Join community')()
   await t.expect(joinCommunityTitle).ok('User can\'t see "Join community" title')
@@ -35,7 +36,6 @@ test('User can create new community, register and send few messages to general c
   // User waits for the spinner to disappear and then sees general channel
   await t.expect(Selector('span').withText('Creating community').exists).notOk(`"Creating community" spinner is still visible after ${longTimeout}ms`, { timeout: longTimeout })
   await t.expect(Selector('h6').withText('#general').exists).ok('User can\'t see "general" channel')
-  await t.takeScreenshot()
 
   // User types a message, hits enter
   const messageInput = Selector('div').withAttribute('placeholder', `Message #general as @${username}`)
@@ -59,6 +59,5 @@ test('User can create new community, register and send few messages to general c
   await t.typeText(messageInput, 'Welcome')
   await t.pressKey('enter')
   await t.expect(messagesGroup.count).eql(1)
-  await t.takeScreenshot()
   await t.expect(messageGroupContent.textContent).eql('Hello\xa0everyone\nWelcome')
 })

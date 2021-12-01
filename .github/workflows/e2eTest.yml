@@ -10,6 +10,8 @@ on:
 jobs:
   e2e-linux:
     runs-on: ubuntu-20.04
+    env:
+      DISPLAY: ":99.0"
     steps:
       - uses: actions/checkout@v1.0.0
       - uses: actions/setup-node@master
@@ -24,11 +26,8 @@ jobs:
           fluxbox &
       - name: Install project dependencies
         run: npm ci
-      - name: Run tests
+      - name: Build project and run tests
         run: npm run start:e2e
-      - name: Print current working directory and files
-        if: always()
-        run: pwd && ls -alh && ls screenshots
       - name: Archive test screenshots
         uses: actions/upload-artifact@v2
         if: always()
@@ -45,11 +44,8 @@ jobs:
           node-version: "12"
       - name: Install project dependencies
         run: npm ci
-      - name: Run tests
-        run: npm run start:e2e
-      - name: Print current working directory and files
-        if: always()
-        run: dir && dir screenshots
+      - name: Build project and run tests
+        run: npm run start:e2eWin
       - name: Archive test screenshots
         uses: actions/upload-artifact@v2
         if: always()
