@@ -81,10 +81,10 @@ describe('BasicMessage', () => {
                     </div>
                   </div>
                   <div
-                    class="makeStyles-firstMessage-165"
+                    class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                   >
                     <div
-                      class="MuiGrid-root MuiGrid-item"
+                      class="MuiGrid-root makeStyles-firstMessage-165 MuiGrid-item"
                     >
                       <p
                         class="MuiTypography-root makeStyles-message-164 MuiTypography-body1"
