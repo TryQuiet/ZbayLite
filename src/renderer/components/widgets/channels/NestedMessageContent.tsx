@@ -29,7 +29,7 @@ export const NestedMessageContent: React.FC<NestedMessageContentProps> = ({ mess
 
   return (
     <Grid item className={outerDivStyle}>
-      <Typography className={classes.message}>{message.message}</Typography>
+      <Typography className={classes.message} data-testid={`messagesGroupContent-${message.id}`}>{message.message}</Typography>
     </Grid>
   )
 }
