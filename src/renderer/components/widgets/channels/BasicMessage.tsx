@@ -183,9 +183,11 @@ export const BasicMessageComponent: React.FC<BasicMessageProps> = ({ messages })
                 </ClickAwayListener>
               )} */}
               </Grid>
-              {messages.map((message, index) => {
-                return <NestedMessageContent message={message} index={index} />
-              })}
+              <Grid container direction='column'>
+                {messages.map((message, index) => {
+                  return <NestedMessageContent message={message} index={index} />
+                })}
+              </Grid>
             </Grid>
           </Grid>
         }

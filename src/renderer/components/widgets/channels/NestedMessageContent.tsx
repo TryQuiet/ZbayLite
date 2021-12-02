@@ -28,11 +28,9 @@ export const NestedMessageContent: React.FC<NestedMessageContentProps> = ({ mess
   const outerDivStyle = index > 0 ? classes.nextMessage : classes.firstMessage
 
   return (
-    <div key={message.id} className={outerDivStyle}>
-      <Grid item>
-        <Typography className={classes.message}>{message.message}</Typography>
-      </Grid>
-    </div>
+    <Grid item className={outerDivStyle}>
+      <Typography className={classes.message}>{message.message}</Typography>
+    </Grid>
   )
 }
 

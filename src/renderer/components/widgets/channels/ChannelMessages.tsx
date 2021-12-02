@@ -83,7 +83,7 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
               <MessagesDivider title={day} />
               {messages[day].map(items => { // Messages merged by sender (DisplayableMessage[])
                 const data = items[0]
-                return <BasicMessageComponent key={data.nickname + data.id} messages={items} />
+                return <BasicMessageComponent key={data.id} messages={items} />
               })}
             </div>
           )
