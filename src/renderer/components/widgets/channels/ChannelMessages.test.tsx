@@ -17,7 +17,7 @@ describe('ChannelMessages', () => {
     jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => DateTime.utc(2019, 3, 7, 13, 3, 48))
 
     const messages = {
-      Today: [message]
+      Today: [[message]]
     }
 
     const result = renderComponent(
@@ -77,10 +77,10 @@ describe('ChannelMessages', () => {
                         class="MuiGrid-root MuiGrid-container MuiGrid-wrap-xs-nowrap MuiGrid-align-items-xs-flex-start"
                       >
                         <div
-                          class="MuiGrid-root makeStyles-avatar-156 MuiGrid-item"
+                          class="MuiGrid-root makeStyles-avatar-155 MuiGrid-item"
                         >
                           <div
-                            class="makeStyles-alignAvatar-157"
+                            class="makeStyles-alignAvatar-156"
                           >
                             Jdenticon
                           </div>
@@ -107,21 +107,25 @@ describe('ChannelMessages', () => {
                                 class="MuiGrid-root MuiGrid-item"
                               >
                                 <p
-                                  class="MuiTypography-root makeStyles-time-159 MuiTypography-body1"
+                                  class="MuiTypography-root makeStyles-time-158 MuiTypography-body1"
                                 >
-                                  1636995488.44
+                                  string
                                 </p>
                               </div>
                             </div>
                           </div>
                           <div
-                            class="MuiGrid-root MuiGrid-item"
+                            class="makeStyles-firstMessage-178"
                           >
-                            <p
-                              class="MuiTypography-root makeStyles-message-152 MuiTypography-body1"
+                            <div
+                              class="MuiGrid-root MuiGrid-item"
                             >
-                              string
-                            </p>
+                              <p
+                                class="MuiTypography-root makeStyles-message-177 MuiTypography-body1"
+                              >
+                                string
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>

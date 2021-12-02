@@ -28,7 +28,7 @@ export interface ChannelComponentProps {
   channel: PublicChannel
   channelSettingsModal: ReturnType<typeof useModal>
   channelInfoModal: ReturnType<typeof useModal>
-  messages: { [date: string]: DisplayableMessage[] }
+  messages: { [date: string]: DisplayableMessage[][] }
   onDelete: () => void
   onInputChange: (value: string) => void
   onInputEnter: (message: string) => void

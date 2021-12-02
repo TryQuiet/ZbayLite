@@ -45,12 +45,12 @@ const Channel = () => {
           channelSettingsModal={channelSettingsModal}
           channelInfoModal={channelInfoModal}
           messages={displayableMessages}
-          onDelete={function (): void { }}
+          onDelete={function (): void {}}
           onInputChange={onInputChange}
           onInputEnter={onInputEnter}
           mutedFlag={false}
           notificationFilter={''}
-          openNotificationsTab={function (): void { }}
+          openNotificationsTab={function (): void {}}
         />
       )}
     </>

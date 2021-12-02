@@ -26,7 +26,7 @@ describe('BasicMessage', () => {
     const result = renderComponent(
       <HashRouter>
         <Provider store={store}>
-          <BasicMessageComponent message={message} />
+          <BasicMessageComponent messages={[message]} />
         </Provider>
       </HashRouter>
     )
@@ -43,10 +43,10 @@ describe('BasicMessage', () => {
                 class="MuiGrid-root MuiGrid-container MuiGrid-wrap-xs-nowrap MuiGrid-align-items-xs-flex-start"
               >
                 <div
-                  class="MuiGrid-root makeStyles-avatar-10 MuiGrid-item"
+                  class="MuiGrid-root makeStyles-avatar-9 MuiGrid-item"
                 >
                   <div
-                    class="makeStyles-alignAvatar-11"
+                    class="makeStyles-alignAvatar-10"
                   >
                     Jdenticon
                   </div>
@@ -73,7 +73,7 @@ describe('BasicMessage', () => {
                         class="MuiGrid-root MuiGrid-item"
                       >
                         <p
-                          class="MuiTypography-root makeStyles-time-13 MuiTypography-body1"
+                          class="MuiTypography-root makeStyles-time-12 MuiTypography-body1"
                         >
                           string
                         </p>
@@ -81,13 +81,17 @@ describe('BasicMessage', () => {
                     </div>
                   </div>
                   <div
-                    class="MuiGrid-root MuiGrid-item"
+                    class="makeStyles-firstMessage-165"
                   >
-                    <p
-                      class="MuiTypography-root makeStyles-message-6 MuiTypography-body1"
+                    <div
+                      class="MuiGrid-root MuiGrid-item"
                     >
-                      string
-                    </p>
+                      <p
+                        class="MuiTypography-root makeStyles-message-164 MuiTypography-body1"
+                      >
+                        string
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
