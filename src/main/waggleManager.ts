@@ -1,7 +1,7 @@
 import TlgManager from 'waggle'
 import { BrowserWindow } from 'electron'
 import electronStore from '../shared/electronStore'
-import getPort from 'get-port';
+import getPort from 'get-port'
 import { ConnectionsManager } from 'waggle/lib/libp2p/connectionsManager'
 import { DataServer } from 'waggle/lib/socket/DataServer'
 
