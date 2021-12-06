@@ -28,6 +28,7 @@ export const getPorts = async (): Promise<{
 
 export const runWaggle = async (webContents: BrowserWindow['webContents']): Promise<{ connectionsManager: ConnectionsManager; dataServer: DataServer }> => {
   const ports = await getPorts()
+
   const appDataPath = electronStore.get('appDataPath')
 
   const dataServer = new TlgManager.DataServer(ports.dataServer)
@@ -54,7 +55,7 @@ export const runWaggle = async (webContents: BrowserWindow['webContents']): Prom
 
   await connectionsManager.init()
 
-  webContents.send('connectToWebsocket')
+  webContents.send('connectToWebsocket', { dataPort: ports.dataServer })
 
   return { connectionsManager, dataServer }
 }
