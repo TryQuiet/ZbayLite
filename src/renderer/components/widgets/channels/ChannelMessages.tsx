@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 
@@ -56,9 +57,12 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
 }) => {
   const classes = useStyles({})
 
-  const chunkSize = 100
+  const chunkSize = 50
 
   const [scrollPosition, setScrollPosition] = React.useState(-1)
+
+  // Set only top and bottom scroll position (0, 1)
+  const [absoluteScrollPosition, setAbsoluteScrollPosition] = React.useState(-1)
 
   const [messagesSlice, setMessagesSlice] = React.useState(0)
 
@@ -67,25 +71,36 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
 
   const onScrollFrame = React.useCallback(
     e => {
+      // Values betwen 0.0 - 1
       setScrollPosition(e.top)
+      // Values 0 or 1
+      if (e.top === 0 || e.top === 1) {
+        setAbsoluteScrollPosition(e.top)
+      } else {
+        setAbsoluteScrollPosition(-1)
+      }
     },
     [setScrollPosition]
   )
 
   useEffect(() => {
-    console.log('messages', messages.count)
-    console.log('slice', messagesSlice)
-    if (scrollbarRef.current && scrollbarRef.current.getValues().top === 0) {
-      setMessagesSlice(slice => {
-        return Math.max(0, slice - chunkSize)
-      })
-      setChannelLoadingSlice(messagesSlice)
+
+    // Do this only if scrollbars are visible
+
+    if (scrollbarRef.current && absoluteScrollPosition === 0) { // Scroll sticks to 0 position event when new messages are being loaded
+      const trim = Math.max(0, messagesSlice - chunkSize)
+      setMessagesSlice(trim)
+      setChannelLoadingSlice(trim)
     }
-    if(scrollbarRef.current && scrollbarRef.current.getValues().top === 1) {
-      setMessagesSlice(Math.max(0, messages.count - chunkSize))
-      setChannelLoadingSlice(messagesSlice)
+
+    if (scrollbarRef.current && absoluteScrollPosition === 1) { // Messages doesn't trim automatically
+      const totalMessagesAmount = messages.count + messagesSlice
+      const bottomMessagesSlice = Math.max(0, totalMessagesAmount - chunkSize)
+      setMessagesSlice(bottomMessagesSlice)
+      setChannelLoadingSlice(bottomMessagesSlice)
     }
-  }, [scrollbarRef.current?.getValues().top, setChannelLoadingSlice])
+
+  }, [setChannelLoadingSlice, absoluteScrollPosition])
 
   /* Scroll to the bottom on entering the channel or resizing window */
   useEffect(() => {

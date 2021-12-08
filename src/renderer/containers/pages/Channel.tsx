@@ -22,6 +22,9 @@ const Channel = () => {
   const currentChannelMessagesCount = useSelector(
     publicChannels.selectors.currentChannelMessagesCount
   )
+
+  console.log('gets messages', currentChannelMessagesCount)
+
   const currentChannelDisplayableMessages = useSelector(
     publicChannels.selectors.currentChannelMessagesMergedBySender
   )
@@ -50,7 +53,7 @@ const Channel = () => {
         slice: value
       }))
     },
-    [dispatch]
+    [dispatch, currentCommunityId]
   )
 
   return (
