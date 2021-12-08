@@ -38,17 +38,29 @@ const useStyles = makeStyles(theme => ({
 
 export interface IChannelMessagesProps {
   channel: string
-  messages?: { [date: string]: DisplayableMessage[][] }
+  messages?: {
+    count: number
+    groups: { [date: string]: DisplayableMessage[][] }
+  }
+  setChannelLoadingSlice?: (value: number) => void
 }
 
 // TODO: scrollbar smart pagination
 export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
   channel,
-  messages = {}
+  messages = {
+    count: 0,
+    groups: {}
+  },
+  setChannelLoadingSlice = _value => {}
 }) => {
   const classes = useStyles({})
 
+  const chunkSize = 100
+
   const [scrollPosition, setScrollPosition] = React.useState(-1)
+
+  const [messagesSlice, setMessagesSlice] = React.useState(0)
 
   const messagesRef = React.useRef<HTMLUListElement>()
   const scrollbarRef = React.useRef<Scrollbars>()
@@ -59,6 +71,21 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
     },
     [setScrollPosition]
   )
+
+  useEffect(() => {
+    console.log('messages', messages.count)
+    console.log('slice', messagesSlice)
+    if (scrollbarRef.current && scrollbarRef.current.getValues().top === 0) {
+      setMessagesSlice(slice => {
+        return Math.max(0, slice - chunkSize)
+      })
+      setChannelLoadingSlice(messagesSlice)
+    }
+    if(scrollbarRef.current && scrollbarRef.current.getValues().top === 1) {
+      setMessagesSlice(Math.max(0, messages.count - chunkSize))
+      setChannelLoadingSlice(messagesSlice)
+    }
+  }, [scrollbarRef.current?.getValues().top, setChannelLoadingSlice])
 
   /* Scroll to the bottom on entering the channel or resizing window */
   useEffect(() => {
@@ -77,11 +104,12 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
   return (
     <Scrollbars ref={scrollbarRef} autoHideTimeout={500} onScrollFrame={onScrollFrame}>
       <List disablePadding ref={messagesRef} id='messages-scroll' className={classes.list}>
-        {Object.keys(messages).map(day => {
+        {Object.keys(messages.groups).map(day => {
           return (
             <div key={day}>
               <MessagesDivider title={day} />
-              {messages[day].map(items => { // Messages merged by sender (DisplayableMessage[])
+              {messages.groups[day].map(items => {
+                // Messages merged by sender (DisplayableMessage[])
                 const data = items[0]
                 return <BasicMessageComponent key={data.id} messages={items} />
               })}

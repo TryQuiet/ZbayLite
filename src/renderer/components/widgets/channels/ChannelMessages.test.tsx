@@ -17,7 +17,10 @@ describe('ChannelMessages', () => {
     jest.spyOn(DateTime, 'utc').mockImplementationOnce(() => DateTime.utc(2019, 3, 7, 13, 3, 48))
 
     const messages = {
-      Today: [[message]]
+      count: 1,
+      groups: {
+        Today: [[message]]
+      }
     }
 
     const result = renderComponent(
