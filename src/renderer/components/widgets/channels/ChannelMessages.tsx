@@ -59,7 +59,7 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
 }) => {
   const classes = useStyles({})
 
-  const chunkSize = 50
+  const chunkSize = 50 // Should come from the configuration
 
   const [scrollPosition, setScrollPosition] = React.useState(-1)
   const [scrollHeight, setScrollHeight] = React.useState(0)
@@ -74,7 +74,7 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
     scrollbarRef.current.scrollTop = scrollbarRef.current.scrollHeight
   }
 
-  /* Get scroll position and save it to the state as  (top), 1 (bottom) or -1 (middle) */
+  /* Get scroll position and save it to the state as 0 (top), 1 (bottom) or -1 (middle) */
   const onScroll = React.useCallback(() => {
     const top = scrollbarRef.current?.scrollTop === 0
 
@@ -96,11 +96,9 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
     }
   }, [messages.count])
 
-  /* Manage the number of messages in lazy-loading */
+  /* Lazy loading messages - top (load) */
   useEffect(() => {
-    // Prevent lazy-loading messages if there's no scrollbars yet
     if (scrollbarRef.current.scrollHeight < scrollbarRef.current.clientHeight) return
-
     if (scrollbarRef.current && scrollPosition === 0) {
       // Cache scroll height before loading new messages (to keep the scroll position after re-rendering)
       setScrollHeight(scrollbarRef.current.scrollHeight)
@@ -109,19 +107,18 @@ export const ChannelMessagesComponent: React.FC<IChannelMessagesProps> = ({
       setMessagesSlice(trim)
       setChannelLoadingSlice(trim)
     }
+  }, [setChannelLoadingSlice, scrollPosition])
 
+  /* Lazy loading messages - bottom (trim) */
+  useEffect(() => {
+    if (scrollbarRef.current.scrollHeight < scrollbarRef.current.clientHeight) return
     if (scrollbarRef.current && scrollPosition === 1) {
       const totalMessagesAmount = messages.count + messagesSlice
       const bottomMessagesSlice = Math.max(0, totalMessagesAmount - chunkSize)
       setMessagesSlice(bottomMessagesSlice)
       setChannelLoadingSlice(bottomMessagesSlice)
     }
-  }, [setChannelLoadingSlice, scrollPosition])
-
-  /* Trim messages automatically when they reach the limit */
-  useEffect(() => {
-
-  }, [])
+  }, [setChannelLoadingSlice, scrollPosition, messages.count])
 
   /* Scroll to the bottom on entering the channel or resizing window */
   useEffect(() => {
