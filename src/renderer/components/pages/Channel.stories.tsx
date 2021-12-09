@@ -5,14 +5,14 @@ import { withTheme } from '../../storybook/decorators'
 
 import ChannelComponent, { ChannelComponentProps } from './Channel'
 import { DisplayableMessage } from '@zbayapp/nectar'
-import { number } from 'prop-types'
 
 const Template: ComponentStory<typeof ChannelComponent> = args => {
+
   const [messages, _setMessages] = useState<{
     count: number
     groups: { [day: string]: DisplayableMessage[][] }
   }>({
-    count: 4,
+    count: 16,
     groups: {
       '28 Oct': [
         [
@@ -54,6 +54,110 @@ const Template: ComponentStory<typeof ChannelComponent> = args => {
             createdAt: 0,
             date: '12:40',
             nickname: 'wiktor'
+          },
+          {
+            id: '5',
+            type: 1,
+            message: 'That\'s impossible!',
+            createdAt: 0,
+            date: '12:41',
+            nickname: 'wiktor'
+          },
+          {
+            id: '6',
+            type: 1,
+            message: 'Nooo!',
+            createdAt: 0,
+            date: '12:45',
+            nickname: 'wiktor'
+          }
+        ],
+        [
+          {
+            id: '7',
+            type: 1,
+            message: 'Uhuhu!',
+            createdAt: 0,
+            date: '12:46',
+            nickname: 'anakin'
+          }
+        ],
+        [
+          {
+            id: '8',
+            type: 1,
+            message: 'Why?',
+            createdAt: 0,
+            date: '12:46',
+            nickname: 'anakin'
+          }
+        ],
+        [
+          {
+            id: '9',
+            type: 1,
+            message: 'Messages more there should be',
+            createdAt: 0,
+            date: '12:46',
+            nickname: 'yoda'
+          }
+        ],
+        [
+          {
+            id: '11',
+            type: 1,
+            message: 'I Agree',
+            createdAt: 0,
+            date: '12:46',
+            nickname: 'obi'
+          },
+          {
+            id: '12',
+            type: 1,
+            message: 'Of course, I Agree',
+            createdAt: 0,
+            date: '12:46',
+            nickname: 'obi'
+          },
+        ],
+        [
+          {
+            id: '13',
+            type: 1,
+            message: 'Wrough!',
+            createdAt: 0,
+            date: '12:46',
+            nickname: 'wookie'
+          }
+        ],
+        [
+          {
+            id: '14',
+            type: 1,
+            message: 'Yeah!',
+            createdAt: 0,
+            date: '12:46',
+            nickname: 'leah'
+          }
+        ],
+        [
+          {
+            id: '15',
+            type: 1,
+            message: 'The more messages the better',
+            createdAt: 0,
+            date: '12:46',
+            nickname: 'luke'
+          }
+        ],
+        [
+          {
+            id: '16',
+            type: 1,
+            message: 'We cannot grant you the rank of messager',
+            createdAt: 0,
+            date: '12:46',
+            nickname: 'windoo'
           }
         ]
       ]
