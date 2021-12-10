@@ -7,7 +7,6 @@ import ChannelComponent, { ChannelComponentProps } from './Channel'
 import { DisplayableMessage } from '@zbayapp/nectar'
 
 const Template: ComponentStory<typeof ChannelComponent> = args => {
-
   const [messages, _setMessages] = useState<{
     count: number
     groups: { [day: string]: DisplayableMessage[][] }
@@ -118,7 +117,7 @@ const Template: ComponentStory<typeof ChannelComponent> = args => {
             createdAt: 0,
             date: '12:46',
             nickname: 'obi'
-          },
+          }
         ],
         [
           {
