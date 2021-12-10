@@ -23,8 +23,6 @@ const Channel = () => {
     publicChannels.selectors.currentChannelMessagesCount
   )
 
-  console.log('gets messages', currentChannelMessagesCount)
-
   const currentChannelDisplayableMessages = useSelector(
     publicChannels.selectors.currentChannelMessagesMergedBySender
   )
