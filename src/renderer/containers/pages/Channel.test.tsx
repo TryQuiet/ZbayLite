@@ -1,10 +1,10 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
 import { screen } from '@testing-library/dom'
-import { apply, fork } from 'typed-redux-saga'
+import { apply, fork, take } from 'typed-redux-saga'
 import { renderComponent } from '../../testUtils/renderComponent'
 import { prepareStore } from '../../testUtils/prepareStore'
-import { getFactory } from '@zbayapp/nectar'
+import { getFactory, publicChannels } from '@zbayapp/nectar'
 import MockedSocket from 'socket.io-mock'
 import { act } from 'react-dom/test-utils'
 import { ioMock } from '../../../shared/setupTests'
@@ -166,9 +166,9 @@ describe('Channel', () => {
 
     function* testReceiveMessage(): Generator {
       yield* fork(mockSendMessagesIds)
-      // yield* take(publicChannels.actions.responseSendMessagesIds)
-      // yield* take(publicChannels.actions.askForMessages)
-      // yield* take(publicChannels.actions.responseAskForMessages)
+      yield* take(publicChannels.actions.responseSendMessagesIds)
+      yield* take(publicChannels.actions.askForMessages)
+      yield* take(publicChannels.actions.responseAskForMessages)
     }
   })
 })
