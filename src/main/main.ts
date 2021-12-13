@@ -18,7 +18,6 @@ const log = Object.assign(debug('zbay:main'), {
 })
 
 electronStore.set('appDataPath', app.getPath('appData'))
-electronStore.set('waggleInitialized', false)
 electronStore.set('waggleVersion', waggleVersion)
 
 export const isDev = process.env.NODE_ENV === 'development'
@@ -252,10 +251,8 @@ export const checkForUpdate = async (win: BrowserWindow) => {
 }
 
 let waggleProcess: { connectionsManager: ConnectionsManager; dataServer: DataServer } | null = null
-let waggleProcessStarted: boolean = false
 
 app.on('ready', async () => {
-
   // const template = [
   //   {
   //     label: 'Zbay',
@@ -327,7 +324,7 @@ app.on('ready', async () => {
     await waggleProcess?.connectionsManager.closeAllServices()
     await waggleProcess?.dataServer.close()
     waggleProcess = await runWaggle(mainWindow.webContents)
-    })
+  })
 })
 
 app.setAsDefaultProtocolClient('zbay')

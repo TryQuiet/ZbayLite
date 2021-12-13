@@ -45,7 +45,7 @@ ipcRenderer.on('connectToWebsocket', (_event, payload: WebsocketConnectionPayloa
 })
 
 ipcRenderer.on('waggleInitialized', (_event) => {
-  log('waggle Initialized')
+  log('waggle initialized')
   store.dispatch(waggleHandlers.actions.setIsWaggleConnected(true))
 })
 
