@@ -81,6 +81,7 @@
     "build:main": "tsc -p tsconfig.build.main.json",
     "build:main:prod": "tsc -p tsconfig.build.main.json",
     "build:renderer:prod": "webpack --config webpack/webpack.config.renderer.prod.js",
+    "postinstall": "rm -rf node_modules/ipfs-core-types/src",
     "prestart": "npm run build:main",
     "start": "ZBAY_IS_TESTNET=0 DEBUG='waggle:*,zbay:*' npm run start:renderer",
     "start-testnet": "ZBAY_IS_TESTNET=1 npm run start:renderer",
