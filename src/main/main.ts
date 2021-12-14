@@ -359,9 +359,3 @@ app.on('activate', async () => {
     await createWindow()
   }
 })
-
-ipcMain.on('hello', async () => {
-  await waggleProcess.connectionsManager.closeAllServices()
-  await waggleProcess.dataServer.close()
-  waggleProcess = await runWaggle(mainWindow.webContents)
-})
