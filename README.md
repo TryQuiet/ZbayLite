@@ -12,8 +12,6 @@ Getting started hacking on Zcash is easy. Be sure to have [Node](https://nodejs.
 
 ```
 npm install
-npm install --global neon-cli
-npm run neon
 ```
 
 Next, copy the Tor binary for your platform to a file called `tor` in the `tor` directory in the repo. On macOS, for example, you'd run this command:
